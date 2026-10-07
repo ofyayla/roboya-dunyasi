@@ -1,0 +1,61 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 1,
+  "id": "sabir-ormani.yon-avcisi.02",
+  "region": "sabir-ormani",
+  "game": "yon-avcisi",
+  "order": 2,
+  "meta": {
+    "concepts": [
+      "direction",
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 1,
+    "ageLevels": [
+      "minik"
+    ],
+    "mebOutcomes": [],
+    "notes": "Üç ileri; destek azalır, hayalet yol hâlâ açık."
+  },
+  "grid": {
+    "rows": [
+      "....",
+      "....",
+      "....",
+      "...."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 3,
+    "facing": "north"
+  },
+  "goal": {
+    "reach": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "cards": {
+    "palette": [
+      "forward"
+    ],
+    "maxProgramLength": 4
+  },
+  "options": {
+    "ghostPath": true
+  },
+  "voice": {
+    "intro": "yon_avcisi.l02.intro",
+    "success": "yon_avcisi.l02.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "solution": {
+    "shortestLength": 3
+  }
+}

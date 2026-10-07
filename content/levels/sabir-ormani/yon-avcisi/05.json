@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 1,
+  "id": "sabir-ormani.yon-avcisi.05",
+  "region": "sabir-ormani",
+  "game": "yon-avcisi",
+  "order": 5,
+  "meta": {
+    "concepts": [
+      "direction"
+    ],
+    "value": "patience",
+    "difficulty": 2,
+    "ageLevels": [
+      "minik"
+    ],
+    "mebOutcomes": [],
+    "notes": "Sola dön kartının tanıtımı; iki dönüş kartı birlikte ilk kez."
+  },
+  "grid": {
+    "rows": [
+      "....",
+      "....",
+      "....",
+      "...."
+    ]
+  },
+  "robot": {
+    "x": 3,
+    "y": 3,
+    "facing": "north"
+  },
+  "goal": {
+    "reach": {
+      "x": 2,
+      "y": 2
+    }
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 4,
+    "introduces": "turn_left"
+  },
+  "options": {
+    "guided": true
+  },
+  "voice": {
+    "intro": "yon_avcisi.l05.intro",
+    "success": "yon_avcisi.l05.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "solution": {
+    "shortestLength": 3
+  }
+}

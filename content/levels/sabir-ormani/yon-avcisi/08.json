@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 1,
+  "id": "sabir-ormani.yon-avcisi.08",
+  "region": "sabir-ormani",
+  "game": "yon-avcisi",
+  "order": 8,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 3,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "İlk toplama: önce elmayı al, sonra kaplumbağaya git."
+  },
+  "grid": {
+    "rows": [
+      ".....",
+      "..#..",
+      "..#..",
+      ".....",
+      "....."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 4,
+    "facing": "north"
+  },
+  "items": [
+    {
+      "id": "elma",
+      "kind": "fruit",
+      "x": 0,
+      "y": 1,
+      "color": "red"
+    }
+  ],
+  "goal": {
+    "reach": {
+      "x": 2,
+      "y": 0
+    },
+    "collect": [
+      "elma"
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 9
+  },
+  "voice": {
+    "intro": "yon_avcisi.l08.intro",
+    "success": "yon_avcisi.l08.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "solution": {
+    "shortestLength": 7
+  }
+}

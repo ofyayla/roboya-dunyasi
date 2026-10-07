@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 1,
+  "id": "sabir-ormani.yon-avcisi.07",
+  "region": "sabir-ormani",
+  "game": "yon-avcisi",
+  "order": 7,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 3,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "İlk engel: devrilmiş kütük. Etrafından dolaşmak gerekir."
+  },
+  "grid": {
+    "rows": [
+      ".....",
+      ".#...",
+      ".#...",
+      ".....",
+      "....."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 4,
+    "facing": "north"
+  },
+  "goal": {
+    "reach": {
+      "x": 2,
+      "y": 1
+    }
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 8
+  },
+  "voice": {
+    "intro": "yon_avcisi.l07.intro",
+    "success": "yon_avcisi.l07.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "solution": {
+    "shortestLength": 7
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 1,
+  "id": "sabir-ormani.yon-avcisi.01",
+  "region": "sabir-ormani",
+  "game": "yon-avcisi",
+  "order": 1,
+  "meta": {
+    "concepts": [
+      "direction"
+    ],
+    "value": "patience",
+    "difficulty": 1,
+    "ageLevels": [
+      "minik"
+    ],
+    "mebOutcomes": [],
+    "notes": "İlk bölüm: Roboya ile birlikte iki ileri kartı. Okuma yok, yalnız ses ve hayalet yol."
+  },
+  "grid": {
+    "rows": [
+      "....",
+      "....",
+      "....",
+      "...."
+    ]
+  },
+  "robot": {
+    "x": 1,
+    "y": 3,
+    "facing": "north"
+  },
+  "goal": {
+    "reach": {
+      "x": 1,
+      "y": 1
+    }
+  },
+  "cards": {
+    "palette": [
+      "forward"
+    ],
+    "maxProgramLength": 3,
+    "introduces": "forward"
+  },
+  "options": {
+    "guided": true,
+    "ghostPath": true
+  },
+  "voice": {
+    "intro": "yon_avcisi.l01.intro",
+    "success": "yon_avcisi.l01.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "solution": {
+    "shortestLength": 2
+  }
+}

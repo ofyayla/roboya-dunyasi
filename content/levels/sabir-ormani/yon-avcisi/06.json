@@ -1,0 +1,61 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 1,
+  "id": "sabir-ormani.yon-avcisi.06",
+  "region": "sabir-ormani",
+  "game": "yon-avcisi",
+  "order": 6,
+  "meta": {
+    "concepts": [
+      "direction",
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 2,
+    "ageLevels": [
+      "minik",
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "Robot doğuya bakarak başlar: yönü çocuğun bakışından değil Roboya'nın bakışından düşünmek."
+  },
+  "grid": {
+    "rows": [
+      "....",
+      "....",
+      "....",
+      "...."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 1,
+    "facing": "east"
+  },
+  "goal": {
+    "reach": {
+      "x": 2,
+      "y": 2
+    }
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 6
+  },
+  "voice": {
+    "intro": "yon_avcisi.l06.intro",
+    "success": "yon_avcisi.l06.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "solution": {
+    "shortestLength": 4
+  }
+}

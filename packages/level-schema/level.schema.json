@@ -1,0 +1,617 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://roboyakids.com.tr/schemas/level/v1.json",
+  "title": "LevelDto",
+  "description": "Roboya Dünyası level, schema version 1. Single source of truth for the game, validator and editor.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "region",
+    "game",
+    "order",
+    "meta",
+    "grid",
+    "robot",
+    "goal",
+    "cards",
+    "voice"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "description": "Stable id: <region>.<game>.<nn>. Used by progress records; never reuse a deleted id.",
+      "type": "string",
+      "pattern": "^[a-z0-9-]+\\.[a-z0-9-]+\\.[a-z0-9-]+$"
+    },
+    "region": {
+      "$ref": "#/$defs/region"
+    },
+    "game": {
+      "$ref": "#/$defs/game"
+    },
+    "order": {
+      "description": "1-based position on the region path.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "meta": {
+      "$ref": "#/$defs/meta"
+    },
+    "grid": {
+      "$ref": "#/$defs/grid"
+    },
+    "robot": {
+      "$ref": "#/$defs/robot"
+    },
+    "items": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    },
+    "goal": {
+      "$ref": "#/$defs/goal"
+    },
+    "cards": {
+      "$ref": "#/$defs/cards"
+    },
+    "starterProgram": {
+      "description": "Pre-filled program (Kodlama Kutusu 'hata avcısı': contains wrong cards to find, KUT-01).",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/command"
+      }
+    },
+    "options": {
+      "$ref": "#/$defs/options"
+    },
+    "voice": {
+      "$ref": "#/$defs/voice"
+    },
+    "alternativeLevelId": {
+      "description": "Easier level offered after repeated failures (YZ-03).",
+      "type": "string",
+      "pattern": "^[a-z0-9-]+\\.[a-z0-9-]+\\.[a-z0-9-]+$"
+    },
+    "solution": {
+      "title": "SolutionDto",
+      "description": "Written by the validator (`--fix`); CI fails when it does not match the solver.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "shortestLength"
+      ],
+      "properties": {
+        "shortestLength": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "$defs": {
+    "region": {
+      "title": "RegionId",
+      "type": "string",
+      "enum": [
+        "sabir-ormani",
+        "paylasim-koyu",
+        "yardimlasma-limani",
+        "nezaket-bahcesi",
+        "sorumluluk-kulesi",
+        "mucit-atolyesi"
+      ]
+    },
+    "game": {
+      "title": "GameId",
+      "type": "string",
+      "enum": [
+        "yon-avcisi",
+        "kodlama-kutusu",
+        "bal-pesinde",
+        "dongu-dansi",
+        "birlikte-basaralim",
+        "robot-atolyesi",
+        "serbest-mucit"
+      ]
+    },
+    "concept": {
+      "title": "Concept",
+      "type": "string",
+      "enum": [
+        "direction",
+        "sequencing",
+        "debugging",
+        "loops",
+        "conditionals",
+        "functions",
+        "events",
+        "counting"
+      ]
+    },
+    "value": {
+      "title": "ValueId",
+      "type": "string",
+      "enum": [
+        "patience",
+        "sharing",
+        "helping",
+        "kindness",
+        "responsibility",
+        "creativity"
+      ]
+    },
+    "ageLevel": {
+      "title": "AgeLevel",
+      "type": "string",
+      "enum": [
+        "minik",
+        "kasif",
+        "mucit"
+      ]
+    },
+    "meta": {
+      "title": "LevelMeta",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "concepts",
+        "value",
+        "difficulty",
+        "ageLevels"
+      ],
+      "properties": {
+        "concepts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/concept"
+          }
+        },
+        "value": {
+          "$ref": "#/$defs/value"
+        },
+        "difficulty": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "ageLevels": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ageLevel"
+          }
+        },
+        "mebOutcomes": {
+          "description": "MEB curriculum outcome codes (F3-12).",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "description": "Internal design notes for the pedagogy team; never shown to children.",
+          "type": "string"
+        }
+      }
+    },
+    "grid": {
+      "title": "GridDto",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rows"
+      ],
+      "properties": {
+        "rows": {
+          "description": "Row 0 is north. '.' floor, '#' blocked. All rows equal length, 2..12.",
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 12,
+          "items": {
+            "type": "string",
+            "pattern": "^[.#]{2,12}$"
+          }
+        }
+      }
+    },
+    "position": {
+      "title": "PositionDto",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 11
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 11
+        }
+      }
+    },
+    "direction": {
+      "title": "Facing",
+      "type": "string",
+      "enum": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ]
+    },
+    "robot": {
+      "title": "RobotDto",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "x",
+        "y",
+        "facing"
+      ],
+      "properties": {
+        "x": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 11
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 11
+        },
+        "facing": {
+          "$ref": "#/$defs/direction"
+        }
+      }
+    },
+    "item": {
+      "title": "ItemDto",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "x",
+        "y"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "flower",
+            "honey",
+            "gear",
+            "star",
+            "fruit",
+            "ship-part"
+          ]
+        },
+        "color": {
+          "description": "Never the only signal: the view pairs every colour with a shape.",
+          "type": "string",
+          "enum": [
+            "red",
+            "yellow",
+            "blue",
+            "green",
+            "purple",
+            "orange"
+          ]
+        },
+        "x": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 11
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 11
+        }
+      }
+    },
+    "goal": {
+      "title": "GoalDto",
+      "type": "object",
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "reach"
+          ]
+        },
+        {
+          "required": [
+            "collect"
+          ]
+        }
+      ],
+      "properties": {
+        "reach": {
+          "$ref": "#/$defs/position"
+        },
+        "collect": {
+          "description": "Item ids that must all be collected.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "card": {
+      "title": "CardId",
+      "type": "string",
+      "enum": [
+        "forward",
+        "backward",
+        "turn_left",
+        "turn_right",
+        "repeat",
+        "if",
+        "call",
+        "action"
+      ]
+    },
+    "cards": {
+      "title": "CardsDto",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "palette",
+        "maxProgramLength"
+      ],
+      "properties": {
+        "palette": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/card"
+          }
+        },
+        "maxProgramLength": {
+          "description": "Slots on the plan strip.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        },
+        "introduces": {
+          "$ref": "#/$defs/card"
+        }
+      },
+      "description": "Card palette and plan strip. `introduces` names a card presented with a short introduction moment in this level (YON-01)."
+    },
+    "condition": {
+      "title": "ConditionDto",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "const": "path_blocked"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "color"
+          ],
+          "properties": {
+            "type": {
+              "const": "on_color"
+            },
+            "color": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "inner"
+          ],
+          "properties": {
+            "type": {
+              "const": "not"
+            },
+            "inner": {
+              "$ref": "#/$defs/condition"
+            }
+          }
+        }
+      ]
+    },
+    "command": {
+      "title": "CommandDto",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op"
+          ],
+          "properties": {
+            "op": {
+              "enum": [
+                "forward",
+                "backward",
+                "turn_left",
+                "turn_right"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "times",
+            "body"
+          ],
+          "properties": {
+            "op": {
+              "const": "repeat"
+            },
+            "times": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9
+            },
+            "body": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/command"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "condition",
+            "then"
+          ],
+          "properties": {
+            "op": {
+              "const": "if"
+            },
+            "condition": {
+              "$ref": "#/$defs/condition"
+            },
+            "then": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/command"
+              }
+            },
+            "else": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/command"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "name"
+          ],
+          "properties": {
+            "op": {
+              "const": "call"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "id"
+          ],
+          "properties": {
+            "op": {
+              "const": "action"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "options": {
+      "title": "LevelOptions",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ghostPath": {
+          "description": "Show the correct route faintly (YON-03).",
+          "type": "boolean"
+        },
+        "beeMemoryVisible": {
+          "description": "Bal Peşinde: show the bee's memory strip (Kaşif level).",
+          "type": "boolean"
+        },
+        "guided": {
+          "description": "Roboya builds the code together with the child (first level of a new concept).",
+          "type": "boolean"
+        }
+      }
+    },
+    "voiceKey": {
+      "title": "VoiceKey",
+      "type": "string",
+      "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)+$"
+    },
+    "voice": {
+      "title": "VoiceDto",
+      "description": "Keys into content/voice/script.csv and the localization tables.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "intro"
+      ],
+      "properties": {
+        "intro": {
+          "$ref": "#/$defs/voiceKey"
+        },
+        "success": {
+          "$ref": "#/$defs/voiceKey"
+        },
+        "hints": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/voiceKey"
+          }
+        }
+      }
+    }
+  }
+}
