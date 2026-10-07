@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <!-- Keep in line with Unity 6: C# 9, .NET Standard 2.1 for the engine (ADR 0002). -->
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GameRoot>$(MSBuildThisFileDirectory)../../apps/game/Assets/_Project/</GameRoot>
+  </PropertyGroup>
+</Project>

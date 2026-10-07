@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Roboya.CodingEngine/Roboya.CodingEngine.csproj" />
+  <Project Path="Roboya.CodingEngine.Tests/Roboya.CodingEngine.Tests.csproj" />
+</Solution>
