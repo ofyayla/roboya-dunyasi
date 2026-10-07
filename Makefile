@@ -36,7 +36,7 @@ editor-dev: ## Run the internal level editor locally
 test: test-engine test-api test-web test-content ## Run all API, web, engine and content tests
 
 test-engine:
-	$(DOTNET) test $(ENGINE_SLN) --nologo -v q /p:CollectCoverage=true /p:Threshold=90 /p:ThresholdType=line /p:Include="[Roboya.CodingEngine]*" /p:ExcludeByFile="**/Generated/*.cs"
+	$(DOTNET) test tools/engine-dotnet/Roboya.CodingEngine.Tests --nologo -v q /p:CollectCoverage=true /p:Threshold=90 /p:ThresholdType=line /p:Include="[Roboya.CodingEngine]*" /p:ExcludeByFile="**/Generated/*.cs"
 
 test-api:
 	cd apps/api && uv run pytest
