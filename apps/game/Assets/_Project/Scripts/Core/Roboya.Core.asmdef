@@ -1,0 +1,11 @@
+{
+    "name": "Roboya.Core",
+    "rootNamespace": "Roboya.Core",
+    "references": ["Roboya.CodingEngine"],
+    "includePlatforms": [],
+    "autoReferenced": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "defineConstraints": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,12 @@
+{
+    "name": "Roboya.Editor",
+    "rootNamespace": "Roboya.EditorTools",
+    "references": [
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.Universal.2D.Runtime"
+    ],
+    "includePlatforms": ["Editor"],
+    "autoReferenced": false,
+    "noEngineReferences": false
+}
