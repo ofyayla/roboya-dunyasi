@@ -10,7 +10,7 @@ UNITY ?= $(firstword $(wildcard $(UNITY_HUB_EDITORS)/$(UNITY_VERSION)-arm64/Unit
 ENGINE_SLN := tools/engine-dotnet/Roboya.Engine.slnx
 
 .PHONY: help setup api-dev web-dev editor-dev test lint gen validate-content fix-content unity-test \
-        test-api test-web test-engine test-content lint-api lint-web check-gen
+        test-api test-web test-engine test-content lint-api lint-web check-gen unity-playmode
 
 help: ## List commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-18s\033[0m %s\n",$$1,$$2}'
@@ -71,6 +71,10 @@ validate-content: ## Validate all levels (schema + solver) and the voice manifes
 
 fix-content: ## Write solver-computed shortest lengths into level files
 	$(DOTNET) run --project tools/engine-dotnet/Roboya.LevelValidator -c Release -- content/levels --voice content/voice/script.csv --fix
+
+unity-playmode: ## Run Unity PlayMode tests (critical flows) with a GPU; screenshots in apps/game/TestResults/screens
+	"$(UNITY)" -batchmode -projectPath apps/game -runTests -testPlatform PlayMode \
+		-testResults "$(CURDIR)/apps/game/TestResults/playmode.xml" -logFile -
 
 unity-test: ## Run Unity EditMode tests in batch mode
 	"$(UNITY)" -batchmode -nographics -projectPath apps/game -runTests -testPlatform EditMode \

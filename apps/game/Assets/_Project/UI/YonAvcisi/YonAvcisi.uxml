@@ -1,0 +1,24 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="../Common/Common.uss" />
+    <Style src="YonAvcisi.uss" />
+    <ui:VisualElement name="screen" class="screen">
+        <ui:VisualElement name="top-bar" class="top-bar">
+            <ui:VisualElement name="top-left" class="top-bar__side" />
+            <ui:VisualElement name="progress" class="progress" />
+            <ui:VisualElement name="top-right" class="top-bar__side top-bar__side--right" />
+        </ui:VisualElement>
+        <ui:VisualElement name="board-host" class="board-host" />
+        <ui:VisualElement name="bottom-bar" class="bottom-bar">
+            <ui:VisualElement name="palette" class="palette" />
+            <ui:VisualElement name="plan" class="plan" />
+            <ui:VisualElement name="play-host" class="play-host" />
+        </ui:VisualElement>
+        <ui:VisualElement name="drag-layer" class="drag-layer" />
+        <ui:VisualElement name="result" class="result hidden">
+            <ui:VisualElement class="result__panel">
+                <ui:VisualElement name="stars" class="result__stars" />
+                <ui:VisualElement name="result-buttons" class="result__buttons" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

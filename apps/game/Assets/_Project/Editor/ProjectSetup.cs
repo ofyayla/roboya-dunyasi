@@ -28,6 +28,7 @@ namespace Roboya.EditorTools
             ApplyEditorSettings();
             EnsureRenderPipeline();
             EnsureScenes();
+            SceneBuilder.Build(ScenesDir);
             AssetDatabase.SaveAssets();
             Debug.Log("[ProjectSetup] done");
         }

@@ -1,11 +1,22 @@
 {
     "name": "Roboya.Tests.PlayMode",
     "rootNamespace": "Roboya.Tests.PlayMode",
-    "references": ["Roboya.Core", "Roboya.CodingEngine", "Roboya.Games.YonAvcisi", "UnityEngine.TestRunner", "UnityEditor.TestRunner"],
+    "references": [
+        "Roboya.Core",
+        "Roboya.CodingEngine",
+        "Roboya.UI",
+        "Roboya.Games.YonAvcisi",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
     "includePlatforms": [],
     "autoReferenced": false,
     "overrideReferences": true,
-    "precompiledReferences": ["nunit.framework.dll"],
-    "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
     "noEngineReferences": false
 }

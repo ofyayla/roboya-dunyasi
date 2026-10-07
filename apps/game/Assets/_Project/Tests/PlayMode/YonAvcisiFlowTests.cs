@@ -1,0 +1,202 @@
+using System;
+using System.Collections;
+using System.IO;
+using System.Linq;
+using NUnit.Framework;
+using Roboya.UI;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.TestTools;
+using UnityEngine.UIElements;
+
+namespace Roboya.Tests.PlayMode
+{
+    /// <summary>Critical flow (CLAUDE.md §7): open level → build plan → play → finish with stars.</summary>
+    public class YonAvcisiFlowTests
+    {
+        private static readonly string ShotsDir = Path.Combine(Application.dataPath, "..", "TestResults", "screens");
+
+        [UnityTearDown]
+        public IEnumerator TearDown()
+        {
+            foreach (var boot in UnityEngine.Object.FindObjectsByType<Roboya.Core.Bootstrap>(FindObjectsSortMode.None))
+            {
+                UnityEngine.Object.Destroy(boot.gameObject);
+            }
+
+            yield return null;
+        }
+
+        private static IEnumerator StartGame(Action<VisualElement> found)
+        {
+            yield return SceneManager.LoadSceneAsync("Boot");
+            VisualElement root = null;
+            yield return WaitUntil(
+                () => SceneManager.GetActiveScene().name == "Game" && (root = FindRoot()) != null && root.Q("palette")?.childCount > 0,
+                10f);
+            found(root);
+        }
+
+        [UnityTest]
+        public IEnumerator FirstLevel_TwoForwardCardsAndPlay_ShowsThreeStars()
+        {
+            VisualElement root = null;
+            yield return StartGame(r => root = r);
+            yield return null;
+            yield return Capture(root, "01-level1-start");
+
+            var forward = root.Q("palette").Children().First();
+            Tap(forward);
+            Tap(forward);
+            yield return null;
+            Assert.AreEqual(2, root.Q("plan").Query(className: "card").ToList().Count, "two cards on the plan strip");
+            yield return Capture(root, "02-level1-planned");
+
+            Tap(root.Q("play"));
+            yield return WaitUntil(() => !root.Q("result").ClassListContains("hidden"), 15f);
+            yield return null; // the overlay is laid out one frame after it becomes visible
+            yield return Capture(root, "03-level1-result");
+
+            var stars = root.Q("stars").Children().OfType<Icon>().Count(i => i.Kind == IconKind.Star);
+            Assert.AreEqual(3, stars);
+
+            Tap(root.Q("next"));
+            yield return null;
+            Assert.IsTrue(root.Q("result").ClassListContains("hidden"));
+            Assert.AreEqual(0, root.Q("plan").Query(className: "card").ToList().Count);
+            var dots = root.Q("progress").Children().ToList();
+            Assert.IsTrue(dots[1].ClassListContains("progress__dot--current"), "next button opens level 2");
+        }
+
+        [UnityTest]
+        public IEnumerator FirstLevel_TooShortPlan_ReturnsToPlanningWithoutPenalty()
+        {
+            VisualElement root = null;
+            yield return StartGame(r => root = r);
+
+            Tap(root.Q("palette").Children().First());
+            Tap(root.Q("play"));
+            yield return new WaitForSeconds(0.2f);
+            Assert.IsFalse(root.Q("play").enabledSelf, "plan is locked while running");
+            yield return WaitUntil(() => root.Q("play").enabledSelf, 10f);
+
+            Assert.IsTrue(root.Q("result").ClassListContains("hidden"));
+            Assert.AreEqual(1, root.Q("plan").Query(className: "card").ToList().Count, "plan is kept so the child can fix it");
+        }
+
+        [UnityTest]
+        public IEnumerator AllPrototypeLevels_SolverSolutionTappedThroughUi_EachCompletes()
+        {
+            var files = Directory.GetFiles(Roboya.Core.FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories);
+            Array.Sort(files, StringComparer.Ordinal);
+            var catalog = Roboya.Core.LevelCatalog.Parse(files.Select(File.ReadAllText));
+            var levels = catalog.ForGame(Roboya.CodingEngine.Levels.Generated.GameId.YonAvcisi);
+
+            VisualElement root = null;
+            yield return StartGame(r => root = r);
+
+            for (int i = 0; i < levels.Count; i++)
+            {
+                var solution = Roboya.CodingEngine.Solving.Solver.Solve(levels[i].Level).Solution;
+                if (i == 8)
+                {
+                    yield return Capture(root, "04-level9-start");
+                }
+
+                foreach (var card in solution)
+                {
+                    var paletteCard = root.Q("palette").Children().OfType<CardElement>().FirstOrDefault(c => c.Card == card);
+                    Assert.IsNotNull(paletteCard, levels[i].Id + ": palette has no " + card + " (palette: " +
+                        string.Join(",", root.Q("palette").Children().OfType<CardElement>().Select(c => c.Card)) + ")");
+                    Tap(paletteCard);
+                }
+
+                Tap(root.Q("play"));
+                yield return WaitUntil(() => !root.Q("result").ClassListContains("hidden"), 30f);
+                yield return null; // the overlay is laid out one frame after it becomes visible
+                int stars = root.Q("stars").Children().OfType<Icon>().Count(x => x.Kind == IconKind.Star);
+                Assert.AreEqual(3, stars, levels[i].Id + " should earn 3 stars with the shortest plan on the first try");
+                if (i == levels.Count - 1)
+                {
+                    yield return Capture(root, "05-level10-result");
+                }
+                else
+                {
+                    Tap(root.Q("next"));
+                    yield return null;
+                }
+            }
+        }
+
+        private static VisualElement FindRoot()
+        {
+            var doc = UnityEngine.Object.FindAnyObjectByType<UIDocument>();
+            return doc != null ? doc.rootVisualElement : null;
+        }
+
+        private static void Tap(VisualElement element)
+        {
+            // Events sent to the panel's visual tree are hit-tested in panel coordinates.
+            Vector2 pos = element.worldBound.center;
+            Send(element, EventType.MouseDown, pos);
+            Send(element, EventType.MouseUp, pos);
+        }
+
+        private static void Send(VisualElement element, EventType type, Vector2 pos)
+        {
+            var e = new Event { type = type, mousePosition = pos, button = 0, clickCount = 1 };
+            EventBase evt = type == EventType.MouseDown ? PointerDownEvent.GetPooled(e) : (EventBase)PointerUpEvent.GetPooled(e);
+            using (evt)
+            {
+                element.panel.visualTree.SendEvent(evt);
+            }
+        }
+
+        private static IEnumerator WaitUntil(Func<bool> condition, float timeout)
+        {
+            float end = Time.realtimeSinceStartup + timeout;
+            while (!condition())
+            {
+                if (Time.realtimeSinceStartup > end)
+                {
+                    Assert.Fail("Timed out after " + timeout + "s");
+                }
+
+                yield return null;
+            }
+        }
+
+        /// <summary>
+        /// Renders the UI panel into a texture and saves a PNG for visual review. WaitForEndOfFrame never fires in
+        /// batch mode, so the panel is redirected to a RenderTexture for two frames instead. Skipped without a GPU.
+        /// </summary>
+        private static IEnumerator Capture(VisualElement root, string name)
+        {
+            if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null)
+            {
+                yield break;
+            }
+
+            var settings = UnityEngine.Object.FindAnyObjectByType<UIDocument>().panelSettings;
+            var rt = new RenderTexture(1280, 800, 24, RenderTextureFormat.ARGB32);
+            settings.targetTexture = rt;
+            yield return null;
+            yield return null;
+
+            var previous = RenderTexture.active;
+            RenderTexture.active = rt;
+            var shot = new Texture2D(rt.width, rt.height, TextureFormat.RGBA32, false);
+            shot.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
+            shot.Apply();
+            RenderTexture.active = previous;
+            settings.targetTexture = null;
+
+            Directory.CreateDirectory(ShotsDir);
+            File.WriteAllBytes(Path.Combine(ShotsDir, name + ".png"), shot.EncodeToPNG());
+            UnityEngine.Object.Destroy(shot);
+            rt.Release();
+            UnityEngine.Object.Destroy(rt);
+            yield return null;
+        }
+    }
+}

@@ -59,6 +59,7 @@ Komutlar kök dizindeki `Makefile` üzerinden çalışır. Bir komut değişirse
 | `make gen` | Bölüm şemasından ve OpenAPI'den C# / TypeScript kodu üretir |
 | `make validate-content` | Tüm bölümleri şema ve çözücüyle doğrular, ses manifestini kontrol eder |
 | `make unity-test` | Unity EditMode testlerini batch modda çalıştırır |
+| `make unity-playmode` | Unity PlayMode kritik akış testleri; ekran görüntüleri `apps/game/TestResults/screens` |
 
 Bir görevi bitirdiğini söylemeden önce ilgili testleri ve lint'i çalıştır ve neyi çalıştırdığını raporla.
 
