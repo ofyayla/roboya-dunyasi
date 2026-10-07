@@ -1,0 +1,125 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  secrets-scan:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: gitleaks
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.28.0/gitleaks_8.28.0_linux_x64.tar.gz | tar -xz gitleaks
+          ./gitleaks git --redact --verbose --config .gitleaks.toml .
+
+  api:
+    name: API (ruff, mypy, pytest)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: roboya
+          POSTGRES_PASSWORD: roboya
+          POSTGRES_DB: roboya_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U roboya" --health-interval 2s --health-timeout 3s --health-retries 30
+    defaults:
+      run:
+        working-directory: apps/api
+    env:
+      ROBOYA_DATABASE_URL: postgresql+asyncpg://roboya:roboya@localhost:5432/roboya_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy
+      - run: uv run alembic upgrade head
+      - run: uv run pytest
+
+  engine:
+    name: Coding engine + validator (.NET)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - name: Engine tests with ≥ 90% line coverage
+        run: make test-engine DOTNET=dotnet
+      - name: Validator tests
+        run: dotnet test tools/engine-dotnet/Roboya.LevelValidator.Tests --nologo
+
+  content:
+    name: Content, schema and generated code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - run: npm ci
+      - run: npm test -w @roboya/level-schema
+      - name: Validate levels (schema + solver + voice keys)
+        run: make validate-content DOTNET=dotnet
+      - name: Generated code is up to date
+        run: make check-gen
+
+  unity-editmode:
+    name: Unity EditMode tests
+    runs-on: ubuntu-latest
+    # Needs a Unity licence in repository secrets (see docs/ci.md); forks never receive secrets.
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Check prerequisites
+        id: pre
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        run: |
+          if [ ! -f apps/game/ProjectSettings/ProjectVersion.txt ]; then
+            echo "Unity project not created yet; skipping."; echo "run=false" >> "$GITHUB_OUTPUT"
+          elif [ -z "$UNITY_LICENSE" ]; then
+            echo "::warning::UNITY_LICENSE secret missing; Unity tests skipped."; echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/cache@v4
+        if: steps.pre.outputs.run == 'true'
+        with:
+          path: apps/game/Library
+          key: unity-library-${{ hashFiles('apps/game/Packages/packages-lock.json', 'apps/game/ProjectSettings/ProjectVersion.txt') }}
+      - uses: game-ci/unity-test-runner@v4
+        if: steps.pre.outputs.run == 'true'
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: apps/game
+          testMode: editmode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
