@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 1,
+  "id": "sabir-ormani.yon-avcisi.03",
+  "region": "sabir-ormani",
+  "game": "yon-avcisi",
+  "order": 3,
+  "meta": {
+    "concepts": [
+      "direction"
+    ],
+    "value": "patience",
+    "difficulty": 1,
+    "ageLevels": [
+      "minik"
+    ],
+    "mebOutcomes": [],
+    "notes": "Sağa dön kartının tanıtımı: ileri, sağa dön, ileri."
+  },
+  "grid": {
+    "rows": [
+      "....",
+      "....",
+      "....",
+      "...."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 3,
+    "facing": "north"
+  },
+  "goal": {
+    "reach": {
+      "x": 1,
+      "y": 2
+    }
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_right"
+    ],
+    "maxProgramLength": 4,
+    "introduces": "turn_right"
+  },
+  "options": {
+    "guided": true,
+    "ghostPath": true
+  },
+  "voice": {
+    "intro": "yon_avcisi.l03.intro",
+    "success": "yon_avcisi.l03.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "solution": {
+    "shortestLength": 3
+  }
+}

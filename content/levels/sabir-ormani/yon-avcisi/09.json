@@ -1,0 +1,80 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 1,
+  "id": "sabir-ormani.yon-avcisi.09",
+  "region": "sabir-ormani",
+  "game": "yon-avcisi",
+  "order": 9,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 4,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "İki meyve ve engeller; sırayı planlamak sabır ister."
+  },
+  "grid": {
+    "rows": [
+      ".....",
+      ".....",
+      ".#.#.",
+      ".....",
+      "....."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 4,
+    "facing": "north"
+  },
+  "items": [
+    {
+      "id": "elma",
+      "kind": "fruit",
+      "x": 0,
+      "y": 2,
+      "color": "red"
+    },
+    {
+      "id": "armut",
+      "kind": "fruit",
+      "x": 2,
+      "y": 1,
+      "color": "yellow"
+    }
+  ],
+  "goal": {
+    "reach": {
+      "x": 4,
+      "y": 1
+    },
+    "collect": [
+      "elma",
+      "armut"
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 10
+  },
+  "voice": {
+    "intro": "yon_avcisi.l09.intro",
+    "success": "yon_avcisi.l09.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "solution": {
+    "shortestLength": 8
+  }
+}

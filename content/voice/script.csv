@@ -1,0 +1,32 @@
+key,text,context,level_ids
+roboya.hint.listen,"Hmm, birlikte düşünelim. Kaplumbağa nerede? Ben hangi yöne bakıyorum?",İpucu 1. kademe: sesli ipucu (YZ-01),
+roboya.hint.check_card,"Şu titreyen karta bir bakalım. Burada başka bir kart mı olmalı?",İpucu 2. kademe: hatalı kart vurgulanır (YZ-01),
+roboya.hint.show_card,"İşte bu kart! Onu buraya koyalım mı?",İpucu 3. kademe: doğru kart gösterilir (YZ-01),
+roboya.bump.01,"Ups! Tak diye çarptım. Hiç sorun değil, bir daha deneyelim!",Robot engele veya kenara çarptığında; ceza yok,
+roboya.not_there.01,"Hmm, daha varamadık. Planımıza bir daha bakalım mı?",Program bitti ama hedefe ulaşılamadı,
+roboya.missing_items.01,"Az kaldı! Ama toplamamız gereken bir şey unuttuk sanki.",Program bitti ama nesneler eksik,
+roboya.success.generic,"Yaşasın! Başardık!",Genel başarı,
+roboya.play_prompt,"Planın hazır mı? O zaman oynat düğmesine bas!",Plan şeridi doluyken,
+card.forward.intro,"Bu ileri kartı. Onu koyunca bir adım ileri giderim.",YON-01 kart tanıtım anı,sabir-ormani.yon-avcisi.01
+card.turn_right.intro,"Bu sağa dön kartı. Olduğum yerde sağa dönerim, yürümem.",YON-01 kart tanıtım anı,sabir-ormani.yon-avcisi.03
+card.turn_left.intro,"Bu da sola dön kartı. Olduğum yerde sola dönerim.",YON-01 kart tanıtım anı,sabir-ormani.yon-avcisi.05
+yon_avcisi.l01.intro,"Merhaba! Ben Roboya. Bilge Kaplumbağa'nın yanına gitmek istiyorum. İleri kartlarını yola koyalım, sonra oynat düğmesine basalım!",Bölüm girişi; destekli ilk bölüm,sabir-ormani.yon-avcisi.01
+yon_avcisi.l01.success,"Merhaba Bilge Kaplumbağa! Bak, ilk kodumuzu birlikte yazdık!",Bölüm sonu,sabir-ormani.yon-avcisi.01
+yon_avcisi.l02.intro,"Kaplumbağa biraz daha uzakta. Kaç tane ileri kartı gerekir acaba?",Bölüm girişi,sabir-ormani.yon-avcisi.02
+yon_avcisi.l02.success,"Tam yerinde durdum. Önce plan, sonra yürüyüş!",Bölüm sonu,sabir-ormani.yon-avcisi.02
+yon_avcisi.l03.intro,"Bu sefer yol dönüyor. Yeni bir kartımız var, sağa dön kartı!",Bölüm girişi; sağa dön tanıtımı,sabir-ormani.yon-avcisi.03
+yon_avcisi.l03.success,"Döndüm ve vardım! Sağa dön kartı çok işe yaradı.",Bölüm sonu,sabir-ormani.yon-avcisi.03
+yon_avcisi.l04.intro,"Kaplumbağa ağacın arkasında bekliyor. Yolu birlikte planlayalım.",Bölüm girişi,sabir-ormani.yon-avcisi.04
+yon_avcisi.l04.success,"Acele etmedik, planı bitirip öyle yürüdük. İşte sabır bu!",Bölüm sonu,sabir-ormani.yon-avcisi.04
+yon_avcisi.l05.intro,"Yeni bir kart daha: sola dön! Kaplumbağa bu sefer sol tarafta.",Bölüm girişi; sola dön tanıtımı,sabir-ormani.yon-avcisi.05
+yon_avcisi.l05.success,"Artık hem sağa hem sola dönebiliyorum!",Bölüm sonu,sabir-ormani.yon-avcisi.05
+yon_avcisi.l06.intro,"Dikkat, bu sefer başka yöne bakıyorum! Benim gözlerimle düşünelim.",Bölüm girişi,sabir-ormani.yon-avcisi.06
+yon_avcisi.l06.success,"Benim baktığım yönü düşündün. Harika!",Bölüm sonu,sabir-ormani.yon-avcisi.06
+yon_avcisi.l07.intro,"Eyvah, yola bir kütük devrilmiş! Etrafından dolaşabilir miyiz?",Bölüm girişi; ilk engel,sabir-ormani.yon-avcisi.07
+yon_avcisi.l07.success,"Kütüğün etrafından dolaştık. Sabırla plan yapınca her yol açılıyor!",Bölüm sonu,sabir-ormani.yon-avcisi.07
+yon_avcisi.l08.intro,"Kaplumbağa elma çok sever. Önce elmayı alalım, sonra ona götürelim!",Bölüm girişi; ilk toplama,sabir-ormani.yon-avcisi.08
+yon_avcisi.l08.success,"Al bakalım Bilge Kaplumbağa, kırmızı elman!",Bölüm sonu,sabir-ormani.yon-avcisi.08
+yon_avcisi.l09.intro,"Bu sefer bir elma ve bir armut var. Hangisini önce alalım?",Bölüm girişi,sabir-ormani.yon-avcisi.09
+yon_avcisi.l09.success,"İki meyveyi de topladık! Kaplumbağa çok mutlu.",Bölüm sonu,sabir-ormani.yon-avcisi.09
+yon_avcisi.l10.intro,"Bak, orada parlayan bir çark var! Gemimin parçası olabilir. Elmayı da unutmayalım!",Bölüm girişi; bölge finali,sabir-ormani.yon-avcisi.10
+yon_avcisi.l10.success,"Gemimin çarkını bulduk! Teşekkürler, sabırlı arkadaşım!",Bölüm sonu,sabir-ormani.yon-avcisi.10

@@ -1,0 +1,80 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 1,
+  "id": "sabir-ormani.yon-avcisi.10",
+  "region": "sabir-ormani",
+  "game": "yon-avcisi",
+  "order": 10,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 5,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "Bölge finali: meyve ve ilk gemi parçası (çark). Roboya'nın gemisine bir adım daha."
+  },
+  "grid": {
+    "rows": [
+      "......",
+      "..#...",
+      "..#.#.",
+      "......",
+      "##....",
+      "......"
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 5,
+    "facing": "east"
+  },
+  "items": [
+    {
+      "id": "elma",
+      "kind": "fruit",
+      "x": 3,
+      "y": 4,
+      "color": "red"
+    },
+    {
+      "id": "cark",
+      "kind": "ship-part",
+      "x": 3,
+      "y": 1
+    }
+  ],
+  "goal": {
+    "reach": {
+      "x": 3,
+      "y": 0
+    },
+    "collect": [
+      "elma",
+      "cark"
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 11
+  },
+  "voice": {
+    "intro": "yon_avcisi.l10.intro",
+    "success": "yon_avcisi.l10.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "solution": {
+    "shortestLength": 9
+  }
+}

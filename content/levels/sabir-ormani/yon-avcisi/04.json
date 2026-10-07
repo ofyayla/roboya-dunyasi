@@ -1,0 +1,59 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 1,
+  "id": "sabir-ormani.yon-avcisi.04",
+  "region": "sabir-ormani",
+  "game": "yon-avcisi",
+  "order": 4,
+  "meta": {
+    "concepts": [
+      "direction",
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 2,
+    "ageLevels": [
+      "minik"
+    ],
+    "mebOutcomes": [],
+    "notes": "Tek dönüşlü rota, hayalet yol yok. Kaplumbağa yolun ucunda bekliyor."
+  },
+  "grid": {
+    "rows": [
+      "....",
+      "....",
+      "....",
+      "...."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 3,
+    "facing": "north"
+  },
+  "goal": {
+    "reach": {
+      "x": 1,
+      "y": 1
+    }
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_right"
+    ],
+    "maxProgramLength": 5
+  },
+  "voice": {
+    "intro": "yon_avcisi.l04.intro",
+    "success": "yon_avcisi.l04.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "solution": {
+    "shortestLength": 4
+  }
+}

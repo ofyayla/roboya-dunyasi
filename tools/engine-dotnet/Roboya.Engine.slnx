@@ -1,4 +1,6 @@
 <Solution>
   <Project Path="Roboya.CodingEngine/Roboya.CodingEngine.csproj" />
   <Project Path="Roboya.CodingEngine.Tests/Roboya.CodingEngine.Tests.csproj" />
+  <Project Path="Roboya.LevelValidator/Roboya.LevelValidator.csproj" />
+  <Project Path="Roboya.LevelValidator.Tests/Roboya.LevelValidator.Tests.csproj" />
 </Solution>

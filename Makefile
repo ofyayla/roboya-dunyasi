@@ -7,7 +7,7 @@ UNITY_VERSION ?= $(shell sed -n 's/^m_EditorVersion: //p' apps/game/ProjectSetti
 UNITY ?= /Applications/Unity/Hub/Editor/$(UNITY_VERSION)/Unity.app/Contents/MacOS/Unity
 ENGINE_SLN := tools/engine-dotnet/Roboya.Engine.slnx
 
-.PHONY: help setup api-dev web-dev editor-dev test lint gen validate-content unity-test \
+.PHONY: help setup api-dev web-dev editor-dev test lint gen validate-content fix-content unity-test \
         test-api test-web test-engine test-content lint-api lint-web check-gen
 
 help: ## List commands
@@ -34,7 +34,7 @@ editor-dev: ## Run the internal level editor locally
 test: test-engine test-api test-web test-content ## Run all API, web, engine and content tests
 
 test-engine:
-	$(DOTNET) test $(ENGINE_SLN) --nologo -v q /p:CollectCoverage=true /p:Threshold=90 /p:ThresholdType=line /p:Include="[Roboya.CodingEngine]*"
+	$(DOTNET) test $(ENGINE_SLN) --nologo -v q /p:CollectCoverage=true /p:Threshold=90 /p:ThresholdType=line /p:Include="[Roboya.CodingEngine]*" /p:ExcludeByFile="**/Generated/*.cs"
 
 test-api:
 	cd apps/api && uv run pytest
@@ -55,14 +55,20 @@ lint-web:
 
 gen: ## Generate C# / TypeScript code from the level schema and OpenAPI
 	npm run gen -w @roboya/level-schema
-	cd apps/api && uv run python -m app.export_openapi ../../packages/api-contract/openapi.json
-	npm run gen -w @roboya/api-contract
+	@if [ -d packages/api-contract/src ]; then \
+		cd apps/api && uv run python -m app.export_openapi ../../packages/api-contract/openapi.json && cd ../.. && \
+		npm run gen -w @roboya/api-contract; \
+	fi
 
 check-gen: gen ## Fail if generated code is out of date (used in CI)
-	git diff --exit-code -- packages apps/game/Assets/_Project/Scripts/Generated
+	git diff --exit-code -- packages apps/game/Assets/_Project/Scripts/CodingEngine/Levels/Generated
 
 validate-content: ## Validate all levels (schema + solver) and the voice manifest
-	$(DOTNET) run --project tools/engine-dotnet/Roboya.LevelValidator -c Release -- content/levels --schema packages/level-schema/level.schema.json --voice content/voice/script.csv
+	npm run validate -w @roboya/level-schema
+	$(DOTNET) run --project tools/engine-dotnet/Roboya.LevelValidator -c Release -- content/levels --voice content/voice/script.csv
+
+fix-content: ## Write solver-computed shortest lengths into level files
+	$(DOTNET) run --project tools/engine-dotnet/Roboya.LevelValidator -c Release -- content/levels --voice content/voice/script.csv --fix
 
 unity-test: ## Run Unity EditMode tests in batch mode
 	"$(UNITY)" -batchmode -nographics -projectPath apps/game -runTests -testPlatform EditMode \
