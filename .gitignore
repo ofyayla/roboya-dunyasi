@@ -1,0 +1,70 @@
+# OS / editor
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Secrets — only .env.example is tracked
+.env
+.env.*
+!.env.example
+*.pem
+*.p8
+*.p12
+*.keystore
+*.jks
+*.mobileprovision
+*.ulf
+*.alf
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Node
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+playwright-report/
+test-results/
+
+# .NET
+bin/
+obj/
+TestResults/
+
+# Unity (apps/game)
+apps/game/[Ll]ibrary/
+apps/game/[Tt]emp/
+apps/game/[Oo]bj/
+apps/game/[Bb]uild/
+apps/game/[Bb]uilds/
+apps/game/[Ll]ogs/
+apps/game/[Uu]ser[Ss]ettings/
+apps/game/[Mm]emoryCaptures/
+apps/game/[Rr]ecordings/
+apps/game/*.csproj
+apps/game/*.sln
+apps/game/*.slnx
+apps/game/*.unityproj
+apps/game/*.pidb
+apps/game/*.booproj
+apps/game/*.svd
+apps/game/*.userprefs
+apps/game/sysinfo.txt
+apps/game/crashlytics-build.properties
+apps/game/Assets/AddressableAssetsData/*/*.bin*
+apps/game/Assets/StreamingAssets/aa*
+apps/game/ServerData/
+
+# Generated audio from TTS is regenerated from content/voice/script.csv
+content/voice/generated/

@@ -1,0 +1,12 @@
+{
+  "name": "roboya-dunyasi",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/web",
+    "apps/level-editor"
+  ],
+  "engines": {
+    "node": ">=22"
+  }
+}
