@@ -18,3 +18,7 @@ Kurallar "Unity 6 LTS" diyor. Geliştirici makinesinde Unity 6.6 (6000.6.4f1) ku
 
 - Faz 0 boyunca LTS olmayan sürümde olası editör hataları kabul edilir.
 - iOS ve Android derleme modülleri Unity Hub'dan eklenmelidir (F0-02 öncesi).
+
+## Not (2026-10-08)
+
+Geliştirici makinesinde Unity Hub iki kurulum gösteriyor: `6000.6.4f1` (imzası bozuk; macOS açılışta sonlandırıyor) ve `6000.6.4f1-arm64` (çalışıyor). `make unity-test` varsa `-arm64` kurulumunu tercih eder.

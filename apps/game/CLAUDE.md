@@ -10,4 +10,6 @@ Kök `CLAUDE.md` §7 geçerlidir; burada yalnız ayrıntı vardır.
 - Sahneler: `Boot`, `Map`, `Game`. Kurulum `Assets/_Project/Editor/` altındaki editör betikleriyle yapılır; `.unity`/`.prefab` YAML'ına elle dokunma.
 - UI: `Assets/_Project/UI/` altında UXML + USS. Metinler Unity Localization tablosundan anahtarla gelir.
 - Testler: `Assets/_Project/Tests/EditMode` (motor testleri `dotnet test` ile de koşar) ve `PlayMode`.
+- Proje ayarları ve sahneler `Assets/_Project/Editor/ProjectSetup.cs` ile uygulanır (menü: Roboya → Project Setup). Ayar değişikliği bu betikte yapılır.
+- Paket ekleme/çıkarma ADR 0005'in güncellenmesini gerektirir.
 - Komutlar: `make unity-test` (EditMode, batch), `make test-engine` (motor, .NET + kapsam ≥ %90).

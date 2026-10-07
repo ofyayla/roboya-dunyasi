@@ -4,7 +4,9 @@ SHELL := /bin/bash
 
 DOTNET ?= $(shell command -v dotnet 2>/dev/null || echo /usr/local/share/dotnet/dotnet)
 UNITY_VERSION ?= $(shell sed -n 's/^m_EditorVersion: //p' apps/game/ProjectSettings/ProjectVersion.txt 2>/dev/null)
-UNITY ?= /Applications/Unity/Hub/Editor/$(UNITY_VERSION)/Unity.app/Contents/MacOS/Unity
+UNITY_HUB_EDITORS := /Applications/Unity/Hub/Editor
+# Prefer the native arm64 install when Unity Hub keeps both variants side by side.
+UNITY ?= $(firstword $(wildcard $(UNITY_HUB_EDITORS)/$(UNITY_VERSION)-arm64/Unity.app/Contents/MacOS/Unity) $(UNITY_HUB_EDITORS)/$(UNITY_VERSION)/Unity.app/Contents/MacOS/Unity)
 ENGINE_SLN := tools/engine-dotnet/Roboya.Engine.slnx
 
 .PHONY: help setup api-dev web-dev editor-dev test lint gen validate-content fix-content unity-test \
