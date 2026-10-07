@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AssemblyName>Roboya.CodingEngine</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Same source files Unity compiles; no copies. -->
+    <Compile Include="$(GameRoot)Scripts/CodingEngine/**/*.cs" LinkBase="CodingEngine" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+</Project>

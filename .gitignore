@@ -68,3 +68,4 @@ apps/game/ServerData/
 
 # Generated audio from TTS is regenerated from content/voice/script.csv
 content/voice/generated/
+coverage.json
