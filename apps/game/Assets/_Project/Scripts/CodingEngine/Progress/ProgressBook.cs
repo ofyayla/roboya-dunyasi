@@ -43,6 +43,9 @@ namespace Roboya.CodingEngine.Progress
             }
         }
 
+        /// <summary>Every recorded level with its best stars (read-only view; used to sync with the server).</summary>
+        public IReadOnlyDictionary<string, int> AllStars => _stars;
+
         public int Stars(string levelId) => levelId != null && _stars.TryGetValue(levelId, out var s) ? s : 0;
 
         public bool IsCompleted(string levelId) => Stars(levelId) > 0;

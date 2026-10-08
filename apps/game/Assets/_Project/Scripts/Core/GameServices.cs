@@ -19,7 +19,8 @@ namespace Roboya.Core
             LocalizedStrings strings,
             LocalNotice notice,
             ScreenTimeService screenTime,
-            Roboya.Services.AccountService account)
+            Roboya.Services.AccountService account,
+            SyncService sync)
         {
             Catalog = catalog;
             Voice = voice;
@@ -34,6 +35,7 @@ namespace Roboya.Core
             Notice = notice;
             ScreenTime = screenTime;
             Account = account;
+            Sync = sync;
         }
 
         /// <summary>All levels, parsed once at start-up.</summary>
@@ -61,6 +63,9 @@ namespace Roboya.Core
 
         /// <summary>The parent's account (F1-14); signed out by default and absent when no server is configured.</summary>
         public Roboya.Services.AccountService Account { get; }
+
+        /// <summary>Profile and progress sync with the parent account (F1-15); does nothing offline or signed out.</summary>
+        public SyncService Sync { get; }
 
         public ISceneNavigator Navigator { get; }
 

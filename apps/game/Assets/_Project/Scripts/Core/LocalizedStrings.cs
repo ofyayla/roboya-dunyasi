@@ -98,6 +98,13 @@ namespace Roboya.Core
         public const string AccountErrorDevice = "account.error.device_limit";
         public const string AccountErrorNetwork = "account.error.network";
         public const string AccountErrorGeneric = "account.error.generic";
+        public const string AccountSync = "account.sync";
+        public const string SyncDone = "account.sync.done";
+        public const string SyncOffline = "account.sync.offline";
+        public const string SyncConsent = "account.sync.consent";
+        public const string SyncOutdated = "account.sync.outdated";
+        public const string SyncPartly = "account.sync.partly";
+        public const string SyncFailed = "account.sync.failed";
         public const string ReportTitle = "report.title";
         public const string ReportSummary = "report.summary";
         public const string ReportNote = "report.note";
@@ -118,6 +125,7 @@ namespace Roboya.Core
             ProfileActive, TimeTitle, TimeMinutes, TimeUnlimited, TimeToday, TimeNote, RestParent,
             ReportTitle, ReportSummary, ReportNote, ReportEmpty, ReportConcept, ReportNotStarted, ReportExploring, ReportGrowing, ReportConfident, ReportConceptLine,
             AccountTitle, AccountHint, AccountEmail, AccountSendCode, AccountCode, AccountSignIn, AccountSignOut, AccountSignedIn, AccountCodeSent, AccountErrorCode, AccountErrorMany, AccountErrorDevice, AccountErrorNetwork, AccountErrorGeneric,
+            AccountSync, SyncDone, SyncOffline, SyncConsent, SyncOutdated, SyncPartly, SyncFailed,
         };
     }
 }

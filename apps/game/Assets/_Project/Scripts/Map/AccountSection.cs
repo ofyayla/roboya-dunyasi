@@ -19,6 +19,7 @@ namespace Roboya.Map
         private readonly Button _send;
         private readonly Button _verify;
         private readonly Label _who = new Label { name = "account-who" };
+        private readonly Label _syncStatus = new Label { name = "account-sync-status" };
         private readonly Label _message = new Label { name = "account-message" };
         private bool _busy;
 
@@ -55,6 +56,11 @@ namespace Roboya.Map
 
             _who.AddToClassList("report__line");
             _signedIn.Add(_who);
+            var sync = new Button(() => _ = _services.Sync.SyncAsync()) { name = "account-sync", text = s.Get(StringKeys.AccountSync) };
+            sync.AddToClassList("editor__age");
+            _signedIn.Add(sync);
+            _syncStatus.AddToClassList("report__line");
+            _signedIn.Add(_syncStatus);
             var signOut = new Button(() => _ = _account.SignOutAsync()) { name = "account-sign-out", text = s.Get(StringKeys.AccountSignOut) };
             signOut.AddToClassList("editor__age");
             _signedIn.Add(signOut);
@@ -63,6 +69,7 @@ namespace Roboya.Map
             _message.AddToClassList("section__note");
             Add(_message);
             _account.Changed += Refresh;
+            services.Sync.Finished += Refresh;
             Refresh();
         }
 
@@ -75,6 +82,23 @@ namespace Roboya.Map
             if (_account.IsSignedIn)
             {
                 _message.text = string.Empty;
+            }
+
+            _syncStatus.text = StatusText(_services.Sync.LastResult);
+        }
+
+        private string StatusText(SyncResult result)
+        {
+            var s = _services.Strings;
+            switch (result)
+            {
+                case SyncResult.Done: return s.Get(StringKeys.SyncDone);
+                case SyncResult.Offline: return s.Get(StringKeys.SyncOffline);
+                case SyncResult.ConsentNeeded: return s.Get(StringKeys.SyncConsent);
+                case SyncResult.NoticeOutdated: return s.Get(StringKeys.SyncOutdated);
+                case SyncResult.PartlyDone: return s.Get(StringKeys.SyncPartly);
+                case SyncResult.Failed: return s.Get(StringKeys.SyncFailed);
+                default: return string.Empty;
             }
         }
 
@@ -93,6 +117,7 @@ namespace Roboya.Map
             {
                 await _account.SignInAsync(_email.value, _code.value);
                 _code.value = string.Empty;
+                _ = _services.Sync.SyncAsync();
             });
         }
 

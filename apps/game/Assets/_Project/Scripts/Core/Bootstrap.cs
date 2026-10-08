@@ -38,6 +38,7 @@ namespace Roboya.Core
             PendingMapLine = lineOnArrival;
             ReturningFromLevel = true;
             _ = LoadAsync(MapScene);
+            _ = _services.Sync.SyncAsync();
         }
 
         private async Awaitable Start()
@@ -53,6 +54,8 @@ namespace Roboya.Core
             Application.targetFrameRate = 60;
             _services = await ComposeAsync();
             await LoadAsync(firstScene);
+            // A signed-in parent's profiles and stars catch up in the background; offline simply does nothing.
+            _ = _services.Sync.SyncAsync();
         }
 
         public async Awaitable LoadAsync(string sceneName)
@@ -97,6 +100,8 @@ namespace Roboya.Core
 #endif
 
             var profiles = ProfileManager.Load(ProgressFolder, strings.Get(StringKeys.ProfileDefaultNickname));
+            var api = ComposeApi();
+            var account = ComposeAccount(api);
             // Rules will come from server configuration once the API exists (CLAUDE.md §6).
             return new GameServices(
                 catalog,
@@ -111,7 +116,8 @@ namespace Roboya.Core
                 strings,
                 notice,
                 new ScreenTimeService(ProgressFolder, profiles),
-                ComposeAccount());
+                account,
+                new SyncService(api, account, profiles, notice, ProgressFolder));
         }
 
         /// <summary>Tests point this at a temporary folder so each run starts with fresh progress.</summary>
@@ -120,12 +126,16 @@ namespace Roboya.Core
         /// <summary>Tests replace the network with a fake and give a placeholder server address.</summary>
         public static Roboya.Services.IHttpTransport TransportOverride { get; set; }
 
-        private static Roboya.Services.AccountService ComposeAccount()
+        private static Roboya.Services.ApiClient ComposeApi()
         {
             string url = Roboya.Services.ApiConfig.Resolve(ProgressFolder);
-            var api = url == null
+            return url == null
                 ? null
                 : new Roboya.Services.ApiClient(url, TransportOverride ?? new Roboya.Services.UnityHttpTransport());
+        }
+
+        private static Roboya.Services.AccountService ComposeAccount(Roboya.Services.ApiClient api)
+        {
             string platform = Application.platform == RuntimePlatform.IPhonePlayer ? "ios" : "android";
             return new Roboya.Services.AccountService(api, ProgressFolder, platform);
         }
