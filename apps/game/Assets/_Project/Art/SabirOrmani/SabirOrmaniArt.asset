@@ -17,8 +17,13 @@ MonoBehaviour:
   robotSide: {fileID: 21300000, guid: 774b27811ab8e4c729b445696fb9b3cb, type: 3}
   robotHappy: {fileID: 21300000, guid: d6685a778ead2498ea1e1f8c9430f9bf, type: 3}
   robotLaughing: {fileID: 21300000, guid: 233a50734c62e40fbba7f7da1733e1e4, type: 3}
+  robotCurious: {fileID: 21300000, guid: d3c547fde93744026a00913c548e7397, type: 3}
+  robotSurprised: {fileID: 21300000, guid: 121de9a1e88dc4ff2ac11c719df5640a, type: 3}
+  robotProud: {fileID: 21300000, guid: 30cfd8f647bed49fdad6ab5c7be738c4, type: 3}
   goalIdle: {fileID: 21300000, guid: 6c8b32bec68af4d09abd56fdc8ab6949, type: 3}
   goalHappy: {fileID: 21300000, guid: 4ad1c62e44cfb43fa8704b1a5d32fff8, type: 3}
+  goalExplaining: {fileID: 21300000, guid: e9df1284d51bf499ea832cfda39a3a0c, type: 3}
+  goalThanks: {fileID: 21300000, guid: f4969cd9b9dbb413cb9a7dca51ec3649, type: 3}
   tileFloor: {fileID: 21300000, guid: 35085070a4a1240e9a79ec7d1193ee1b, type: 3}
   tilePath: {fileID: 21300000, guid: 94934bebb3b3c431ba53812552f5fce2, type: 3}
   obstacles:
@@ -33,3 +38,6 @@ MonoBehaviour:
   fruitRed: {fileID: 21300000, guid: 3dd18bc28e45c45e1acf3cbc2346198f, type: 3}
   fruitYellow: {fileID: 21300000, guid: 828cc3380528f4d57a91b6909d9fd24c, type: 3}
   shipPart: {fileID: 21300000, guid: 7e50167cb578f4ebabd72babc93bf2ac, type: 3}
+  propTree: {fileID: 21300000, guid: ede7f0f8eae004f95866fbe34ac1fce1, type: 3}
+  propRock: {fileID: 21300000, guid: ea27f1fafc8c2473ea28b351e9dc2ec9, type: 3}
+  propBush: {fileID: 21300000, guid: 571206f3653d74e6789e5edd4cbc6cad, type: 3}

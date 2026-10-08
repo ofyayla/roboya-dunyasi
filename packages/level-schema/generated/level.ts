@@ -35,6 +35,13 @@ export type ValueId = "patience" | "sharing" | "helping" | "kindness" | "respons
  */
 export type AgeLevel = "minik" | "kasif" | "mucit";
 /**
+ * Region obstacle art; `log` is drawn in code.
+ *
+ * This interface was referenced by `LevelDto`'s JSON-Schema
+ * via the `definition` "obstacleLook".
+ */
+export type ObstacleLook = "tree" | "rock" | "bush" | "log";
+/**
  * This interface was referenced by `LevelDto`'s JSON-Schema
  * via the `definition` "direction".
  */
@@ -92,13 +99,25 @@ export type ConditionDto =
  * via the `definition` "voiceKey".
  */
 export type VoiceKey = string;
+/**
+ * Roboya's expression.
+ */
+export type RobotPose = "front" | "happy" | "curious" | "surprised" | "proud" | "laughing";
+/**
+ * Expression of the region character (Sabır Ormanı: Bilge Kaplumbağa).
+ */
+export type FriendPose = "front" | "happy" | "explaining" | "thanks";
+export type StoryProp = "apple" | "pear" | "gear" | "log" | "tree" | "bush" | "rock";
 
 /**
  * Roboya Dünyası level, schema version 1. Single source of truth for the game, validator and editor.
  */
 export interface LevelDto {
   $schema?: string;
-  schemaVersion: 1;
+  /**
+   * 2 adds the optional `story` block. Migrate with scripts/migrate-v2.mjs.
+   */
+  schemaVersion: 2;
   /**
    * Stable id: <region>.<game>.<nn>. Used by progress records; never reuse a deleted id.
    */
@@ -117,6 +136,12 @@ export interface LevelDto {
    */
   items?: ItemDto[];
   goal: GoalDto;
+  /**
+   * Decoration just outside the playable cells (v2), e.g. the tree the narration mentions. x or y is -1 or the grid width/height; never on a walkable cell.
+   *
+   * @maxItems 6
+   */
+  scenery?: SceneryDto[];
   cards: CardsDto;
   /**
    * Pre-filled program (Kodlama Kutusu 'hata avcısı': contains wrong cards to find, KUT-01).
@@ -124,6 +149,7 @@ export interface LevelDto {
   starterProgram?: CommandDto[];
   options?: LevelOptions;
   voice: VoiceDto;
+  story?: StoryDto;
   /**
    * Easier level offered after repeated failures (YZ-03).
    */
@@ -166,6 +192,17 @@ export interface GridDto {
    * @maxItems 12
    */
   rows: string[];
+  /**
+   * How blocked cells look (v2). Cells not listed get a stable mix of the region's obstacles.
+   *
+   * @maxItems 144
+   */
+  looks?: ObstacleLookDto[];
+}
+export interface ObstacleLookDto {
+  x: number;
+  y: number;
+  look: ObstacleLook;
 }
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
@@ -210,6 +247,11 @@ export interface GoalDto {
 export interface PositionDto {
   x: number;
   y: number;
+}
+export interface SceneryDto {
+  x: number;
+  y: number;
+  look: ObstacleLook;
 }
 /**
  * Card palette and plan strip. `introduces` names a card presented with a short introduction moment in this level (YON-01).
@@ -259,6 +301,30 @@ export interface VoiceDto {
    * @maxItems 3
    */
   hints?: VoiceKey[];
+}
+/**
+ * Wide story scenes before and after the board (PRD principle 2). Narration comes from `voice.intro` and `voice.success`; when a scene is missing the game uses default poses.
+ *
+ * This interface was referenced by `LevelDto`'s JSON-Schema
+ * via the `definition` "story".
+ */
+export interface StoryDto {
+  intro?: StorySceneDto;
+  outro?: StorySceneDto;
+}
+/**
+ * This interface was referenced by `LevelDto`'s JSON-Schema
+ * via the `definition` "storyScene".
+ */
+export interface StorySceneDto {
+  roboya?: RobotPose;
+  friend?: FriendPose;
+  /**
+   * Objects standing between the characters.
+   *
+   * @maxItems 3
+   */
+  props?: StoryProp[];
 }
 /**
  * Written by the validator (`--fix`); CI fails when it does not match the solver.

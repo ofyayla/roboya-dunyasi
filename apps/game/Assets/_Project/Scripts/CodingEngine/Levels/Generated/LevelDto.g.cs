@@ -63,6 +63,16 @@ namespace Roboya.CodingEngine.Levels.Generated
         [JsonProperty("robot")]
         public RobotDto Robot { get; set; }
 
+        /// <summary>
+        /// Decoration just outside the playable cells (v2), e.g. the tree the narration mentions. x
+        /// or y is -1 or the grid width/height; never on a walkable cell.
+        /// </summary>
+        [JsonProperty("scenery", NullValueHandling = NullValueHandling.Ignore)]
+        public List<SceneryDto> Scenery { get; set; }
+
+        /// <summary>
+        /// 2 adds the optional `story` block. Migrate with scripts/migrate-v2.mjs.
+        /// </summary>
         [JsonProperty("schemaVersion")]
         public long SchemaVersion { get; set; }
 
@@ -77,6 +87,9 @@ namespace Roboya.CodingEngine.Levels.Generated
         /// </summary>
         [JsonProperty("starterProgram", NullValueHandling = NullValueHandling.Ignore)]
         public List<CommandDto> StarterProgram { get; set; }
+
+        [JsonProperty("story", NullValueHandling = NullValueHandling.Ignore)]
+        public StoryDto Story { get; set; }
 
         [JsonProperty("voice")]
         public VoiceDto Voice { get; set; }
@@ -125,10 +138,28 @@ namespace Roboya.CodingEngine.Levels.Generated
     public partial class GridDto
     {
         /// <summary>
+        /// How blocked cells look (v2). Cells not listed get a stable mix of the region's obstacles.
+        /// </summary>
+        [JsonProperty("looks", NullValueHandling = NullValueHandling.Ignore)]
+        public List<ObstacleLookDto> Looks { get; set; }
+
+        /// <summary>
         /// Row 0 is north. '.' floor, '#' blocked. All rows equal length, 2..12.
         /// </summary>
         [JsonProperty("rows")]
         public List<string> Rows { get; set; }
+    }
+
+    public partial class ObstacleLookDto
+    {
+        [JsonProperty("look")]
+        public ObstacleLook Look { get; set; }
+
+        [JsonProperty("x")]
+        public long X { get; set; }
+
+        [JsonProperty("y")]
+        public long Y { get; set; }
     }
 
     public partial class ItemDto
@@ -212,6 +243,18 @@ namespace Roboya.CodingEngine.Levels.Generated
         public long Y { get; set; }
     }
 
+    public partial class SceneryDto
+    {
+        [JsonProperty("look")]
+        public ObstacleLook Look { get; set; }
+
+        [JsonProperty("x")]
+        public long X { get; set; }
+
+        [JsonProperty("y")]
+        public long Y { get; set; }
+    }
+
     /// <summary>
     /// Written by the validator (`--fix`); CI fails when it does not match the solver.
     /// </summary>
@@ -263,6 +306,40 @@ namespace Roboya.CodingEngine.Levels.Generated
     }
 
     /// <summary>
+    /// Wide story scenes before and after the board (PRD principle 2). Narration comes from
+    /// `voice.intro` and `voice.success`; when a scene is missing the game uses default poses.
+    /// </summary>
+    public partial class StoryDto
+    {
+        [JsonProperty("intro", NullValueHandling = NullValueHandling.Ignore)]
+        public StorySceneDto Intro { get; set; }
+
+        [JsonProperty("outro", NullValueHandling = NullValueHandling.Ignore)]
+        public StorySceneDto Outro { get; set; }
+    }
+
+    public partial class StorySceneDto
+    {
+        /// <summary>
+        /// Expression of the region character (Sabır Ormanı: Bilge Kaplumbağa).
+        /// </summary>
+        [JsonProperty("friend", NullValueHandling = NullValueHandling.Ignore)]
+        public FriendPose? Friend { get; set; }
+
+        /// <summary>
+        /// Objects standing between the characters.
+        /// </summary>
+        [JsonProperty("props", NullValueHandling = NullValueHandling.Ignore)]
+        public List<StoryProp> Props { get; set; }
+
+        /// <summary>
+        /// Roboya's expression.
+        /// </summary>
+        [JsonProperty("roboya", NullValueHandling = NullValueHandling.Ignore)]
+        public RobotPose? Roboya { get; set; }
+    }
+
+    /// <summary>
     /// Keys into content/voice/script.csv and the localization tables.
     /// </summary>
     public partial class VoiceDto
@@ -282,6 +359,11 @@ namespace Roboya.CodingEngine.Levels.Generated
     public enum GameId { BalPesinde, BirlikteBasaralim, DonguDansi, KodlamaKutusu, RobotAtolyesi, SerbestMucit, YonAvcisi };
 
     /// <summary>
+    /// Region obstacle art; `log` is drawn in code.
+    /// </summary>
+    public enum ObstacleLook { Bush, Log, Rock, Tree };
+
+    /// <summary>
     /// Never the only signal: the view pairs every colour with a shape.
     /// </summary>
     public enum Color { Blue, Green, Orange, Purple, Red, Yellow };
@@ -299,6 +381,18 @@ namespace Roboya.CodingEngine.Levels.Generated
     public enum Facing { East, North, South, West };
 
     public enum TypeEnum { Not, OnColor, PathBlocked };
+
+    /// <summary>
+    /// Expression of the region character (Sabır Ormanı: Bilge Kaplumbağa).
+    /// </summary>
+    public enum FriendPose { Explaining, Front, Happy, Thanks };
+
+    public enum StoryProp { Apple, Bush, Gear, Log, Pear, Rock, Tree };
+
+    /// <summary>
+    /// Roboya's expression.
+    /// </summary>
+    public enum RobotPose { Curious, Front, Happy, Laughing, Proud, Surprised };
 
     public partial class LevelDto
     {
@@ -320,6 +414,7 @@ namespace Roboya.CodingEngine.Levels.Generated
             {
                 CardIdConverter.Singleton,
                 GameIdConverter.Singleton,
+                ObstacleLookConverter.Singleton,
                 ColorConverter.Singleton,
                 KindConverter.Singleton,
                 AgeLevelConverter.Singleton,
@@ -328,6 +423,9 @@ namespace Roboya.CodingEngine.Levels.Generated
                 RegionIdConverter.Singleton,
                 FacingConverter.Singleton,
                 TypeEnumConverter.Singleton,
+                FriendPoseConverter.Singleton,
+                StoryPropConverter.Singleton,
+                RobotPoseConverter.Singleton,
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
             },
         };
@@ -468,6 +566,57 @@ namespace Roboya.CodingEngine.Levels.Generated
         }
 
         public static readonly GameIdConverter Singleton = new GameIdConverter();
+    }
+
+    internal class ObstacleLookConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(ObstacleLook) || t == typeof(ObstacleLook?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "bush":
+                    return ObstacleLook.Bush;
+                case "log":
+                    return ObstacleLook.Log;
+                case "rock":
+                    return ObstacleLook.Rock;
+                case "tree":
+                    return ObstacleLook.Tree;
+            }
+            throw new Exception("Cannot unmarshal type ObstacleLook");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (ObstacleLook)untypedValue;
+            switch (value)
+            {
+                case ObstacleLook.Bush:
+                    serializer.Serialize(writer, "bush");
+                    return;
+                case ObstacleLook.Log:
+                    serializer.Serialize(writer, "log");
+                    return;
+                case ObstacleLook.Rock:
+                    serializer.Serialize(writer, "rock");
+                    return;
+                case ObstacleLook.Tree:
+                    serializer.Serialize(writer, "tree");
+                    return;
+            }
+            throw new Exception("Cannot marshal type ObstacleLook");
+        }
+
+        public static readonly ObstacleLookConverter Singleton = new ObstacleLookConverter();
     }
 
     internal class ColorConverter : JsonConverter
@@ -954,5 +1103,183 @@ namespace Roboya.CodingEngine.Levels.Generated
         }
 
         public static readonly MinMaxLengthCheckConverter Singleton = new MinMaxLengthCheckConverter();
+    }
+
+    internal class FriendPoseConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(FriendPose) || t == typeof(FriendPose?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "explaining":
+                    return FriendPose.Explaining;
+                case "front":
+                    return FriendPose.Front;
+                case "happy":
+                    return FriendPose.Happy;
+                case "thanks":
+                    return FriendPose.Thanks;
+            }
+            throw new Exception("Cannot unmarshal type FriendPose");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (FriendPose)untypedValue;
+            switch (value)
+            {
+                case FriendPose.Explaining:
+                    serializer.Serialize(writer, "explaining");
+                    return;
+                case FriendPose.Front:
+                    serializer.Serialize(writer, "front");
+                    return;
+                case FriendPose.Happy:
+                    serializer.Serialize(writer, "happy");
+                    return;
+                case FriendPose.Thanks:
+                    serializer.Serialize(writer, "thanks");
+                    return;
+            }
+            throw new Exception("Cannot marshal type FriendPose");
+        }
+
+        public static readonly FriendPoseConverter Singleton = new FriendPoseConverter();
+    }
+
+    internal class StoryPropConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(StoryProp) || t == typeof(StoryProp?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "apple":
+                    return StoryProp.Apple;
+                case "bush":
+                    return StoryProp.Bush;
+                case "gear":
+                    return StoryProp.Gear;
+                case "log":
+                    return StoryProp.Log;
+                case "pear":
+                    return StoryProp.Pear;
+                case "rock":
+                    return StoryProp.Rock;
+                case "tree":
+                    return StoryProp.Tree;
+            }
+            throw new Exception("Cannot unmarshal type StoryProp");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (StoryProp)untypedValue;
+            switch (value)
+            {
+                case StoryProp.Apple:
+                    serializer.Serialize(writer, "apple");
+                    return;
+                case StoryProp.Bush:
+                    serializer.Serialize(writer, "bush");
+                    return;
+                case StoryProp.Gear:
+                    serializer.Serialize(writer, "gear");
+                    return;
+                case StoryProp.Log:
+                    serializer.Serialize(writer, "log");
+                    return;
+                case StoryProp.Pear:
+                    serializer.Serialize(writer, "pear");
+                    return;
+                case StoryProp.Rock:
+                    serializer.Serialize(writer, "rock");
+                    return;
+                case StoryProp.Tree:
+                    serializer.Serialize(writer, "tree");
+                    return;
+            }
+            throw new Exception("Cannot marshal type StoryProp");
+        }
+
+        public static readonly StoryPropConverter Singleton = new StoryPropConverter();
+    }
+
+    internal class RobotPoseConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(RobotPose) || t == typeof(RobotPose?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "curious":
+                    return RobotPose.Curious;
+                case "front":
+                    return RobotPose.Front;
+                case "happy":
+                    return RobotPose.Happy;
+                case "laughing":
+                    return RobotPose.Laughing;
+                case "proud":
+                    return RobotPose.Proud;
+                case "surprised":
+                    return RobotPose.Surprised;
+            }
+            throw new Exception("Cannot unmarshal type RobotPose");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (RobotPose)untypedValue;
+            switch (value)
+            {
+                case RobotPose.Curious:
+                    serializer.Serialize(writer, "curious");
+                    return;
+                case RobotPose.Front:
+                    serializer.Serialize(writer, "front");
+                    return;
+                case RobotPose.Happy:
+                    serializer.Serialize(writer, "happy");
+                    return;
+                case RobotPose.Laughing:
+                    serializer.Serialize(writer, "laughing");
+                    return;
+                case RobotPose.Proud:
+                    serializer.Serialize(writer, "proud");
+                    return;
+                case RobotPose.Surprised:
+                    serializer.Serialize(writer, "surprised");
+                    return;
+            }
+            throw new Exception("Cannot marshal type RobotPose");
+        }
+
+        public static readonly RobotPoseConverter Singleton = new RobotPoseConverter();
     }
 }

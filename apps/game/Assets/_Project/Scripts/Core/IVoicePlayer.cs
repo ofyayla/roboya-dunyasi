@@ -11,6 +11,9 @@ namespace Roboya.Core
 
         void Stop();
 
+        /// <summary>True while a line is loading or playing; story scenes wait on it before moving on.</summary>
+        bool IsPlaying { get; }
+
         /// <summary>Loads lines ahead of time so the first tap is answered without delay.</summary>
         Awaitable PreloadAsync(IEnumerable<string> keys);
     }

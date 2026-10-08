@@ -30,6 +30,42 @@ Koordinatlar: `x` soldan sağa, `y` yukarıdan aşağıya, 0'dan başlar. Robotu
 
 `voice.intro`, `voice.success` ve `voice.hints` anahtarları [`content/voice/script.csv`](../voice/script.csv) dosyasında bulunmalıdır. Metinler yalnız bu dosyaya yazılır; bölüm dosyasına Türkçe yönerge yazılmaz (`meta.notes` iç notlar içindir ve çocuğa gösterilmez).
 
+## Engellerin görünüşü ve kenar süsleri (şema v2)
+
+Ses metninde adı geçen nesne tahtada da görünmelidir.
+- `grid.looks`: bir `#` karesinin neye benzeyeceğini seçer: `tree`, `rock`, `bush`, `log`. Listelenmeyen engeller bölgenin karışık engelleriyle çizilir.
+- `scenery`: oynanan karelerin hemen dışına, yani tahtanın kenarına süs koyar. `x` veya `y` -1 ya da ızgara boyutu olmalıdır. Yürünebilir kareye konamaz, bu yüzden yol gibi görünmez.
+
+```json
+"grid": { "rows": [".....", ".#..."], "looks": [{ "x": 1, "y": 1, "look": "log" }] },
+"scenery": [{ "x": 1, "y": -1, "look": "tree" }]
+```
+
+Örnek: 4. bölümde "Kaplumbağa ağacın arkasında bekliyor" dendiği için kaplumbağanın arkasında bir ağaç (`scenery`) var. 7. bölümde "yola bir kütük devrilmiş" dendiği için engeller kütük (`grid.looks`).
+
+## Yeni kart tanıtımı
+
+`cards.introduces` olan bölümde giriş sahnesi, bölüm sesi bittikten sonra kartı büyük gösterir ve `card.<kart>.intro` satırını çalar (ör. `card.turn_right.intro`). Çocuk karta dokunursa bu satır tekrar çalar. Doğrulayıcı bu satırın `script.csv` dosyasında bulunduğunu kontrol eder.
+
+## Hikâye sahneleri (şema v2)
+
+Bölüm, tahtadan önce bir giriş sahnesiyle açılır ve başarıdan sonra bir bitiş sahnesiyle kapanır. Sahnede ses olarak `voice.intro` ve `voice.success` çalar. `story` alanı yalnız ifadeleri ve nesneleri seçer:
+
+```json
+"story": {
+  "intro": { "roboya": "surprised", "friend": "explaining", "props": ["log"] },
+  "outro": { "roboya": "happy", "friend": "thanks", "props": ["log"] }
+}
+```
+
+- `roboya`: `front`, `happy`, `curious`, `surprised`, `proud`, `laughing`
+- `friend` (bölge karakteri): `front`, `happy`, `explaining`, `thanks`
+- `props` (en çok 3): `apple`, `pear`, `gear`, `log`, `tree`, `bush`, `rock`
+
+`story` yazılmazsa giriş için `curious` + `explaining`, bitiş için `happy` + `happy` kullanılır. İfadeyi ses metniyle uyumlu seçin. Örneğin "Eyvah, yola bir kütük devrilmiş!" satırı için `surprised` ve `log`.
+
+Şema sürümü 2'dir. Eski (v1) dosyalar `node packages/level-schema/scripts/migrate-v2.mjs content/levels` ile dönüştürülür.
+
 ## Doğrulama
 
 ```bash

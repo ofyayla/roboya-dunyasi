@@ -31,7 +31,7 @@ export function newLevel(region: RegionId, game: GameId, order: number): LevelDt
   const n = String(order).padStart(2, "0");
   const id = `${region}.${game}.${n}`;
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id,
     region,
     game,

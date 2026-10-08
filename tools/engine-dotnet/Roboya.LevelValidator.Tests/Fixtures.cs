@@ -10,7 +10,7 @@ internal static class Fixtures
 
     public static JObject Level() => JObject.Parse("""
         {
-          "schemaVersion": 1,
+          "schemaVersion": 2,
           "id": "sabir-ormani.yon-avcisi.99",
           "region": "sabir-ormani",
           "game": "yon-avcisi",

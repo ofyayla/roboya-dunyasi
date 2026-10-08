@@ -1,6 +1,6 @@
 {
   "$schema": "../../../../packages/level-schema/level.schema.json",
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "sabir-ormani.yon-avcisi.04",
   "region": "sabir-ormani",
   "game": "yon-avcisi",
@@ -37,6 +37,13 @@
       "y": 1
     }
   },
+  "scenery": [
+    {
+      "x": 1,
+      "y": -1,
+      "look": "tree"
+    }
+  ],
   "cards": {
     "palette": [
       "forward",
@@ -52,6 +59,19 @@
       "roboya.hint.check_card",
       "roboya.hint.show_card"
     ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "front",
+      "props": [
+        "tree"
+      ]
+    },
+    "outro": {
+      "roboya": "proud",
+      "friend": "thanks"
+    }
   },
   "solution": {
     "shortestLength": 4

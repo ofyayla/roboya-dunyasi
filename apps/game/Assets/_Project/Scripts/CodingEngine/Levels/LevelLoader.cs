@@ -7,10 +7,13 @@ using Roboya.CodingEngine.World;
 
 namespace Roboya.CodingEngine.Levels
 {
-    /// <summary>Turns level JSON (schema v1) into engine objects. Structural JSON-schema checks run separately in CI.</summary>
+    /// <summary>Turns level JSON (schema v1–v2) into engine objects. Structural JSON-schema checks run separately in CI.</summary>
     public static class LevelLoader
     {
-        public const int SupportedSchemaVersion = 1;
+        /// <summary>Oldest version still read; v2 only added the optional story block.</summary>
+        public const int MinSchemaVersion = 1;
+
+        public const int SupportedSchemaVersion = 2;
 
         public static LevelDto Parse(string json)
         {
@@ -29,7 +32,7 @@ namespace Roboya.CodingEngine.Levels
                 throw new LevelValidationException("Level JSON is empty.");
             }
 
-            if (dto.SchemaVersion != SupportedSchemaVersion)
+            if (dto.SchemaVersion < MinSchemaVersion || dto.SchemaVersion > SupportedSchemaVersion)
             {
                 throw new LevelValidationException("Unsupported schemaVersion " + dto.SchemaVersion + ".");
             }

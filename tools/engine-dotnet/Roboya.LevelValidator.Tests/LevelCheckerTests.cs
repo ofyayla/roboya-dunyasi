@@ -61,7 +61,8 @@ public class LevelCheckerTests
         var level = Fixtures.Level();
         level["cards"]!["introduces"] = "turn_left";
 
-        Assert.That(Check(level).Errors.Single(), Does.Contain("introduces"));
+        // The fixture script has no card.turn_left.intro line either; that error is covered separately.
+        Assert.That(Check(level).Errors, Has.Some.Contains("is not in the palette"));
     }
 
     [Test]
@@ -144,5 +145,65 @@ public class LevelCheckerTests
     public void Kebab_PascalCase_Converts(string input, string expected)
     {
         Assert.That(LevelChecker.Kebab(input), Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void CheckJson_LookOnBlockedCell_NoErrors()
+    {
+        var level = Fixtures.Level();
+        level["grid"]!["rows"] = new JArray("...", ".#.", "...");
+        level["grid"]!["looks"] = JArray.Parse("""[{ "x": 1, "y": 1, "look": "log" }]""");
+
+        Assert.That(Check(level).Errors, Is.Empty);
+    }
+
+    [Test]
+    public void CheckJson_LookOnFloorCell_Reports()
+    {
+        var level = Fixtures.Level();
+        level["grid"]!["looks"] = JArray.Parse("""[{ "x": 1, "y": 1, "look": "tree" }]""");
+
+        Assert.That(Check(level).Errors.Single(), Does.Contain("not a blocked"));
+    }
+
+    [Test]
+    public void CheckJson_LookListedTwice_Reports()
+    {
+        var level = Fixtures.Level();
+        level["grid"]!["rows"] = new JArray("...", ".#.", "...");
+        level["grid"]!["looks"] = JArray.Parse("""[{ "x": 1, "y": 1, "look": "log" }, { "x": 1, "y": 1, "look": "rock" }]""");
+
+        Assert.That(Check(level).Errors.Single(), Does.Contain("twice"));
+    }
+
+    [TestCase(-1, 0)]
+    [TestCase(3, 2)]
+    [TestCase(1, -1)]
+    [TestCase(-1, 3)]
+    public void CheckJson_SceneryOnOuterRing_NoErrors(int x, int y)
+    {
+        var level = Fixtures.Level();
+        level["scenery"] = JArray.Parse($$"""[{ "x": {{x}}, "y": {{y}}, "look": "tree" }]""");
+
+        Assert.That(Check(level).Errors, Is.Empty);
+    }
+
+    [TestCase(1, 1)]
+    [TestCase(4, 0)]
+    public void CheckJson_SceneryInsideOrFarOutside_Reports(int x, int y)
+    {
+        var level = Fixtures.Level();
+        level["scenery"] = JArray.Parse($$"""[{ "x": {{x}}, "y": {{y}}, "look": "tree" }]""");
+
+        Assert.That(Check(level).Errors.Single(), Does.Contain("scenery"));
+    }
+
+    [Test]
+    public void CheckJson_IntroducedCardWithoutNarration_Reports()
+    {
+        var level = Fixtures.Level();
+        level["cards"]!["introduces"] = "turn_right";
+
+        Assert.That(Check(level).Errors.Single(), Does.Contain("card.turn_right.intro"));
     }
 }

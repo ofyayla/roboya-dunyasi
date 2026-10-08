@@ -190,27 +190,27 @@
     bottom: 0;
 }
 
+/* Result over the outro story scene: stars in the sky, buttons bottom-right, characters stay visible. */
 .result {
     position: absolute;
     left: 0;
     top: 0;
     right: 0;
     bottom: 0;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(74, 52, 36, 0.45);
+    padding: 28px 40px 36px 40px;
 }
 
 .result__panel {
+    flex-grow: 1;
     align-items: center;
-    padding: 32px 48px;
-    border-radius: 36px;
-    background-color: var(--c-bg);
+    justify-content: space-between;
 }
 
 .result__stars {
     flex-direction: row;
-    margin-bottom: 16px;
+    padding: 12px 28px;
+    border-radius: 48px;
+    background-color: rgba(255, 244, 226, 0.92);
 }
 
 .result__star {
@@ -221,6 +221,7 @@
 
 .result__buttons {
     flex-direction: row;
+    align-self: flex-end;
 }
 
 /* Sprite art (F0-17). */
@@ -240,16 +241,4 @@
 
 .screen--art .bottom-bar {
     background-color: rgba(252, 226, 190, 0.94);
-}
-
-.result__row {
-    flex-direction: row;
-    align-items: center;
-}
-
-.result__cast {
-    width: 150px;
-    height: 150px;
-    margin: 0 8px;
-    -unity-background-scale-mode: scale-to-fit;
 }

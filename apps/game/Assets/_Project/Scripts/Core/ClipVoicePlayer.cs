@@ -9,6 +9,7 @@ namespace Roboya.Core
         private readonly AudioSource _source;
         private readonly VoiceLibrary _library;
         private int _request;
+        private bool _loading;
 
         public ClipVoicePlayer(AudioSource source, VoiceLibrary library)
         {
@@ -23,12 +24,16 @@ namespace Roboya.Core
                 return;
             }
 
+            _loading = true;
             _ = PlayAsync(key, ++_request);
         }
+
+        public bool IsPlaying => _loading || (_source != null && _source.isPlaying);
 
         public void Stop()
         {
             _request++;
+            _loading = false;
             if (_source != null)
             {
                 _source.Stop();
@@ -49,7 +54,13 @@ namespace Roboya.Core
             {
                 var clip = await _library.GetAsync(key);
                 // A newer Play/Stop arrived while loading: drop this line.
-                if (clip == null || request != _request || _source == null)
+                if (request != _request)
+                {
+                    return;
+                }
+
+                _loading = false;
+                if (clip == null || _source == null)
                 {
                     return;
                 }
@@ -60,6 +71,11 @@ namespace Roboya.Core
             }
             catch (System.Exception e)
             {
+                if (request == _request)
+                {
+                    _loading = false;
+                }
+
                 Debug.LogException(e);
             }
         }

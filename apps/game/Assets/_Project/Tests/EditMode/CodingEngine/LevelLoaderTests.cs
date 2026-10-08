@@ -11,7 +11,7 @@ namespace Roboya.Tests.CodingEngine
     public class LevelLoaderTests
     {
         private const string Valid = @"{
-  ""schemaVersion"": 1,
+  ""schemaVersion"": 2,
   ""id"": ""sabir-ormani.yon-avcisi.99"",
   ""region"": ""sabir-ormani"",
   ""game"": ""yon-avcisi"",
@@ -33,6 +33,7 @@ namespace Roboya.Tests.CodingEngine
     { ""op"": ""action"", ""id"": ""zipla"" }
   ],
   ""voice"": { ""intro"": ""yon_avcisi.l99.intro"" },
+  ""story"": { ""intro"": { ""roboya"": ""surprised"", ""friend"": ""explaining"", ""props"": [""log"", ""apple""] } },
   ""solution"": { ""shortestLength"": 5 }
 }";
 
@@ -102,7 +103,28 @@ namespace Roboya.Tests.CodingEngine
         [Test]
         public void Parse_UnsupportedVersion_ThrowsValidation()
         {
-            Assert.Throws<LevelValidationException>(() => LevelLoader.Parse(Valid.Replace("\"schemaVersion\": 1", "\"schemaVersion\": 2")));
+            Assert.Throws<LevelValidationException>(() => LevelLoader.Parse(Valid.Replace("\"schemaVersion\": 2", "\"schemaVersion\": 3")));
+        }
+
+        [Test]
+        public void Parse_Version1WithoutStory_StillLoads()
+        {
+            var json = Valid.Replace("\"schemaVersion\": 2", "\"schemaVersion\": 1");
+
+            var dto = LevelLoader.Parse(json);
+
+            Assert.AreEqual(1, dto.SchemaVersion);
+        }
+
+        [Test]
+        public void Parse_StoryBlock_ReadsPosesAndProps()
+        {
+            var dto = LevelLoader.Parse(Valid);
+
+            Assert.AreEqual(RobotPose.Surprised, dto.Story.Intro.Roboya);
+            Assert.AreEqual(FriendPose.Explaining, dto.Story.Intro.Friend);
+            CollectionAssert.AreEqual(new[] { StoryProp.Log, StoryProp.Apple }, dto.Story.Intro.Props);
+            Assert.IsNull(dto.Story.Outro);
         }
 
         [Test]
