@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 from app.core.config import DEFAULT_SECRET, Settings, get_settings
 from app.core.logging import configure_logging
-from app.routers import auth, health, me, profiles
+from app.routers import auth, health, me, profiles, store
 from app.services.errors import ApiError
 from app.services.health import API_VERSION
 
@@ -15,6 +15,8 @@ def check_settings(settings: Settings) -> None:
             raise RuntimeError("ROBOYA_JWT_SECRET must be a long random value outside local/test")
         if settings.email_backend == "outbox":
             raise RuntimeError("The outbox email backend is for development only")
+        if settings.store_backend == "signed-dev":
+            raise RuntimeError("The signed-dev store backend is for development only")
 
 
 async def _api_error(_: Request, exc: Exception) -> JSONResponse:
@@ -38,6 +40,7 @@ def create_app() -> FastAPI:
     app.include_router(auth.router)
     app.include_router(me.router)
     app.include_router(profiles.router)
+    app.include_router(store.router)
     return app
 
 

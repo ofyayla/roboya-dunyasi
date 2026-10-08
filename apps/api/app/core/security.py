@@ -64,11 +64,15 @@ def decode_access_token(token: str, settings: Settings, now: datetime) -> uuid.U
             token,
             settings.jwt_secret,
             algorithms=[ALGORITHM],
-            options={"require": ["sub", "exp", "iat", "typ"], "verify_exp": False},
+            options={
+                "require": ["sub", "exp", "iat", "typ"],
+                "verify_exp": False,
+                "verify_iat": False,
+            },
         )
         if claims["typ"] != ACCESS:
             raise InvalidTokenError("wrong token type")
-        # The clock seam is checked here instead of PyJWT's wall clock.
+        # Time is checked here, against our clock seam, instead of PyJWT's wall clock.
         if datetime.fromtimestamp(claims["exp"], tz=now.tzinfo) <= now:
             raise InvalidTokenError("expired")
         return uuid.UUID(claims["sub"])
