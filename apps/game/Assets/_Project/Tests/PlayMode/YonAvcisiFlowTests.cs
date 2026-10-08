@@ -40,7 +40,7 @@ namespace Roboya.Tests.PlayMode
         }
 
         /// <summary>Boot → island → Patience Forest → first stone → Game scene.</summary>
-        private static IEnumerator StartGame(Action<VisualElement> found)
+        internal static IEnumerator StartGame(Action<VisualElement> found)
         {
             yield return SceneManager.LoadSceneAsync("Boot");
             VisualElement map = null;
