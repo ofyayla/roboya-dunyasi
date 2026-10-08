@@ -32,6 +32,12 @@ class Settings(BaseSettings):
     max_profiles_premium: int = 4
     max_sync_entries: int = 500
 
+    # Privacy (F1-13, F1-25). A deletion request waits this long so an accidental tap can be undone;
+    # the promise to the parent is "within 30 days" (UYM-03), so keep this well below that.
+    deletion_cooling_days: int = 7
+    # Empty = the repository's content/legal folder. The deployment image must copy it too.
+    legal_dir: str = ""
+
     # Store entitlements (F1-17). "signed-dev" accepts purchases and notifications signed with
     # the key below (ES256); it is for development and tests. The App Store and Google Play
     # adapters need store credentials and come with the store accounts; production refuses it.

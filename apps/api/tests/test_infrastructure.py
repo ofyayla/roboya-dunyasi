@@ -28,13 +28,17 @@ def test_clock_nowIsTimezoneAwareUtc():
 
 
 @pytest.mark.parametrize("env", ["staging", "production"])
-def test_checkSettings_developmentDefaultsAreRefusedOutsideLocal(env: str):
+def test_checkSettings_developmentDefaultsAreRefusedOutsideLocal(env: str, tmp_path: Path):
+    (tmp_path / "aydinlatma-metni.tr.md").write_text(
+        "<!-- version: v1 -->\n<!-- status: final -->\ntext", encoding="utf-8"
+    )
+    legal_dir = str(tmp_path)
     with pytest.raises(RuntimeError, match="JWT_SECRET"):
-        check_settings(Settings(env=env))
+        check_settings(Settings(env=env, legal_dir=legal_dir))
     with pytest.raises(RuntimeError, match="JWT_SECRET"):
-        check_settings(Settings(env=env, jwt_secret="short"))  # noqa: S106
+        check_settings(Settings(env=env, jwt_secret="short", legal_dir=legal_dir))  # noqa: S106
     with pytest.raises(RuntimeError, match="outbox"):
-        check_settings(Settings(env=env, jwt_secret="x" * 40))
+        check_settings(Settings(env=env, jwt_secret="x" * 40, legal_dir=legal_dir))
 
 
 @pytest.mark.parametrize("env", ["local", "test"])

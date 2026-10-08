@@ -5,12 +5,14 @@ Run from a job (cron / worker): `python -m app.maintenance`. Both steps are idem
 
 import asyncio
 import logging
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from app.core import clock
 from app.core.db import get_sessionmaker
 from app.core.logging import configure_logging
 from app.repositories import events as repo
+from app.repositories import privacy as privacy_repo
+from app.services import privacy
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +46,20 @@ async def run(now: datetime | None = None) -> tuple[list[str], list[str]]:
     return ensured, dropped
 
 
+async def run_privacy(now: datetime | None = None) -> tuple[int, int]:
+    """Deletes accounts whose waiting period is over and purges expired login codes (UYM-03).
+
+    Returns (accounts deleted, login codes purged). Idempotent; run at least daily.
+    """
+    moment = now or clock.now()
+    async with get_sessionmaker()() as session:
+        deleted = await privacy.process_due_deletions(session, moment)
+        purged = await privacy_repo.purge_login_codes(session, moment - timedelta(days=1))
+        await session.commit()
+    return deleted, purged
+
+
 if __name__ == "__main__":
     configure_logging("INFO")
     asyncio.run(run(datetime.now(UTC)))
+    asyncio.run(run_privacy(datetime.now(UTC)))

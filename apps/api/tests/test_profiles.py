@@ -4,7 +4,7 @@ import pytest
 from httpx import AsyncClient
 
 from tests.conftest import FakeEmailSender
-from tests.helpers import bearer, sign_in
+from tests.helpers import bearer, sign_in_with_consent
 
 L1 = "sabir-ormani.yon-avcisi.01"
 L2 = "sabir-ormani.yon-avcisi.02"
@@ -27,7 +27,7 @@ async def _sync(client: AsyncClient, tokens: dict, profile_id, stars: dict):
 async def test_saveProfile_createsThenUpdatesWithTheAppsOwnId(
     client: AsyncClient, mailbox: FakeEmailSender
 ):
-    tokens = await sign_in(client, mailbox)
+    tokens = await sign_in_with_consent(client, mailbox)
     pid = uuid.uuid4()
 
     created = await _put(client, tokens, pid)
@@ -41,7 +41,7 @@ async def test_saveProfile_createsThenUpdatesWithTheAppsOwnId(
 
 
 async def test_saveProfile_freeTierAllowsOneProfile(client: AsyncClient, mailbox: FakeEmailSender):
-    tokens = await sign_in(client, mailbox)
+    tokens = await sign_in_with_consent(client, mailbox)
     await _put(client, tokens, uuid.uuid4())
 
     second = await _put(client, tokens, uuid.uuid4())
@@ -65,7 +65,7 @@ async def test_saveProfile_freeTierAllowsOneProfile(client: AsyncClient, mailbox
 async def test_saveProfile_onlyTheAllowedFieldsAreAccepted(
     client: AsyncClient, mailbox: FakeEmailSender, body: dict
 ):
-    tokens = await sign_in(client, mailbox)
+    tokens = await sign_in_with_consent(client, mailbox)
 
     assert (await _put(client, tokens, uuid.uuid4(), body)).status_code == 422
 
@@ -85,8 +85,8 @@ async def test_profiles_requireAuthentication(client: AsyncClient):
 async def test_scope_anotherParentsProfileIsInvisibleEverywhere(
     client: AsyncClient, mailbox: FakeEmailSender
 ):
-    a = await sign_in(client, mailbox, "a@example.com")
-    b = await sign_in(client, mailbox, "b@example.com")
+    a = await sign_in_with_consent(client, mailbox, "a@example.com")
+    b = await sign_in_with_consent(client, mailbox, "b@example.com")
     pid = uuid.uuid4()
     await _put(client, a, pid)
     await _sync(client, a, pid, {L1: 3})
@@ -106,7 +106,7 @@ async def test_scope_anotherParentsProfileIsInvisibleEverywhere(
 async def test_sync_firstSyncStoresStarsAndReturnsThem(
     client: AsyncClient, mailbox: FakeEmailSender
 ):
-    tokens = await sign_in(client, mailbox)
+    tokens = await sign_in_with_consent(client, mailbox)
     pid = uuid.uuid4()
     await _put(client, tokens, pid)
 
@@ -118,7 +118,7 @@ async def test_sync_firstSyncStoresStarsAndReturnsThem(
 async def test_sync_keepsTheHigherStarsPerLevel_inAnyOrder(
     client: AsyncClient, mailbox: FakeEmailSender
 ):
-    tokens = await sign_in(client, mailbox)
+    tokens = await sign_in_with_consent(client, mailbox)
     pid = uuid.uuid4()
     await _put(client, tokens, pid)
     await _sync(client, tokens, pid, {L1: 3, L2: 1})
@@ -130,7 +130,7 @@ async def test_sync_keepsTheHigherStarsPerLevel_inAnyOrder(
 
 
 async def test_sync_isIdempotentAndNeverLowersStars(client: AsyncClient, mailbox: FakeEmailSender):
-    tokens = await sign_in(client, mailbox)
+    tokens = await sign_in_with_consent(client, mailbox)
     pid = uuid.uuid4()
     await _put(client, tokens, pid)
 
@@ -156,7 +156,7 @@ async def test_sync_isIdempotentAndNeverLowersStars(client: AsyncClient, mailbox
 async def test_sync_badStarsOrLevelIdsAreRejected(
     client: AsyncClient, mailbox: FakeEmailSender, stars: dict
 ):
-    tokens = await sign_in(client, mailbox)
+    tokens = await sign_in_with_consent(client, mailbox)
     pid = uuid.uuid4()
     await _put(client, tokens, pid)
 
@@ -166,7 +166,7 @@ async def test_sync_badStarsOrLevelIdsAreRejected(
 async def test_sync_tooManyEntriesInOneRequestIsRejected(
     client: AsyncClient, mailbox: FakeEmailSender
 ):
-    tokens = await sign_in(client, mailbox)
+    tokens = await sign_in_with_consent(client, mailbox)
     pid = uuid.uuid4()
     await _put(client, tokens, pid)
     many = {f"r.g.{i}": 1 for i in range(501)}
@@ -177,7 +177,7 @@ async def test_sync_tooManyEntriesInOneRequestIsRejected(
 async def test_getProgress_returnsMergedStarsAndEmptyForNewProfile(
     client: AsyncClient, mailbox: FakeEmailSender
 ):
-    tokens = await sign_in(client, mailbox)
+    tokens = await sign_in_with_consent(client, mailbox)
     pid = uuid.uuid4()
     await _put(client, tokens, pid)
 
@@ -189,7 +189,7 @@ async def test_getProgress_returnsMergedStarsAndEmptyForNewProfile(
 
 
 async def test_deleteProfile_removesItsProgress(client: AsyncClient, mailbox: FakeEmailSender):
-    tokens = await sign_in(client, mailbox)
+    tokens = await sign_in_with_consent(client, mailbox)
     pid = uuid.uuid4()
     await _put(client, tokens, pid)
     await _sync(client, tokens, pid, {L1: 3})
@@ -212,7 +212,7 @@ async def test_deleteProfile_removesItsProgress(client: AsyncClient, mailbox: Fa
 async def test_saveProfile_limitComesFromConfiguration(
     client: AsyncClient, mailbox: FakeEmailSender, settings_override: dict[str, object]
 ):
-    tokens = await sign_in(client, mailbox)
+    tokens = await sign_in_with_consent(client, mailbox)
 
     assert (await _put(client, tokens, uuid.uuid4())).status_code == 200
     assert (await _put(client, tokens, uuid.uuid4())).status_code == 200
