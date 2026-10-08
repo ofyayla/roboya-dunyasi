@@ -524,6 +524,7 @@ Kesikli çizgi, bölge içerik paketlerinin sunucuyu yormadan doğrudan CDN'den 
 | Veli ve öğretmen web paneli | React + TypeScript | Tek tasarım sistemi, hızlı geliştirme |
 | API | Python FastAPI | Ekibin mevcut uzmanlığı, hızlı geliştirme |
 | Veritabanı | PostgreSQL | İlişkisel model, raporlama sorguları |
+| Mağaza içi satın alma | StoreKit 2 ve Google Play Billing üzerine ince yerel köprü (ADR 0008) | Unity IAP'nin topladığı kişisel veri olmadan; çocuk kategorisi kuralları |
 | Abonelik doğrulama | StoreKit 2 ve Google Play Billing sunucu bildirimleri, sunucu tarafında hak hesaplama | Tek doğruluk kaynağı sunucudaki hak tablosu |
 | Bölüm editörü | İç kullanım web aracı; bölümleri JSON olarak üretir ve doğrular | Pedagoji ekibi geliştiriciye bağlı kalmadan bölüm üretir |
 | Barındırma | AB bölgesinde yönetilen bulut (ör. Frankfurt); KVKK m.9 standart sözleşmesiyle aktarım | Yönetilen veritabanı, maliyet, düşük işletim yükü, KVKK uyumu |
