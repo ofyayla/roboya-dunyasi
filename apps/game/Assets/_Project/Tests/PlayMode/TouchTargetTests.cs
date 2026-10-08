@@ -44,7 +44,7 @@ namespace Roboya.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Map_IslandPathAndGarage_AllTapTargetsAreAtLeast64()
+        public IEnumerator Map_IslandPathAndWorkshop_AllTapTargetsAreAtLeast64()
         {
             yield return SceneManager.LoadSceneAsync("Boot");
             VisualElement map = null;
@@ -59,11 +59,11 @@ namespace Roboya.Tests.PlayMode
             yield return null;
             AssertAll(map, "path", map.Query<Button>().ToList().Cast<VisualElement>().Concat(map.Query<VisualElement>(className: "stone").ToList()));
 
-            Tap(map.Q("to-garage"));
-            yield return WaitUntil(() => map.Q("garage").resolvedStyle.display == DisplayStyle.Flex, 5f);
+            Tap(map.Q("to-workshop"));
+            yield return WaitUntil(() => map.Q("workshop").resolvedStyle.display == DisplayStyle.Flex, 5f);
             yield return null;
             yield return null;
-            AssertAll(map, "garage", map.Query<Button>().ToList().Cast<VisualElement>().Concat(map.Query<VisualElement>(className: "garage__tile").ToList()));
+            AssertAll(map, "workshop", map.Query<Button>().ToList().Cast<VisualElement>().Concat(map.Query<VisualElement>(className: "workshop__tile").ToList()));
         }
 
         [UnityTest]

@@ -1,4 +1,4 @@
-/* Map scene: island, region path, garage. Child touch targets ≥ 64 dp (CLAUDE.md §7). */
+/* Map scene: island, region path, ship workshop. Child touch targets ≥ 64 dp (CLAUDE.md §7). */
 .map-root {
     flex-grow: 1;
     overflow: hidden;
