@@ -22,7 +22,8 @@ namespace Roboya.Core
             Roboya.Services.AccountService account,
             SyncService sync,
             AnalyticsService analytics,
-            PrivacyService privacy)
+            PrivacyService privacy,
+            SubscriptionService subscription)
         {
             Catalog = catalog;
             Voice = voice;
@@ -40,6 +41,7 @@ namespace Roboya.Core
             Sync = sync;
             Analytics = analytics;
             Privacy = privacy;
+            Subscription = subscription;
         }
 
         /// <summary>All levels, parsed once at start-up.</summary>
@@ -76,6 +78,9 @@ namespace Roboya.Core
 
         /// <summary>Privacy centre actions: see and save data, withdraw consent, wipe the device, request deletion (F1-13).</summary>
         public PrivacyService Privacy { get; }
+
+        /// <summary>Buying Aile Premium through the store bridge; the server decides what is granted (F1-16).</summary>
+        public SubscriptionService Subscription { get; }
 
         public ISceneNavigator Navigator { get; }
 

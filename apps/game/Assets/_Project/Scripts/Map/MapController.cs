@@ -49,6 +49,7 @@ namespace Roboya.Map
             _parent.AddSection(new ProfilesSection(services, profile => _editor.Open(profile), OpenEditorForNew));
             _rest = new RestView(art, () => _gate.Open(ShowParent));
             _parent.AddSection(new AccountSection(services));
+            _parent.AddSection(new SubscriptionSection(services));
             _reader = new NoticeReader(services, () => Show(_parent));
             _parent.AddSection(new ReportSection(services));
             _parent.AddSection(new ScreenTimeSection(services));
@@ -225,7 +226,11 @@ namespace Roboya.Map
             _services.Voice.Play(RestVoice);
         }
 
-        private void ShowParent() => Show(_parent);
+        private void ShowParent()
+        {
+            Show(_parent);
+            _parent.NotifyOpened();
+        }
 
         private void ShowPath() => Show(_path);
 
@@ -255,5 +260,10 @@ namespace Roboya.Map
     internal interface IRefreshable
     {
         void Refresh();
+    }
+
+    internal interface IOpened
+    {
+        void OnOpened();
     }
 }

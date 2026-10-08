@@ -58,6 +58,7 @@ namespace Roboya.Core
             // A signed-in parent's profiles and stars catch up in the background; offline simply does nothing.
             _ = _services.Sync.SyncAsync();
             _ = _services.Privacy.FlushPendingAsync();
+            _ = _services.Subscription.RecoverAsync();
             _services.Analytics.Track("app_open");
             _ = _services.Analytics.FlushAsync();
         }
@@ -101,6 +102,7 @@ namespace Roboya.Core
             var strings = LocalizedStrings.Parse(await ContentFiles.ReadAsync(LocalizedStrings.File));
             var island = IslandLayout.Parse(await ContentFiles.ReadAsync(IslandLayout.File));
             var notice = LocalNotice.Parse(await ContentFiles.ReadAsync(LocalNotice.File));
+            var storeProducts = StoreProducts.Parse(await ContentFiles.ReadAsync(StoreProducts.File));
 
             IEntitlementSource entitlements = null;
 #if UNITY_EDITOR
@@ -134,7 +136,8 @@ namespace Roboya.Core
                 account,
                 sync,
                 new AnalyticsService(api, profiles, notice, ProgressFolder, Application.version, PlatformWord),
-                new PrivacyService(api, account, profiles, sync, ProgressFolder));
+                new PrivacyService(api, account, profiles, sync, ProgressFolder),
+                new SubscriptionService(api, account, StoreBridgeOverride ?? new Roboya.Services.NoStoreBridge(), serverEntitlements, storeProducts));
         }
 
         /// <summary>Tests point this at a temporary folder so each run starts with fresh progress.</summary>
@@ -142,6 +145,9 @@ namespace Roboya.Core
 
         /// <summary>Tests replace the network with a fake and give a placeholder server address.</summary>
         public static Roboya.Services.IHttpTransport TransportOverride { get; set; }
+
+        /// <summary>Tests use a fake store; the native bridges (StoreKit 2, Play Billing) replace the default when they exist.</summary>
+        public static Roboya.Services.IStoreBridge StoreBridgeOverride { get; set; }
 
         private static Roboya.Services.ApiClient ComposeApi()
         {

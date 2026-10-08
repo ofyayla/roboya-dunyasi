@@ -64,6 +64,8 @@ namespace Roboya.Services
 
         public string Email => _session.Email;
 
+        public string AccountId => _session.AccountId;
+
         public string DeviceId => _session.DeviceId;
 
         public event Action Changed;

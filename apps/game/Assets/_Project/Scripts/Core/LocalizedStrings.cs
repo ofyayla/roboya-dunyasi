@@ -124,6 +124,24 @@ namespace Roboya.Core
         public const string PrivacyDeleteCancelled = "privacy.delete.cancelled";
         public const string PrivacyNeedAccount = "privacy.need_account";
         public const string PrivacyError = "privacy.error";
+        public const string SubscriptionTitle = "subscription.title";
+        public const string SubscriptionStatusFree = "subscription.status.free";
+        public const string SubscriptionStatusActive = "subscription.status.active";
+        public const string SubscriptionStatusTrial = "subscription.status.trial";
+        public const string SubscriptionStatusGrace = "subscription.status.grace";
+        public const string SubscriptionMonthly = "subscription.monthly";
+        public const string SubscriptionYearly = "subscription.yearly";
+        public const string SubscriptionTrialNote = "subscription.trial_note";
+        public const string SubscriptionRestore = "subscription.restore";
+        public const string SubscriptionNeedAccount = "subscription.need_account";
+        public const string SubscriptionStoreMissing = "subscription.store_missing";
+        public const string SubscriptionTerms = "subscription.terms";
+        public const string SubscriptionDone = "subscription.done";
+        public const string SubscriptionCancelled = "subscription.cancelled";
+        public const string SubscriptionPending = "subscription.pending";
+        public const string SubscriptionLinked = "subscription.linked";
+        public const string SubscriptionOffline = "subscription.offline";
+        public const string SubscriptionFailed = "subscription.failed";
         public const string ReportTitle = "report.title";
         public const string ReportSummary = "report.summary";
         public const string ReportNote = "report.note";
@@ -146,6 +164,7 @@ namespace Roboya.Core
             AccountTitle, AccountHint, AccountEmail, AccountSendCode, AccountCode, AccountSignIn, AccountSignOut, AccountSignedIn, AccountCodeSent, AccountErrorCode, AccountErrorMany, AccountErrorDevice, AccountErrorNetwork, AccountErrorGeneric,
             AccountSync, SyncDone, SyncOffline, SyncConsent, SyncOutdated, SyncPartly, SyncFailed,
             PrivacyTitle, PrivacyRead, PrivacyClose, PrivacyView, PrivacyViewSummary, PrivacyViewProfiles, PrivacyExport, PrivacyExportDone, PrivacyWithdraw, PrivacyWithdrawConfirm, PrivacyWipe, PrivacyWipeConfirm, PrivacyDelete, PrivacyDeleteConfirm, PrivacyDeletePending, PrivacyDeleteCancel, PrivacyDeleteCancelled, PrivacyNeedAccount, PrivacyError,
+            SubscriptionTitle, SubscriptionStatusFree, SubscriptionStatusActive, SubscriptionStatusTrial, SubscriptionStatusGrace, SubscriptionMonthly, SubscriptionYearly, SubscriptionTrialNote, SubscriptionRestore, SubscriptionNeedAccount, SubscriptionStoreMissing, SubscriptionTerms, SubscriptionDone, SubscriptionCancelled, SubscriptionPending, SubscriptionLinked, SubscriptionOffline, SubscriptionFailed,
         };
     }
 }

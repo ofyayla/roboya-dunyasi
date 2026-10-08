@@ -42,6 +42,15 @@ namespace Roboya.Map
             }
         }
 
+        /// <summary>The parent just passed the gate (not a return from a sub-screen): sections may count a view.</summary>
+        public void NotifyOpened()
+        {
+            foreach (var section in _sections.Children())
+            {
+                (section as IOpened)?.OnOpened();
+            }
+        }
+
         /// <summary>Adds a section (called by features as they arrive); hides the placeholder line.</summary>
         public void AddSection(VisualElement section)
         {

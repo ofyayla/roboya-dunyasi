@@ -240,6 +240,11 @@ namespace Roboya.Tests.PlayMode
                 string body = request.Url.EndsWith("/v1/auth/verify")
                     ? "{\"access_token\":\"a\",\"refresh_token\":\"r\",\"expires_in\":1800,\"account_id\":\"x\"}"
                     : null;
+                if (request.Url.EndsWith("/v1/store/receipts"))
+                {
+                    body = "{\"tier\":\"premium\",\"source\":\"store\",\"status\":\"active\",\"expires_at\":\"" + DateTime.UtcNow.AddDays(30).ToString("o") + "\",\"cache_until\":\"" + DateTime.UtcNow.AddHours(72).ToString("o") + "\"}";
+                }
+
                 int status = request.Url.EndsWith("/v1/auth/code") ? 202 : 200;
                 return System.Threading.Tasks.Task.FromResult(new Roboya.Services.HttpResponse(status, body));
             }
@@ -352,6 +357,67 @@ namespace Roboya.Tests.PlayMode
             Assert.AreEqual(0, after.Registry.Profiles.Count);
             Assert.IsFalse(after.Registry.HasConsentFor(TestProfiles.CurrentNoticeVersion()));
             Assert.AreEqual(0, Directory.GetFiles(_progressDir, "*-*-*-*-*.json").Length, "no progress file is left");
+        }
+
+        [UnityTest]
+        public IEnumerator ParentArea_NoStoreBridge_SaysTheStoreIsNotConnected_AndShowsNoBuyButtons()
+        {
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            yield return OpenParentArea(map);
+
+            Assert.AreEqual(DisplayStyle.None, map.Q("subscription-buy").resolvedStyle.display);
+            StringAssert.Contains("Mağaza bağlantısı", map.Q<Label>("subscription-message").text);
+            StringAssert.Contains("ilk 3 bölüm", map.Q<Label>("subscription-status").text);
+            StringAssert.Contains("yenilenir", map.Q<Label>("subscription-terms").text, "GLR-02: renewal and cancellation are written out");
+        }
+
+        [UnityTest]
+        public IEnumerator ParentArea_Subscription_BuyMonthly_ShowsStorePrice_ThenPremiumActive()
+        {
+            var store = new Roboya.Services.FakeStoreBridge();
+            store.Products.Add(new Roboya.Services.StoreProduct("roboya.premium.monthly", "₺99,99"));
+            store.Products.Add(new Roboya.Services.StoreProduct("roboya.premium.yearly", "₺1.019,90"));
+            Bootstrap.StoreBridgeOverride = store;
+            Bootstrap.TransportOverride = new ScriptedTransport();
+            Environment.SetEnvironmentVariable(Roboya.Services.ApiConfig.Variable, "http://api.test");
+            try
+            {
+                VisualElement map = null;
+                yield return OpenMap(r => map = r);
+                yield return OpenParentArea(map);
+
+                // Signed out: the prices show, buying asks for the account first (GLR-03).
+                yield return WaitUntil(() => map.Q<Button>("subscription-monthly").resolvedStyle.display == DisplayStyle.Flex, 5f);
+                StringAssert.Contains("₺99,99", map.Q<Button>("subscription-monthly").text);
+                StringAssert.Contains("7 gün", map.Q<Label>("subscription-trial").text);
+                map.Q<ScrollView>("parent-sections").ScrollTo(map.Q("subscription-monthly"));
+                yield return null;
+                Tap(map.Q("subscription-monthly"));
+                yield return null;
+                yield return null;
+                StringAssert.Contains("giriş yap", map.Q<Label>("subscription-message").text);
+                Assert.AreEqual(0, store.Owned.Count);
+
+                map.Q<TextField>("account-email").value = "ayse@example.com";
+                map.Q<TextField>("account-code").value = "123456";
+                Tap(map.Q("account-verify"));
+                yield return WaitUntil(() => map.Q("account-signed-in").resolvedStyle.display == DisplayStyle.Flex, 5f);
+
+                map.Q<ScrollView>("parent-sections").ScrollTo(map.Q("subscription-monthly"));
+                yield return null;
+                Tap(map.Q("subscription-monthly"));
+                yield return WaitUntil(() => map.Q("subscription-buy").resolvedStyle.display == DisplayStyle.None, 5f);
+                StringAssert.Contains("Aile Premium etkin", map.Q<Label>("subscription-status").text);
+                Assert.AreEqual(1, store.Finished.Count);
+                yield return Capture(map, "19-premium");
+            }
+            finally
+            {
+                Bootstrap.StoreBridgeOverride = null;
+                Bootstrap.TransportOverride = null;
+                Environment.SetEnvironmentVariable(Roboya.Services.ApiConfig.Variable, null);
+            }
         }
 
         [UnityTest]
