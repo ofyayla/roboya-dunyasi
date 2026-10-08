@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 namespace Roboya.Map
 {
     /// <summary>The daily time limit for the active child (F1-11): 10 / 15 / 20 / 30 minutes or unlimited, with today's use.</summary>
-    public sealed class ScreenTimeSection : VisualElement
+    public sealed class ScreenTimeSection : VisualElement, IRefreshable
     {
         private readonly GameServices _services;
         private readonly Dictionary<int, Button> _buttons = new Dictionary<int, Button>();

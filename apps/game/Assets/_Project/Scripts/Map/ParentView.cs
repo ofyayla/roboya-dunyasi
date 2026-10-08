@@ -10,7 +10,7 @@ namespace Roboya.Map
     /// (daily time limit, progress report, privacy centre, subscription) and every one of them is protected by
     /// the same gate because they are only reachable through this view.
     /// </summary>
-    public sealed class ParentView : VisualElement
+    public sealed class ParentView : VisualElement, IRefreshable
     {
         private readonly ScrollView _sections = new ScrollView { name = "parent-sections" };
         private readonly Label _empty;
@@ -31,6 +31,15 @@ namespace Roboya.Map
             Add(_sections);
             Add(_empty);
             Add(back);
+        }
+
+        /// <summary>Sections that show live numbers (today's time, progress) are refreshed each time the area opens.</summary>
+        public void Refresh()
+        {
+            foreach (var section in _sections.Children())
+            {
+                (section as IRefreshable)?.Refresh();
+            }
         }
 
         /// <summary>Adds a section (called by features as they arrive); hides the placeholder line.</summary>

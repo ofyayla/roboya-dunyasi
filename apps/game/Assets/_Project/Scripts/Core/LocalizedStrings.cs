@@ -84,6 +84,16 @@ namespace Roboya.Core
         public const string TimeToday = "time.today";
         public const string TimeNote = "time.note";
         public const string RestParent = "rest.parent";
+        public const string ReportTitle = "report.title";
+        public const string ReportSummary = "report.summary";
+        public const string ReportNote = "report.note";
+        public const string ReportEmpty = "report.empty";
+        public const string ReportConcept = "report.concept";
+        public const string ReportNotStarted = "report.level.notstarted";
+        public const string ReportExploring = "report.level.exploring";
+        public const string ReportGrowing = "report.level.growing";
+        public const string ReportConfident = "report.level.confident";
+        public const string ReportConceptLine = "report.line";
 
         public static readonly string[] All =
         {
@@ -92,6 +102,7 @@ namespace Roboya.Core
             ProfileAge, ProfileAgeMinik, ProfileAgeKasif, ProfileAgeMucit, ProfileSave, ProfileCancel,
             ProfileDefaultNickname, ProfileListTitle, ProfileAdd, ProfileRemove, ProfileRemoveConfirm, ProfileLimit,
             ProfileActive, TimeTitle, TimeMinutes, TimeUnlimited, TimeToday, TimeNote, RestParent,
+            ReportTitle, ReportSummary, ReportNote, ReportEmpty, ReportConcept, ReportNotStarted, ReportExploring, ReportGrowing, ReportConfident, ReportConceptLine,
         };
     }
 }
