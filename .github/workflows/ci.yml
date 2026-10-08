@@ -92,6 +92,9 @@ jobs:
   unity-editmode:
     name: Unity EditMode tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write # the test runner publishes results as a check run
     # Needs a Unity licence in repository secrets (see docs/ci.md); forks never receive secrets.
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
     steps:
@@ -125,3 +128,4 @@ jobs:
           projectPath: apps/game
           testMode: editmode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: Unity EditMode results
