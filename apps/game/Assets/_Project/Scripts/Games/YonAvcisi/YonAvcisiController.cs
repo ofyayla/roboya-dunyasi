@@ -329,6 +329,12 @@ namespace Roboya.Games.YonAvcisi
 
         private void Retry()
         {
+            if (_services.ScreenTime.IsExhausted)
+            {
+                _services.Navigator.GoToMap();
+                return;
+            }
+
             Start(_index, withStory: false);
         }
 
@@ -336,7 +342,8 @@ namespace Roboya.Games.YonAvcisi
         private void Next()
         {
             int next = _index + 1;
-            if (next < _levels.Count)
+            // Today's play time is used up: Roboya rests; the map shows the rest screen (VEL-02).
+            if (!_services.ScreenTime.IsExhausted && next < _levels.Count)
             {
                 int pathIndex = _path.IndexOf(_levels[next].Id);
                 var states = ProgressQueries.PathStates(_services, _path);

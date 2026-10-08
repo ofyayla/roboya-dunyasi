@@ -310,6 +310,7 @@
 .parent__sections {
     margin-top: 16px;
     width: 720px;
+    flex-shrink: 1;
 }
 
 .parent__empty {
@@ -530,4 +531,26 @@
     background-color: rgb(214, 130, 130);
     color: white;
     font-size: 20px;
+}
+
+.rest__robot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 320px;
+    height: 320px;
+    margin-left: -300px;
+    margin-top: -190px;
+    -unity-background-scale-mode: scale-to-fit;
+    opacity: 0.85;
+}
+
+.rest__battery {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 180px;
+    height: 180px;
+    margin-left: 40px;
+    margin-top: -120px;
 }

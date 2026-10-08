@@ -19,6 +19,7 @@ namespace Roboya.Map
         public const string AskGrownUpVoice = "roboya.ask_grownup";
         public const string WorkshopVoice = "workshop.welcome";
         public const string OnboardingVoice = "onboarding.welcome";
+        public const string RestVoice = "rest.battery_empty";
 
         private readonly GameServices _services;
         private readonly IslandView _island;
@@ -30,20 +31,23 @@ namespace Roboya.Map
         private readonly WelcomeView _welcome;
         private readonly NoticeView _notice;
         private readonly ProfileEditorView _editor;
+        private readonly RestView _rest;
 
         public MapController(VisualElement root, GameServices services, RegionArt art, PartArt partArt)
         {
             _services = services;
             var host = root.Q("map-root") ?? root;
             _island = new IslandView(services, art, partArt, OnRegion, () => services.Voice.Play(RegionLockedVoice));
-            _path = new PathView(services, art, partArt, ShowIsland, ShowWorkshop);
+            _path = new PathView(services, art, partArt, ShowIsland, ShowWorkshop, ShowRest);
             _workshop = new WorkshopView(services, art, partArt, ShowPath);
-            _parent = new ParentView(services.Strings, ShowIsland);
+            _parent = new ParentView(services.Strings, ShowHome);
             _gate = new ParentGateView(services.Strings);
             _welcome = new WelcomeView(art, () => _gate.Open(AfterGate));
             _notice = new NoticeView(services, OpenEditorForNew, ShowWelcome);
             _editor = new ProfileEditorView(services.Strings, SaveProfile, OnEditorCancelled);
             _parent.AddSection(new ProfilesSection(services, profile => _editor.Open(profile), OpenEditorForNew));
+            _rest = new RestView(art, () => _gate.Open(ShowParent));
+            _parent.AddSection(new ScreenTimeSection(services));
             _grownup = new IconButton(IconKind.Grownup, () => _gate.Open(ShowParent)) { name = "to-parent" };
             _grownup.AddToClassList("map__grownup");
             host.Add(_island);
@@ -52,6 +56,8 @@ namespace Roboya.Map
             host.Add(_parent);
             host.Add(_grownup);
             host.Add(_welcome);
+            // The rest screen sits below the gate: a parent opens the gate from it.
+            host.Add(_rest);
             host.Add(_gate);
             host.Add(_notice);
             host.Add(_editor);
@@ -66,8 +72,16 @@ namespace Roboya.Map
                 return;
             }
 
+            if (_services.ScreenTime.IsExhausted)
+            {
+                ShowRest();
+                return;
+            }
+
             var nav = _services.Navigator;
-            if (nav.SelectedLevelId != null || nav.PendingMapLine != null)
+            // A repair part earned but not yet seen: open on the island so it drops onto the ship (ILR-03).
+            bool newPart = ProgressQueries.EarnedParts(_services) > _services.Progress.Book.ShipPartsSeen;
+            if (!newPart && (nav.SelectedLevelId != null || nav.PendingMapLine != null))
             {
                 // Back from a level: the child continues on the path, not the island.
                 ShowPath();
@@ -173,6 +187,25 @@ namespace Roboya.Map
 
         private void ShowIsland() => Show(_island);
 
+        /// <summary>Back from the parent area: the rest screen when today's time is used up, otherwise the island.</summary>
+        private void ShowHome()
+        {
+            if (_services.ScreenTime.IsExhausted)
+            {
+                ShowRest();
+            }
+            else
+            {
+                ShowIsland();
+            }
+        }
+
+        private void ShowRest()
+        {
+            Show(_rest);
+            _services.Voice.Play(RestVoice);
+        }
+
         private void ShowParent() => Show(_parent);
 
         private void ShowPath() => Show(_path);
@@ -185,7 +218,7 @@ namespace Roboya.Map
 
         private void Show(VisualElement view)
         {
-            foreach (var v in new VisualElement[] { _island, _path, _workshop, _parent, _welcome })
+            foreach (var v in new VisualElement[] { _island, _path, _workshop, _parent, _welcome, _rest })
             {
                 v.style.display = v == view ? DisplayStyle.Flex : DisplayStyle.None;
             }

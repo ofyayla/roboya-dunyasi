@@ -14,9 +14,11 @@ namespace Roboya.Games.YonAvcisi
         [SerializeField] private PartArt partArt;
 
         private YonAvcisiController _controller;
+        private GameServices _services;
 
         public void Enter(GameServices services)
         {
+            _services = services;
             var levels = services.Catalog.ForGame(GameId.YonAvcisi);
             if (levels.Count == 0)
             {
@@ -29,8 +31,15 @@ namespace Roboya.Games.YonAvcisi
             _controller.Start(start < 0 ? 0 : start);
         }
 
+        private void Update()
+        {
+            // Only time spent inside a level counts; the map and the parent area do not.
+            _services?.ScreenTime.Tick(Time.unscaledDeltaTime);
+        }
+
         private void OnDestroy()
         {
+            _services?.ScreenTime.Flush();
             _controller?.Dispose();
         }
     }

@@ -96,19 +96,21 @@ namespace Roboya.Core
             }
 #endif
 
+            var profiles = ProfileManager.Load(ProgressFolder, strings.Get(StringKeys.ProfileDefaultNickname));
             // Rules will come from server configuration once the API exists (CLAUDE.md §6).
             return new GameServices(
                 catalog,
                 await ComposeVoiceAsync(),
                 SessionRules.Default,
                 ProgressRules.Default,
-                ProfileManager.Load(ProgressFolder, strings.Get(StringKeys.ProfileDefaultNickname)),
+                profiles,
                 entitlements,
                 parts,
                 island,
                 this,
                 strings,
-                notice);
+                notice,
+                new ScreenTimeService(ProgressFolder, profiles));
         }
 
         /// <summary>Tests point this at a temporary folder so each run starts with fresh progress.</summary>

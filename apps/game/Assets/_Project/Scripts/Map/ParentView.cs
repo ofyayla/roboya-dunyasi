@@ -12,7 +12,7 @@ namespace Roboya.Map
     /// </summary>
     public sealed class ParentView : VisualElement
     {
-        private readonly VisualElement _sections = new VisualElement { name = "parent-sections" };
+        private readonly ScrollView _sections = new ScrollView { name = "parent-sections" };
         private readonly Label _empty;
 
         public ParentView(LocalizedStrings strings, Action onBack)

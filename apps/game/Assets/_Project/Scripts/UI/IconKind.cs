@@ -25,5 +25,6 @@ namespace Roboya.UI
         Island,
         Grownup,
         Easier,
+        Battery,
     }
 }
