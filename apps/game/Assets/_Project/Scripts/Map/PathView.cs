@@ -28,7 +28,7 @@ namespace Roboya.Map
         private NodeState[] _states = new NodeState[0];
         private float _time;
 
-        public PathView(GameServices services, RegionArt art, RobotWardrobe wardrobe, Action onIsland, Action onGarage)
+        public PathView(GameServices services, RegionArt art, PartArt partArt, Action onIsland, Action onGarage)
         {
             _services = services;
             name = "path";
@@ -53,7 +53,7 @@ namespace Roboya.Map
                 _scroll.Add(stone);
             }
 
-            _robot = new RobotAvatar(wardrobe, art != null ? art.RobotFront : null) { name = "path-robot" };
+            _robot = new RobotAvatar(partArt, art != null ? art.RobotFront : null) { name = "path-robot" };
             _robot.AddToClassList("path__robot");
             _scroll.Add(_robot);
 
@@ -101,7 +101,7 @@ namespace Roboya.Map
                 stars.style.display = state == NodeState.Completed ? DisplayStyle.Flex : DisplayStyle.None;
             }
 
-            _robot.Refresh();
+            _robot.Wear(book.AllEquipped, _services.Parts);
             Layout();
         }
 

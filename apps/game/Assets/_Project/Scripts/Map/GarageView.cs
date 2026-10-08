@@ -20,7 +20,7 @@ namespace Roboya.Map
         private readonly List<(VisualElement Tile, RobotPart Part)> _tiles = new List<(VisualElement, RobotPart)>();
         private HashSet<string> _earned = new HashSet<string>();
 
-        public GarageView(GameServices services, RegionArt art, PartArt partArt, RobotWardrobe wardrobe, Action onBack)
+        public GarageView(GameServices services, RegionArt art, PartArt partArt, Action onBack)
         {
             _services = services;
             _partArt = partArt;
@@ -34,7 +34,7 @@ namespace Roboya.Map
 
             var stage = new VisualElement();
             stage.AddToClassList("garage__stage");
-            _robot = new RobotAvatar(wardrobe, art != null ? art.RobotFront : null) { name = "garage-robot" };
+            _robot = new RobotAvatar(partArt, art != null ? art.RobotFront : null) { name = "garage-robot" };
             _robot.AddToClassList("garage__robot");
             stage.Add(_robot);
             Add(stage);
@@ -48,7 +48,7 @@ namespace Roboya.Map
                 var image = new VisualElement();
                 image.AddToClassList("garage__part");
                 var place = services.Parts.PlacementOf(part.Id);
-                var sprite = place != null && partArt != null ? partArt.Find(place.SpriteFor("front")) : null;
+                var sprite = place != null && partArt != null ? partArt.Find(place.Sprite) : null;
                 if (sprite != null)
                 {
                     image.style.backgroundImage = new StyleBackground(sprite);
@@ -89,7 +89,7 @@ namespace Roboya.Map
                 tile.Q("tile-lock").style.display = earned ? DisplayStyle.None : DisplayStyle.Flex;
             }
 
-            _robot.Refresh();
+            _robot.Wear(book.AllEquipped, _services.Parts);
         }
 
         private void Toggle(RobotPart part)

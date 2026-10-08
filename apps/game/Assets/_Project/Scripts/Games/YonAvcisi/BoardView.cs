@@ -53,7 +53,6 @@ namespace Roboya.Games.YonAvcisi
         }
 
         private readonly RegionArt _art;
-        private readonly RobotWardrobe _wardrobe;
         private readonly ObliqueGround _ground = new ObliqueGround();
         private readonly VisualElement _decals = new VisualElement { name = "decals" };
         private readonly VisualElement _layer = new VisualElement { name = "pieces" };
@@ -64,7 +63,6 @@ namespace Roboya.Games.YonAvcisi
         private Level _level;
         private ObliqueProjection _proj;
         private Piece _robot;
-        private RobotAvatar _avatar;
         private Piece _goal;
         private Vector2 _goalHome;
         private Vector2 _robotPos;
@@ -77,10 +75,9 @@ namespace Roboya.Games.YonAvcisi
         private int _robotDepthBucket = int.MinValue;
         private bool _hasNorthScenery;
 
-        public BoardView(RegionArt art = null, RobotWardrobe wardrobe = null)
+        public BoardView(RegionArt art = null)
         {
             _art = art;
-            _wardrobe = wardrobe;
             AddToClassList("board");
             _decals.AddToClassList("board__layer");
             _layer.AddToClassList("board__layer");
@@ -173,19 +170,9 @@ namespace Roboya.Games.YonAvcisi
             }
 
             var start = CellAnchor(level.Start.Position.X, level.Start.Position.Y);
-            _avatar = null;
-            if (UseSprites)
-            {
-                // Roboya wears the parts equipped in the garage (ILR-03).
-                _avatar = new RobotAvatar(_wardrobe, _art.RobotFront, "front");
-                _robot = AddPiece(_avatar, start, height: RobotHeight);
-                _robot.Aspect = Aspect(_art.RobotFront);
-            }
-            else
-            {
-                _robot = AddPiece(new Icon(IconKind.Robot) { Color = new Color(0.96f, 0.55f, 0.16f), Accent = Color.white }, start, height: 0.82f);
-            }
-
+            _robot = UseSprites
+                ? AddSprite(_art.RobotFront, start, height: RobotHeight)
+                : AddPiece(new Icon(IconKind.Robot) { Color = new Color(0.96f, 0.55f, 0.16f), Accent = Color.white }, start, height: 0.82f);
             _robot.View.name = "robot";
             _robot.View.AddToClassList("piece--robot");
             _robot.Order = 1; // in front of an item sharing its cell
@@ -500,9 +487,7 @@ namespace Roboya.Games.YonAvcisi
             _robot.Lift = _hop;
             if (UseSprites)
             {
-                var sprite = RobotSprite(out string pose);
-                _avatar.SetPose(pose, sprite);
-                _robot.Aspect = Aspect(sprite);
+                SetSprite(_robot, RobotSprite());
                 // The side sprite faces west; mirror it for east.
                 bool mirror = _mood == Mood.Normal && _facing == Direction.East;
                 _robot.View.style.scale = new Scale(new Vector3((mirror ? -1f : 1f) * _squash, 1f, 1f));
@@ -588,17 +573,15 @@ namespace Roboya.Games.YonAvcisi
 
         private static Vector2 CellAnchor(int x, int y) => new Vector2(x + 0.5f, y + 0.5f);
 
-        private Sprite RobotSprite(out string pose)
+        private Sprite RobotSprite()
         {
             if (_mood == Mood.Laughing && _art.RobotLaughing != null)
             {
-                pose = "laughing";
                 return _art.RobotLaughing;
             }
 
             if (_mood == Mood.Happy && _art.RobotHappy != null)
             {
-                pose = "happy";
                 return _art.RobotHappy;
             }
 
@@ -606,17 +589,8 @@ namespace Roboya.Games.YonAvcisi
             var view = _facing == Direction.North ? _art.RobotBack
                 : _facing == Direction.South ? _art.RobotFront
                 : _art.RobotSide;
-            if (view == null)
-            {
-                pose = "front";
-                return _art.RobotFront;
-            }
-
-            pose = _facing == Direction.North ? "back" : _facing == Direction.South ? "front" : "side";
-            return view;
+            return view != null ? view : _art.RobotFront;
         }
-
-        private static float Aspect(Sprite s) => s != null && s.rect.height > 0f ? s.rect.width / s.rect.height : 1f;
 
         private static void SetSprite(Piece piece, Sprite sprite)
         {

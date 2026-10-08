@@ -5,51 +5,28 @@ using Roboya.CodingEngine.Progress;
 
 namespace Roboya.Core
 {
-    /// <summary>The point on a pose that a part is placed from (see <see cref="RobotAnchors"/>).</summary>
-    public enum PartAnchor
-    {
-        None,
-
-        /// <summary>The antenna bulb; the part replaces it.</summary>
-        Bulb,
-
-        /// <summary>Top centre of the head; hats sit here.</summary>
-        HeadTop,
-
-        /// <summary>Centre of the head; wings spread from here.</summary>
-        HeadCenter,
-    }
-
-    /// <summary>
-    /// How a part is drawn on any pose: from an anchor, sized relative to the head width (the bulb width for bulb
-    /// parts), nudged down by <see cref="Dy"/> head heights. Colour parts name a sprite per pose with {pose}.
-    /// </summary>
+    /// <summary>Where a part sits on Roboya's front sprite, as fractions of its width and height.</summary>
     public sealed class PartPlacement
     {
-        public PartPlacement(string sprite, PartAnchor anchor, float scale, float dy, bool behind)
+        public PartPlacement(string sprite, float x, float y, float width, bool behind)
         {
             Sprite = sprite;
-            Anchor = anchor;
-            Scale = scale;
-            Dy = dy;
+            X = x;
+            Y = y;
+            Width = width;
             Behind = behind;
         }
 
         public string Sprite { get; }
 
-        public PartAnchor Anchor { get; }
+        public float X { get; }
 
-        public float Scale { get; }
+        public float Y { get; }
 
-        public float Dy { get; }
+        public float Width { get; }
 
         /// <summary>Drawn behind the body (wings).</summary>
         public bool Behind { get; }
-
-        public bool IsColourVariant => Anchor == PartAnchor.None;
-
-        /// <summary>The sprite name for a pose; colour variants are drawn per pose.</summary>
-        public string SpriteFor(string pose) => Sprite.Replace("{pose}", pose);
     }
 
     /// <summary>content/rewards/robot-parts.json: the fixed earning order (ILR-03) plus how each part is drawn.</summary>
@@ -101,37 +78,17 @@ namespace Roboya.Core
                     throw new FormatException("Robot part '" + e.Id + "' needs an id, a known slot and a sprite.");
                 }
 
-                var anchor = ParseAnchor(e.Anchor);
-                if ((e.Slot == ColorSlot) != (anchor == PartAnchor.None) || e.Scale < 0f)
-                {
-                    throw new FormatException("Robot part '" + e.Id + "': only colour parts omit the anchor, and scale cannot be negative.");
-                }
-
                 if (!orders.Add(e.Order) || e.Order < 1 || placements.ContainsKey(e.Id))
                 {
                     throw new FormatException("Robot part '" + e.Id + "' has a duplicate id or order.");
                 }
 
                 parts.Add(new RobotPart(e.Id, e.Slot, e.Order));
-                placements[e.Id] = new PartPlacement(e.Sprite, anchor, e.Scale, e.Dy, e.Behind);
+                placements[e.Id] = new PartPlacement(e.Sprite, e.X, e.Y, e.Width, e.Behind);
             }
 
             parts.Sort((a, b) => a.Order.CompareTo(b.Order));
             return new RobotPartCatalog(parts, placements);
-        }
-
-        private static PartAnchor ParseAnchor(string value)
-        {
-            switch (value)
-            {
-                case null:
-                case "":
-                    return PartAnchor.None;
-                case "bulb": return PartAnchor.Bulb;
-                case "head-top": return PartAnchor.HeadTop;
-                case "head-center": return PartAnchor.HeadCenter;
-                default: throw new FormatException("Unknown part anchor '" + value + "'.");
-            }
         }
 
         private sealed class CatalogFile
@@ -150,11 +107,11 @@ namespace Roboya.Core
 
             [JsonProperty("sprite")] public string Sprite { get; set; }
 
-            [JsonProperty("anchor")] public string Anchor { get; set; }
+            [JsonProperty("x")] public float X { get; set; }
 
-            [JsonProperty("scale")] public float Scale { get; set; }
+            [JsonProperty("y")] public float Y { get; set; }
 
-            [JsonProperty("dy")] public float Dy { get; set; }
+            [JsonProperty("width")] public float Width { get; set; }
 
             [JsonProperty("behind")] public bool Behind { get; set; }
         }
