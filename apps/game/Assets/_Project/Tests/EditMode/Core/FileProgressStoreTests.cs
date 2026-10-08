@@ -233,4 +233,157 @@ namespace Roboya.Tests.Core
             Assert.IsNull(SupportPlanner.AlternativeFor(catalog, catalog.Find("sabir-ormani.yon-avcisi.01"), id => true), "level 1 has none");
         }
     }
+
+    public class ProfileManagerTests
+    {
+        private string _dir;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _dir = Path.Combine(Path.GetTempPath(), "roboya-profiles-" + Guid.NewGuid().ToString("N"));
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (Directory.Exists(_dir))
+            {
+                Directory.Delete(_dir, true);
+            }
+        }
+
+        [Test]
+        public void Load_EmptyFolder_HasNoProfileAndAThrowAwayBook()
+        {
+            var manager = ProfileManager.Load(_dir);
+
+            Assert.IsFalse(manager.HasActive);
+            manager.Progress.Book.Record("a.b.c", 3);
+            manager.Progress.Save();
+            Assert.IsFalse(File.Exists(Path.Combine(_dir, ProfileManager.File)), "nothing is written before a profile exists");
+        }
+
+        [Test]
+        public void Add_SavesAndReloadsWithConsentAndPerProfileProgress()
+        {
+            var manager = ProfileManager.Load(_dir);
+            var ali = manager.Add("Ali", "robot-mavi", Roboya.CodingEngine.Profiles.AgeBand.Minik);
+            manager.RecordConsent("v1");
+            manager.Progress.Book.Record("a.b.c", 2);
+            manager.Progress.Save();
+            var ece = manager.Add("Ece", "robot-mor", Roboya.CodingEngine.Profiles.AgeBand.Kasif);
+            manager.SetActive(ece.Id);
+
+            var again = ProfileManager.Load(_dir);
+
+            Assert.AreEqual(2, again.Registry.Profiles.Count);
+            Assert.AreEqual(ece.Id, again.Active.Id);
+            Assert.IsTrue(again.Registry.HasConsentFor("v1"));
+            Assert.AreEqual(0, again.Progress.Book.Stars("a.b.c"), "Ece has her own progress");
+            again.SetActive(ali.Id);
+            Assert.AreEqual(2, again.Progress.Book.Stars("a.b.c"));
+        }
+
+        [Test]
+        public void Remove_DeletesTheProfilesProgressFile()
+        {
+            var manager = ProfileManager.Load(_dir);
+            var ali = manager.Add("Ali", "robot-mavi", Roboya.CodingEngine.Profiles.AgeBand.Minik);
+            manager.Progress.Book.Record("a.b.c", 3);
+            manager.Progress.Save();
+            string file = Path.Combine(_dir, ali.Id + ".json");
+            Assert.IsTrue(File.Exists(file));
+
+            Assert.IsTrue(manager.Remove(ali.Id));
+
+            Assert.IsFalse(File.Exists(file));
+            Assert.IsFalse(manager.HasActive);
+            Assert.IsFalse(manager.Remove("nope"));
+        }
+
+        [Test]
+        public void Changed_FiresOnEveryEdit()
+        {
+            var manager = ProfileManager.Load(_dir);
+            int changes = 0;
+            manager.Changed += () => changes++;
+
+            var p = manager.Add("Ali", "robot-mavi", Roboya.CodingEngine.Profiles.AgeBand.Minik);
+            manager.Update(p.Id, "Ali Can", "robot-mor", Roboya.CodingEngine.Profiles.AgeBand.Kasif);
+            manager.RecordConsent("v1");
+            manager.WithdrawConsent();
+            manager.SetActive(p.Id);
+
+            Assert.AreEqual(5, changes);
+            Assert.IsFalse(manager.Registry.HasConsentFor("v1"));
+            Assert.AreEqual("Ali Can", manager.Active.Nickname);
+        }
+
+        [Test]
+        public void Load_OldInstallWithoutProfiles_KeepsItsProgressAsTheFirstProfile()
+        {
+            var legacy = new FileProgressStore(_dir);
+            legacy.Book.Record("a.b.c", 3);
+            legacy.Save();
+
+            var manager = ProfileManager.Load(_dir, "Mucit");
+
+            Assert.AreEqual(legacy.ProfileId, manager.Active.Id);
+            Assert.AreEqual("Mucit", manager.Active.Nickname);
+            Assert.AreEqual(3, manager.Progress.Book.Stars("a.b.c"));
+            Assert.IsFalse(manager.Registry.HasConsentFor("any"), "consent is still asked of the parent");
+            Assert.IsTrue(File.Exists(Path.Combine(_dir, ProfileManager.File)));
+        }
+
+        [Test]
+        public void Load_CorruptFile_IsKeptAsideAndStartsFresh()
+        {
+            Directory.CreateDirectory(_dir);
+            File.WriteAllText(Path.Combine(_dir, ProfileManager.File), "{ broken");
+            LogAssert.Expect(LogType.Warning, new System.Text.RegularExpressions.Regex("Profile file unreadable"));
+
+            var manager = ProfileManager.Load(_dir);
+
+            Assert.IsFalse(manager.HasActive);
+            Assert.AreEqual(1, Directory.GetFiles(_dir, "profiles.json.corrupt-*").Length);
+        }
+    }
+
+    public class LocalNoticeTests
+    {
+        [Test]
+        public void Parse_ReadsVersionStatusAndStripsMarkdown()
+        {
+            var notice = LocalNotice.Parse("<!-- version: v7 -->\n<!-- status: final -->\n# Başlık\n\nBir **önemli** satır.\n\n\n\n## Alt");
+
+            Assert.AreEqual("v7", notice.Version);
+            Assert.IsTrue(notice.IsFinal);
+            Assert.AreEqual("Başlık\n\nBir önemli satır.\n\nAlt", notice.Text);
+        }
+
+        [Test]
+        public void Parse_DraftOrMissingStatus_IsNotFinal()
+        {
+            Assert.IsFalse(LocalNotice.Parse("<!-- version: v1 -->\n<!-- status: draft -->\nx").IsFinal);
+            Assert.IsFalse(LocalNotice.Parse("<!-- version: v1 -->\nx").IsFinal);
+        }
+
+        [TestCase("")]
+        [TestCase(null)]
+        [TestCase("# no version")]
+        public void Parse_BadInput_Throws(string markdown)
+        {
+            Assert.Throws<FormatException>(() => LocalNotice.Parse(markdown));
+        }
+
+        [Test]
+        public void ShippedNotice_ParsesAndNamesTheForeignTransfer()
+        {
+            var notice = LocalNotice.Parse(File.ReadAllText(Path.Combine(ContentFiles.RepositoryContentPath, LocalNotice.File)));
+
+            Assert.IsNotEmpty(notice.Version);
+            StringAssert.Contains("yurt dışına aktarılır", notice.Text);
+        }
+    }
 }

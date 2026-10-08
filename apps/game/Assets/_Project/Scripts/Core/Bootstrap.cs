@@ -85,6 +85,7 @@ namespace Roboya.Core
             var parts = ShipPartCatalog.Parse(await ContentFiles.ReadAsync(ShipPartCatalog.File));
             var strings = LocalizedStrings.Parse(await ContentFiles.ReadAsync(LocalizedStrings.File));
             var island = IslandLayout.Parse(await ContentFiles.ReadAsync(IslandLayout.File));
+            var notice = LocalNotice.Parse(await ContentFiles.ReadAsync(LocalNotice.File));
 
             IEntitlementSource entitlements = new FreeTierEntitlements();
 #if UNITY_EDITOR
@@ -101,12 +102,13 @@ namespace Roboya.Core
                 await ComposeVoiceAsync(),
                 SessionRules.Default,
                 ProgressRules.Default,
-                new FileProgressStore(ProgressFolder),
+                ProfileManager.Load(ProgressFolder, strings.Get(StringKeys.ProfileDefaultNickname)),
                 entitlements,
                 parts,
                 island,
                 this,
-                strings);
+                strings,
+                notice);
         }
 
         /// <summary>Tests point this at a temporary folder so each run starts with fresh progress.</summary>

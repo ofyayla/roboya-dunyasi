@@ -29,6 +29,7 @@ namespace Roboya.Tests.PlayMode
         {
             _progressDir = Path.Combine(Path.GetTempPath(), "roboya-progress-" + Guid.NewGuid().ToString("N"));
             Bootstrap.ProgressFolderOverride = _progressDir;
+            TestProfiles.Seed(_progressDir);
         }
 
         [UnityTearDown]

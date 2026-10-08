@@ -37,6 +37,13 @@
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },
+    "onboarding.welcome": {
+      "file": "audio/tr/onboarding.welcome.mp3",
+      "source": "tts",
+      "textHash": "8d9b273840625145",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
     "reward.part_unlocked": {
       "file": "audio/tr/reward.part_unlocked.mp3",
       "source": "tts",

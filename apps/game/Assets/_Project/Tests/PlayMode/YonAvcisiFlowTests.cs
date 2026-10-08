@@ -24,6 +24,7 @@ namespace Roboya.Tests.PlayMode
             // Every test starts with a fresh local profile.
             _progressDir = Path.Combine(Path.GetTempPath(), "roboya-progress-" + Guid.NewGuid().ToString("N"));
             Roboya.Core.Bootstrap.ProgressFolderOverride = _progressDir;
+            TestProfiles.Seed(_progressDir);
         }
 
         [UnityTearDown]
