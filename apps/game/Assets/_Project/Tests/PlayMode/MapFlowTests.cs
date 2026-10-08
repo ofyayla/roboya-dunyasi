@@ -13,7 +13,7 @@ using static Roboya.Tests.PlayMode.YonAvcisiFlowTests;
 
 namespace Roboya.Tests.PlayMode
 {
-    /// <summary>Critical flows of the map (F1-05), local progress (ILR-01/02) and the garage (ILR-03).</summary>
+    /// <summary>Critical flows of the map (F1-05), local progress (ILR-01/02) and the ship repair (ILR-03).</summary>
     public class MapFlowTests
     {
         private const string Level = "sabir-ormani.yon-avcisi.";
@@ -60,28 +60,28 @@ namespace Roboya.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Garage_FiveLevelsDone_FirstPartCanBeWornAndIsSaved()
+        public IEnumerator Ship_FiveLevelsDone_FirstPartDropsOntoShipOnceAndWorkshopShowsIt()
         {
             Seed(5);
             VisualElement map = null;
             yield return OpenMap(r => map = r);
+
+            // ILR-03: the earned propeller is fitted on the island ship and remembered as seen.
+            Assert.IsNotNull(map.Q("island-ship").Q("ship-propeller"), "first part on the ship");
+            Assert.IsNull(map.Q("island-ship").Q("ship-lights"), "second part not earned yet");
+            yield return new WaitForSeconds(1f);
+            yield return Capture(map, "09-island-ship");
+            Assert.AreEqual(1, new FileProgressStore(_progressDir).Book.ShipPartsSeen, "the drop-in plays once");
+
             yield return OpenForest(map);
-            Tap(map.Q("to-garage"));
-            yield return WaitUntil(() => map.Q("garage").resolvedStyle.display == DisplayStyle.Flex, 5f);
-            yield return null;
+            Tap(map.Q("to-workshop"));
+            yield return WaitUntil(() => map.Q("workshop").resolvedStyle.display == DisplayStyle.Flex, 5f);
+            yield return new WaitForSeconds(0.3f);
 
-            var tile = map.Q("part-tile-antenna-star");
-            Assert.IsTrue(tile.ClassListContains("garage__tile--earned"), "a part every 5 levels");
-            Assert.IsFalse(map.Q("part-tile-hat-acorn").ClassListContains("garage__tile--earned"));
-
-            Tap(tile);
-            yield return null;
-            yield return null;
-            Assert.IsTrue(tile.ClassListContains("garage__tile--worn"));
-            Assert.IsNotNull(map.Q("garage-robot").Q("part-antenna-star"), "Roboya wears it");
-            yield return Capture(map, "09-garage");
-
-            Assert.AreEqual("antenna-star", new FileProgressStore(_progressDir).Book.Equipped("antenna"), "saved on the device");
+            Assert.IsTrue(map.Q("part-tile-propeller").ClassListContains("workshop__tile--earned"));
+            Assert.IsFalse(map.Q("part-tile-lights").ClassListContains("workshop__tile--earned"));
+            Assert.IsNotNull(map.Q("workshop-ship").Q("ship-lights"), "coming parts are shown faintly in the workshop");
+            yield return Capture(map, "10-workshop");
         }
 
         [UnityTest]
@@ -112,36 +112,6 @@ namespace Roboya.Tests.PlayMode
             Assert.AreEqual(DisplayStyle.Flex, map.Q("path").resolvedStyle.display, "back on the path, not the island");
             yield return WaitForVoice("roboya.ask_grownup");
             Assert.IsTrue(map.Q("stone-3").ClassListContains("stone--done"), "progress recorded");
-        }
-
-        [UnityTest]
-        public IEnumerator WornParts_ShowInStorySceneAndOnBoard()
-        {
-            var store = new FileProgressStore(_progressDir);
-            store.Book.Equip("hat", "hat-acorn");
-            store.Book.Equip("wings", "wings-leaf");
-            store.Book.Equip("antenna", "antenna-star");
-            store.Save();
-            VisualElement map = null;
-            yield return OpenMap(r => map = r);
-            yield return OpenForest(map);
-            Tap(map.Q("stone-1"));
-
-            VisualElement game = null;
-            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
-            yield return WaitUntil(() => game.Q<StoryStage>("story").IsOpen, 10f);
-            yield return new WaitForSeconds(StoryStage.EnterSeconds + 0.3f);
-            var storyRobot = game.Q("story-robot");
-            Assert.IsNotNull(storyRobot.Q("part-hat-acorn"), "hat in the story scene");
-            Assert.IsNotNull(storyRobot.Q("part-wings-leaf"), "wings in the story scene");
-            yield return Capture(game, "10-story-worn");
-
-            Tap(game.Q("story-continue"));
-            yield return WaitUntil(() => !game.Q<StoryStage>("story").IsOpen, 5f);
-            yield return null;
-            Assert.IsNotNull(game.Q("robot").Q("part-hat-acorn"), "hat on the board");
-            Assert.IsNotNull(game.Q("robot").Q("part-antenna-star"), "antenna on the board");
-            yield return Capture(game, "11-board-worn");
         }
 
         [UnityTest]

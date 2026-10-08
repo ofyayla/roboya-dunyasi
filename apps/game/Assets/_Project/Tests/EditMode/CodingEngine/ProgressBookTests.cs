@@ -57,31 +57,42 @@ namespace Roboya.Tests.CodingEngine
         }
 
         [Test]
-        public void Equip_SetAndClear_TracksSlot()
+        public void MarkShipPartsSeen_OnlyMovesForward()
         {
             var book = new ProgressBook();
-            book.Equip("hat", "hat-leaf");
 
-            Assert.AreEqual("hat-leaf", book.Equipped("hat"));
-            book.Equip("hat", null);
-            Assert.IsNull(book.Equipped("hat"));
-            Assert.IsNull(book.Equipped(null));
-            Assert.Throws<ArgumentException>(() => book.Equip("", "x"));
+            Assert.IsTrue(book.MarkShipPartsSeen(2));
+            Assert.IsFalse(book.MarkShipPartsSeen(1));
+            Assert.IsFalse(book.MarkShipPartsSeen(2));
+            Assert.AreEqual(2, book.ShipPartsSeen);
         }
 
         [Test]
-        public void ToJson_RoundTrip_KeepsStarsAndParts()
+        public void ToJson_RoundTrip_KeepsStarsAndSeenParts()
         {
             var book = new ProgressBook();
             book.Record("sabir-ormani.yon-avcisi.01", 2);
-            book.Equip("wings", "wings-leaf");
+            book.MarkShipPartsSeen(1);
 
             var copy = ProgressBook.FromJson(book.ToJson());
 
             Assert.AreEqual(2, copy.Stars("sabir-ormani.yon-avcisi.01"));
-            Assert.AreEqual("wings-leaf", copy.Equipped("wings"));
-            Assert.AreEqual(1, copy.AllEquipped.Count);
+            Assert.AreEqual(1, copy.ShipPartsSeen);
             Assert.AreEqual(ProgressBook.CurrentVersion, copy.Version);
+        }
+
+        [Test]
+        public void ToJson_WritesOnlySavedFields_NotComputedProperties()
+        {
+            var book = new ProgressBook();
+            book.Record("a", 1);
+
+            var json = book.ToJson();
+
+            StringAssert.Contains("\"stars\"", json);
+            StringAssert.Contains("\"shipPartsSeen\"", json);
+            StringAssert.DoesNotContain("CompletedCount", json);
+            StringAssert.DoesNotContain("\"Version\"", json);
         }
 
         [TestCase("{ not json")]
@@ -98,7 +109,16 @@ namespace Roboya.Tests.CodingEngine
             var book = ProgressBook.FromJson("{\"version\": 1, \"stars\": null}");
 
             Assert.AreEqual(0, book.CompletedCount);
-            Assert.IsNull(book.Equipped("hat"));
+            Assert.AreEqual(0, book.ShipPartsSeen);
+        }
+
+        [Test]
+        public void FromJson_OlderFileWithEquippedParts_IsReadAndIgnoresThem()
+        {
+            var book = ProgressBook.FromJson("{\"version\": 1, \"stars\": {\"a\": 2}, \"equipped\": {\"hat\": \"hat-acorn\"}}");
+
+            Assert.AreEqual(2, book.Stars("a"));
+            Assert.AreEqual(0, book.ShipPartsSeen);
         }
     }
 }

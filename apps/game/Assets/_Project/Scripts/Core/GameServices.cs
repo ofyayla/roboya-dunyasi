@@ -13,8 +13,7 @@ namespace Roboya.Core
             ProgressRules progressRules,
             IProgressStore progress,
             IEntitlementSource entitlements,
-            RobotPartCatalog parts,
-            RobotAnchors anchors,
+            ShipPartCatalog parts,
             IslandLayout island,
             ISceneNavigator navigator,
             LocalizedStrings strings)
@@ -26,7 +25,6 @@ namespace Roboya.Core
             Progress = progress;
             Entitlements = entitlements;
             Parts = parts;
-            Anchors = anchors;
             Island = island;
             Navigator = navigator;
             Strings = strings;
@@ -46,9 +44,8 @@ namespace Roboya.Core
         /// <summary>Server-backed premium flag; never computed on the client (golden rule 3).</summary>
         public IEntitlementSource Entitlements { get; }
 
-        public RobotPartCatalog Parts { get; }
-
-        public RobotAnchors Anchors { get; }
+        /// <summary>Ship repair parts earned with progress (ILR-03).</summary>
+        public ShipPartCatalog Parts { get; }
 
         public IslandLayout Island { get; }
 

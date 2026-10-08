@@ -1,0 +1,16 @@
+{
+  "base": "ship_base",
+  "parts": [
+    { "id": "propeller", "order": 1, "layers": [ { "sprite": "ship_propeller", "x": 0.53, "y": 0.02, "width": 0.4, "behind": false } ] },
+    { "id": "lights", "order": 2, "layers": [ { "sprite": "ship_lights", "x": 0.5, "y": 0.8, "width": 0.62, "behind": false } ] },
+    { "id": "fins", "order": 3, "layers": [
+      { "sprite": "ship_fin_left", "x": 0.04, "y": 0.66, "width": 0.38, "behind": true },
+      { "sprite": "ship_fin_right", "x": 0.96, "y": 0.66, "width": 0.38, "behind": true } ] },
+    { "id": "dish", "order": 4, "layers": [ { "sprite": "ship_dish", "x": 0.88, "y": 0.16, "width": 0.34, "behind": true } ] },
+    { "id": "flag", "order": 5, "layers": [ { "sprite": "ship_flag", "x": 0.3, "y": 0.02, "width": 0.3, "behind": true } ] },
+    { "id": "nozzle", "order": 6, "layers": [ { "sprite": "ship_nozzle", "x": 0.5, "y": 1.0, "width": 0.38, "behind": true } ] },
+    { "id": "legs", "order": 7, "layers": [
+      { "sprite": "ship_leg_left", "x": 0.27, "y": 1.05, "width": 0.2, "behind": true },
+      { "sprite": "ship_leg_right", "x": 0.73, "y": 1.05, "width": 0.2, "behind": true } ] }
+  ]
+}

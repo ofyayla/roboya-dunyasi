@@ -5,11 +5,11 @@ namespace Roboya.Tests.CodingEngine
 {
     public class RewardRulesTests
     {
-        private static readonly RobotPart[] Catalog =
+        private static readonly ShipPart[] Catalog =
         {
-            new RobotPart("wings-leaf", "wings", 2),
-            new RobotPart("antenna-star", "antenna", 1),
-            new RobotPart("hat-acorn", "hat", 3),
+            new ShipPart("lights", 2),
+            new ShipPart("propeller", 1),
+            new ShipPart("fins", 3),
         };
 
         [TestCase(0, 0, 0)]
@@ -34,8 +34,8 @@ namespace Roboya.Tests.CodingEngine
             var earned = RewardRules.Earned(Catalog, 2);
 
             Assert.AreEqual(2, earned.Count);
-            Assert.AreEqual("antenna-star", earned[0].Id);
-            Assert.AreEqual("wings-leaf", earned[1].Id);
+            Assert.AreEqual("propeller", earned[0].Id);
+            Assert.AreEqual("lights", earned[1].Id);
         }
 
         [Test]
@@ -44,14 +44,13 @@ namespace Roboya.Tests.CodingEngine
             Assert.AreEqual(0, RewardRules.NewlyEarned(Catalog, 1, 1).Count);
             var fresh = RewardRules.NewlyEarned(Catalog, 1, 3);
             Assert.AreEqual(2, fresh.Count);
-            Assert.AreEqual("wings-leaf", fresh[0].Id);
+            Assert.AreEqual("lights", fresh[0].Id);
         }
 
         [Test]
-        public void RobotPart_NullFields_Throw()
+        public void ShipPart_NullId_Throws()
         {
-            Assert.Throws<System.ArgumentNullException>(() => new RobotPart(null, "hat", 1));
-            Assert.Throws<System.ArgumentNullException>(() => new RobotPart("x", null, 1));
+            Assert.Throws<System.ArgumentNullException>(() => new ShipPart(null, 1));
         }
     }
 }

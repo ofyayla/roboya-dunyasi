@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 namespace Roboya.Map
 {
-    /// <summary>Thin scene entry for the Map scene: island, region path and garage (F1-05, ILR-03).</summary>
+    /// <summary>Thin scene entry for the Map scene: island, region path and ship workshop (F1-05, ILR-03).</summary>
     public sealed class MapScreen : MonoBehaviour, ISceneEntry
     {
         [SerializeField] private UIDocument document;

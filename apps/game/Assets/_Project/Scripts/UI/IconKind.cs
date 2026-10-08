@@ -21,7 +21,7 @@ namespace Roboya.UI
         Gear,
         Home,
         Lock,
-        Garage,
+        Ship,
         Island,
         Grownup,
     }

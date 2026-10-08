@@ -211,7 +211,7 @@ Faz 1 sonunda Sabır Ormanı'nın 36 bölümü, veli alanı ve aile aboneliği �
 | F1-03 | Yön Avcısı tamamlama: kart tanıtım anları, sabır mekaniği | Oyun | M | YON-01, YON-02 |
 | F1-04 | Ortak oyun özellikleri: yıldız hesabı, ipucu tetikleme, Dinle, dokunma hedefleri | Oyun | M | OYN-02, 04, 05, 06 |
 | F1-05 | Ada haritası, Sabır Ormanı patikası, bölüm kilidi; ilk 3 bölüm ücretsiz | Oyun | M | Karar: ücretsiz 3 bölüm |
-| F1-06 | Yerel ilerleme (profil başına JSON; ADR 0009), yıldız ve ödüller, Roboya garajı | Oyun | M | ILR-01, 02, 03 |
+| F1-06 | Yerel ilerleme (profil başına JSON; ADR 0009), yıldız ve ödüller, gemi atölyesi | Oyun | M | ILR-01, 02, 03 |
 | F1-07 | Beceri modeli v1, zorluk ayarlayıcı, 3 kademeli akıllı ipucu | Oyun | L | YZ-01, 02, 03 |
 | F1-08 | Seviye seçimi (Minik / Kaşif) ve yaşa göre başlangıç | Oyun | S |  |
 | F1-09 | Ebeveyn kilidi | Oyun | S | VEL-01, UYM-07 |
@@ -462,7 +462,8 @@ Planın en kırılgan noktası tek geliştiricili kapasite ve pilot okulların h
 - **F0-20 (2026-10-08):** Satın alma yöntemi kararı verildi: Unity IAP yerine StoreKit 2 ve Play Billing üzerine ince yerel köprü (ADR 0008). Localization ve Addressables kararları ADR 0005'te.
 - **F0-21 (2026-10-08):** Çocuk testlerinin pedagoji ekibiyle tamamlandığı kullanıcı tarafından bildirildi.
 - **Fps ölçümü (2026-10-08):** Kullanıcı kararıyla Faz 0'da yapılmadı. Bellek Redmi Pad 2'de 438 MB (hedef ≤ 600 MB).
-- **F1-05 ve F1-06 (2026-10-08):** Ada haritası (Higgsfield), Sabır Ormanı patikası, ücretsiz 3 bölüm kilidi ("büyüklerine sor"), yerel ilerleme, robot parçası ödülleri ve garaj yapıldı. Ada genel görünümü, kullanıcı isteğiyle ikinci bölgeyi beklemeden eklendi. Takılı parçalar sonradan hikâye sahnelerine ve tahtaya da eklendi (poz çapalarıyla).
+- **F1-05 ve F1-06 (2026-10-08):** Ada haritası (Higgsfield), Sabır Ormanı patikası, ücretsiz 3 bölüm kilidi ("büyüklerine sor"), yerel ilerleme, ödüller ve garaj yapıldı. Ada genel görünümü, kullanıcı isteğiyle ikinci bölgeyi beklemeden eklendi.
+- **Ödüller: robot parçası yerine gemi onarımı (2026-10-08):** Kullanıcı kararı. Roboya'ya takılan parçalar karakteri fazla değiştiriyor ve görsel yük oluşturuyordu. Ödüller artık Roboya'nın düşen gemisini onarıyor (ILR-03 "gemi atölyesi"); takılı parça kodu (#20) geri alındı.
 - **F1-03 (2026-10-08):** Rehberli bölüm modu (`options.guided`) yapıldı: Roboya sıradaki kartı gösterir, kartları çocuk yerleştirir. YON-01 (kart tanıtım anı) ve YON-02 (tek tek adım yok, plan bütün olarak çalışır) zaten karşılanıyordu. 5. bölüm Minik olduğu hâlde iki dönüş kartını birlikte veriyor; YON-01'e göre pedagoji ekibiyle gözden geçirilmeli.
 - **F1-04 (2026-10-08):** Ortak oyun özellikleri denetlendi: OYN-02 (Dinle), OYN-04 (yıldız), OYN-05 (üç başarısız denemeden sonra ipucu, `LevelSession`) ve OYN-06 (sürükle-bırak en yakın yuvaya oturur) önceden vardı. Eksik olan dokunma hedefi güvencesi için `TouchTargetTests` eklendi: ada, patika, garaj ve oyun ekranındaki tüm dokunma hedefleri ≥ 64 birim (hiçbiri düzeltme gerektirmedi). OYN-08 (sol el yerleşimi) P1 olduğundan yapılmadı.
 - **F1-09 (2026-10-08):** Ebeveyn kilidi yapıldı: dört rakamı tersten yazma, üç yanlışta 30 sn kilit. Ada ekranındaki yetişkin simgesinden açılır; veli alanı (`ParentView`) şimdilik kabuk, süre sınırı, rapor, gizlilik ve abonelik bölümleri sonraki işlerde eklenecek. Yetişkin metinleri için `content/localization/tr.json` tablosu getirildi (ADR 0010; Unity Localization paketi kullanılmadı).

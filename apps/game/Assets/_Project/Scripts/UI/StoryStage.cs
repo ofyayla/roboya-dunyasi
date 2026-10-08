@@ -43,7 +43,6 @@ namespace Roboya.UI
 
         private readonly RegionArt _art;
         private readonly IVoicePlayer _voice;
-        private readonly RobotAvatar _robotAvatar;
         private readonly VisualElement _backdrop = new VisualElement { name = "story-backdrop" };
         private readonly VisualElement _ground = new VisualElement();
         private readonly VisualElement _cast = new VisualElement();
@@ -66,7 +65,7 @@ namespace Roboya.UI
         private string _cardVoice;
         private float _cardAge = -1f;
 
-        public StoryStage(RegionArt art, IVoicePlayer voice, RobotWardrobe wardrobe = null)
+        public StoryStage(RegionArt art, IVoicePlayer voice)
         {
             _art = art;
             _voice = voice;
@@ -94,8 +93,7 @@ namespace Roboya.UI
                 _props[i].View.Add(_logs[i]);
             }
 
-            _robotAvatar = new RobotAvatar(wardrobe, art != null ? art.RobotFront : null, "front");
-            _robot = NewActor("story-robot", _robotAvatar);
+            _robot = NewActor("story-robot");
             _friend = NewActor("story-friend");
             _robot.X = 0.3f;
             _robot.Height = 0.52f;
@@ -235,10 +233,7 @@ namespace Roboya.UI
 
             if (_art != null)
             {
-                var robotSprite = _art.RobotPoseSprite(beat.Robot);
-                _robotAvatar.SetPose(beat.Robot.ToString().ToLowerInvariant(), robotSprite);
-                _robotAvatar.Refresh();
-                _robot.Aspect = Aspect(robotSprite);
+                SetSprite(_robot, _art.RobotPoseSprite(beat.Robot));
                 SetSprite(_friend, _art.FriendPoseSprite(beat.Friend));
             }
 
@@ -464,11 +459,9 @@ namespace Roboya.UI
             a.Shadow.style.translate = new Translate(x - (sw * 0.5f), y - (sw * 0.11f));
         }
 
-        private Actor NewActor(string actorName, VisualElement custom = null)
+        private Actor NewActor(string actorName)
         {
-            var view = custom ?? new VisualElement();
-            view.name = actorName;
-            view.pickingMode = PickingMode.Ignore;
+            var view = new VisualElement { name = actorName, pickingMode = PickingMode.Ignore };
             view.AddToClassList("story__actor");
             var shadow = new VisualElement { pickingMode = PickingMode.Ignore };
             shadow.AddToClassList("story__shadow");

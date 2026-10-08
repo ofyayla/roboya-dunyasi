@@ -259,8 +259,7 @@ Yedi oyun modülü, Roboya Kids'in yüz yüze atölyelerinin dijital karşılık
 | Ödül | Nasıl kazanılır | Ne işe yarar |
 | --- | --- | --- |
 | Yıldız | Bölüm tamamlama kalitesi | Bölüm ve bölge ilerlemesi |
-| Robot parçası (anten, renk, kanat, şapka) | Her 5 bölümde bir ve bölge sonlarında | Roboya'yı kişiselleştirme |
-| Gemi parçası | Bölge tamamlama | Ana hikâyede ilerleme |
+| Gemi parçası | Her 5 bölümde bir ve bölge sonlarında; sıra sabit | Roboya'nın düşen gemisi adım adım onarılır; ada haritasında görünür (ana hikâyede ilerleme). Roboya'nın görünüşü değişmez. |
 | Değer kartı | Bölge tamamlama | 30–60 sn animasyonlu değer hikâyesi; albümde tekrar izlenebilir |
 | Mucit rozeti | Bir kodlama kavramında ustalık (ör. 5 döngü bölümünü 3 yıldızla bitirmek) | Veli raporunda beceri göstergesi |
 
@@ -268,7 +267,7 @@ Yedi oyun modülü, Roboya Kids'in yüz yüze atölyelerinin dijital karşılık
 
 - **ILR-01 (P0):** Çocuk profili başına ilerleme cihazda saklanır ve hesap varsa sunucuyla eşitlenir.
 - **ILR-02 (P0):** Tamamlanan bölümler istendiği kadar tekrar oynanabilir; yıldız sayısı yalnız artabilir.
-- **ILR-03 (P0):** Roboya garajı: kazanılan parçaları takma ve çıkarma ekranı.
+- **ILR-03 (P0):** Gemi atölyesi: kazanılan parçaların gemiye yerleştiğini ve kalan parçaları gösteren ekran. Parçalar sırayla kendi yerine oturur; seçme, takma veya satın alma yoktur. Yeni parça ada haritasında bir kez gemiye inerek yerleşir.
 - **ILR-04 (P1):** Değer Albümü: kazanılan hikâye kartlarının tekrar izlenmesi.
 - **ILR-05 (P1):** "Günün görevi": günde bir kısa özel bölüm. Kaçırıldığında ceza yoktur.
 
@@ -545,7 +544,7 @@ Kesikli çizgi, bölge içerik paketlerinin sunucuyu yormadan doğrudan CDN'den 
 | Bölge / Oyun / Bölüm | id, sürüm, kavram etiketleri, değer etiketi, zorluk, MEB kazanım kodları | İçerik; editörden yayınlanır |
 | Bölüm denemesi | profil\_id, bölüm\_id, süre, deneme sayısı, ipucu sayısı, yıldız, kod uzunluğu | Uyarlanabilir öğrenmenin ham verisi |
 | Beceri durumu | profil\_id, kavram, ustalık puanı, son güncelleme | Beceri modeli çıktısı |
-| Envanter | profil\_id, kazanılan parçalar, değer kartları, rozetler |  |
+| Envanter | profil\_id, görülen gemi parçası sayısı, değer kartları, rozetler | Kazanılan parçalar ilerlemeden hesaplanır |
 | Rıza kaydı | hesap veya okul, metin sürümü, zaman, kapsam | KVKK ispatı için |
 
 ## Gizlilik, güvenlik ve uyum

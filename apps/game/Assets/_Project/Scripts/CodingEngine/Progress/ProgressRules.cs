@@ -17,7 +17,7 @@ namespace Roboya.CodingEngine.Progress
         /// <summary>Product decision: the first 3 levels are free.</summary>
         public int FreeLevelCount { get; }
 
-        /// <summary>PRD rewards: a robot part every 5 completed levels.</summary>
+        /// <summary>PRD rewards: a ship repair part every 5 completed levels.</summary>
         public int LevelsPerPart { get; }
     }
 }

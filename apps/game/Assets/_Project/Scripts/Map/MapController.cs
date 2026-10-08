@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 namespace Roboya.Map
 {
     /// <summary>
-    /// Switches between the island, the Patience Forest path and the garage. No text on screen: every view speaks
+    /// Switches between the island, the Patience Forest path and the ship workshop. No text on screen: every view speaks
     /// through short narration lines from content/voice/script.csv.
     /// </summary>
     public sealed class MapController : IDisposable
@@ -16,12 +16,12 @@ namespace Roboya.Map
         public const string RegionLockedVoice = "map.region_locked";
         public const string LockedWaitVoice = "roboya.locked_wait";
         public const string AskGrownUpVoice = "roboya.ask_grownup";
-        public const string GarageVoice = "garage.welcome";
+        public const string WorkshopVoice = "workshop.welcome";
 
         private readonly GameServices _services;
         private readonly IslandView _island;
         private readonly PathView _path;
-        private readonly GarageView _garage;
+        private readonly WorkshopView _workshop;
         private readonly ParentView _parent;
         private readonly ParentGateView _gate;
         private readonly IconButton _grownup;
@@ -30,17 +30,16 @@ namespace Roboya.Map
         {
             _services = services;
             var host = root.Q("map-root") ?? root;
-            var wardrobe = new RobotWardrobe(services.Parts, services.Anchors, partArt, () => services.Progress.Book.AllEquipped);
-            _island = new IslandView(services, art, partArt, wardrobe, OnRegion, () => services.Voice.Play(RegionLockedVoice));
-            _path = new PathView(services, art, wardrobe, ShowIsland, ShowGarage);
-            _garage = new GarageView(services, art, partArt, wardrobe, ShowPath);
+            _island = new IslandView(services, art, partArt, OnRegion, () => services.Voice.Play(RegionLockedVoice));
+            _path = new PathView(services, art, partArt, ShowIsland, ShowWorkshop);
+            _workshop = new WorkshopView(services, art, partArt, ShowPath);
             _parent = new ParentView(services.Strings, ShowIsland);
             _gate = new ParentGateView(services.Strings);
             _grownup = new IconButton(IconKind.Grownup, () => _gate.Open(ShowParent)) { name = "to-parent" };
             _grownup.AddToClassList("map__grownup");
             host.Add(_island);
             host.Add(_path);
-            host.Add(_garage);
+            host.Add(_workshop);
             host.Add(_parent);
             host.Add(_grownup);
             host.Add(_gate);
@@ -49,7 +48,9 @@ namespace Roboya.Map
         public void Open()
         {
             var nav = _services.Navigator;
-            if (nav.SelectedLevelId != null || nav.PendingMapLine != null)
+            // A repair part earned but not yet seen: open on the island so it drops onto the ship (ILR-03).
+            bool newPart = ProgressQueries.EarnedParts(_services) > _services.Progress.Book.ShipPartsSeen;
+            if (!newPart && (nav.SelectedLevelId != null || nav.PendingMapLine != null))
             {
                 // Back from a level: the child continues on the path, not the island.
                 ShowPath();
@@ -63,6 +64,11 @@ namespace Roboya.Map
             }
 
             ShowIsland();
+            if (nav.PendingMapLine != null)
+            {
+                _services.Voice.Play(nav.PendingMapLine);
+                nav.ConsumeMapLine();
+            }
         }
 
         public void Dispose()
@@ -97,15 +103,15 @@ namespace Roboya.Map
 
         private void ShowPath() => Show(_path);
 
-        private void ShowGarage()
+        private void ShowWorkshop()
         {
-            Show(_garage);
-            _services.Voice.Play(GarageVoice);
+            Show(_workshop);
+            _services.Voice.Play(WorkshopVoice);
         }
 
         private void Show(VisualElement view)
         {
-            foreach (var v in new VisualElement[] { _island, _path, _garage, _parent })
+            foreach (var v in new VisualElement[] { _island, _path, _workshop, _parent })
             {
                 v.style.display = v == view ? DisplayStyle.Flex : DisplayStyle.None;
             }

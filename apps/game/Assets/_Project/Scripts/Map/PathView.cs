@@ -24,11 +24,11 @@ namespace Roboya.Map
         private readonly ScrollView _scroll = new ScrollView(ScrollViewMode.Horizontal) { name = "path-scroll" };
         private readonly PathTrack _track = new PathTrack();
         private readonly List<VisualElement> _stones = new List<VisualElement>();
-        private readonly RobotAvatar _robot;
+        private readonly VisualElement _robot = new VisualElement { name = "path-robot" };
         private NodeState[] _states = new NodeState[0];
         private float _time;
 
-        public PathView(GameServices services, RegionArt art, RobotWardrobe wardrobe, Action onIsland, Action onGarage)
+        public PathView(GameServices services, RegionArt art, PartArt partArt, Action onIsland, Action onWorkshop)
         {
             _services = services;
             name = "path";
@@ -53,17 +53,20 @@ namespace Roboya.Map
                 _scroll.Add(stone);
             }
 
-            _robot = new RobotAvatar(wardrobe, art != null ? art.RobotFront : null) { name = "path-robot" };
             _robot.AddToClassList("path__robot");
+            if (art != null && art.RobotFront != null)
+            {
+                _robot.style.backgroundImage = new StyleBackground(art.RobotFront);
+            }
+
             _scroll.Add(_robot);
 
             var bar = new VisualElement();
             bar.AddToClassList("map-bar");
             var island = new IconButton(IconKind.Island, onIsland) { name = "to-island" };
-            var garage = new IconButton(IconKind.Garage, onGarage) { name = "to-garage" };
-            garage.AddToClassList("map-bar__garage");
+            var workshop = new IconButton(IconKind.Ship, onWorkshop) { name = "to-workshop" };
             bar.Add(island);
-            bar.Add(garage);
+            bar.Add(workshop);
             Add(bar);
 
             RegisterCallback<GeometryChangedEvent>(_ => Layout());
@@ -101,7 +104,6 @@ namespace Roboya.Map
                 stars.style.display = state == NodeState.Completed ? DisplayStyle.Flex : DisplayStyle.None;
             }
 
-            _robot.Refresh();
             Layout();
         }
 

@@ -80,12 +80,14 @@ Kaynak sayfalar (yeniden kesim için): `docs/art/sources/`.
   - Görsel: `Art/Island/bg_island.png`; kaynaklar `sources/island-a.png` ve seçilen `sources/island-b.png`.
   - Bölgelerin konumu `content/map/island.json` dosyasında, görselin oranı olarak. Görsel değişirse yalnız bu dosya güncellenir.
   - Kapalı bölgeler bulut ve asma kilitle örtülür; açık bölgenin etrafında beyaz, nabız atan bir halka olur.
-- **Robot parçaları:**
-  - Görseller `Art/RobotParts/part_*.png`, bulutlar `map_cloud_*.png`; hepsi tek bir sayfadan kesildi.
-  - Renk seçenekleri (`roboya_<poz>_blue`, `roboya_<poz>_purple`) üretilmedi; turuncu gövdenin tonu kaydırılarak hazırlandı, her poz için ayrı dosya. Yüz ve uzuvlar aynı. Üretim: `tools/art/robot_parts.py`.
-  - **Parçalar pozdan bağımsız yerleşir.** Betik her pozda baş kutusunu ve anten topunu ölçer (`content/rewards/robot-anchors.json`). `content/rewards/robot-parts.json` her parça için bir çapa (`bulb`, `head-top`, `head-center`), baş genişliğine göre ölçek ve dikey kayma tutar. Kanatlar gövdenin arkasında çizilir.
-  - Takılı parçalar her yerde görünür: ada, patika, garaj, hikâye sahneleri ve oyun tahtası (`RobotAvatar` / `RobotWardrobe`). Yan görünümde de aynı kural geçerli; bu açıda kanatlar yalnız yaklaşık oturur.
-- **Üretim:** iki deneme (ada) ve bir sayfa (parçalar), toplam yaklaşık 11 kredi.
+- **Bulutlar:** `Art/Island/map_cloud_*.png`.
+- **Roboya'nın gemisi (ödüller, ILR-03):**
+  - Roboya'nın görünüşü hiçbir yerde değişmez; ödüller gemiyi onarır.
+  - Bozuk gövde (`Art/Ship/ship_base.png`) ve 7 parça (pervane, ışıklar, kanatçıklar, çanak anten, bayrak, roket ağzı, iniş ayakları) tek bir sayfadan kesildi; kaynak `sources/ship-sheet.png`.
+  - Parçaların gövde üzerindeki yeri ve sırası `content/rewards/ship-parts.json` dosyasında (gövdenin oranı olarak). Kanatçık, ayak, roket ağzı ve anten gövdenin arkasında çizilir.
+  - Ada haritasında `ShipView`, görseldeki boyalı geminin tam üstüne oturur ve onu örter. Yeni parça haritada bir kez yukarıdan inip yerine oturur.
+  - Atölyede henüz kazanılmamış parçalar gövdenin arkasında soluk gölge olarak görünür.
+- **Üretim:** ada için iki deneme, gemi için bir sayfa (iki deneme), toplam yaklaşık 11 kredi. Gemi sayfasında referans, ada görselinden kesilen gemiydi.
 
 ## Üretim yöntemi
 
