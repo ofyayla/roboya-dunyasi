@@ -23,5 +23,6 @@ namespace Roboya.UI
         Lock,
         Ship,
         Island,
+        Grownup,
     }
 }

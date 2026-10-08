@@ -15,7 +15,8 @@ namespace Roboya.Core
             IEntitlementSource entitlements,
             ShipPartCatalog parts,
             IslandLayout island,
-            ISceneNavigator navigator)
+            ISceneNavigator navigator,
+            LocalizedStrings strings)
         {
             Catalog = catalog;
             Voice = voice;
@@ -26,6 +27,7 @@ namespace Roboya.Core
             Parts = parts;
             Island = island;
             Navigator = navigator;
+            Strings = strings;
         }
 
         /// <summary>All levels, parsed once at start-up.</summary>
@@ -48,5 +50,8 @@ namespace Roboya.Core
         public IslandLayout Island { get; }
 
         public ISceneNavigator Navigator { get; }
+
+        /// <summary>Text for adult screens only.</summary>
+        public LocalizedStrings Strings { get; }
     }
 }

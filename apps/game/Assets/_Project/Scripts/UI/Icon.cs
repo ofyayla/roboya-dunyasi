@@ -225,6 +225,19 @@ namespace Roboya.UI
                     p.Arc(P(0.5f, 0.54f), s * 0.13f, Angle.Degrees(0f), Angle.Degrees(360f));
                     p.Fill();
                     break;
+                case IconKind.Grownup:
+                    // A tall figure beside a small one: "a grown-up" without any text.
+                    p.BeginPath();
+                    p.Arc(P(0.36f, 0.24f), s * 0.13f, Angle.Degrees(0f), Angle.Degrees(360f));
+                    p.Fill();
+                    RoundedRect(p, P(0.2f, 0.42f), P(0.52f, 0.88f), s * 0.12f);
+                    p.Fill();
+                    p.BeginPath();
+                    p.Arc(P(0.72f, 0.5f), s * 0.09f, Angle.Degrees(0f), Angle.Degrees(360f));
+                    p.Fill();
+                    RoundedRect(p, P(0.62f, 0.64f), P(0.82f, 0.88f), s * 0.08f);
+                    p.Fill();
+                    break;
                 case IconKind.Island:
                     // Island: a mound with a palm-like tree over a wave line.
                     p.BeginPath();

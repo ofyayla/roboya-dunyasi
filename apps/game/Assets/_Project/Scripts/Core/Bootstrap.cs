@@ -83,6 +83,7 @@ namespace Roboya.Core
 #endif
             var catalog = LevelCatalog.Parse(await levels.LoadAllAsync());
             var parts = ShipPartCatalog.Parse(await ContentFiles.ReadAsync(ShipPartCatalog.File));
+            var strings = LocalizedStrings.Parse(await ContentFiles.ReadAsync(LocalizedStrings.File));
             var island = IslandLayout.Parse(await ContentFiles.ReadAsync(IslandLayout.File));
 
             IEntitlementSource entitlements = new FreeTierEntitlements();
@@ -104,7 +105,8 @@ namespace Roboya.Core
                 entitlements,
                 parts,
                 island,
-                this);
+                this,
+                strings);
         }
 
         /// <summary>Tests point this at a temporary folder so each run starts with fresh progress.</summary>

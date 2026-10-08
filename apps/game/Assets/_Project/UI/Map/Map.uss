@@ -195,3 +195,131 @@
     opacity: 0.18;
     -unity-background-image-tint-color: rgb(90, 70, 60);
 }
+
+/* Grown-up entrance (island only), parental gate and parent area. Adult screens: ≥ 48 dp, here 72. */
+.map__grownup {
+    position: absolute;
+    right: 20px;
+    top: 16px;
+    width: 72px;
+    height: 72px;
+    padding: 16px;
+    border-radius: 36px;
+    background-color: rgb(190, 160, 130);
+}
+
+.gate,
+.parent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.gate {
+    background-color: rgba(74, 52, 36, 0.6);
+}
+
+.gate__card {
+    width: 560px;
+    padding: 28px 36px;
+    border-radius: 32px;
+    background-color: var(--c-bg);
+    align-items: center;
+}
+
+.gate__question {
+    font-size: 28px;
+    color: var(--c-ink);
+    white-space: normal;
+    -unity-text-align: middle-center;
+}
+
+.gate__digits {
+    margin-top: 12px;
+    font-size: 64px;
+    color: var(--c-brand-dark);
+    -unity-font-style: bold;
+}
+
+.gate__entered {
+    margin-top: 4px;
+    min-width: 260px;
+    padding: 6px 20px;
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.8);
+    font-size: 44px;
+    color: var(--c-ink);
+    -unity-text-align: middle-center;
+}
+
+.gate__message {
+    min-height: 34px;
+    margin-top: 8px;
+    font-size: 22px;
+    color: rgb(168, 52, 64);
+    white-space: normal;
+    -unity-text-align: middle-center;
+}
+
+.gate__pad {
+    width: 360px;
+    margin-top: 8px;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.gate__key {
+    width: 112px;
+    height: 72px;
+    margin: 4px;
+    border-radius: 20px;
+    border-width: 0;
+    background-color: var(--c-bg-deep);
+    font-size: 34px;
+    color: var(--c-ink);
+}
+
+.gate__key--confirm {
+    background-color: rgb(84, 168, 84);
+    color: white;
+    font-size: 24px;
+}
+
+.gate__cancel,
+.parent__back {
+    height: 56px;
+    margin-top: 12px;
+    padding: 0 28px;
+    border-radius: 28px;
+    border-width: 0;
+    background-color: rgb(190, 160, 130);
+    font-size: 24px;
+    color: white;
+}
+
+.parent {
+    background-color: var(--c-bg);
+}
+
+.parent__title {
+    font-size: 44px;
+    color: var(--c-ink);
+    -unity-font-style: bold;
+}
+
+.parent__sections {
+    margin-top: 16px;
+    width: 720px;
+}
+
+.parent__empty {
+    margin-top: 24px;
+    font-size: 26px;
+    color: var(--c-ink);
+    white-space: normal;
+    -unity-text-align: middle-center;
+}

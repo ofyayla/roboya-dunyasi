@@ -13,7 +13,7 @@ namespace Roboya.Core
         public const string StreamingFolder = "content";
 
         /// <summary>Folders under content/ that ship with the app.</summary>
-        public static readonly string[] ShippedFolders = { "map", "rewards" };
+        public static readonly string[] ShippedFolders = { "map", "rewards", "localization" };
 
         public static string RepositoryContentPath =>
             Path.GetFullPath(Path.Combine(Application.dataPath, "..", "..", "..", "content"));
