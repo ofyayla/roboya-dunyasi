@@ -133,6 +133,17 @@ jobs:
         with:
           path: apps/game/Library
           key: unity-library-${{ hashFiles('apps/game/Packages/packages-lock.json', 'apps/game/ProjectSettings/ProjectVersion.txt') }}
+      - name: "[diag] start monitors"
+        if: steps.pre.outputs.run == 'true'
+        run: |
+          mkdir -p /tmp/diag
+          du -sh apps/game/Library apps/game/Library/* 2>/dev/null | sort -h | tail -15
+          ls -la apps/game/Library/DataStore 2>/dev/null | head -40 || true
+          df -h / /dev/shm; free -m; nproc; lscpu | grep -i "model name"
+          cat /proc/sys/vm/overcommit_memory /proc/sys/kernel/pid_max
+          nohup docker events --format '{{.Time}} {{.Type}} {{.Action}} {{.Actor.Attributes.exitCode}} {{.Actor.Attributes.name}}' > /tmp/diag/events.log 2>&1 &
+          nohup sh -c 'while true; do date +%T.%N; free -m | sed -n 2,3p; df -m / /dev/shm | tail -2; for c in $(docker ps -q); do docker exec $c sh -c "df -m /dev/shm | tail -1; ps -eo pid,rss,vsz,comm --sort=-rss | head -6" 2>/dev/null; done; sleep 0.5; done' > /tmp/diag/mon.log 2>&1 &
+          sudo dmesg -T | tail -5 > /tmp/diag/dmesg-before.log
       - uses: game-ci/unity-test-runner@v4
         if: steps.pre.outputs.run == 'true'
         env:
@@ -144,3 +155,10 @@ jobs:
           testMode: editmode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: Unity EditMode results
+      - name: "[diag] dump"
+        if: always() && steps.pre.outputs.run == 'true'
+        run: |
+          echo "== dmesg"; sudo dmesg -T | grep -iE "kill|oom|memory|cgroup|segfault|Unity" | tail -60
+          echo "== docker events"; cat /tmp/diag/events.log
+          echo "== monitor (last 400 lines)"; tail -400 /tmp/diag/mon.log
+          df -h / ; free -m
