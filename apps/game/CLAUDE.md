@@ -8,7 +8,7 @@ Kök `CLAUDE.md` §7 geçerlidir; burada yalnız ayrıntı vardır.
   - `UnityEngine`, `System.Text.Json`, LINQ'ya bağımlı sıcak yol (hot path) yazma.
 - `Scripts/CodingEngine/Levels/Generated/` elle düzenlenmez; `make gen` şemadan üretir.
 - Sahneler: `Boot`, `Map`, `Game`. Kurulum `Assets/_Project/Editor/` altındaki editör betikleriyle yapılır; `.unity`/`.prefab` YAML'ına elle dokunma.
-- UI: `Assets/_Project/UI/` altında UXML + USS. Metinler Unity Localization tablosundan anahtarla gelir.
+- UI: `Assets/_Project/UI/` altında UXML + USS. Yetişkin ekranı metinleri `content/localization/tr.json` tablosundan anahtarla gelir (`LocalizedStrings`, ADR 0010); kodda sabit metin yazılmaz. Veli alanı ve satın alma ebeveyn kilidinin arkasındadır (`ParentGateView`).
 - Testler: `Assets/_Project/Tests/EditMode` (motor testleri `dotnet test` ile de koşar) ve `PlayMode`.
 - Proje ayarları ve sahneler `Assets/_Project/Editor/ProjectSetup.cs` ile uygulanır (menü: Roboya → Project Setup). Ayar değişikliği bu betikte yapılır.
 - Paket ekleme/çıkarma ADR 0005'in güncellenmesini gerektirir.

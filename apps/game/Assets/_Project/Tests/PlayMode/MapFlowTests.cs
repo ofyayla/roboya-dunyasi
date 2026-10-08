@@ -167,6 +167,65 @@ namespace Roboya.Tests.PlayMode
             yield return Capture(game, "12-guided");
         }
 
+        [UnityTest]
+        public IEnumerator ParentGate_WrongThenRightAnswer_OpensParentArea_AndLocksAfterThreeMisses()
+        {
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            Assert.AreEqual(DisplayStyle.None, map.Q("parent").resolvedStyle.display, "the parent area is closed at start");
+
+            Tap(map.Q("to-parent"));
+            yield return null;
+            yield return null;
+            var gate = map.Q<ParentGateView>("parent-gate");
+            Assert.IsTrue(gate.IsOpen);
+            Assert.AreEqual(DisplayStyle.None, map.Q("parent").resolvedStyle.display, "the gate comes first (VEL-01)");
+            yield return Capture(map, "13-gate");
+
+            // Same order as shown is wrong; the parent area stays closed.
+            TypeDigits(map, string.Concat(gate.Challenge.Select(d => d.ToString())));
+            Tap(map.Q("gate-confirm"));
+            yield return null;
+            Assert.IsTrue(gate.IsOpen);
+            Assert.AreEqual(DisplayStyle.None, map.Q("parent").resolvedStyle.display);
+
+            // The reversed numbers open the parent area.
+            TypeDigits(map, Roboya.CodingEngine.Parents.ParentGate.ExpectedFor(gate.Challenge));
+            Tap(map.Q("gate-confirm"));
+            yield return null;
+            yield return null;
+            Assert.IsFalse(gate.IsOpen);
+            Assert.AreEqual(DisplayStyle.Flex, map.Q("parent").resolvedStyle.display);
+            yield return Capture(map, "14-parent");
+
+            Tap(map.Q("parent-back"));
+            yield return null;
+            Assert.AreEqual(DisplayStyle.None, map.Q("parent").resolvedStyle.display);
+
+            // Three misses lock the keypad.
+            Tap(map.Q("to-parent"));
+            yield return null;
+            yield return null;
+            for (int i = 0; i < 3; i++)
+            {
+                TypeDigits(map, "0000");
+                Tap(map.Q("gate-confirm"));
+                yield return null;
+            }
+
+            yield return null;
+            Assert.IsFalse(map.Q("gate-pad").enabledSelf, "locked after three wrong answers");
+            Assert.IsNotEmpty(map.Q<Label>("gate-message").text);
+        }
+
+        private static void TypeDigits(VisualElement map, string digits)
+        {
+            foreach (char c in digits)
+            {
+                Tap(map.Q("gate-key-" + c));
+            }
+        }
+
         private void Seed(int completed)
         {
             var store = new FileProgressStore(_progressDir);

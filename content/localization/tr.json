@@ -1,0 +1,10 @@
+{
+  "gate.question": "Büyüklere özel. Şu sayıları tersten yazın:",
+  "gate.wrong": "Olmadı. Yeni sayılarla tekrar deneyin.",
+  "gate.locked": "Çok fazla yanlış deneme. {0} saniye sonra tekrar deneyin.",
+  "gate.confirm": "Tamam",
+  "gate.cancel": "Vazgeç",
+  "parent.title": "Veli alanı",
+  "parent.empty": "İlerleme özeti, süre sınırı ve gizlilik ayarları burada olacak.",
+  "parent.back": "Çocuk alanına dön"
+}

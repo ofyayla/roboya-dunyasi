@@ -22,6 +22,9 @@ namespace Roboya.Map
         private readonly IslandView _island;
         private readonly PathView _path;
         private readonly GarageView _garage;
+        private readonly ParentView _parent;
+        private readonly ParentGateView _gate;
+        private readonly IconButton _grownup;
 
         public MapController(VisualElement root, GameServices services, RegionArt art, PartArt partArt)
         {
@@ -31,9 +34,16 @@ namespace Roboya.Map
             _island = new IslandView(services, art, partArt, wardrobe, OnRegion, () => services.Voice.Play(RegionLockedVoice));
             _path = new PathView(services, art, wardrobe, ShowIsland, ShowGarage);
             _garage = new GarageView(services, art, partArt, wardrobe, ShowPath);
+            _parent = new ParentView(services.Strings, ShowIsland);
+            _gate = new ParentGateView(services.Strings);
+            _grownup = new IconButton(IconKind.Grownup, () => _gate.Open(ShowParent)) { name = "to-parent" };
+            _grownup.AddToClassList("map__grownup");
             host.Add(_island);
             host.Add(_path);
             host.Add(_garage);
+            host.Add(_parent);
+            host.Add(_grownup);
+            host.Add(_gate);
         }
 
         public void Open()
@@ -83,6 +93,8 @@ namespace Roboya.Map
 
         private void ShowIsland() => Show(_island);
 
+        private void ShowParent() => Show(_parent);
+
         private void ShowPath() => Show(_path);
 
         private void ShowGarage()
@@ -93,10 +105,13 @@ namespace Roboya.Map
 
         private void Show(VisualElement view)
         {
-            foreach (var v in new VisualElement[] { _island, _path, _garage })
+            foreach (var v in new VisualElement[] { _island, _path, _garage, _parent })
             {
                 v.style.display = v == view ? DisplayStyle.Flex : DisplayStyle.None;
             }
+
+            // The grown-up entrance lives on the island only; it opens the gate, never the parent area directly.
+            _grownup.style.display = view == _island ? DisplayStyle.Flex : DisplayStyle.None;
 
             if (view is IRefreshable r)
             {

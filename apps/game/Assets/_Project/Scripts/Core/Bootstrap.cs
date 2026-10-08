@@ -83,6 +83,7 @@ namespace Roboya.Core
 #endif
             var catalog = LevelCatalog.Parse(await levels.LoadAllAsync());
             var parts = RobotPartCatalog.Parse(await ContentFiles.ReadAsync(RobotPartCatalog.File));
+            var strings = LocalizedStrings.Parse(await ContentFiles.ReadAsync(LocalizedStrings.File));
             var anchors = RobotAnchors.Parse(await ContentFiles.ReadAsync(RobotAnchors.File));
             var island = IslandLayout.Parse(await ContentFiles.ReadAsync(IslandLayout.File));
 
@@ -106,7 +107,8 @@ namespace Roboya.Core
                 parts,
                 anchors,
                 island,
-                this);
+                this,
+                strings);
         }
 
         /// <summary>Tests point this at a temporary folder so each run starts with fresh progress.</summary>
