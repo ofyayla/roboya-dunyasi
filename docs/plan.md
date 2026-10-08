@@ -458,3 +458,4 @@ Planın en kırılgan noktası tek geliştiricili kapasite ve pilot okulların h
 
 - **Unity 6.6 ve OpenGL ES 3.1 (2026-10-08):** Unity 6.6 Android'de en az OpenGL ES 3.1 istiyor. "2 GB RAM, Android 9" hedef tabletlerin çoğu bunu karşılar, ama pilot okulların cihaz listesi F1-28'de kontrol edilmeli (ADR 0005). Mac'teki Android emülatörü ES 3.0 ile sınırlı olduğu için cihaz testleri gerçek tablette yapılır.
 - **Barındırma (2026-10-08):** Kişisel verinin Türkiye'de tutulması zorunluluğu kaldırıldı (UYM-04 yeniden yazıldı). Üretim AB bölgesinde (Frankfurt); öneri AWS, sağlayıcının KVKK standart sözleşmesini imzalama teyidine bağlı (ADR 0007). Seçim ve sözleşme F1-14'ten önce tamamlanmalı.
+- **F0-18 (2026-10-08):** Marka tescili ve mağaza adı kontrolü yapıldı; sorun bulunmadı.
