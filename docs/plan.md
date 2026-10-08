@@ -115,7 +115,7 @@ roboya-dunyasi/
 | İçerik dağıtımı | Addressables + CDN | Bölge paketleri mağaza güncellemesi olmadan yayınlanır |
 | Yerelleştirme | Unity Localization | Metin ve ses tabloları; TR ile başlar |
 | Yerel veri | SQLite + şifreleme | Çevrimdışı ilerleme ve olay kuyruğu |
-| Mağaza satın alma | Unity IAP (StoreKit ve Play Billing) | Fiş her zaman sunucuda doğrulanır |
+| Mağaza satın alma | İnce yerel köprü: StoreKit 2 ve Play Billing (ADR 0008; Unity IAP veri topladığı için kullanılmaz) | Fiş her zaman sunucuda doğrulanır |
 | API | Python 3.12, FastAPI, Pydantic v2, SQLAlchemy 2, Alembic | OpenAPI şeması sözleşmenin kaynağıdır |
 | Arka plan işleri | Redis + iş kuyruğu (ör. arq) | Mağaza bildirimleri, haftalık raporlar, silme talepleri |
 | Veritabanı | PostgreSQL 16 | Olay tablosu zamana göre bölümlenir |
@@ -198,7 +198,7 @@ Faz 0'ın çıktısı, çalışan bir kodlama motoru, bölüm formatı ve çocuk
 - [ ] Test edilen 4 yaş çocukların en az %75'i ilk bölümü yetişkin yardımı olmadan bitiriyor.
 - [ ] Kodlama motoru ve çözücü için birim test kapsamı ≥ %90.
 - [ ] Yeni bir bölüm, kod yazılmadan yalnız editör ve JSON ile eklenebiliyor.
-- [ ] Barındırma ve Unity paket kararları ADR olarak kayıtlı.
+- [x] Barındırma ve Unity paket kararları ADR olarak kayıtlı (ADR 0005, 0007, 0008).
 
 ## Faz 1 — MVP ve kapalı beta (Ay 3–6, sprint 7–14)
 
@@ -221,7 +221,7 @@ Faz 1 sonunda Sabır Ormanı'nın 36 bölümü, veli alanı ve aile aboneliği �
 | F1-13 | Gizlilik merkezi v1: veriyi görme ve silme talebi | Oyun / API | M | UYM-03 |
 | F1-14 | API: veli hesabı (e-posta ile tek kullanımlık kod), JWT, cihaz kaydı | API | M |  |
 | F1-15 | API: ilerleme eşitleme uç noktaları ve çakışma birleştirme | API / Oyun | L | En yüksek yıldız, en ileri bölüm |
-| F1-16 | Unity IAP: aylık ve yıllık ürünler, abonelik ekranı, deneme hatırlatması | Oyun | L | GLR-01, GLR-02; yıllık = 12 × aylık − %15 |
+| F1-16 | Yerel satın alma köprüsü (StoreKit 2, Play Billing; ADR 0008): aylık ve yıllık ürünler, abonelik ekranı, deneme hatırlatması | Oyun | L | GLR-01, GLR-02; yıllık = 12 × aylık − %15 |
 | F1-17 | API: fiş doğrulama, App Store ve Google Play sunucu bildirimleri, hak servisi | API | L | GLR-03 |
 | F1-18 | Birinci taraf olay toplama: istemci kuyruğu, API ucu, bölümlenmiş tablo | API / Oyun | M | Analitik bölümü |
 | F1-19 | Kendi sunucumuzda hata izleme | Altyapı | S |  |
@@ -459,3 +459,7 @@ Planın en kırılgan noktası tek geliştiricili kapasite ve pilot okulların h
 - **Unity 6.6 ve OpenGL ES 3.1 (2026-10-08):** Unity 6.6 Android'de en az OpenGL ES 3.1 istiyor. "2 GB RAM, Android 9" hedef tabletlerin çoğu bunu karşılar, ama pilot okulların cihaz listesi F1-28'de kontrol edilmeli (ADR 0005). Mac'teki Android emülatörü ES 3.0 ile sınırlı olduğu için cihaz testleri gerçek tablette yapılır.
 - **Barındırma (2026-10-08):** Kişisel verinin Türkiye'de tutulması zorunluluğu kaldırıldı (UYM-04 yeniden yazıldı). Üretim AB bölgesinde (Frankfurt); öneri AWS, sağlayıcının KVKK standart sözleşmesini imzalama teyidine bağlı (ADR 0007). Seçim ve sözleşme F1-14'ten önce tamamlanmalı.
 - **F0-18 (2026-10-08):** Marka tescili ve mağaza adı kontrolü yapıldı; sorun bulunmadı.
+- **F0-20 (2026-10-08):** Satın alma yöntemi kararı verildi: Unity IAP yerine StoreKit 2 ve Play Billing üzerine ince yerel köprü (ADR 0008). Localization ve Addressables kararları ADR 0005'te.
+- **F0-21 (2026-10-08):** Çocuk testlerinin pedagoji ekibiyle tamamlandığı kullanıcı tarafından bildirildi.
+- **Fps ölçümü (2026-10-08):** Kullanıcı kararıyla Faz 0'da yapılmadı. Bellek Redmi Pad 2'de 438 MB (hedef ≤ 600 MB).
+- **Barındırma, geçici durum (2026-10-08):** Geliştirme şimdilik yerelde sürüyor. Sağlayıcı teyidi ve sözleşme yine F1-14'ten (ilk gerçek kişisel veri) önce tamamlanmalı.
