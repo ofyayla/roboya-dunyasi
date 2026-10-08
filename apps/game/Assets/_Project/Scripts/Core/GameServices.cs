@@ -11,23 +11,25 @@ namespace Roboya.Core
             IVoicePlayer voice,
             SessionRules rules,
             ProgressRules progressRules,
-            IProgressStore progress,
+            ProfileManager profiles,
             IEntitlementSource entitlements,
             ShipPartCatalog parts,
             IslandLayout island,
             ISceneNavigator navigator,
-            LocalizedStrings strings)
+            LocalizedStrings strings,
+            LocalNotice notice)
         {
             Catalog = catalog;
             Voice = voice;
             Rules = rules;
             ProgressRules = progressRules;
-            Progress = progress;
+            Profiles = profiles;
             Entitlements = entitlements;
             Parts = parts;
             Island = island;
             Navigator = navigator;
             Strings = strings;
+            Notice = notice;
         }
 
         /// <summary>All levels, parsed once at start-up.</summary>
@@ -39,7 +41,11 @@ namespace Roboya.Core
 
         public ProgressRules ProgressRules { get; }
 
-        public IProgressStore Progress { get; }
+        /// <summary>The child profiles on this device and the parent's consent (F1-10).</summary>
+        public ProfileManager Profiles { get; }
+
+        /// <summary>The active profile's progress.</summary>
+        public IProgressStore Progress => Profiles.Progress;
 
         /// <summary>Server-backed premium flag; never computed on the client (golden rule 3).</summary>
         public IEntitlementSource Entitlements { get; }
@@ -53,5 +59,8 @@ namespace Roboya.Core
 
         /// <summary>Text for adult screens only.</summary>
         public LocalizedStrings Strings { get; }
+
+        /// <summary>The privacy notice the parent consents to before the first profile.</summary>
+        public LocalNotice Notice { get; }
     }
 }

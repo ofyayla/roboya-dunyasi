@@ -59,10 +59,33 @@ namespace Roboya.Core
         public const string ParentTitle = "parent.title";
         public const string ParentEmpty = "parent.empty";
         public const string ParentBack = "parent.back";
+        public const string OnboardingNoticeTitle = "onboarding.notice_title";
+        public const string OnboardingAccept = "onboarding.accept";
+        public const string OnboardingDecline = "onboarding.decline";
+        public const string ProfileTitle = "profile.title";
+        public const string ProfileNickname = "profile.nickname";
+        public const string ProfileAvatar = "profile.avatar";
+        public const string ProfileAge = "profile.age";
+        public const string ProfileAgeMinik = "profile.age.minik";
+        public const string ProfileAgeKasif = "profile.age.kasif";
+        public const string ProfileAgeMucit = "profile.age.mucit";
+        public const string ProfileSave = "profile.save";
+        public const string ProfileCancel = "profile.cancel";
+        public const string ProfileDefaultNickname = "profile.default_nickname";
+        public const string ProfileListTitle = "profile.list_title";
+        public const string ProfileAdd = "profile.add";
+        public const string ProfileRemove = "profile.remove";
+        public const string ProfileRemoveConfirm = "profile.remove_confirm";
+        public const string ProfileLimit = "profile.limit";
+        public const string ProfileActive = "profile.active";
 
         public static readonly string[] All =
         {
             GateQuestion, GateWrong, GateLocked, GateConfirm, GateCancel, ParentTitle, ParentEmpty, ParentBack,
+            OnboardingNoticeTitle, OnboardingAccept, OnboardingDecline, ProfileTitle, ProfileNickname, ProfileAvatar,
+            ProfileAge, ProfileAgeMinik, ProfileAgeKasif, ProfileAgeMucit, ProfileSave, ProfileCancel,
+            ProfileDefaultNickname, ProfileListTitle, ProfileAdd, ProfileRemove, ProfileRemoveConfirm, ProfileLimit,
+            ProfileActive,
         };
     }
 }

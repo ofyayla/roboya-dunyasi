@@ -16,12 +16,41 @@ namespace Roboya.Core
 
         private readonly string _path;
 
+        /// <summary>Legacy form: one anonymous profile whose id is kept in active-profile.txt.</summary>
         public FileProgressStore(string folder)
+            : this(folder, LoadOrCreateProfileId(folder))
+        {
+        }
+
+        public FileProgressStore(string folder, string profileId)
         {
             Directory.CreateDirectory(folder);
-            ProfileId = LoadOrCreateProfileId(folder);
+            ProfileId = profileId;
             _path = Path.Combine(folder, ProfileId + ".json");
             Book = Load(_path);
+        }
+
+        /// <summary>The profile id a pre-profiles install used, or null; lets those installs keep their progress.</summary>
+        public static string LegacyProfileId(string folder)
+        {
+            string file = Path.Combine(folder, ProfileFile);
+            if (!File.Exists(file))
+            {
+                return null;
+            }
+
+            string id = File.ReadAllText(file).Trim();
+            return Guid.TryParse(id, out _) ? id : null;
+        }
+
+        /// <summary>Deletes a profile's progress file (profile removed by the parent).</summary>
+        public static void Delete(string folder, string profileId)
+        {
+            string path = Path.Combine(folder, profileId + ".json");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
         }
 
         public static string DefaultFolder => Path.Combine(Application.persistentDataPath, "progress");
@@ -67,6 +96,7 @@ namespace Roboya.Core
 
         private static string LoadOrCreateProfileId(string folder)
         {
+            Directory.CreateDirectory(folder);
             string file = Path.Combine(folder, ProfileFile);
             if (File.Exists(file))
             {

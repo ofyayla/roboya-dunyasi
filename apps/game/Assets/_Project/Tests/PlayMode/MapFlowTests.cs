@@ -25,6 +25,7 @@ namespace Roboya.Tests.PlayMode
         {
             _progressDir = Path.Combine(Path.GetTempPath(), "roboya-progress-" + Guid.NewGuid().ToString("N"));
             Bootstrap.ProgressFolderOverride = _progressDir;
+            TestProfiles.Seed(_progressDir);
         }
 
         [UnityTearDown]
@@ -66,12 +67,9 @@ namespace Roboya.Tests.PlayMode
             VisualElement map = null;
             yield return OpenMap(r => map = r);
 
-            // ILR-03: the earned propeller is fitted on the island ship and remembered as seen.
-            Assert.IsNotNull(map.Q("island-ship").Q("ship-propeller"), "first part on the ship");
-            Assert.IsNull(map.Q("island-ship").Q("ship-lights"), "second part not earned yet");
-            yield return new WaitForSeconds(1f);
+            // ILR-03: the island shows the painted ship; the earned propeller is fitted in the workshop.
+            Assert.IsNull(map.Q("island-ship"), "the island ship is part of the illustration");
             yield return Capture(map, "09-island-ship");
-            Assert.AreEqual(1, new FileProgressStore(_progressDir).Book.ShipPartsSeen, "the drop-in plays once");
 
             yield return OpenForest(map);
             Tap(map.Q("to-workshop"));
@@ -80,6 +78,8 @@ namespace Roboya.Tests.PlayMode
 
             Assert.IsTrue(map.Q("part-tile-propeller").ClassListContains("workshop__tile--earned"));
             Assert.IsFalse(map.Q("part-tile-lights").ClassListContains("workshop__tile--earned"));
+            Assert.IsNotNull(map.Q("workshop-ship").Q("ship-propeller"), "first part on the ship");
+            Assert.AreEqual(1, TestProfiles.Seed(_progressDir).Book.ShipPartsSeen, "the drop-in plays once");
             Assert.IsNotNull(map.Q("workshop-ship").Q("ship-lights"), "coming parts are shown faintly in the workshop");
             yield return Capture(map, "10-workshop");
         }
@@ -235,7 +235,7 @@ namespace Roboya.Tests.PlayMode
 
         private void Seed(int completed)
         {
-            var store = new FileProgressStore(_progressDir);
+            var store = TestProfiles.Seed(_progressDir);
             for (int i = 1; i <= completed; i++)
             {
                 store.Book.Record(Level + i.ToString("D2"), 3);

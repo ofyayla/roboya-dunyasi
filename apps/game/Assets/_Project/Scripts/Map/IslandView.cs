@@ -10,8 +10,8 @@ namespace Roboya.Map
     /// <summary>
     /// The island overview (PRD: "Ada haritası"). Regions open in order; an open region pulses, closed ones sit
     /// under soft clouds with a padlock. Hotspot positions come from content/map/island.json as fractions of the
-    /// illustration, which is drawn "cover" so it fills the screen at any aspect. Roboya's ship on the beach shows
-    /// every repair part earned so far; new ones drop into place the first time the child sees them (ILR-03).
+    /// illustration, which is drawn "cover" so it fills the screen at any aspect. Roboya's ship is part of the
+    /// painted illustration, half-buried in the beach; the repair parts are shown in the workshop (ILR-03).
     /// </summary>
     public sealed class IslandView : VisualElement, IRefreshable
     {
@@ -20,7 +20,6 @@ namespace Roboya.Map
         private readonly VisualElement _image = new VisualElement { name = "island-image" };
         private readonly List<(VisualElement View, IslandLayout.Spot Spot, float Size)> _spots = new List<(VisualElement, IslandLayout.Spot, float)>();
         private readonly VisualElement _robot = new VisualElement { name = "island-robot" };
-        private readonly ShipView _ship;
         private readonly HashSet<string> _open = new HashSet<string>();
         private float _aspect = 16f / 9f;
         private float _time;
@@ -82,10 +81,6 @@ namespace Roboya.Map
                 _spots.Add((spot, region, region.Radius * 2f));
             }
 
-            // The ship sprite sits exactly over the one painted in the illustration and hides it.
-            _ship = new ShipView(partArt, services.Parts) { name = "island-ship" };
-            _ship.AddToClassList("island__ship");
-            _image.Add(_ship);
             _robot.AddToClassList("island__robot");
             if (art != null && art.RobotFront != null)
             {
@@ -100,21 +95,6 @@ namespace Roboya.Map
 
         public void Refresh()
         {
-            var book = _services.Progress.Book;
-            int earned = ProgressQueries.EarnedParts(_services);
-            _ship.Show(earned, book.ShipPartsSeen, showComing: false);
-            if (book.MarkShipPartsSeen(earned))
-            {
-                try
-                {
-                    _services.Progress.Save();
-                }
-                catch (System.IO.IOException e)
-                {
-                    Debug.LogException(e);
-                }
-            }
-
             Layout();
         }
 
@@ -148,10 +128,6 @@ namespace Roboya.Map
             float sx = (ship != null ? ship.X : 0.15f) * w;
             float sy = (ship != null ? ship.Y : 0.78f) * h;
             float shipSize = w * 0.15f;
-            _ship.style.width = shipSize;
-            _ship.style.height = shipSize;
-            _ship.style.left = sx - (shipSize * 0.5f);
-            _ship.style.top = sy - (shipSize * 0.55f);
             float rh = h * 0.18f;
             _robot.style.width = rh * 0.95f;
             _robot.style.height = rh;

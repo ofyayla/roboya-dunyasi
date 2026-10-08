@@ -1,5 +1,6 @@
 using System;
 using Roboya.CodingEngine.Levels.Generated;
+using Roboya.CodingEngine.Profiles;
 using Roboya.Core;
 using Roboya.UI;
 using UnityEngine.UIElements;
@@ -17,6 +18,7 @@ namespace Roboya.Map
         public const string LockedWaitVoice = "roboya.locked_wait";
         public const string AskGrownUpVoice = "roboya.ask_grownup";
         public const string WorkshopVoice = "workshop.welcome";
+        public const string OnboardingVoice = "onboarding.welcome";
 
         private readonly GameServices _services;
         private readonly IslandView _island;
@@ -25,6 +27,9 @@ namespace Roboya.Map
         private readonly ParentView _parent;
         private readonly ParentGateView _gate;
         private readonly IconButton _grownup;
+        private readonly WelcomeView _welcome;
+        private readonly NoticeView _notice;
+        private readonly ProfileEditorView _editor;
 
         public MapController(VisualElement root, GameServices services, RegionArt art, PartArt partArt)
         {
@@ -35,6 +40,10 @@ namespace Roboya.Map
             _workshop = new WorkshopView(services, art, partArt, ShowPath);
             _parent = new ParentView(services.Strings, ShowIsland);
             _gate = new ParentGateView(services.Strings);
+            _welcome = new WelcomeView(art, () => _gate.Open(AfterGate));
+            _notice = new NoticeView(services, OpenEditorForNew, ShowWelcome);
+            _editor = new ProfileEditorView(services.Strings, SaveProfile, OnEditorCancelled);
+            _parent.AddSection(new ProfilesSection(services, profile => _editor.Open(profile), OpenEditorForNew));
             _grownup = new IconButton(IconKind.Grownup, () => _gate.Open(ShowParent)) { name = "to-parent" };
             _grownup.AddToClassList("map__grownup");
             host.Add(_island);
@@ -42,15 +51,23 @@ namespace Roboya.Map
             host.Add(_workshop);
             host.Add(_parent);
             host.Add(_grownup);
+            host.Add(_welcome);
             host.Add(_gate);
+            host.Add(_notice);
+            host.Add(_editor);
         }
 
         public void Open()
         {
+            // First run, or the notice changed, or every profile was removed: the parent comes first (A1).
+            if (NeedsOnboarding)
+            {
+                ShowWelcome();
+                return;
+            }
+
             var nav = _services.Navigator;
-            // A repair part earned but not yet seen: open on the island so it drops onto the ship (ILR-03).
-            bool newPart = ProgressQueries.EarnedParts(_services) > _services.Progress.Book.ShipPartsSeen;
-            if (!newPart && (nav.SelectedLevelId != null || nav.PendingMapLine != null))
+            if (nav.SelectedLevelId != null || nav.PendingMapLine != null)
             {
                 // Back from a level: the child continues on the path, not the island.
                 ShowPath();
@@ -97,6 +114,63 @@ namespace Roboya.Map
             _services.Voice.Play(WelcomeVoice);
         }
 
+        private bool NeedsOnboarding =>
+            !_services.Profiles.Registry.HasConsentFor(_services.Notice.Version) || !_services.Profiles.HasActive;
+
+        private void ShowWelcome()
+        {
+            Show(_welcome);
+            _services.Voice.Play(OnboardingVoice);
+        }
+
+        /// <summary>After the parental gate: the notice first when consent is missing, then the profile.</summary>
+        private void AfterGate()
+        {
+            if (!_services.Profiles.Registry.HasConsentFor(_services.Notice.Version))
+            {
+                _notice.Open();
+            }
+            else
+            {
+                OpenEditorForNew();
+            }
+        }
+
+        private void OpenEditorForNew()
+        {
+            var limit = _services.ProgressRules.ProfileLimit(_services.Entitlements.HasPremium);
+            if (_services.Profiles.Registry.Profiles.Count < limit)
+            {
+                _editor.Open();
+            }
+        }
+
+        private void SaveProfile(string nickname, string avatarId, AgeBand band)
+        {
+            if (_editor.Editing == null)
+            {
+                var profile = _services.Profiles.Add(nickname, avatarId, band);
+                _services.Profiles.SetActive(profile.Id);
+            }
+            else
+            {
+                _services.Profiles.Update(_editor.Editing, nickname, avatarId, band);
+            }
+
+            if (_welcome.style.display == DisplayStyle.Flex || NeedsOnboarding)
+            {
+                ShowIsland();
+            }
+        }
+
+        private void OnEditorCancelled()
+        {
+            if (NeedsOnboarding)
+            {
+                ShowWelcome();
+            }
+        }
+
         private void ShowIsland() => Show(_island);
 
         private void ShowParent() => Show(_parent);
@@ -111,7 +185,7 @@ namespace Roboya.Map
 
         private void Show(VisualElement view)
         {
-            foreach (var v in new VisualElement[] { _island, _path, _workshop, _parent })
+            foreach (var v in new VisualElement[] { _island, _path, _workshop, _parent, _welcome })
             {
                 v.style.display = v == view ? DisplayStyle.Flex : DisplayStyle.None;
             }

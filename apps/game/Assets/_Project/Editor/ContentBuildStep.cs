@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Roboya.EditorTools
 {
-    /// <summary>Copies the shipped app content (content/map, content/rewards) into StreamingAssets/content before builds.</summary>
+    /// <summary>Copies the shipped app content (map, rewards, localization, legal) into StreamingAssets/content before builds.</summary>
     public sealed class ContentBuildStep : IPreprocessBuildWithReport
     {
         public int callbackOrder => 2;
@@ -33,10 +33,15 @@ namespace Roboya.EditorTools
                 }
 
                 Directory.CreateDirectory(Path.Combine(target, folder));
-                foreach (var file in Directory.GetFiles(source, "*.json"))
+                // Content is JSON; the privacy notice is a markdown file.
+                foreach (var file in Directory.GetFiles(source))
                 {
-                    File.Copy(file, Path.Combine(target, folder, Path.GetFileName(file)));
-                    count++;
+                    string ext = Path.GetExtension(file);
+                    if (ext == ".json" || ext == ".md")
+                    {
+                        File.Copy(file, Path.Combine(target, folder, Path.GetFileName(file)));
+                        count++;
+                    }
                 }
             }
 
