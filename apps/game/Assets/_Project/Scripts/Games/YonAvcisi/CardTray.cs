@@ -28,6 +28,9 @@ namespace Roboya.Games.YonAvcisi
         private Drag _drag;
         private bool _locked;
 
+        private CardElement _guide;
+        private IVisualElementScheduledItem _guideLoop;
+
         public CardTray(VisualElement palette, VisualElement plan, VisualElement dragLayer)
         {
             _palette = palette;
@@ -37,6 +40,40 @@ namespace Roboya.Games.YonAvcisi
         }
 
         public event Action Changed;
+
+        /// <summary>
+        /// Guided levels: the palette card Roboya points at gently grows and shrinks, with a white ring so the cue is
+        /// never colour alone. Pass null to stop pointing.
+        /// </summary>
+        public void Guide(CardType? card)
+        {
+            _guide = null;
+            foreach (var child in _palette.Children())
+            {
+                if (child is CardElement element)
+                {
+                    bool pointed = card.HasValue && element.Card == card.Value;
+                    element.EnableInClassList("card--guide", pointed);
+                    element.style.scale = new Scale(Vector3.one);
+                    if (pointed)
+                    {
+                        _guide = element;
+                    }
+                }
+            }
+
+            if (_guideLoop == null)
+            {
+                _guideLoop = _palette.schedule.Execute(() =>
+                {
+                    if (_guide != null)
+                    {
+                        float s = 1f + (Mathf.Max(0f, Mathf.Sin(Time.realtimeSinceStartup * 5f)) * 0.14f);
+                        _guide.style.scale = new Scale(new Vector3(s, s, 1f));
+                    }
+                }).Every(33);
+            }
+        }
 
         public void Bind(PlanStrip strip, IEnumerable<CardType> palette)
         {

@@ -43,6 +43,10 @@ Ses metninde adı geçen nesne tahtada da görünmelidir.
 
 Örnek: 4. bölümde "Kaplumbağa ağacın arkasında bekliyor" dendiği için kaplumbağanın arkasında bir ağaç (`scenery`) var. 7. bölümde "yola bir kütük devrilmiş" dendiği için engeller kütük (`grid.looks`).
 
+## Rehberli bölüm (`options.guided`)
+
+Yeni bir kavramın ilk bölümünde (ör. 1, 3, 5) Roboya kodu çocukla birlikte kurar: sıradaki doğru kartı paletteki kart nabız atarak gösterir, plan doğru tamamlanınca oynat düğmesi nabız atar. Kartları yine çocuk yerleştirir; Roboya onun yerine bir şey koymaz. Yanlış bir kart konursa nabız, doğru olan karta gider. İşaret, ipucuyla aynı en kısa rota hesabını kullanır; ek veri gerekmez.
+
 ## Yeni kart tanıtımı
 
 `cards.introduces` olan bölümde giriş sahnesi, bölüm sesi bittikten sonra kartı büyük gösterir ve `card.<kart>.intro` satırını çalar (ör. `card.turn_right.intro`). Çocuk karta dokunursa bu satır tekrar çalar. Doğrulayıcı bu satırın `script.csv` dosyasında bulunduğunu kontrol eder.

@@ -42,6 +42,8 @@ namespace Roboya.Games.YonAvcisi
         private int _index;
         private LevelEntry _entry;
         private LevelSession _session;
+        private bool _guided;
+        private bool _guideDone;
 
         public YonAvcisiController(VisualElement root, GameServices services, IReadOnlyList<LevelEntry> levels, RegionArt art = null, PartArt partArt = null)
         {
@@ -103,6 +105,7 @@ namespace Roboya.Games.YonAvcisi
                 _session.Plan.Load(CardsOf(_entry));
             }
 
+            _guided = _entry.Dto.Options?.Guided ?? false;
             bool ghost = _entry.Dto.Options?.GhostPath ?? false;
             _board.Show(_entry.Level, ghost, _entry.Dto);
             _tray.Bind(_session.Plan, _entry.Level.AvailableCards);
@@ -110,6 +113,7 @@ namespace Roboya.Games.YonAvcisi
             _result.AddToClassList("hidden");
             _story.Hide();
             RenderProgress();
+            UpdateGuide();
             UpdateButtons();
             _ = IntroAsync(_entry, withStory);
         }
@@ -165,6 +169,7 @@ namespace Roboya.Games.YonAvcisi
             var token = _lifetime.Token;
             _tray.SetLocked(true);
             _tray.ClearMarks();
+            _tray.Guide(null);
             _board.ResetRobot(_entry.Level.Start);
             var events = _session.Play();
             UpdateButtons(); // after Play(): the session is now Running, so play is disabled.
@@ -232,6 +237,7 @@ namespace Roboya.Games.YonAvcisi
             await Tween.Delay(0.8f, token);
             _board.ResetRobot(_entry.Level.Start);
             _tray.SetLocked(false);
+            UpdateGuide();
             UpdateButtons();
         }
 
@@ -266,6 +272,7 @@ namespace Roboya.Games.YonAvcisi
         private void OnPlanChanged()
         {
             _tray.ClearHint();
+            UpdateGuide();
             UpdateButtons();
             if (_session.Plan.IsFull)
             {
@@ -302,6 +309,7 @@ namespace Roboya.Games.YonAvcisi
 
             _session.Plan.Clear();
             _tray.Refresh();
+            UpdateGuide();
             UpdateButtons();
         }
 
@@ -335,6 +343,21 @@ namespace Roboya.Games.YonAvcisi
             _services.Navigator.GoToMap();
         }
 
+        /// <summary>Guided levels: Roboya points at the next card, then at the play button; the child places every card.</summary>
+        private void UpdateGuide()
+        {
+            _guideDone = false;
+            if (!_guided || _session.State != SessionState.Planning)
+            {
+                _tray.Guide(null);
+                return;
+            }
+
+            var step = GuidedPlan.Next(_entry.Level, _session.Plan.Cards);
+            _guideDone = step.IsComplete;
+            _tray.Guide(step.NextCard);
+        }
+
         private void SaveProgress()
         {
             try
@@ -351,7 +374,7 @@ namespace Roboya.Games.YonAvcisi
         private void UpdateButtons()
         {
             _play.SetEnabled(_session.CanPlay);
-            _play.EnableInClassList("icon-button--pulse", _session.CanPlay && _session.Plan.IsFull);
+            _play.EnableInClassList("icon-button--pulse", _session.CanPlay && (_session.Plan.IsFull || _guideDone));
             _hint.EnableInClassList("hidden", !_session.ShouldOfferHint && _session.HintTier == HintTier.None);
             _hint.EnableInClassList("icon-button--pulse", _session.ShouldOfferHint);
         }

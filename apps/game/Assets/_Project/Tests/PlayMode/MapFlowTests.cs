@@ -144,6 +144,29 @@ namespace Roboya.Tests.PlayMode
             yield return Capture(game, "11-board-worn");
         }
 
+        [UnityTest]
+        public IEnumerator GuidedFirstLevel_PointsAtNextCardThenPlay_ButUnguidedLevelDoesNot()
+        {
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            yield return OpenForest(map);
+            Tap(map.Q("stone-1"));
+
+            VisualElement game = null;
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
+            yield return PassStory(game);
+            var forward = game.Q("palette").Children().OfType<CardElement>().First();
+            Assert.IsTrue(forward.ClassListContains("card--guide"), "level 1 is guided: Roboya points at the forward card");
+            Assert.IsFalse(game.Q("play").ClassListContains("icon-button--pulse"), "nothing to play yet");
+
+            Tap(forward);
+            Tap(forward);
+            yield return null;
+            Assert.IsFalse(forward.ClassListContains("card--guide"), "the plan is complete, nothing more to place");
+            Assert.IsTrue(game.Q("play").ClassListContains("icon-button--pulse"), "Roboya points at play");
+            yield return Capture(game, "12-guided");
+        }
+
         private void Seed(int completed)
         {
             var store = new FileProgressStore(_progressDir);
