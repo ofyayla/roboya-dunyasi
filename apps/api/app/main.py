@@ -3,7 +3,8 @@ from fastapi.responses import JSONResponse
 
 from app.core.config import DEFAULT_SECRET, Settings, get_settings
 from app.core.logging import configure_logging
-from app.routers import auth, events, health, me, profiles, store
+from app.routers import auth, events, health, me, privacy, profiles, store
+from app.services import legal
 from app.services.errors import ApiError
 from app.services.health import API_VERSION
 
@@ -13,6 +14,8 @@ def check_settings(settings: Settings) -> None:
     if settings.env in ("staging", "production"):
         if settings.jwt_secret == DEFAULT_SECRET or len(settings.jwt_secret) < 32:
             raise RuntimeError("ROBOYA_JWT_SECRET must be a long random value outside local/test")
+        if settings.env == "production" and legal.current_notice(settings).status != "final":
+            raise RuntimeError("The privacy notice is still a draft: get the lawyer's approval")
         if settings.email_backend == "outbox":
             raise RuntimeError("The outbox email backend is for development only")
         if settings.store_backend == "signed-dev":
@@ -42,6 +45,8 @@ def create_app() -> FastAPI:
     app.include_router(profiles.router)
     app.include_router(store.router)
     app.include_router(events.router)
+    app.include_router(privacy.router)
+    app.include_router(privacy.legal_router)
     return app
 
 

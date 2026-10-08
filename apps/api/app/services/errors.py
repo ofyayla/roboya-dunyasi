@@ -43,3 +43,18 @@ class InvalidSignatureApiError(ApiError):
 class PurchaseLinkedError(ApiError):
     status_code = 409
     code = "purchase_linked"
+
+
+class ConsentRequiredError(ApiError):
+    status_code = 403
+    code = "consent_required"
+
+
+class NoticeOutdatedError(ApiError):
+    status_code = 409
+    code = "notice_outdated"
+
+
+class DeletionPendingError(ApiError):
+    status_code = 409
+    code = "deletion_pending"

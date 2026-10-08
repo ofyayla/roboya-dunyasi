@@ -77,7 +77,13 @@ async def get_progress(
     operation_id="syncProgress",
 )
 async def sync_progress(
-    profile_id: uuid.UUID, body: ProgressIn, account: AccountDep, session: SessionDep
+    profile_id: uuid.UUID,
+    body: ProgressIn,
+    account: AccountDep,
+    session: SessionDep,
+    settings: SettingsDep,
 ) -> ProgressOut:
-    merged = await profiles.sync_progress(session, account, profile_id, body.stars, clock.now())
+    merged = await profiles.sync_progress(
+        session, account, profile_id, body.stars, settings, clock.now()
+    )
     return ProgressOut(stars=merged)
