@@ -1,13 +1,30 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 
-from app.core.config import get_settings
+from app.core.config import DEFAULT_SECRET, Settings, get_settings
 from app.core.logging import configure_logging
-from app.routers import health
+from app.routers import auth, health, me
+from app.services.errors import ApiError
 from app.services.health import API_VERSION
+
+
+def check_settings(settings: Settings) -> None:
+    """Refuses to start with development defaults outside local and test."""
+    if settings.env in ("staging", "production"):
+        if settings.jwt_secret == DEFAULT_SECRET or len(settings.jwt_secret) < 32:
+            raise RuntimeError("ROBOYA_JWT_SECRET must be a long random value outside local/test")
+        if settings.email_backend == "outbox":
+            raise RuntimeError("The outbox email backend is for development only")
+
+
+async def _api_error(_: Request, exc: Exception) -> JSONResponse:
+    assert isinstance(exc, ApiError)
+    return JSONResponse(status_code=exc.status_code, content={"code": exc.code})
 
 
 def create_app() -> FastAPI:
     settings = get_settings()
+    check_settings(settings)
     configure_logging(settings.log_level)
     app = FastAPI(
         title="Roboya Dünyası API",
@@ -16,7 +33,10 @@ def create_app() -> FastAPI:
         docs_url=None if settings.env == "production" else "/docs",
         redoc_url=None,
     )
+    app.add_exception_handler(ApiError, _api_error)
     app.include_router(health.router)
+    app.include_router(auth.router)
+    app.include_router(me.router)
     return app
 
 

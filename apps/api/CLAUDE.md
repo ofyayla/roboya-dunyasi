@@ -7,4 +7,6 @@ Kök `CLAUDE.md` §8 geçerlidir.
 - Her yeni uç nokta: kimlik doğrulama bağımlılığı, `response_model`, kapsam filtresi testi, `/v1` öneki, ardından `make gen`.
 - Hak hesaplama yalnız `app/services/entitlements.py`; kapsam ≥ %95.
 - Testler gerçek PostgreSQL ile çalışır (`infra/docker-compose.yml` veya CI servisi). `ROBOYA_DATABASE_URL` test veritabanını gösterir.
-- Loglara e-posta, takma ad, IP yazılmaz.
+- Loglara e-posta, takma ad, IP yazılmaz. Bu yüzden uvicorn erişim günlüğü kapalı çalışır (`--no-access-log`).
+- Veli hesabı: e-posta ile tek kullanımlık kod, kısa ömürlü JWT ve dönen yenileme belirteci (ADR 0011). Geliştirmede e-posta `tmp/outbox.jsonl` dosyasına yazılır; gerçek sağlayıcı CLAUDE.md §11 sürecinden geçmeden bağlanmaz.
+- Testler `tests/conftest.py` ile göçleri gerçek veritabanında aşağı ve yukarı çalıştırır; sahte e-posta ve sahte saat fixture'ları vardır.
