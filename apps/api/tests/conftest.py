@@ -47,8 +47,8 @@ async def clean_tables(migrated_database: None) -> AsyncIterator[None]:
     async with get_engine().begin() as conn:
         await conn.execute(
             text(
-                "TRUNCATE store_events, store_subscriptions, progress_entries, child_profiles, "
-                "refresh_tokens, login_codes, device_registrations, accounts "
+                "TRUNCATE events, store_events, store_subscriptions, progress_entries, "
+                "child_profiles, refresh_tokens, login_codes, device_registrations, accounts "
                 "RESTART IDENTITY CASCADE"
             )
         )
