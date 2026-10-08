@@ -11,6 +11,7 @@ from app.models.account import Account
 from app.services import auth
 from app.services.email import EmailSender, OutboxEmailSender
 from app.services.errors import InvalidTokenApiError
+from app.services.store_verifier import SignedDevVerifier, StoreVerifier
 
 _bearer = HTTPBearer(auto_error=False)
 
@@ -23,6 +24,13 @@ def get_email_sender(settings: SettingsDep) -> EmailSender:
 
 
 EmailDep = Annotated[EmailSender, Depends(get_email_sender)]
+
+
+def get_store_verifier(settings: SettingsDep) -> StoreVerifier:
+    return SignedDevVerifier(settings.store_dev_public_key)
+
+
+StoreVerifierDep = Annotated[StoreVerifier, Depends(get_store_verifier)]
 
 
 async def get_current_account(

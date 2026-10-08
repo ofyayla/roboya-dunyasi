@@ -46,9 +46,8 @@ async def save_profile(
     # An id that exists under another account must not reveal that: treat it as not found.
     if await profiles.id_exists(session, profile_id):
         raise NotFoundError
-    if await profiles.count_for_account(session, account.id) >= entitlements.profile_limit(
-        account, settings
-    ):
+    limit = await entitlements.profile_limit(session, account, settings, now)
+    if await profiles.count_for_account(session, account.id) >= limit:
         raise ProfileLimitError
     created = await profiles.add(
         session, account.id, profile_id, fields.nickname, fields.avatar_id, fields.age_band, now
