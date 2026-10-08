@@ -452,3 +452,4 @@ Planın en kırılgan noktası tek geliştiricili kapasite ve pilot okulların h
 **Kaynaklar**
 
 - [Turkcell – Google Cloud stratejik iş birliği (QNB Invest)](https://www.qnbinvest.com.tr/investodak/qnbarastirma/turkcell-google-cloud-stratejik-is-birligi)
+- **Barındırma (2026-10-08):** Türkiye'de yönetilen PostgreSQL sunan sağlayıcıların fiyatları herkese açık değil; ADR 0007'deki kontrol listesiyle yazılı teklif istenmeli. Üretim seçimi F1-14'ten önce tamamlanmalı.
