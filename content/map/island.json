@@ -1,0 +1,12 @@
+{
+  "image": "bg_island",
+  "regions": [
+    { "id": "sabir-ormani", "x": 0.24, "y": 0.52, "radius": 0.15 },
+    { "id": "paylasim-koyu", "x": 0.54, "y": 0.68, "radius": 0.14 },
+    { "id": "yardimlasma-limani", "x": 0.84, "y": 0.62, "radius": 0.12 },
+    { "id": "nezaket-bahcesi", "x": 0.5, "y": 0.32, "radius": 0.12 },
+    { "id": "sorumluluk-kulesi", "x": 0.25, "y": 0.2, "radius": 0.11 },
+    { "id": "mucit-atolyesi", "x": 0.74, "y": 0.26, "radius": 0.12 }
+  ],
+  "ship": { "x": 0.15, "y": 0.78 }
+}

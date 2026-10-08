@@ -240,7 +240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2ebd94b4823f4a738dd2019b09d4519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Roboya.Core::Roboya.Core.Bootstrap
-  firstScene: Game
+  firstScene: Map
 --- !u!4 &563097582
 Transform:
   m_ObjectHideFlags: 0

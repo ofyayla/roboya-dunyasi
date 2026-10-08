@@ -1,4 +1,5 @@
 using Roboya.CodingEngine.Play;
+using Roboya.CodingEngine.Progress;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,13 +7,38 @@ namespace Roboya.Core
 {
     /// <summary>
     /// The single composition root (CLAUDE.md §7). Lives in the Boot scene, builds services and loads the
-    /// first scene, then passes services to that scene's <see cref="ISceneEntry"/>.
+    /// first scene, then passes services to that scene's <see cref="ISceneEntry"/>. Also the scene navigator.
     /// </summary>
-    public sealed class Bootstrap : MonoBehaviour
+    public sealed class Bootstrap : MonoBehaviour, ISceneNavigator
     {
-        [SerializeField] private string firstScene = "Game";
+        public const string MapScene = "Map";
+        public const string GameScene = "Game";
+
+        [SerializeField] private string firstScene = MapScene;
 
         private GameServices _services;
+
+        public string SelectedLevelId { get; private set; }
+
+        public string PendingMapLine { get; private set; }
+
+        /// <summary>True when the map should open on the region path (coming back from a level).</summary>
+        public bool ReturningFromLevel { get; private set; }
+
+        public void ConsumeMapLine() => PendingMapLine = null;
+
+        public void PlayLevel(string levelId)
+        {
+            SelectedLevelId = levelId;
+            _ = LoadAsync(GameScene);
+        }
+
+        public void GoToMap(string lineOnArrival = null)
+        {
+            PendingMapLine = lineOnArrival;
+            ReturningFromLevel = true;
+            _ = LoadAsync(MapScene);
+        }
 
         private async Awaitable Start()
         {
@@ -55,9 +81,36 @@ namespace Roboya.Core
 #else
             levels = new StreamingAssetsLevelSource();
 #endif
+            var catalog = LevelCatalog.Parse(await levels.LoadAllAsync());
+            var parts = RobotPartCatalog.Parse(await ContentFiles.ReadAsync(RobotPartCatalog.File));
+            var island = IslandLayout.Parse(await ContentFiles.ReadAsync(IslandLayout.File));
+
+            IEntitlementSource entitlements = new FreeTierEntitlements();
+#if UNITY_EDITOR
+            if (DevEntitlements.Requested)
+            {
+                Debug.Log("[dev] " + DevEntitlements.Variable + "=1: all levels unlocked in the editor.");
+                entitlements = new DevEntitlements();
+            }
+#endif
+
             // Rules will come from server configuration once the API exists (CLAUDE.md §6).
-            return new GameServices(levels, await ComposeVoiceAsync(), SessionRules.Default);
+            return new GameServices(
+                catalog,
+                await ComposeVoiceAsync(),
+                SessionRules.Default,
+                ProgressRules.Default,
+                new FileProgressStore(ProgressFolder),
+                entitlements,
+                parts,
+                island,
+                this);
         }
+
+        /// <summary>Tests point this at a temporary folder so each run starts with fresh progress.</summary>
+        public static string ProgressFolderOverride { get; set; }
+
+        private static string ProgressFolder => ProgressFolderOverride ?? FileProgressStore.DefaultFolder;
 
         private async Awaitable<IVoicePlayer> ComposeVoiceAsync()
         {

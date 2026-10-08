@@ -23,6 +23,41 @@
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },
+    "garage.welcome": {
+      "file": "audio/tr/garage.welcome.mp3",
+      "source": "tts",
+      "textHash": "131860ba774d71ee",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "map.region_locked": {
+      "file": "audio/tr/map.region_locked.mp3",
+      "source": "tts",
+      "textHash": "0d0e5afd57f0e873",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "map.welcome": {
+      "file": "audio/tr/map.welcome.mp3",
+      "source": "tts",
+      "textHash": "50f631b83fa17de5",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "reward.part_unlocked": {
+      "file": "audio/tr/reward.part_unlocked.mp3",
+      "source": "tts",
+      "textHash": "a7cdfd60c9cd64f3",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "roboya.ask_grownup": {
+      "file": "audio/tr/roboya.ask_grownup.mp3",
+      "source": "tts",
+      "textHash": "5f9da330f5903a82",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
     "roboya.bump.01": {
       "file": "audio/tr/roboya.bump.01.mp3",
       "source": "tts",
@@ -48,6 +83,13 @@
       "file": "audio/tr/roboya.hint.show_card.mp3",
       "source": "tts",
       "textHash": "2e00d997624961c0",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "roboya.locked_wait": {
+      "file": "audio/tr/roboya.locked_wait.mp3",
+      "source": "tts",
+      "textHash": "baadeda3b3872cff",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },

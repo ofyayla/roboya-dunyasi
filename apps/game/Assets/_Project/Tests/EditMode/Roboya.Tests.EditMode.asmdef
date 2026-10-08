@@ -4,6 +4,7 @@
     "references": [
         "Roboya.CodingEngine",
         "Roboya.UI",
+        "Roboya.Core",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

@@ -30,3 +30,9 @@ yon_avcisi.l09.intro,"Bu sefer bir elma ve bir armut var. Hangisini önce alalı
 yon_avcisi.l09.success,"İki meyveyi de topladık! Kaplumbağa çok mutlu.",Bölüm sonu,sabir-ormani.yon-avcisi.09
 yon_avcisi.l10.intro,"Bak, orada parlayan bir çark var! Gemimin parçası olabilir. Elmayı da unutmayalım!",Bölüm girişi; bölge finali,sabir-ormani.yon-avcisi.10
 yon_avcisi.l10.success,"Gemimin çarkını bulduk! Teşekkürler, sabırlı arkadaşım!",Bölüm sonu,sabir-ormani.yon-avcisi.10
+map.welcome,"Sabır Ormanı'na hoş geldin! Hangi taşa gidelim?",Patika ekranı açılışı (F1-05),
+map.region_locked,"Orası daha sonra açılacak! Önce Sabır Ormanı'nda yardım edelim.",Ada haritasında kapalı bölgeye dokunma,
+roboya.locked_wait,"Önce bir önceki taşa gidelim!",Patikada sırası gelmemiş taşa dokunma,
+roboya.ask_grownup,"Devamını oynamak için büyüklerine sorar mısın?",Ücretsiz bölümlerin sonu (GLR-01); satış dili yok,
+reward.part_unlocked,"Bak, yeni bir parça kazandım! Garajda takabiliriz.",Robot parçası kazanma anı (ILR-03),
+garage.welcome,"Garajıma hoş geldin! Hangi parçayı takalım?",Garaj ekranı açılışı (ILR-03),

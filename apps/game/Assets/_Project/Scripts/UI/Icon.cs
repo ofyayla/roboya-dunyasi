@@ -172,6 +172,58 @@ namespace Roboya.UI
                 case IconKind.Gear:
                     DrawGear(p, P(0.5f, 0.5f), s);
                     break;
+                case IconKind.Home:
+                    // House: roof triangle over a body with a door gap.
+                    p.BeginPath();
+                    p.MoveTo(P(0.12f, 0.5f));
+                    p.LineTo(P(0.5f, 0.14f));
+                    p.LineTo(P(0.88f, 0.5f));
+                    p.ClosePath();
+                    p.Fill();
+                    RoundedRect(p, P(0.24f, 0.44f), P(0.76f, 0.86f), s * 0.05f);
+                    p.Fill();
+                    p.fillColor = _accent;
+                    RoundedRect(p, P(0.42f, 0.6f), P(0.58f, 0.86f), s * 0.04f);
+                    p.Fill();
+                    break;
+                case IconKind.Lock:
+                    // Padlock: shackle arc above a rounded body with a keyhole (GLR-01 grown-up gate).
+                    p.lineWidth = s * 0.1f;
+                    ArcStroke(p, P(0.5f, 0.42f), s * 0.18f, 180f, 360f);
+                    Line(p, P(0.32f, 0.42f), P(0.32f, 0.5f));
+                    Line(p, P(0.68f, 0.42f), P(0.68f, 0.5f));
+                    RoundedRect(p, P(0.2f, 0.48f), P(0.8f, 0.88f), s * 0.08f);
+                    p.Fill();
+                    p.fillColor = _accent;
+                    p.BeginPath();
+                    p.Arc(P(0.5f, 0.63f), s * 0.06f, Angle.Degrees(0f), Angle.Degrees(360f));
+                    p.Fill();
+                    RoundedRect(p, P(0.47f, 0.64f), P(0.53f, 0.78f), s * 0.02f);
+                    p.Fill();
+                    break;
+                case IconKind.Garage:
+                    // Wrench: handle bar with an open jaw ring at the top.
+                    p.lineWidth = s * 0.16f;
+                    Line(p, P(0.3f, 0.78f), P(0.6f, 0.42f));
+                    p.lineWidth = s * 0.1f;
+                    ArcStroke(p, P(0.66f, 0.32f), s * 0.17f, 100f, 400f);
+                    break;
+                case IconKind.Island:
+                    // Island: a mound with a palm-like tree over a wave line.
+                    p.BeginPath();
+                    p.Arc(P(0.5f, 0.78f), s * 0.34f, Angle.Degrees(180f), Angle.Degrees(360f));
+                    p.ClosePath();
+                    p.Fill();
+                    p.lineWidth = s * 0.07f;
+                    Line(p, P(0.5f, 0.48f), P(0.54f, 0.2f));
+                    p.BeginPath();
+                    p.Arc(P(0.54f, 0.22f), s * 0.14f, Angle.Degrees(180f), Angle.Degrees(360f));
+                    p.ClosePath();
+                    p.Fill();
+                    p.strokeColor = _accent;
+                    p.lineWidth = s * 0.06f;
+                    Line(p, P(0.1f, 0.88f), P(0.9f, 0.88f));
+                    break;
             }
         }
 

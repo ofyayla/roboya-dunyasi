@@ -74,6 +74,19 @@ Kaynak sayfalar (yeniden kesim için): `docs/art/sources/`.
 - **Tahta sesle uyumlu olmalı:** seste adı geçen nesne tahtada da görünür. Engelin görünüşü `grid.looks`, tahtanın kenarındaki süsler `scenery` ile seçilir.
 - Bölge açılış sahnesi ve değer kartı (F1-24) özel çizimle ayrıca yapılacak.
 
+## Ada haritası ve robot parçaları
+
+- **Ada haritası:**
+  - Görsel: `Art/Island/bg_island.png`; kaynaklar `sources/island-a.png` ve seçilen `sources/island-b.png`.
+  - Bölgelerin konumu `content/map/island.json` dosyasında, görselin oranı olarak. Görsel değişirse yalnız bu dosya güncellenir.
+  - Kapalı bölgeler bulut ve asma kilitle örtülür; açık bölgenin etrafında beyaz, nabız atan bir halka olur.
+- **Robot parçaları:**
+  - Görseller `Art/RobotParts/part_*.png`, bulutlar `map_cloud_*.png`; hepsi tek bir sayfadan kesildi.
+  - Renk seçenekleri (`roboya_front_blue`, `roboya_front_purple`) üretilmedi; turuncu gövdenin tonu kaydırılarak hazırlandı. Yüz ve uzuvlar aynı.
+  - Her parçanın ön görünüm üzerindeki konumu `content/rewards/robot-parts.json` dosyasında (oran olarak). Kanatlar gövdenin arkasında çizilir.
+  - Takılı parçalar ada haritasında, patikada ve garajda görünür. Hikâye sahnelerinde ve tahtada henüz görünmez.
+- **Üretim:** iki deneme (ada) ve bir sayfa (parçalar), toplam yaklaşık 11 kredi.
+
 ## Üretim yöntemi
 
 Higgsfield, GPT Image 2.5 Sunburst; High kalite, 2K, saydam arka plan. Ana Roboya (`sources/master-2.png`) **her yeni karakter ve varlık üretiminde referans** olarak verilir. Sayfalar ızgara halinde üretilir ve `tools/art` dışı tek seferlik bir betikle bağlı bileşen analizine göre tek tek PNG'lere kesilir. Bu yöntem tutarlılığı korur ve maliyeti düşürür. Bu turda yaklaşık 30 kredi harcandı.

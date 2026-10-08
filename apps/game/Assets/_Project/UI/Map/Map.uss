@@ -1,0 +1,186 @@
+/* Map scene: island, region path, garage. Child touch targets ≥ 64 dp (CLAUDE.md §7). */
+.map-root {
+    flex-grow: 1;
+    overflow: hidden;
+    background-color: rgb(143, 211, 217);
+}
+
+.map-view {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.map-bar {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: 16px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+/* Island */
+.island__image {
+    position: absolute;
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.island__region {
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.island__region--open {
+    border-radius: 999px;
+    border-width: 8px;
+    border-color: rgba(255, 255, 255, 0.95);
+}
+
+.island__lock {
+    width: 64px;
+    height: 64px;
+}
+
+.island__robot {
+    position: absolute;
+}
+
+/* Path */
+.path__scroll {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.path__content {
+    position: relative;
+}
+
+.stone {
+    position: absolute;
+    width: 104px;
+    align-items: center;
+}
+
+.stone__face {
+    flex-shrink: 0;
+    width: 104px;
+    height: 104px;
+    padding: 26px;
+    border-radius: 52px;
+    border-width: 6px;
+    border-color: rgb(58, 42, 29);
+    background-color: rgb(139, 194, 107);
+}
+
+.stone--current .stone__face {
+    background-color: var(--c-brand);
+    border-color: rgb(255, 255, 255);
+    border-width: 8px;
+}
+
+.stone--locked .stone__face {
+    background-color: rgb(196, 186, 170);
+    opacity: 0.7;
+}
+
+.stone--grownup .stone__face {
+    background-color: rgb(214, 204, 190);
+    padding: 22px;
+}
+
+.stone__stars {
+    flex-direction: row;
+    margin-top: 4px;
+    padding: 2px 8px;
+    border-radius: 16px;
+    background-color: rgba(255, 244, 226, 0.92);
+}
+
+.stone__star {
+    width: 26px;
+    height: 26px;
+}
+
+.path__robot {
+    position: absolute;
+}
+
+/* Garage */
+.garage {
+    flex-direction: row;
+    align-items: center;
+    padding: 120px 40px 40px 40px;
+}
+
+.garage__stage {
+    width: 40%;
+    height: 100%;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.garage__robot {
+    width: 360px;
+    height: 400px;
+}
+
+.garage__shelf {
+    width: 672px;
+    margin-left: 40px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+    border-radius: 36px;
+    background-color: rgba(255, 244, 226, 0.92);
+}
+
+.garage__tile {
+    width: 136px;
+    height: 136px;
+    margin: 10px;
+    padding: 14px;
+    border-radius: 28px;
+    border-width: 6px;
+    border-color: rgba(0, 0, 0, 0.08);
+    background-color: rgb(252, 226, 190);
+    align-items: center;
+    justify-content: center;
+}
+
+.garage__part {
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    right: 14px;
+    bottom: 14px;
+    -unity-background-scale-mode: scale-to-fit;
+    opacity: 0.25;
+    -unity-background-image-tint-color: rgb(90, 70, 60);
+}
+
+.garage__tile--earned .garage__part {
+    opacity: 1;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.garage__tile--worn {
+    border-color: rgb(84, 168, 84);
+    border-width: 8px;
+    background-color: rgb(220, 240, 200);
+}
+
+.garage__lock {
+    width: 56px;
+    height: 56px;
+}

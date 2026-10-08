@@ -4,6 +4,7 @@ using System.Threading;
 using Roboya.CodingEngine.Execution;
 using Roboya.CodingEngine.Levels;
 using Roboya.CodingEngine.Play;
+using Roboya.CodingEngine.Progress;
 using Roboya.Core;
 using Roboya.UI;
 using UnityEngine;
@@ -21,6 +22,8 @@ namespace Roboya.Games.YonAvcisi
         private const string NotThereVoice = "roboya.not_there.01";
         private const string MissingItemsVoice = "roboya.missing_items.01";
         private const string PlayPromptVoice = "roboya.play_prompt";
+        private const string AskGrownUpVoice = "roboya.ask_grownup";
+        private const string PartUnlockedVoice = "reward.part_unlocked";
 
         private readonly GameServices _services;
         private readonly IReadOnlyList<LevelEntry> _levels;
@@ -32,16 +35,20 @@ namespace Roboya.Games.YonAvcisi
         private readonly VisualElement _stars;
         private readonly VisualElement _progress;
         private readonly StoryStage _story;
+        private readonly PartArt _partArt;
+        private readonly List<string> _path;
         private readonly CancellationTokenSource _lifetime = new CancellationTokenSource();
 
         private int _index;
         private LevelEntry _entry;
         private LevelSession _session;
 
-        public YonAvcisiController(VisualElement root, GameServices services, IReadOnlyList<LevelEntry> levels, RegionArt art = null)
+        public YonAvcisiController(VisualElement root, GameServices services, IReadOnlyList<LevelEntry> levels, RegionArt art = null, PartArt partArt = null)
         {
             _services = services;
             _levels = levels;
+            _partArt = partArt;
+            _path = levels.Count > 0 ? ProgressQueries.PathOf(services.Catalog, levels[0].Dto.Region) : new List<string>();
 
             _board = new BoardView(art);
             root.Q("board-host").Add(_board);
@@ -58,6 +65,9 @@ namespace Roboya.Games.YonAvcisi
             _play.AddToClassList("icon-button--play");
             root.Q("play-host").Add(_play);
 
+            var home = new IconButton(IconKind.Home, () => _services.Navigator.GoToMap()) { name = "home" };
+            home.AddToClassList("icon-button--small");
+            root.Q("top-left").Add(home);
             var listen = new IconButton(IconKind.Listen, Listen) { name = "listen" };
             root.Q("top-left").Add(listen);
             _hint = new IconButton(IconKind.Hint, Hint) { name = "hint" };
@@ -226,8 +236,20 @@ namespace Roboya.Games.YonAvcisi
 
         private async Awaitable ShowSuccess(CancellationToken token)
         {
+            // ILR-01/02: keep the best result on the device; parts are derived from it (ILR-03).
+            int partsBefore = ProgressQueries.EarnedParts(_services);
+            _services.Progress.Book.Record(_entry.Id, _session.Stars);
+            SaveProgress();
+            var newParts = RewardRules.NewlyEarned(_services.Parts.Parts, partsBefore, ProgressQueries.EarnedParts(_services));
+            Sprite reward = null;
+            if (newParts.Count > 0 && _partArt != null)
+            {
+                var place = _services.Parts.PlacementOf(newParts[0].Id);
+                reward = place != null ? _partArt.Find(place.Sprite) : null;
+            }
+
             await _board.Celebrate(token);
-            await _story.PlayOutroAsync(LevelStory.Outro(_entry.Dto), token);
+            await _story.PlayOutroAsync(LevelStory.Outro(_entry.Dto), token, reward, PartUnlockedVoice);
             _stars.Clear();
             for (int i = 0; i < 3; i++)
             {
@@ -236,7 +258,6 @@ namespace Roboya.Games.YonAvcisi
                 _stars.Add(star);
             }
 
-            _result.Q("next").SetEnabled(_index < _levels.Count - 1);
             _result.RemoveFromClassList("hidden");
             RenderProgress();
         }
@@ -288,9 +309,42 @@ namespace Roboya.Games.YonAvcisi
             Start(_index, withStory: false);
         }
 
+        /// <summary>Next playable level on the path; otherwise back to the map (GLR-01: ask a grown-up past the free tier).</summary>
         private void Next()
         {
-            Start(_index + 1);
+            int next = _index + 1;
+            if (next < _levels.Count)
+            {
+                int pathIndex = _path.IndexOf(_levels[next].Id);
+                var states = ProgressQueries.PathStates(_services, _path);
+                var state = pathIndex >= 0 ? states[pathIndex] : NodeState.Locked;
+                if (PathRules.CanPlay(state))
+                {
+                    Start(next);
+                    return;
+                }
+
+                if (state == NodeState.NeedsGrownUp)
+                {
+                    _services.Navigator.GoToMap(AskGrownUpVoice);
+                    return;
+                }
+            }
+
+            _services.Navigator.GoToMap();
+        }
+
+        private void SaveProgress()
+        {
+            try
+            {
+                _services.Progress.Save();
+            }
+            catch (System.IO.IOException e)
+            {
+                // A full disk must not interrupt the child's success moment; the book stays in memory.
+                Debug.LogException(e);
+            }
         }
 
         private void UpdateButtons()

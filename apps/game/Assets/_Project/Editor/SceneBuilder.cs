@@ -1,6 +1,7 @@
 using System.IO;
 using Roboya.Core;
 using Roboya.Games.YonAvcisi;
+using Roboya.Map;
 using Roboya.UI;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -19,6 +20,8 @@ namespace Roboya.EditorTools
         private const string PanelSettingsPath = UiDir + "/ChildPanelSettings.asset";
         private const string ThemePath = UiDir + "/RoboyaTheme.tss";
         private const string YonAvcisiUxml = UiDir + "/YonAvcisi/YonAvcisi.uxml";
+        private const string MapUxml = UiDir + "/Map/Map.uxml";
+        private const string PartArtPath = "Assets/_Project/Art/RobotParts/PartArt.asset";
         private const string ArtDir = "Assets/_Project/Art";
         private const string SabirOrmaniArtPath = ArtDir + "/SabirOrmani/SabirOrmaniArt.asset";
 
@@ -28,6 +31,7 @@ namespace Roboya.EditorTools
             AssetDatabase.SaveAssets();
             BuildBoot(scenesDir + "/Boot.unity");
             BuildGame(scenesDir + "/Game.unity");
+            BuildMap(scenesDir + "/Map.unity");
             EditorSceneManager.playModeStartScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(scenesDir + "/Boot.unity");
         }
 
@@ -53,10 +57,10 @@ namespace Roboya.EditorTools
         {
             var scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
             var go = FindOrCreate("Bootstrap");
-            if (go.GetComponent<Bootstrap>() == null)
-            {
-                go.AddComponent<Bootstrap>();
-            }
+            var boot = go.GetComponent<Bootstrap>() ?? go.AddComponent<Bootstrap>();
+            var bootSo = new SerializedObject(boot);
+            bootSo.FindProperty("firstScene").stringValue = Bootstrap.MapScene;
+            bootSo.ApplyModifiedPropertiesWithoutUndo();
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
@@ -86,10 +90,78 @@ namespace Roboya.EditorTools
             var so = new SerializedObject(screen);
             so.FindProperty("document").objectReferenceValue = doc;
             so.FindProperty("art").objectReferenceValue = EnsureSabirOrmaniArt();
+            so.FindProperty("partArt").objectReferenceValue = EnsurePartArt();
             so.ApplyModifiedPropertiesWithoutUndo();
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
+        }
+
+        private static void BuildMap(string path)
+        {
+            var scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+            var panel = AssetDatabase.LoadAssetAtPath<PanelSettings>(PanelSettingsPath);
+            var cam = Object.FindAnyObjectByType<Camera>();
+            if (cam != null)
+            {
+                cam.clearFlags = CameraClearFlags.SolidColor;
+                cam.backgroundColor = new Color(0.56f, 0.83f, 0.85f);
+            }
+
+            var go = FindOrCreate("Map");
+            var doc = go.GetComponent<UIDocument>() ?? go.AddComponent<UIDocument>();
+            var docSo = new SerializedObject(doc);
+            docSo.FindProperty("m_PanelSettings").objectReferenceValue = panel;
+            docSo.FindProperty("sourceAsset").objectReferenceValue = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(MapUxml);
+            docSo.ApplyModifiedPropertiesWithoutUndo();
+
+            var screen = go.GetComponent<MapScreen>() ?? go.AddComponent<MapScreen>();
+            var so = new SerializedObject(screen);
+            so.FindProperty("document").objectReferenceValue = doc;
+            so.FindProperty("art").objectReferenceValue = EnsureSabirOrmaniArt();
+            so.FindProperty("partArt").objectReferenceValue = EnsurePartArt();
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+        }
+
+        /// <summary>Robot parts, colour variants, clouds and the island illustration, looked up by file name.</summary>
+        private static PartArt EnsurePartArt()
+        {
+            var art = AssetDatabase.LoadAssetAtPath<PartArt>(PartArtPath);
+            if (art == null)
+            {
+                art = ScriptableObject.CreateInstance<PartArt>();
+                AssetDatabase.CreateAsset(art, PartArtPath);
+            }
+
+            var sprites = new System.Collections.Generic.List<Sprite>();
+            foreach (var dir in new[] { ArtDir + "/RobotParts", ArtDir + "/Island" })
+            {
+                foreach (var guid in AssetDatabase.FindAssets("t:Sprite", new[] { dir }))
+                {
+                    var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(guid));
+                    if (sprite != null)
+                    {
+                        sprites.Add(sprite);
+                    }
+                }
+            }
+
+            sprites.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
+            var so = new SerializedObject(art);
+            var array = so.FindProperty("sprites");
+            array.arraySize = sprites.Count;
+            for (int i = 0; i < sprites.Count; i++)
+            {
+                array.GetArrayElementAtIndex(i).objectReferenceValue = sprites[i];
+            }
+
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(art);
+            AssetDatabase.SaveAssets();
+            return art;
         }
 
         /// <summary>Creates or refreshes the region sprite set from the files in Art/ (F0-17, docs/art/style-guide.md).</summary>

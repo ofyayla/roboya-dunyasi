@@ -19,5 +19,9 @@ namespace Roboya.UI
         Turtle,
         Fruit,
         Gear,
+        Home,
+        Lock,
+        Garage,
+        Island,
     }
 }

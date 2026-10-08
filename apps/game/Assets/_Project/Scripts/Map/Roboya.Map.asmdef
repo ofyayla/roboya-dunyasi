@@ -1,0 +1,11 @@
+{
+    "name": "Roboya.Map",
+    "rootNamespace": "Roboya.Map",
+    "references": ["Roboya.Core", "Roboya.CodingEngine", "Roboya.UI"],
+    "includePlatforms": [],
+    "autoReferenced": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "defineConstraints": [],
+    "noEngineReferences": false
+}

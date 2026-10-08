@@ -61,6 +61,7 @@ namespace Roboya.UI
         private bool _continueRequested;
         private int _propCount;
         private CardElement _card;
+        private VisualElement _reward;
         private string _cardVoice;
         private float _cardAge = -1f;
 
@@ -172,13 +173,44 @@ namespace Roboya.UI
         /// Outro: fades in over the board, plays the success line and keeps celebrating until <see cref="Hide"/>;
         /// returns once the characters are in place so the result panel can appear on top.
         /// </summary>
-        public async Awaitable PlayOutroAsync(StoryBeat beat, CancellationToken token)
+        /// <param name="reward">A robot part earned with this level (ILR-03), shown after the success line.</param>
+        public async Awaitable PlayOutroAsync(StoryBeat beat, CancellationToken token, Sprite reward = null, string rewardVoice = null)
         {
-            Open(beat, celebrate: true, showContinue: false, token);
+            int session = Open(beat, celebrate: true, showContinue: false, token);
             style.opacity = 0f;
             await Tween.Run(0.35f, t => style.opacity = t, token);
             _voice.Play(beat.VoiceKey);
+            if (reward != null)
+            {
+                _ = RevealRewardAsync(session, reward, rewardVoice, token);
+            }
+
             await Tween.Delay(EnterSeconds * 0.6f, token);
+        }
+
+        private async Awaitable RevealRewardAsync(int session, Sprite reward, string voiceKey, CancellationToken token)
+        {
+            try
+            {
+                await WaitForQuietAsync(session, 0.3f, token);
+                if (session != _session)
+                {
+                    return;
+                }
+
+                _reward = new VisualElement { name = "story-reward", pickingMode = PickingMode.Ignore };
+                _reward.style.backgroundImage = new StyleBackground(reward);
+                _reward.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
+                _cardHost.Add(_reward);
+                _cardVoice = voiceKey;
+                _cardAge = 0f;
+                _cardHost.style.display = DisplayStyle.Flex;
+                _voice.Play(voiceKey);
+            }
+            catch (System.OperationCanceledException)
+            {
+                // Screen closed before the reveal.
+            }
         }
 
         public void Hide()
@@ -220,6 +252,12 @@ namespace Roboya.UI
             {
                 _card.RemoveFromHierarchy();
                 _card = null;
+            }
+
+            if (_reward != null)
+            {
+                _reward.RemoveFromHierarchy();
+                _reward = null;
             }
 
             if (beat.NewCard.HasValue)
@@ -365,9 +403,10 @@ namespace Roboya.UI
                 Place(_props[i], w, h, FootY + 0.01f);
             }
 
-            if (_card != null)
+            if (_card != null || _reward != null)
             {
-                float size = h * 0.42f;
+                // The reward sits lower and smaller so the stars above stay clear.
+                float size = h * (_reward != null ? 0.34f : 0.42f);
                 float face = h * 0.26f;
                 _cardHost.style.width = size;
                 _cardHost.style.height = size;
@@ -376,12 +415,22 @@ namespace Roboya.UI
                 _cardHost.style.borderBottomLeftRadius = size * 0.5f;
                 _cardHost.style.borderBottomRightRadius = size * 0.5f;
                 float bob = Mathf.Sin(_time * 2.2f) * h * 0.012f;
-                _cardHost.style.translate = new Translate((w * 0.5f) - (size * 0.5f), (h * 0.36f) - (size * 0.5f) + bob);
-                _card.style.width = face;
-                _card.style.height = face;
-                SetPadding(_card, face * 0.18f);
-                SetRadius(_card, face * 0.2f);
-                _card.style.borderBottomWidth = face * 0.07f;
+                float centerY = h * (_reward != null ? 0.52f : 0.36f);
+                _cardHost.style.translate = new Translate((w * 0.5f) - (size * 0.5f), centerY - (size * 0.5f) + bob);
+                if (_card != null)
+                {
+                    _card.style.width = face;
+                    _card.style.height = face;
+                    SetPadding(_card, face * 0.18f);
+                    SetRadius(_card, face * 0.2f);
+                    _card.style.borderBottomWidth = face * 0.07f;
+                }
+
+                if (_reward != null)
+                {
+                    _reward.style.width = face * 1.15f;
+                    _reward.style.height = face * 1.15f;
+                }
             }
 
             Place(_friend, w, h, FootY - 0.02f);

@@ -16,9 +16,21 @@ namespace Roboya.Tests.PlayMode
     {
         private static readonly string ShotsDir = Path.Combine(Application.dataPath, "..", "TestResults", "screens");
 
+        private string _progressDir;
+
+        [SetUp]
+        public void SetUp()
+        {
+            // Every test starts with a fresh local profile.
+            _progressDir = Path.Combine(Path.GetTempPath(), "roboya-progress-" + Guid.NewGuid().ToString("N"));
+            Roboya.Core.Bootstrap.ProgressFolderOverride = _progressDir;
+        }
+
         [UnityTearDown]
         public IEnumerator TearDown()
         {
+            Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, null);
+            Roboya.Core.Bootstrap.ProgressFolderOverride = null;
             foreach (var boot in UnityEngine.Object.FindObjectsByType<Roboya.Core.Bootstrap>(FindObjectsSortMode.None))
             {
                 UnityEngine.Object.Destroy(boot.gameObject);
@@ -27,9 +39,17 @@ namespace Roboya.Tests.PlayMode
             yield return null;
         }
 
+        /// <summary>Boot → island → Patience Forest → first stone → Game scene.</summary>
         private static IEnumerator StartGame(Action<VisualElement> found)
         {
             yield return SceneManager.LoadSceneAsync("Boot");
+            VisualElement map = null;
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Map" && (map = FindRoot())?.Q("region-sabir-ormani") != null, 10f);
+            yield return null;
+            Tap(map.Q("region-sabir-ormani"));
+            yield return WaitUntil(() => map.Q("path").resolvedStyle.display == DisplayStyle.Flex, 5f);
+            yield return null;
+            Tap(map.Q("stone-1"));
             VisualElement root = null;
             yield return WaitUntil(
                 () => SceneManager.GetActiveScene().name == "Game" && (root = FindRoot()) != null && root.Q("palette")?.childCount > 0,
@@ -45,7 +65,8 @@ namespace Roboya.Tests.PlayMode
             yield return null;
             AudioSource voice = null;
             yield return WaitUntil(
-                () => (voice = UnityEngine.Object.FindAnyObjectByType<AudioSource>()) != null && voice.clip != null,
+                () => (voice = UnityEngine.Object.FindAnyObjectByType<AudioSource>()) != null && voice.clip != null
+                    && voice.clip.name == "yon_avcisi.l01.intro", // the map's welcome line may play first
                 10f);
             Assert.AreEqual("yon_avcisi.l01.intro", voice.clip.name, "intro narration is loaded by key");
             Assert.Greater(voice.clip.length, 1f);
@@ -103,6 +124,8 @@ namespace Roboya.Tests.PlayMode
             var catalog = Roboya.Core.LevelCatalog.Parse(files.Select(File.ReadAllText));
             var levels = catalog.ForGame(Roboya.CodingEngine.Levels.Generated.GameId.YonAvcisi);
 
+            // Levels past the free tier need premium; the editor-only switch stands in for the server (ADR 0009).
+            Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, "1");
             VisualElement root = null;
             yield return StartGame(r => root = r);
 
@@ -133,6 +156,14 @@ namespace Roboya.Tests.PlayMode
                 yield return null; // the overlay is laid out one frame after it becomes visible
                 int stars = root.Q("stars").Children().OfType<Icon>().Count(x => x.Kind == IconKind.Star);
                 Assert.AreEqual(3, stars, levels[i].Id + " should earn 3 stars with the shortest plan on the first try");
+                if (i == 4)
+                {
+                    // ILR-03: the fifth level earns the first robot part, shown after the success line.
+                    yield return WaitUntil(() => root.Q("story-reward") != null, 20f);
+                    yield return new WaitForSeconds(0.6f);
+                    yield return Capture(root, "05-level5-reward");
+                }
+
                 if (i == levels.Count - 1)
                 {
                     yield return new WaitForSeconds(0.4f);
@@ -183,7 +214,7 @@ namespace Roboya.Tests.PlayMode
         }
 
         /// <summary>Waits for the intro scene, optionally captures it, then taps continue and waits for the board.</summary>
-        private static IEnumerator PassStory(VisualElement root, string shot = null, bool waitForCard = false)
+        internal static IEnumerator PassStory(VisualElement root, string shot = null, bool waitForCard = false)
         {
             var story = Story(root);
             Assert.IsNotNull(story, "story stage exists");
@@ -207,13 +238,13 @@ namespace Roboya.Tests.PlayMode
             yield return WaitUntil(() => !story.IsOpen, 5f);
         }
 
-        private static VisualElement FindRoot()
+        internal static VisualElement FindRoot()
         {
             var doc = UnityEngine.Object.FindAnyObjectByType<UIDocument>();
             return doc != null ? doc.rootVisualElement : null;
         }
 
-        private static void Tap(VisualElement element)
+        internal static void Tap(VisualElement element)
         {
             // Events sent to the panel's visual tree are hit-tested in panel coordinates.
             Vector2 pos = element.worldBound.center;
@@ -231,7 +262,7 @@ namespace Roboya.Tests.PlayMode
             }
         }
 
-        private static IEnumerator WaitUntil(Func<bool> condition, float timeout)
+        internal static IEnumerator WaitUntil(Func<bool> condition, float timeout)
         {
             float end = Time.realtimeSinceStartup + timeout;
             while (!condition())
@@ -249,7 +280,7 @@ namespace Roboya.Tests.PlayMode
         /// Renders the UI panel into a texture and saves a PNG for visual review. WaitForEndOfFrame never fires in
         /// batch mode, so the panel is redirected to a RenderTexture for two frames instead. Skipped without a GPU.
         /// </summary>
-        private static IEnumerator Capture(VisualElement root, string name)
+        internal static IEnumerator Capture(VisualElement root, string name)
         {
             if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null)
             {
