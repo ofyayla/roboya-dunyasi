@@ -62,22 +62,27 @@ namespace Roboya.Core
                     return false;
                 }
 
-                var reply = await _api.SendAsync<Reply>("GET", "/v1/me/entitlement", null, token);
-                _cached = new Cached
-                {
-                    Tier = reply.Tier,
-                    Status = reply.Status,
-                    ExpiresUtc = reply.ExpiresAt?.ToUniversalTime(),
-                    CacheUntilUtc = reply.CacheUntil.ToUniversalTime(),
-                };
-                Save();
-                Changed?.Invoke();
+                Adopt(await _api.SendAsync<Reply>("GET", "/v1/me/entitlement", null, token));
                 return true;
             }
             catch (ApiException)
             {
                 return false;
             }
+        }
+
+        /// <summary>Stores the server's answer (from the entitlement query or from linking a purchase).</summary>
+        internal void Adopt(Reply reply)
+        {
+            _cached = new Cached
+            {
+                Tier = reply.Tier,
+                Status = reply.Status,
+                ExpiresUtc = reply.ExpiresAt?.ToUniversalTime(),
+                CacheUntilUtc = reply.CacheUntil.ToUniversalTime(),
+            };
+            Save();
+            Changed?.Invoke();
         }
 
         public void Clear()
@@ -139,7 +144,7 @@ namespace Roboya.Core
             public DateTime CacheUntilUtc { get; set; }
         }
 
-        private sealed class Reply
+        internal sealed class Reply
         {
             [JsonProperty("tier")]
             public string Tier { get; set; }
