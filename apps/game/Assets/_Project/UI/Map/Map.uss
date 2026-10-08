@@ -554,3 +554,10 @@
     margin-left: 40px;
     margin-top: -120px;
 }
+
+.report__line {
+    margin-top: 6px;
+    font-size: 26px;
+    color: rgb(74, 51, 36);
+    white-space: normal;
+}

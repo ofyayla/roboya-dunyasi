@@ -206,6 +206,31 @@ namespace Roboya.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator ParentArea_ShowsProgressSummaryAndSkillLines_WithoutScores()
+        {
+            Seed(3);
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            Tap(map.Q("to-parent"));
+            yield return null;
+            yield return null;
+            var gate = map.Q<ParentGateView>("parent-gate");
+            TypeDigits(map, Roboya.CodingEngine.Parents.ParentGate.ExpectedFor(gate.Challenge));
+            Tap(map.Q("gate-confirm"));
+            yield return null;
+            yield return null;
+
+            var summary = map.Q<Label>("report-summary").text;
+            StringAssert.Contains("3 tanesini bitirdi", summary);
+            StringAssert.Contains("9 yıldız", summary);
+            Assert.IsNotNull(map.Q("report-direction"), "direction appears in the forest levels");
+            StringAssert.Contains("Yön bulma", map.Q<Label>("report-direction").text);
+            map.Q<ScrollView>("parent-sections").ScrollTo(map.Q("report-section"));
+            yield return null;
+            yield return Capture(map, "18-report");
+        }
+
+        [UnityTest]
         public IEnumerator DailyLimitUsedUp_MapShowsRest_StoneStaysClosed_ParentCanRaiseTheLimit()
         {
             Seed(1);
