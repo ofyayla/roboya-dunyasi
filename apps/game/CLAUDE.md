@@ -12,4 +12,7 @@ Kök `CLAUDE.md` §7 geçerlidir; burada yalnız ayrıntı vardır.
 - Testler: `Assets/_Project/Tests/EditMode` (motor testleri `dotnet test` ile de koşar) ve `PlayMode`.
 - Proje ayarları ve sahneler `Assets/_Project/Editor/ProjectSetup.cs` ile uygulanır (menü: Roboya → Project Setup). Ayar değişikliği bu betikte yapılır.
 - Paket ekleme/çıkarma ADR 0005'in güncellenmesini gerektirir.
-- Komutlar: `make unity-test` (EditMode, batch), `make test-engine` (motor, .NET + kapsam ≥ %90).
+- Oyun kuralları (plan şeridi, oturum, ipucu kademesi, yıldız) `CodingEngine/Play` ve `CodingEngine/Scoring` altında saf C#'tır; oyun assembly'leri yalnız görünüm ve akış içerir.
+- Bileşim kökü `Roboya.Core.Bootstrap` (Boot sahnesi). Sahneler `ISceneEntry` ile servisleri alır; singleton yazılmaz.
+- Çocuk ekranlarında yazı yok; simgeler `Roboya.UI.Icon` ile kodla çizilir (F0-17 görselleri gelene kadar).
+- Komutlar: `make unity-test` (EditMode, batch), `make unity-playmode` (kritik akışlar + ekran görüntüleri), `make test-engine` (motor, .NET + kapsam ≥ %90).

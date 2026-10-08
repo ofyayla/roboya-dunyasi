@@ -1,0 +1,235 @@
+.screen {
+    flex-grow: 1;
+    background-color: var(--c-bg);
+    padding: 12px 20px 16px 20px;
+}
+
+.top-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: 112px;
+}
+
+.top-bar__side {
+    flex-direction: row;
+    align-items: center;
+    width: 240px;
+}
+
+.top-bar__side--right {
+    justify-content: flex-end;
+}
+
+.icon-button--hint {
+    background-color: rgb(250, 200, 50);
+}
+
+.progress {
+    flex-direction: row;
+    align-items: center;
+}
+
+.progress__dot {
+    width: 18px;
+    height: 18px;
+    margin: 0 6px;
+    border-radius: 9px;
+    background-color: var(--c-bg-deep);
+}
+
+.progress__dot--done {
+    background-color: var(--c-forest);
+}
+
+.progress__dot--current {
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    border-width: 4px;
+    border-color: var(--c-brand);
+}
+
+.board-host {
+    flex-grow: 1;
+    margin: 8px 0;
+}
+
+.board {
+    flex-grow: 1;
+}
+
+.board__grid {
+    position: absolute;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: var(--c-forest-dark);
+}
+
+.cell {
+    background-color: var(--c-forest);
+    border-width: 2px;
+    border-color: var(--c-forest-dark);
+}
+
+.cell--blocked {
+    background-color: rgb(122, 84, 52);
+    border-radius: 24px;
+}
+
+.board__pieces {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.piece,
+.ghost-dot,
+.trail-dot {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.ghost-dot {
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.45);
+}
+
+.trail-dot {
+    border-radius: 999px;
+    background-color: rgba(242, 140, 40, 0.55);
+}
+
+.piece--collected {
+    display: none;
+}
+
+.bottom-bar {
+    flex-direction: row;
+    align-items: center;
+    height: 132px;
+    padding: 8px 12px;
+    border-radius: 24px;
+    background-color: var(--c-bg-deep);
+}
+
+.palette {
+    flex-shrink: 0;
+    flex-direction: row;
+    padding-right: 12px;
+    margin-right: 12px;
+    border-right-width: 4px;
+    border-color: rgba(0, 0, 0, 0.12);
+}
+
+.plan {
+    flex-grow: 1;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow: hidden;
+}
+
+.plan--locked .card {
+    opacity: 0.85;
+}
+
+/* Slots shrink for long plans but never below the 64 dp child touch target. */
+.slot {
+    flex-basis: 96px;
+    flex-shrink: 1;
+    min-width: 64px;
+    height: 96px;
+    margin: 0 2px;
+    border-radius: 20px;
+    border-width: 3px;
+    border-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.55);
+    align-items: center;
+    justify-content: center;
+}
+
+.slot--active {
+    border-color: rgb(255, 255, 255);
+    border-width: 6px;
+    scale: 1.08 1.08;
+}
+
+.slot--error {
+    border-color: rgb(214, 80, 92);
+    border-width: 6px;
+}
+
+.slot--hint {
+    border-color: rgb(250, 200, 50);
+    border-width: 6px;
+}
+
+.slot--insert {
+    border-left-color: var(--c-brand);
+    border-left-width: 10px;
+}
+
+.slot > .card {
+    width: 100%;
+    margin: 0;
+}
+
+.play-host {
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+}
+
+.icon-button--play {
+    width: 112px;
+    height: 112px;
+    border-radius: 56px;
+    padding: 26px;
+    background-color: rgb(84, 168, 84);
+}
+
+.drag-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.result {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(74, 52, 36, 0.45);
+}
+
+.result__panel {
+    align-items: center;
+    padding: 32px 48px;
+    border-radius: 36px;
+    background-color: var(--c-bg);
+}
+
+.result__stars {
+    flex-direction: row;
+    margin-bottom: 16px;
+}
+
+.result__star {
+    width: 120px;
+    height: 120px;
+    margin: 0 8px;
+}
+
+.result__buttons {
+    flex-direction: row;
+}

@@ -1,0 +1,23 @@
+namespace Roboya.UI
+{
+    public enum IconKind
+    {
+        None,
+        Forward,
+        Backward,
+        TurnLeft,
+        TurnRight,
+        Play,
+        Listen,
+        Hint,
+        Clear,
+        Star,
+        StarEmpty,
+        Next,
+        Retry,
+        Robot,
+        Turtle,
+        Fruit,
+        Gear,
+    }
+}

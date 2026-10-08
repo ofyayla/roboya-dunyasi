@@ -1,0 +1,95 @@
+/* Shared child-screen tokens. Child touch targets ≥ 64 dp (CLAUDE.md §7); panel reference 1280×800. */
+:root {
+    --c-bg: rgb(255, 244, 226);
+    --c-bg-deep: rgb(252, 226, 190);
+    --c-brand: rgb(242, 140, 40);
+    --c-brand-dark: rgb(196, 98, 18);
+    --c-ink: rgb(74, 52, 36);
+    --c-forest: rgb(120, 170, 96);
+    --c-forest-dark: rgb(84, 132, 70);
+    --c-card-forward: rgb(242, 140, 40);
+    --c-card-left: rgb(61, 125, 216);
+    --c-card-right: rgb(142, 91, 208);
+    --c-card-back: rgb(214, 80, 92);
+}
+
+.hidden {
+    display: none;
+}
+
+.icon {
+    width: 100%;
+    height: 100%;
+}
+
+.icon-button {
+    width: 96px;
+    height: 96px;
+    margin: 8px;
+    padding: 18px;
+    border-radius: 48px;
+    border-width: 0;
+    background-color: var(--c-brand);
+    transition-property: scale, background-color;
+    transition-duration: 0.12s;
+}
+
+.icon-button:hover {
+    background-color: var(--c-brand-dark);
+}
+
+.icon-button:active {
+    scale: 0.92 0.92;
+}
+
+.icon-button:disabled {
+    opacity: 0.4;
+}
+
+.icon-button--small {
+    width: 72px;
+    height: 72px;
+    padding: 18px;
+    border-radius: 36px;
+    background-color: rgb(190, 160, 130);
+}
+
+.icon-button--pulse {
+    scale: 1.1 1.1;
+    border-width: 6px;
+    border-color: rgb(255, 255, 255);
+}
+
+.card {
+    width: 88px;
+    height: 88px;
+    margin: 4px;
+    padding: 16px;
+    border-radius: 18px;
+    border-bottom-width: 6px;
+    border-color: rgba(0, 0, 0, 0.18);
+}
+
+.card--forward { background-color: var(--c-card-forward); }
+.card--turn-left { background-color: var(--c-card-left); }
+.card--turn-right { background-color: var(--c-card-right); }
+.card--backward { background-color: var(--c-card-back); }
+
+.card--lifted {
+    opacity: 0.35;
+}
+
+.card--dragging {
+    position: absolute;
+    left: 0;
+    top: 0;
+    scale: 1.12 1.12;
+    opacity: 0.95;
+}
+
+.card--hint {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0.55;
+}
