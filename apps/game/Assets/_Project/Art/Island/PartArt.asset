@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 343a3798c058e444291ecee7d231ef41, type: 3}
+  m_Name: PartArt
+  m_EditorClassIdentifier: Roboya.UI::Roboya.UI.PartArt
+  sprites:
+  - {fileID: 21300000, guid: 7c753aa4726a743edbcf4957ad1928f9, type: 3}
+  - {fileID: 21300000, guid: 3cd4d175633f14515906740e35d342a3, type: 3}
+  - {fileID: 21300000, guid: 346a89c6af42c4172ba7a38bd1faa180, type: 3}
+  - {fileID: 21300000, guid: ebc9c8e007bda4dcd8159f79aa98f6ac, type: 3}
+  - {fileID: 21300000, guid: eebf091af68af4ed8ba68559119a62fe, type: 3}
+  - {fileID: 21300000, guid: ea8ad74862f7649d599298ce663aa99f, type: 3}
+  - {fileID: 21300000, guid: 863b688130bc747a1b1063370c981d1a, type: 3}
+  - {fileID: 21300000, guid: c52984447f7884fac8241c4a262d074e, type: 3}
+  - {fileID: 21300000, guid: f172f503be9ed428398513c3fab874c1, type: 3}
+  - {fileID: 21300000, guid: 3415e08bec2d64d86afddba59716fb94, type: 3}
+  - {fileID: 21300000, guid: 6c34c5f844e4b418c8e77cc4c30039c4, type: 3}
+  - {fileID: 21300000, guid: ee447ae0e7ea848108ee632260ada932, type: 3}
+  - {fileID: 21300000, guid: ee0d848d8a79b428bb838018fb5f6220, type: 3}

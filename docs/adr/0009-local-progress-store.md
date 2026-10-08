@@ -19,7 +19,7 @@
 2. **Kurallar saf C#'ta, `Roboya.CodingEngine/Progress` altındadır (.NET'te de test edilir):**
    - `ProgressBook`: yıldızlar yalnız artar.
    - `PathRules`: patikadaki taşın durumu (bitti, sıradaki, kilitli, büyüklerine sor).
-   - `RewardRules`: her 5 bölümde ve her bölge sonunda bir robot parçası, sabit sırayla.
+   - `RewardRules`: her 5 bölümde ve her bölge sonunda bir gemi parçası, sabit sırayla.
    - **Kazanılan parçalar saklanmaz;** her seferinde ilerlemeden hesaplanır.
 3. **Premium hakkı `IEntitlementSource`'tan okunur.**
    - Sunucu hak servisi (F1-17) gelene kadar tek uygulama `FreeTierEntitlements`: her zaman ücretsiz katman.

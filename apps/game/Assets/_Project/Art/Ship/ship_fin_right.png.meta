@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9ac68ffd2c2f84e5e9bff0415e6f9f53
+guid: 863b688130bc747a1b1063370c981d1a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4267024468154375876
-    second: roboya_front_blue_0
+      213: -7784122283678692682
+    second: ship_fin_right_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -141,13 +141,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: roboya_front_blue_0
+      name: ship_fin_right_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 881
-        height: 935
+        width: 370
+        height: 364
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,8 +156,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4cedd386524873b30800000000000000
-      internalID: 4267024468154375876
+      spriteID: 6ba0129660e39f390800000000000000
+      internalID: -7784122283678692682
       vertices: []
       indices: 
       edges: []

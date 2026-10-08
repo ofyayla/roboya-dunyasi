@@ -23,13 +23,6 @@
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },
-    "garage.welcome": {
-      "file": "audio/tr/garage.welcome.mp3",
-      "source": "tts",
-      "textHash": "131860ba774d71ee",
-      "voiceId": "cgSgspJ2msm6clMCkdW9",
-      "model": "eleven_multilingual_v2"
-    },
     "map.region_locked": {
       "file": "audio/tr/map.region_locked.mp3",
       "source": "tts",
@@ -47,7 +40,7 @@
     "reward.part_unlocked": {
       "file": "audio/tr/reward.part_unlocked.mp3",
       "source": "tts",
-      "textHash": "a7cdfd60c9cd64f3",
+      "textHash": "11dc3e7f34dcd64a",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },
@@ -118,6 +111,13 @@
       "file": "audio/tr/roboya.success.generic.mp3",
       "source": "tts",
       "textHash": "2e4a5baeec846b2d",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "workshop.welcome": {
+      "file": "audio/tr/workshop.welcome.mp3",
+      "source": "tts",
+      "textHash": "5a835b0a0d26aeb2",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },

@@ -21,7 +21,7 @@ namespace Roboya.EditorTools
         private const string ThemePath = UiDir + "/RoboyaTheme.tss";
         private const string YonAvcisiUxml = UiDir + "/YonAvcisi/YonAvcisi.uxml";
         private const string MapUxml = UiDir + "/Map/Map.uxml";
-        private const string PartArtPath = "Assets/_Project/Art/RobotParts/PartArt.asset";
+        private const string PartArtPath = "Assets/_Project/Art/Island/PartArt.asset";
         private const string ArtDir = "Assets/_Project/Art";
         private const string SabirOrmaniArtPath = ArtDir + "/SabirOrmani/SabirOrmaniArt.asset";
 
@@ -126,7 +126,7 @@ namespace Roboya.EditorTools
             EditorSceneManager.SaveScene(scene);
         }
 
-        /// <summary>Robot parts, colour variants, clouds and the island illustration, looked up by file name.</summary>
+        /// <summary>Ship body and repair parts, clouds and the island illustration, looked up by file name.</summary>
         private static PartArt EnsurePartArt()
         {
             var art = AssetDatabase.LoadAssetAtPath<PartArt>(PartArtPath);
@@ -137,7 +137,7 @@ namespace Roboya.EditorTools
             }
 
             var sprites = new System.Collections.Generic.List<Sprite>();
-            foreach (var dir in new[] { ArtDir + "/RobotParts", ArtDir + "/Island" })
+            foreach (var dir in new[] { ArtDir + "/Ship", ArtDir + "/Island" })
             {
                 foreach (var guid in AssetDatabase.FindAssets("t:Sprite", new[] { dir }))
                 {

@@ -201,12 +201,29 @@ namespace Roboya.UI
                     RoundedRect(p, P(0.47f, 0.64f), P(0.53f, 0.78f), s * 0.02f);
                     p.Fill();
                     break;
-                case IconKind.Garage:
-                    // Wrench: handle bar with an open jaw ring at the top.
-                    p.lineWidth = s * 0.16f;
-                    Line(p, P(0.3f, 0.78f), P(0.6f, 0.42f));
-                    p.lineWidth = s * 0.1f;
-                    ArcStroke(p, P(0.66f, 0.32f), s * 0.17f, 100f, 400f);
+                case IconKind.Ship:
+                    // Round ship with a porthole, two fins and an antenna: the ship workshop (ILR-03).
+                    p.BeginPath();
+                    p.MoveTo(P(0.22f, 0.62f));
+                    p.LineTo(P(0.08f, 0.82f));
+                    p.LineTo(P(0.3f, 0.78f));
+                    p.ClosePath();
+                    p.Fill();
+                    p.BeginPath();
+                    p.MoveTo(P(0.78f, 0.62f));
+                    p.LineTo(P(0.92f, 0.82f));
+                    p.LineTo(P(0.7f, 0.78f));
+                    p.ClosePath();
+                    p.Fill();
+                    p.BeginPath();
+                    p.Arc(P(0.5f, 0.56f), s * 0.3f, Angle.Degrees(0f), Angle.Degrees(360f));
+                    p.Fill();
+                    p.lineWidth = s * 0.06f;
+                    Line(p, P(0.56f, 0.27f), P(0.62f, 0.12f));
+                    p.fillColor = _accent;
+                    p.BeginPath();
+                    p.Arc(P(0.5f, 0.54f), s * 0.13f, Angle.Degrees(0f), Angle.Degrees(360f));
+                    p.Fill();
                     break;
                 case IconKind.Island:
                     // Island: a mound with a palm-like tree over a wave line.

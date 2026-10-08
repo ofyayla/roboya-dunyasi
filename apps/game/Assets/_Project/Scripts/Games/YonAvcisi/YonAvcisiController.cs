@@ -244,8 +244,9 @@ namespace Roboya.Games.YonAvcisi
             Sprite reward = null;
             if (newParts.Count > 0 && _partArt != null)
             {
-                var place = _services.Parts.PlacementOf(newParts[0].Id);
-                reward = place != null ? _partArt.Find(place.Sprite) : null;
+                // ILR-03: the earned ship part is shown in the outro; it is fitted to the ship on the map.
+                var layers = _services.Parts.LayersOf(newParts[0].Id);
+                reward = layers.Count > 0 ? _partArt.Find(layers[0].Sprite) : null;
             }
 
             await _board.Celebrate(token);

@@ -31,14 +31,14 @@ namespace Roboya.Tests.Core
         {
             var store = new FileProgressStore(_dir);
             store.Book.Record("a", 2);
-            store.Book.Equip("hat", "hat-acorn");
+            store.Book.MarkShipPartsSeen(1);
             store.Save();
 
             var again = new FileProgressStore(_dir);
 
             Assert.AreEqual(store.ProfileId, again.ProfileId);
             Assert.AreEqual(2, again.Book.Stars("a"));
-            Assert.AreEqual("hat-acorn", again.Book.Equipped("hat"));
+            Assert.AreEqual(1, again.Book.ShipPartsSeen);
         }
 
         [Test]
@@ -83,24 +83,29 @@ namespace Roboya.Tests.Core
     public class ContentCatalogTests
     {
         [Test]
-        public void RobotPartCatalog_ShippedFile_IsConsistent()
+        public void ShipPartCatalog_ShippedFile_IsConsistent()
         {
-            var catalog = RobotPartCatalog.Parse(File.ReadAllText(Path.Combine(ContentFiles.RepositoryContentPath, RobotPartCatalog.File)));
+            var catalog = ShipPartCatalog.Parse(File.ReadAllText(Path.Combine(ContentFiles.RepositoryContentPath, ShipPartCatalog.File)));
 
-            Assert.GreaterOrEqual(catalog.Parts.Count, 4);
+            Assert.AreEqual("ship_base", catalog.BaseSprite);
+            Assert.GreaterOrEqual(catalog.Parts.Count, 3, "enough parts for 10 levels plus the region end");
             for (int i = 0; i < catalog.Parts.Count; i++)
             {
                 Assert.AreEqual(i + 1, catalog.Parts[i].Order, "orders are 1..n without gaps");
-                Assert.IsNotNull(catalog.PlacementOf(catalog.Parts[i].Id));
+                Assert.Greater(catalog.LayersOf(catalog.Parts[i].Id).Count, 0);
             }
+
+            Assert.AreEqual(0, catalog.LayersOf("unknown").Count);
         }
 
-        [TestCase("{\"parts\":[{\"id\":\"a\",\"slot\":\"tail\",\"order\":1,\"sprite\":\"s\"}]}")]
-        [TestCase("{\"parts\":[{\"id\":\"a\",\"slot\":\"hat\",\"order\":1,\"sprite\":\"s\"},{\"id\":\"b\",\"slot\":\"hat\",\"order\":1,\"sprite\":\"s\"}]}")]
+        [TestCase("{\"parts\":[]}")]
+        [TestCase("{\"base\":\"b\",\"parts\":[{\"id\":\"a\",\"order\":1,\"layers\":[]}]}")]
+        [TestCase("{\"base\":\"b\",\"parts\":[{\"id\":\"a\",\"order\":1,\"layers\":[{\"sprite\":\"s\",\"width\":0.3}]},{\"id\":\"b\",\"order\":1,\"layers\":[{\"sprite\":\"s\",\"width\":0.3}]}]}")]
+        [TestCase("{\"base\":\"b\",\"parts\":[{\"id\":\"a\",\"order\":1,\"layers\":[{\"sprite\":\"s\",\"width\":0}]}]}")]
         [TestCase("null")]
-        public void RobotPartCatalog_BadEntries_Throw(string json)
+        public void ShipPartCatalog_BadEntries_Throw(string json)
         {
-            Assert.Throws<FormatException>(() => RobotPartCatalog.Parse(json));
+            Assert.Throws<FormatException>(() => ShipPartCatalog.Parse(json));
         }
 
         [Test]

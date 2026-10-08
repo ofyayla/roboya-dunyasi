@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 08d89ea6d48d64807980e443327b5e9c
+guid: ebc9c8e007bda4dcd8159f79aa98f6ac
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4579406578475997550
-    second: part_wings_leaf_0
+      213: -6135708172326187168
+    second: ship_base_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -141,13 +141,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: part_wings_leaf_0
+      name: ship_base_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 561
-        height: 376
+        width: 839
+        height: 886
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,8 +156,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 296e9d7cafda270c0800000000000000
-      internalID: -4579406578475997550
+      spriteID: 06f4907fce599daa0800000000000000
+      internalID: -6135708172326187168
       vertices: []
       indices: 
       edges: []

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 40c4371e307e546c286cb310e6159cf6
+guid: 6c34c5f844e4b418c8e77cc4c30039c4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 215921943816941599
-    second: part_antenna_heart_0
+      213: 8090159268451383634
+    second: ship_lights_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -141,13 +141,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: part_antenna_heart_0
+      name: ship_lights_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 430
-        height: 365
+        width: 504
+        height: 277
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,8 +156,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f10bb682ddb1ff200800000000000000
-      internalID: 215921943816941599
+      spriteID: 259f06cbdf4064070800000000000000
+      internalID: 8090159268451383634
       vertices: []
       indices: 
       edges: []

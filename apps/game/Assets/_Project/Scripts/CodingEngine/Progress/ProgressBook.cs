@@ -5,8 +5,9 @@ using Newtonsoft.Json;
 namespace Roboya.CodingEngine.Progress
 {
     /// <summary>
-    /// One child profile's progress (ILR-01): best stars per level and the robot parts Roboya wears. Earned parts
-    /// are not stored; <see cref="RewardRules"/> derives them from completed levels. Holds no personal data.
+    /// One child profile's progress (ILR-01): best stars per level and how many ship parts the child has already
+    /// watched being fitted. Earned parts are not stored; <see cref="RewardRules"/> derives them from completed
+    /// levels. Holds no personal data. Files written by older builds may carry an "equipped" map; it is ignored.
     /// </summary>
     public sealed class ProgressBook
     {
@@ -18,8 +19,8 @@ namespace Roboya.CodingEngine.Progress
         [JsonProperty("stars")]
         private Dictionary<string, int> _stars = new Dictionary<string, int>(StringComparer.Ordinal);
 
-        [JsonProperty("equipped")]
-        private Dictionary<string, string> _equipped = new Dictionary<string, string>(StringComparer.Ordinal);
+        [JsonProperty("shipPartsSeen")]
+        private int _shipPartsSeen;
 
         public int Version => _version;
 
@@ -63,27 +64,20 @@ namespace Roboya.CodingEngine.Progress
             return true;
         }
 
-        /// <summary>The part worn in a slot (antenna, color, wings, hat), or null.</summary>
-        public string Equipped(string slot) => slot != null && _equipped.TryGetValue(slot, out var id) ? id : null;
+        /// <summary>Ship parts already shown being fitted; newer ones animate in once on the map (ILR-03).</summary>
+        public int ShipPartsSeen => _shipPartsSeen;
 
-        public void Equip(string slot, string partId)
+        /// <summary>Only moves forward, so a part is never celebrated twice.</summary>
+        public bool MarkShipPartsSeen(int count)
         {
-            if (string.IsNullOrEmpty(slot))
+            if (count <= _shipPartsSeen)
             {
-                throw new ArgumentException("Slot is required.", nameof(slot));
+                return false;
             }
 
-            if (string.IsNullOrEmpty(partId))
-            {
-                _equipped.Remove(slot);
-            }
-            else
-            {
-                _equipped[slot] = partId;
-            }
+            _shipPartsSeen = count;
+            return true;
         }
-
-        public IReadOnlyDictionary<string, string> AllEquipped => _equipped;
 
         public string ToJson() => JsonConvert.SerializeObject(this, Formatting.Indented);
 
@@ -111,7 +105,7 @@ namespace Roboya.CodingEngine.Progress
             }
 
             book._stars = new Dictionary<string, int>(book._stars ?? new Dictionary<string, int>(), StringComparer.Ordinal);
-            book._equipped = new Dictionary<string, string>(book._equipped ?? new Dictionary<string, string>(), StringComparer.Ordinal);
+            book._shipPartsSeen = Math.Max(0, book._shipPartsSeen);
             return book;
         }
     }

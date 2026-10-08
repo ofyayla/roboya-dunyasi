@@ -82,7 +82,7 @@ namespace Roboya.Core
             levels = new StreamingAssetsLevelSource();
 #endif
             var catalog = LevelCatalog.Parse(await levels.LoadAllAsync());
-            var parts = RobotPartCatalog.Parse(await ContentFiles.ReadAsync(RobotPartCatalog.File));
+            var parts = ShipPartCatalog.Parse(await ContentFiles.ReadAsync(ShipPartCatalog.File));
             var island = IslandLayout.Parse(await ContentFiles.ReadAsync(IslandLayout.File));
 
             IEntitlementSource entitlements = new FreeTierEntitlements();

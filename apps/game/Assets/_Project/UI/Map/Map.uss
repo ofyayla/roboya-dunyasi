@@ -48,7 +48,13 @@
     height: 64px;
 }
 
-.island__robot {
+.island__robot,
+.path__robot {
+    position: absolute;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.island__ship {
     position: absolute;
 }
 
@@ -111,76 +117,81 @@
     height: 26px;
 }
 
-.path__robot {
-    position: absolute;
-}
-
-/* Garage */
-.garage {
-    flex-direction: row;
+/* Ship workshop (ILR-03) */
+.workshop {
+    padding: 110px 40px 28px 40px;
     align-items: center;
-    padding: 120px 40px 40px 40px;
 }
 
-.garage__stage {
-    width: 40%;
-    height: 100%;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-.garage__robot {
-    width: 360px;
-    height: 400px;
-}
-
-.garage__shelf {
-    width: 672px;
-    margin-left: 40px;
+.workshop__stage {
+    flex-grow: 1;
+    width: 100%;
     flex-direction: row;
-    flex-wrap: wrap;
+    align-items: flex-end;
     justify-content: center;
-    padding: 20px;
-    border-radius: 36px;
+}
+
+.workshop__ship {
+    width: 480px;
+    height: 460px;
+}
+
+.workshop__robot {
+    width: 190px;
+    height: 200px;
+    margin-left: -20px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.workshop__row {
+    flex-direction: row;
+    margin-top: 12px;
+    padding: 12px 16px;
+    border-radius: 32px;
     background-color: rgba(255, 244, 226, 0.92);
 }
 
-.garage__tile {
-    width: 136px;
-    height: 136px;
-    margin: 10px;
-    padding: 14px;
-    border-radius: 28px;
-    border-width: 6px;
+.workshop__tile {
+    width: 104px;
+    height: 104px;
+    margin: 0 6px;
+    padding: 12px;
+    border-radius: 24px;
+    border-width: 5px;
     border-color: rgba(0, 0, 0, 0.08);
     background-color: rgb(252, 226, 190);
     align-items: center;
     justify-content: center;
 }
 
-.garage__part {
+.workshop__tile--earned {
+    border-color: rgb(84, 168, 84);
+    background-color: rgb(220, 240, 200);
+}
+
+.workshop__part {
     position: absolute;
-    left: 14px;
-    top: 14px;
-    right: 14px;
-    bottom: 14px;
+    left: 12px;
+    top: 12px;
+    right: 12px;
+    bottom: 12px;
     -unity-background-scale-mode: scale-to-fit;
     opacity: 0.25;
     -unity-background-image-tint-color: rgb(90, 70, 60);
 }
 
-.garage__tile--earned .garage__part {
+.workshop__tile--earned .workshop__part {
     opacity: 1;
     -unity-background-image-tint-color: rgb(255, 255, 255);
 }
 
-.garage__tile--worn {
-    border-color: rgb(84, 168, 84);
-    border-width: 8px;
-    background-color: rgb(220, 240, 200);
+.workshop__lock {
+    width: 48px;
+    height: 48px;
 }
 
-.garage__lock {
-    width: 56px;
-    height: 56px;
+/* Ship parts still to be earned show as faint shapes (workshop only). */
+.ship__part--coming {
+    opacity: 0.18;
+    -unity-background-image-tint-color: rgb(90, 70, 60);
 }

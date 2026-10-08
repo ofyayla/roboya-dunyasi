@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: ad644a3306ecf41a2a0efdbe1642a57c
+guid: ee0d848d8a79b428bb838018fb5f6220
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 783405406798324686
-    second: part_antenna_star_0
+      213: -5084565856949129121
+    second: ship_propeller_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -141,13 +141,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: part_antenna_star_0
+      name: ship_propeller_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 412
-        height: 393
+        width: 438
+        height: 389
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,8 +156,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ec3a55b11173fda00800000000000000
-      internalID: 783405406798324686
+      spriteID: f50b773da4eff69b0800000000000000
+      internalID: -5084565856949129121
       vertices: []
       indices: 
       edges: []

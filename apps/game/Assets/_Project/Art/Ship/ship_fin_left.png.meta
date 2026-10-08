@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a5e0caf8f1b8c459eb5c0267a4a5086d
+guid: ea8ad74862f7649d599298ce663aa99f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6522737629082166828
-    second: part_wings_paper_0
+      213: 8919465634595972196
+    second: ship_fin_left_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -141,13 +141,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: part_wings_paper_0
+      name: ship_fin_left_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 524
-        height: 338
+        width: 373
+        height: 366
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,8 +156,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4d9db7f6fa49a75a0800000000000000
-      internalID: -6522737629082166828
+      spriteID: 464a560ccbe48cb70800000000000000
+      internalID: 8919465634595972196
       vertices: []
       indices: 
       edges: []

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 72eae30631b7f4593a7155298b9bc4af
+guid: f172f503be9ed428398513c3fab874c1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7404620889640217252
-    second: part_hat_acorn_0
+      213: 327099462478231898
+    second: ship_leg_left_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -141,13 +141,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: part_hat_acorn_0
+      name: ship_leg_left_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 522
-        height: 403
+        width: 244
+        height: 366
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,8 +156,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c55de8048808d3990800000000000000
-      internalID: -7404620889640217252
+      spriteID: a597c336a371a8400800000000000000
+      internalID: 327099462478231898
       vertices: []
       indices: 
       edges: []
