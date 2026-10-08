@@ -15,6 +15,7 @@ namespace Roboya.Games.YonAvcisi
 
         private YonAvcisiController _controller;
         private GameServices _services;
+        private bool _limitReported;
 
         public void Enter(GameServices services)
         {
@@ -35,6 +36,12 @@ namespace Roboya.Games.YonAvcisi
         {
             // Only time spent inside a level counts; the map and the parent area do not.
             _services?.ScreenTime.Tick(Time.unscaledDeltaTime);
+            if (_services != null && !_limitReported && _services.ScreenTime.IsExhausted)
+            {
+                _limitReported = true;
+                _services.Analytics.Track(
+                    "session_limit_reached", null, AnalyticsService.Props("limit_minutes", Mathf.Clamp(_services.ScreenTime.LimitMinutes, 0, 720)));
+            }
         }
 
         private void OnDestroy()

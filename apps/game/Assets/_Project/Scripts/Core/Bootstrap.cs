@@ -39,6 +39,7 @@ namespace Roboya.Core
             ReturningFromLevel = true;
             _ = LoadAsync(MapScene);
             _ = _services.Sync.SyncAsync();
+            _ = _services.Analytics.FlushAsync();
         }
 
         private async Awaitable Start()
@@ -56,6 +57,16 @@ namespace Roboya.Core
             await LoadAsync(firstScene);
             // A signed-in parent's profiles and stars catch up in the background; offline simply does nothing.
             _ = _services.Sync.SyncAsync();
+            _services.Analytics.Track("app_open");
+            _ = _services.Analytics.FlushAsync();
+        }
+
+        private void OnApplicationPause(bool paused)
+        {
+            if (paused && _services != null)
+            {
+                _ = _services.Analytics.FlushAsync();
+            }
         }
 
         public async Awaitable LoadAsync(string sceneName)
@@ -119,7 +130,8 @@ namespace Roboya.Core
                 notice,
                 new ScreenTimeService(ProgressFolder, profiles),
                 account,
-                new SyncService(api, account, profiles, notice, ProgressFolder, serverEntitlements));
+                new SyncService(api, account, profiles, notice, ProgressFolder, serverEntitlements),
+                new AnalyticsService(api, profiles, notice, ProgressFolder, Application.version, PlatformWord));
         }
 
         /// <summary>Tests point this at a temporary folder so each run starts with fresh progress.</summary>
@@ -136,10 +148,11 @@ namespace Roboya.Core
                 : new Roboya.Services.ApiClient(url, TransportOverride ?? new Roboya.Services.UnityHttpTransport());
         }
 
+        private static string PlatformWord => Application.platform == RuntimePlatform.IPhonePlayer ? "ios" : "android";
+
         private static Roboya.Services.AccountService ComposeAccount(Roboya.Services.ApiClient api)
         {
-            string platform = Application.platform == RuntimePlatform.IPhonePlayer ? "ios" : "android";
-            return new Roboya.Services.AccountService(api, ProgressFolder, platform);
+            return new Roboya.Services.AccountService(api, ProgressFolder, PlatformWord);
         }
 
         private static string ProgressFolder => ProgressFolderOverride ?? FileProgressStore.DefaultFolder;
