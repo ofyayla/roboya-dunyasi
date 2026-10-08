@@ -5,7 +5,7 @@ namespace Roboya.LevelValidator;
 /// <summary>Validates a whole content tree: per-level checks plus cross-level rules.</summary>
 internal sealed class ContentValidator(TextWriter output)
 {
-    public int Run(string levelsDir, string? voicePath, bool fix)
+    public int Run(string levelsDir, string? voicePath, bool fix, string? manifestPath = null)
     {
         if (!Directory.Exists(levelsDir))
         {
@@ -22,6 +22,15 @@ internal sealed class ContentValidator(TextWriter output)
             {
                 output.WriteLine("✗ " + e);
                 errors++;
+            }
+
+            if (manifestPath != null)
+            {
+                foreach (var e in VoiceManifest.Check(voice, manifestPath))
+                {
+                    output.WriteLine("✗ ses: " + e);
+                    errors++;
+                }
             }
         }
 

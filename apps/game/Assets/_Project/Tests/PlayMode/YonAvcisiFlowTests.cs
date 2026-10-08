@@ -43,6 +43,12 @@ namespace Roboya.Tests.PlayMode
             VisualElement root = null;
             yield return StartGame(r => root = r);
             yield return null;
+            AudioSource voice = null;
+            yield return WaitUntil(
+                () => (voice = UnityEngine.Object.FindAnyObjectByType<AudioSource>()) != null && voice.clip != null,
+                10f);
+            Assert.AreEqual("yon_avcisi.l01.intro", voice.clip.name, "intro narration is loaded by key");
+            Assert.Greater(voice.clip.length, 1f);
             yield return Capture(root, "01-level1-start");
 
             var forward = root.Q("palette").Children().First();

@@ -86,7 +86,37 @@ namespace Roboya.Games.YonAvcisi
             _result.AddToClassList("hidden");
             RenderProgress();
             UpdateButtons();
-            _services.Voice.Play(_entry.Dto.Voice.Intro);
+            _ = IntroAsync(_entry);
+        }
+
+        /// <summary>Loads this level's lines first so the intro and feedback play without a gap.</summary>
+        private async Awaitable IntroAsync(LevelEntry entry)
+        {
+            try
+            {
+                await _services.Voice.PreloadAsync(new[] { entry.Dto.Voice.Intro });
+                if (_entry == entry)
+                {
+                    _services.Voice.Play(entry.Dto.Voice.Intro);
+                }
+
+                var rest = new List<string> { BumpVoice, NotThereVoice, MissingItemsVoice, PlayPromptVoice };
+                if (entry.Dto.Voice.Success != null)
+                {
+                    rest.Add(entry.Dto.Voice.Success);
+                }
+
+                if (entry.Dto.Voice.Hints != null)
+                {
+                    rest.AddRange(entry.Dto.Voice.Hints);
+                }
+
+                await _services.Voice.PreloadAsync(rest);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
         }
 
         public void Dispose()

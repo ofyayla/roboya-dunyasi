@@ -10,7 +10,7 @@ UNITY ?= $(firstword $(wildcard $(UNITY_HUB_EDITORS)/$(UNITY_VERSION)-arm64/Unit
 ENGINE_SLN := tools/engine-dotnet/Roboya.Engine.slnx
 
 .PHONY: help setup api-dev web-dev editor-dev test lint gen validate-content fix-content unity-test \
-        test-api test-web test-engine test-content lint-api lint-web check-gen unity-playmode
+        test-api test-web test-engine test-content lint-api lint-web check-gen unity-playmode tts test-tools
 
 help: ## List commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-18s\033[0m %s\n",$$1,$$2}'
@@ -33,10 +33,13 @@ web-dev: ## Run the web panels locally
 editor-dev: ## Run the internal level editor locally
 	npm run dev -w @roboya/level-editor
 
-test: test-engine test-api test-web test-content ## Run all API, web, engine and content tests
+test: test-engine test-api test-web test-content test-tools ## Run all API, web, engine and content tests
 
 test-engine:
 	$(DOTNET) test tools/engine-dotnet/Roboya.CodingEngine.Tests --nologo -v q /p:CollectCoverage=true /p:Threshold=90 /p:ThresholdType=line /p:Include="[Roboya.CodingEngine]*" /p:ExcludeByFile="**/Generated/*.cs"
+
+test-tools:
+	python3 -m unittest tools/tts/test_generate.py
 
 test-api:
 	cd apps/api && uv run pytest
@@ -67,10 +70,13 @@ check-gen: gen ## Fail if generated code is out of date (used in CI)
 
 validate-content: ## Validate all levels (schema + solver) and the voice manifest
 	npm run validate -w @roboya/level-schema
-	$(DOTNET) run --project tools/engine-dotnet/Roboya.LevelValidator -c Release -- content/levels --voice content/voice/script.csv
+	$(DOTNET) run --project tools/engine-dotnet/Roboya.LevelValidator -c Release -- content/levels --voice content/voice/script.csv --manifest content/voice/manifest.json
 
 fix-content: ## Write solver-computed shortest lengths into level files
 	$(DOTNET) run --project tools/engine-dotnet/Roboya.LevelValidator -c Release -- content/levels --voice content/voice/script.csv --fix
+
+tts: ## Generate missing/stale narration with ElevenLabs (needs .env); only script text is sent
+	python3 tools/tts/generate.py
 
 unity-playmode: ## Run Unity PlayMode tests (critical flows) with a GPU; screenshots in apps/game/TestResults/screens
 	"$(UNITY)" -batchmode -projectPath apps/game -runTests -testPlatform PlayMode \

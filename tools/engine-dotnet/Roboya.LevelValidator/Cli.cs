@@ -4,7 +4,7 @@ internal static class Cli
 {
     private const string Usage =
         "Usage:\n" +
-        "  Roboya.LevelValidator <levels-dir> [--voice script.csv] [--fix]\n" +
+        "  Roboya.LevelValidator <levels-dir> [--voice script.csv] [--manifest manifest.json] [--fix]\n" +
         "  Roboya.LevelValidator serve [--port 5199] [--voice script.csv]";
 
     public static async Task<int> Main(string[] args)
@@ -36,7 +36,7 @@ internal static class Cli
             return 0;
         }
 
-        return new ContentValidator(Console.Out).Run(args[0], voicePath, args.Contains("--fix"));
+        return new ContentValidator(Console.Out).Run(args[0], voicePath, args.Contains("--fix"), Option(args, "--manifest"));
     }
 
     private static string? Option(string[] args, string name)
