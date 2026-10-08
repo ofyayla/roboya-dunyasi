@@ -90,7 +90,7 @@ namespace Roboya.Core
             var island = IslandLayout.Parse(await ContentFiles.ReadAsync(IslandLayout.File));
             var notice = LocalNotice.Parse(await ContentFiles.ReadAsync(LocalNotice.File));
 
-            IEntitlementSource entitlements = new FreeTierEntitlements();
+            IEntitlementSource entitlements = null;
 #if UNITY_EDITOR
             if (DevEntitlements.Requested)
             {
@@ -102,6 +102,8 @@ namespace Roboya.Core
             var profiles = ProfileManager.Load(ProgressFolder, strings.Get(StringKeys.ProfileDefaultNickname));
             var api = ComposeApi();
             var account = ComposeAccount(api);
+            var serverEntitlements = new EntitlementService(api, account, ProgressFolder);
+            entitlements = entitlements ?? serverEntitlements;
             // Rules will come from server configuration once the API exists (CLAUDE.md §6).
             return new GameServices(
                 catalog,
@@ -117,7 +119,7 @@ namespace Roboya.Core
                 notice,
                 new ScreenTimeService(ProgressFolder, profiles),
                 account,
-                new SyncService(api, account, profiles, notice, ProgressFolder));
+                new SyncService(api, account, profiles, notice, ProgressFolder, serverEntitlements));
         }
 
         /// <summary>Tests point this at a temporary folder so each run starts with fresh progress.</summary>
