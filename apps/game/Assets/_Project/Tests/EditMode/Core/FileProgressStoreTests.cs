@@ -165,6 +165,32 @@ namespace Roboya.Tests.Core
         }
 
         [Test]
+        public void LocalizedStrings_ShippedTable_HasEveryKeyTheScreensUse()
+        {
+            var table = LocalizedStrings.Parse(File.ReadAllText(Path.Combine(ContentFiles.RepositoryContentPath, LocalizedStrings.File)));
+
+            foreach (var key in StringKeys.All)
+            {
+                Assert.IsTrue(table.Has(key), key);
+                Assert.IsNotEmpty(table.Get(key), key);
+            }
+
+            StringAssert.Contains("30", table.Format(StringKeys.GateLocked, 30));
+        }
+
+        [Test]
+        public void LocalizedStrings_MissingKey_ShowsKeyAndWarnsOnce()
+        {
+            var table = new LocalizedStrings(new System.Collections.Generic.Dictionary<string, string>());
+            LogAssert.Expect(LogType.Warning, "Missing string key: nope");
+
+            Assert.AreEqual("[nope]", table.Get("nope"));
+            Assert.AreEqual("[nope]", table.Get("nope"), "second lookup does not warn again");
+            Assert.Throws<ArgumentNullException>(() => new LocalizedStrings(null));
+            Assert.Throws<FormatException>(() => LocalizedStrings.Parse("null"));
+        }
+
+        [Test]
         public void IslandLayout_RegionOutsideImage_Throws()
         {
             Assert.Throws<FormatException>(() => IslandLayout.Parse("{\"regions\":[{\"id\":\"x\",\"x\":1.4,\"y\":0.5,\"radius\":0.1}]}"));

@@ -23,5 +23,6 @@ namespace Roboya.UI
         Lock,
         Garage,
         Island,
+        Grownup,
     }
 }
