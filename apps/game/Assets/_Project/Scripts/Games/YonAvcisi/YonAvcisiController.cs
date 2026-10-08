@@ -50,7 +50,8 @@ namespace Roboya.Games.YonAvcisi
             _partArt = partArt;
             _path = levels.Count > 0 ? ProgressQueries.PathOf(services.Catalog, levels[0].Dto.Region) : new List<string>();
 
-            _board = new BoardView(art);
+            var wardrobe = new RobotWardrobe(services.Parts, services.Anchors, partArt, () => services.Progress.Book.AllEquipped);
+            _board = new BoardView(art, wardrobe);
             root.Q("board-host").Add(_board);
             if (art != null && art.Background != null)
             {
@@ -81,7 +82,7 @@ namespace Roboya.Games.YonAvcisi
             _result = root.Q("result");
 
             // The story scene covers the whole screen; the result panel stays above it.
-            _story = new StoryStage(art, services.Voice);
+            _story = new StoryStage(art, services.Voice, wardrobe);
             _result.parent.Insert(_result.parent.IndexOf(_result), _story);
             _stars = root.Q("stars");
             var retry = new IconButton(IconKind.Retry, Retry) { name = "retry" };
@@ -245,7 +246,7 @@ namespace Roboya.Games.YonAvcisi
             if (newParts.Count > 0 && _partArt != null)
             {
                 var place = _services.Parts.PlacementOf(newParts[0].Id);
-                reward = place != null ? _partArt.Find(place.Sprite) : null;
+                reward = place != null ? _partArt.Find(place.SpriteFor("front")) : null;
             }
 
             await _board.Celebrate(token);

@@ -14,6 +14,7 @@ namespace Roboya.Core
             IProgressStore progress,
             IEntitlementSource entitlements,
             RobotPartCatalog parts,
+            RobotAnchors anchors,
             IslandLayout island,
             ISceneNavigator navigator)
         {
@@ -24,6 +25,7 @@ namespace Roboya.Core
             Progress = progress;
             Entitlements = entitlements;
             Parts = parts;
+            Anchors = anchors;
             Island = island;
             Navigator = navigator;
         }
@@ -43,6 +45,8 @@ namespace Roboya.Core
         public IEntitlementSource Entitlements { get; }
 
         public RobotPartCatalog Parts { get; }
+
+        public RobotAnchors Anchors { get; }
 
         public IslandLayout Island { get; }
 

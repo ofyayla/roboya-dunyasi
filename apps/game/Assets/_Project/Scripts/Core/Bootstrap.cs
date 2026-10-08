@@ -83,6 +83,7 @@ namespace Roboya.Core
 #endif
             var catalog = LevelCatalog.Parse(await levels.LoadAllAsync());
             var parts = RobotPartCatalog.Parse(await ContentFiles.ReadAsync(RobotPartCatalog.File));
+            var anchors = RobotAnchors.Parse(await ContentFiles.ReadAsync(RobotAnchors.File));
             var island = IslandLayout.Parse(await ContentFiles.ReadAsync(IslandLayout.File));
 
             IEntitlementSource entitlements = new FreeTierEntitlements();
@@ -103,6 +104,7 @@ namespace Roboya.Core
                 new FileProgressStore(ProgressFolder),
                 entitlements,
                 parts,
+                anchors,
                 island,
                 this);
         }

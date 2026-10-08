@@ -23,7 +23,7 @@ namespace Roboya.Map
         private float _aspect = 16f / 9f;
         private float _time;
 
-        public IslandView(GameServices services, RegionArt art, PartArt partArt, Action<string> onRegion, Action onLocked)
+        public IslandView(GameServices services, RegionArt art, PartArt partArt, RobotWardrobe wardrobe, Action<string> onRegion, Action onLocked)
         {
             _services = services;
             _partArt = partArt;
@@ -80,7 +80,7 @@ namespace Roboya.Map
                 _spots.Add((spot, region, region.Radius * 2f));
             }
 
-            _robot = new RobotAvatar(partArt, art != null ? art.RobotFront : null) { name = "island-robot" };
+            _robot = new RobotAvatar(wardrobe, art != null ? art.RobotFront : null) { name = "island-robot" };
             _robot.AddToClassList("island__robot");
             _image.Add(_robot);
 
@@ -90,7 +90,7 @@ namespace Roboya.Map
 
         public void Refresh()
         {
-            _robot.Wear(_services.Progress.Book.AllEquipped, _services.Parts);
+            _robot.Refresh();
             Layout();
         }
 

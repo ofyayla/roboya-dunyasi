@@ -114,6 +114,36 @@ namespace Roboya.Tests.PlayMode
             Assert.IsTrue(map.Q("stone-3").ClassListContains("stone--done"), "progress recorded");
         }
 
+        [UnityTest]
+        public IEnumerator WornParts_ShowInStorySceneAndOnBoard()
+        {
+            var store = new FileProgressStore(_progressDir);
+            store.Book.Equip("hat", "hat-acorn");
+            store.Book.Equip("wings", "wings-leaf");
+            store.Book.Equip("antenna", "antenna-star");
+            store.Save();
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            yield return OpenForest(map);
+            Tap(map.Q("stone-1"));
+
+            VisualElement game = null;
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
+            yield return WaitUntil(() => game.Q<StoryStage>("story").IsOpen, 10f);
+            yield return new WaitForSeconds(StoryStage.EnterSeconds + 0.3f);
+            var storyRobot = game.Q("story-robot");
+            Assert.IsNotNull(storyRobot.Q("part-hat-acorn"), "hat in the story scene");
+            Assert.IsNotNull(storyRobot.Q("part-wings-leaf"), "wings in the story scene");
+            yield return Capture(game, "10-story-worn");
+
+            Tap(game.Q("story-continue"));
+            yield return WaitUntil(() => !game.Q<StoryStage>("story").IsOpen, 5f);
+            yield return null;
+            Assert.IsNotNull(game.Q("robot").Q("part-hat-acorn"), "hat on the board");
+            Assert.IsNotNull(game.Q("robot").Q("part-antenna-star"), "antenna on the board");
+            yield return Capture(game, "11-board-worn");
+        }
+
         private void Seed(int completed)
         {
             var store = new FileProgressStore(_progressDir);
