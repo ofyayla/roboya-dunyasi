@@ -105,6 +105,25 @@ namespace Roboya.Core
         public const string SyncOutdated = "account.sync.outdated";
         public const string SyncPartly = "account.sync.partly";
         public const string SyncFailed = "account.sync.failed";
+        public const string PrivacyTitle = "privacy.title";
+        public const string PrivacyRead = "privacy.read";
+        public const string PrivacyClose = "privacy.close";
+        public const string PrivacyView = "privacy.view";
+        public const string PrivacyViewSummary = "privacy.view.summary";
+        public const string PrivacyViewProfiles = "privacy.view.profiles";
+        public const string PrivacyExport = "privacy.export";
+        public const string PrivacyExportDone = "privacy.export.done";
+        public const string PrivacyWithdraw = "privacy.withdraw";
+        public const string PrivacyWithdrawConfirm = "privacy.withdraw.confirm";
+        public const string PrivacyWipe = "privacy.wipe";
+        public const string PrivacyWipeConfirm = "privacy.wipe.confirm";
+        public const string PrivacyDelete = "privacy.delete";
+        public const string PrivacyDeleteConfirm = "privacy.delete.confirm";
+        public const string PrivacyDeletePending = "privacy.delete.pending";
+        public const string PrivacyDeleteCancel = "privacy.delete.cancel";
+        public const string PrivacyDeleteCancelled = "privacy.delete.cancelled";
+        public const string PrivacyNeedAccount = "privacy.need_account";
+        public const string PrivacyError = "privacy.error";
         public const string ReportTitle = "report.title";
         public const string ReportSummary = "report.summary";
         public const string ReportNote = "report.note";
@@ -126,6 +145,7 @@ namespace Roboya.Core
             ReportTitle, ReportSummary, ReportNote, ReportEmpty, ReportConcept, ReportNotStarted, ReportExploring, ReportGrowing, ReportConfident, ReportConceptLine,
             AccountTitle, AccountHint, AccountEmail, AccountSendCode, AccountCode, AccountSignIn, AccountSignOut, AccountSignedIn, AccountCodeSent, AccountErrorCode, AccountErrorMany, AccountErrorDevice, AccountErrorNetwork, AccountErrorGeneric,
             AccountSync, SyncDone, SyncOffline, SyncConsent, SyncOutdated, SyncPartly, SyncFailed,
+            PrivacyTitle, PrivacyRead, PrivacyClose, PrivacyView, PrivacyViewSummary, PrivacyViewProfiles, PrivacyExport, PrivacyExportDone, PrivacyWithdraw, PrivacyWithdrawConfirm, PrivacyWipe, PrivacyWipeConfirm, PrivacyDelete, PrivacyDeleteConfirm, PrivacyDeletePending, PrivacyDeleteCancel, PrivacyDeleteCancelled, PrivacyNeedAccount, PrivacyError,
         };
     }
 }

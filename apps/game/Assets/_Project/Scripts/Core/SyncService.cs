@@ -92,17 +92,19 @@ namespace Roboya.Core
                 return SyncResult.NotSignedIn;
             }
 
-            if (!_profiles.Registry.HasConsentFor(_notice.Version))
-            {
-                return SyncResult.ConsentNeeded;
-            }
-
             try
             {
                 string token = await _account.GetAccessTokenAsync();
                 if (token == null)
                 {
                     return _account.IsSignedIn ? SyncResult.Offline : SyncResult.NotSignedIn;
+                }
+
+                // Deleting needs no consent: a profile the parent removed must leave the server even after consent was withdrawn.
+                await RemoveDeletedAsync(token);
+                if (!_profiles.Registry.HasConsentFor(_notice.Version))
+                {
+                    return SyncResult.ConsentNeeded;
                 }
 
                 await _api.SendAsync("POST", "/v1/me/consents", new { notice_version = _notice.Version }, token);
@@ -118,7 +120,6 @@ namespace Roboya.Core
                     partly |= !await SyncProfileAsync(profile, token);
                 }
 
-                await RemoveDeletedAsync(token);
                 return partly ? SyncResult.PartlyDone : SyncResult.Done;
             }
             catch (ApiException e) when (e.IsNetwork)

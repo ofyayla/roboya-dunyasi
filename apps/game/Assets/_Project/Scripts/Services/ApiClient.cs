@@ -33,6 +33,9 @@ namespace Roboya.Services
             await SendRawAsync(method, path, body, bearer);
         }
 
+        /// <summary>The response body as text, for downloads that are saved as they are (data export).</summary>
+        public Task<string> GetTextAsync(string path, string bearer) => SendRawAsync("GET", path, null, bearer);
+
         private async Task<string> SendRawAsync(string method, string path, object body, string bearer)
         {
             var response = await _transport.SendAsync(new HttpRequest

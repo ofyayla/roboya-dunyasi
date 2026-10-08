@@ -21,7 +21,8 @@ namespace Roboya.Core
             ScreenTimeService screenTime,
             Roboya.Services.AccountService account,
             SyncService sync,
-            AnalyticsService analytics)
+            AnalyticsService analytics,
+            PrivacyService privacy)
         {
             Catalog = catalog;
             Voice = voice;
@@ -38,6 +39,7 @@ namespace Roboya.Core
             Account = account;
             Sync = sync;
             Analytics = analytics;
+            Privacy = privacy;
         }
 
         /// <summary>All levels, parsed once at start-up.</summary>
@@ -71,6 +73,9 @@ namespace Roboya.Core
 
         /// <summary>Anonymous first-party usage events (F1-18); records nothing without consent or a server.</summary>
         public AnalyticsService Analytics { get; }
+
+        /// <summary>Privacy centre actions: see and save data, withdraw consent, wipe the device, request deletion (F1-13).</summary>
+        public PrivacyService Privacy { get; }
 
         public ISceneNavigator Navigator { get; }
 
