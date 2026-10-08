@@ -104,6 +104,8 @@ namespace Roboya.Games.YonAvcisi
         /// <param name="withStory">False on retry: the child has just heard the story, go straight to the board.</param>
         public void Start(int index, bool withStory = true)
         {
+            // Leaving a level that was not finished (home button, next level pick) counts as abandoned.
+            ReportAbandon();
             _index = Mathf.Clamp(index, 0, _levels.Count - 1);
             _entry = _levels[_index];
             _session = new LevelSession(_entry.Level, _entry.ShortestLength, _services.Rules);
@@ -128,6 +130,45 @@ namespace Roboya.Games.YonAvcisi
             UpdateGuide();
             UpdateButtons();
             _ = IntroAsync(_entry, withStory);
+            _startedAt = Time.realtimeSinceStartup;
+            _hintsUsed = 0;
+            _open = true;
+            _services.Analytics.Track("level_start", _entry.Id, LevelProps());
+        }
+
+        private float _startedAt;
+        private int _hintsUsed;
+        private bool _open;
+
+        private IReadOnlyDictionary<string, object> LevelProps(params (string key, object value)[] extra)
+        {
+            var map = new Dictionary<string, object>();
+            string band = _services.Analytics.ActiveBand;
+            if (band != null)
+            {
+                map["level_band"] = band;
+            }
+
+            foreach (var (key, value) in extra)
+            {
+                map[key] = value;
+            }
+
+            return map;
+        }
+
+        private int Seconds => Mathf.Clamp(Mathf.RoundToInt(Time.realtimeSinceStartup - _startedAt), 0, 86_400);
+
+        private void ReportAbandon()
+        {
+            if (!_open)
+            {
+                return;
+            }
+
+            _open = false;
+            _services.Analytics.Track(
+                "level_abandon", _entry.Id, LevelProps(("attempts", _session.Attempts), ("duration_s", Seconds), ("hints", _hintsUsed)));
         }
 
         /// <summary>Loads this level's lines first so the story scene and feedback play without a gap.</summary>
@@ -166,6 +207,7 @@ namespace Roboya.Games.YonAvcisi
 
         public void Dispose()
         {
+            ReportAbandon();
             _lifetime.Cancel();
             _lifetime.Dispose();
             _services.Voice.Stop();
@@ -260,6 +302,16 @@ namespace Roboya.Games.YonAvcisi
             int partsBefore = ProgressQueries.EarnedParts(_services);
             _services.Progress.Book.Record(_entry.Id, _session.Stars);
             SaveProgress();
+            _open = false;
+            _services.Analytics.Track(
+                "level_complete",
+                _entry.Id,
+                LevelProps(
+                    ("attempts", _session.Attempts),
+                    ("duration_s", Seconds),
+                    ("stars", _session.Stars),
+                    ("hints", _hintsUsed),
+                    ("code_length", Mathf.Clamp(_session.Plan.Cards.Count, 0, 64))));
             var newParts = RewardRules.NewlyEarned(_services.Parts.Parts, partsBefore, ProgressQueries.EarnedParts(_services));
             Sprite reward = null;
             if (newParts.Count > 0 && _partArt != null)
@@ -299,6 +351,8 @@ namespace Roboya.Games.YonAvcisi
         private void Hint()
         {
             var hint = _session.RequestHint();
+            _hintsUsed++;
+            _services.Analytics.Track("hint_used", _entry.Id, LevelProps(("hint_tier", Mathf.Clamp((int)hint.Tier, 0, 3))));
             var keys = _entry.Dto.Voice.Hints;
             int tier = (int)hint.Tier - 1;
             if (keys != null && tier >= 0 && tier < keys.Count)

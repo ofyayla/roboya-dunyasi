@@ -20,7 +20,8 @@ namespace Roboya.Core
             LocalNotice notice,
             ScreenTimeService screenTime,
             Roboya.Services.AccountService account,
-            SyncService sync)
+            SyncService sync,
+            AnalyticsService analytics)
         {
             Catalog = catalog;
             Voice = voice;
@@ -36,6 +37,7 @@ namespace Roboya.Core
             ScreenTime = screenTime;
             Account = account;
             Sync = sync;
+            Analytics = analytics;
         }
 
         /// <summary>All levels, parsed once at start-up.</summary>
@@ -66,6 +68,9 @@ namespace Roboya.Core
 
         /// <summary>Profile and progress sync with the parent account (F1-15); does nothing offline or signed out.</summary>
         public SyncService Sync { get; }
+
+        /// <summary>Anonymous first-party usage events (F1-18); records nothing without consent or a server.</summary>
+        public AnalyticsService Analytics { get; }
 
         public ISceneNavigator Navigator { get; }
 
