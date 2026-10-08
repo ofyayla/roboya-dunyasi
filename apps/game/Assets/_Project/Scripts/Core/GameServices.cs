@@ -18,7 +18,8 @@ namespace Roboya.Core
             ISceneNavigator navigator,
             LocalizedStrings strings,
             LocalNotice notice,
-            ScreenTimeService screenTime)
+            ScreenTimeService screenTime,
+            Roboya.Services.AccountService account)
         {
             Catalog = catalog;
             Voice = voice;
@@ -32,6 +33,7 @@ namespace Roboya.Core
             Strings = strings;
             Notice = notice;
             ScreenTime = screenTime;
+            Account = account;
         }
 
         /// <summary>All levels, parsed once at start-up.</summary>
@@ -56,6 +58,9 @@ namespace Roboya.Core
         public ShipPartCatalog Parts { get; }
 
         public IslandLayout Island { get; }
+
+        /// <summary>The parent's account (F1-14); signed out by default and absent when no server is configured.</summary>
+        public Roboya.Services.AccountService Account { get; }
 
         public ISceneNavigator Navigator { get; }
 

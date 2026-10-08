@@ -1,7 +1,7 @@
 {
     "name": "Roboya.Services",
     "rootNamespace": "Roboya.Services",
-    "references": ["Roboya.Core"],
+    "references": [],
     "includePlatforms": [],
     "autoReferenced": true,
     "overrideReferences": false,

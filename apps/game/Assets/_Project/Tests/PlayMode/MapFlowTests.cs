@@ -230,6 +230,71 @@ namespace Roboya.Tests.PlayMode
             yield return Capture(map, "18-report");
         }
 
+        private sealed class ScriptedTransport : Roboya.Services.IHttpTransport
+        {
+            public readonly System.Collections.Generic.List<string> Urls = new System.Collections.Generic.List<string>();
+
+            public System.Threading.Tasks.Task<Roboya.Services.HttpResponse> SendAsync(Roboya.Services.HttpRequest request)
+            {
+                Urls.Add(request.Url);
+                string body = request.Url.EndsWith("/v1/auth/verify")
+                    ? "{\"access_token\":\"a\",\"refresh_token\":\"r\",\"expires_in\":1800,\"account_id\":\"x\"}"
+                    : null;
+                int status = request.Url.EndsWith("/v1/auth/code") ? 202 : 200;
+                return System.Threading.Tasks.Task.FromResult(new Roboya.Services.HttpResponse(status, body));
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator ParentArea_NoServerConfigured_HidesTheAccountSection()
+        {
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            Assert.AreEqual(DisplayStyle.None, map.Q("account-section").resolvedStyle.display, "offline by default");
+        }
+
+        [UnityTest]
+        public IEnumerator ParentArea_Account_SignInWithEmailCode_ShowsSignedIn_ThenSignOut()
+        {
+            var transport = new ScriptedTransport();
+            Bootstrap.TransportOverride = transport;
+            Environment.SetEnvironmentVariable(Roboya.Services.ApiConfig.Variable, "http://api.test");
+            try
+            {
+                VisualElement map = null;
+                yield return OpenMap(r => map = r);
+                Tap(map.Q("to-parent"));
+                yield return null;
+                yield return null;
+                var gate = map.Q<ParentGateView>("parent-gate");
+                TypeDigits(map, Roboya.CodingEngine.Parents.ParentGate.ExpectedFor(gate.Challenge));
+                Tap(map.Q("gate-confirm"));
+                yield return null;
+                yield return null;
+                Assert.AreEqual(DisplayStyle.Flex, map.Q("account-section").resolvedStyle.display);
+
+                map.Q<TextField>("account-email").value = "ayse@example.com";
+                Tap(map.Q("account-send"));
+                yield return null;
+                yield return null;
+                StringAssert.Contains("Kod gönderildi", map.Q<Label>("account-message").text);
+
+                map.Q<TextField>("account-code").value = "123456";
+                Tap(map.Q("account-verify"));
+                yield return WaitUntil(() => map.Q("account-signed-in").resolvedStyle.display == DisplayStyle.Flex, 5f);
+                StringAssert.Contains("ayse@example.com", map.Q<Label>("account-who").text);
+
+                Tap(map.Q("account-sign-out"));
+                yield return WaitUntil(() => map.Q("account-signed-out").resolvedStyle.display == DisplayStyle.Flex, 5f);
+                Assert.Contains("http://api.test/v1/auth/code", transport.Urls);
+            }
+            finally
+            {
+                Bootstrap.TransportOverride = null;
+                Environment.SetEnvironmentVariable(Roboya.Services.ApiConfig.Variable, null);
+            }
+        }
+
         [UnityTest]
         public IEnumerator DailyLimitUsedUp_MapShowsRest_StoneStaysClosed_ParentCanRaiseTheLimit()
         {
