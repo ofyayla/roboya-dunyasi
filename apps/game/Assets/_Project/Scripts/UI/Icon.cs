@@ -225,6 +225,17 @@ namespace Roboya.UI
                     p.Arc(P(0.5f, 0.54f), s * 0.13f, Angle.Degrees(0f), Angle.Degrees(360f));
                     p.Fill();
                     break;
+                case IconKind.Battery:
+                    // An empty battery: outline, a nub and one low red bar.
+                    p.lineWidth = s * 0.07f;
+                    RoundedRect(p, P(0.1f, 0.3f), P(0.84f, 0.74f), s * 0.08f);
+                    p.Stroke();
+                    RoundedRect(p, P(0.84f, 0.44f), P(0.93f, 0.6f), s * 0.03f);
+                    p.Fill();
+                    p.fillColor = new Color(0.86f, 0.28f, 0.28f);
+                    RoundedRect(p, P(0.15f, 0.36f), P(0.27f, 0.68f), s * 0.03f);
+                    p.Fill();
+                    break;
                 case IconKind.Easier:
                     // Steps going down: "an easier level", no text needed.
                     RoundedRect(p, P(0.12f, 0.2f), P(0.4f, 0.4f), s * 0.04f);

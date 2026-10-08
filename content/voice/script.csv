@@ -38,3 +38,4 @@ reward.part_unlocked,"Gemimin yeni bir parçasını bulduk! Haritada yerine taka
 workshop.welcome,"Gemimi birlikte onarıyoruz! Bak, ne kadar yol aldık.",Gemi atölyesi açılışı (ILR-03),
 roboya.alternative_offer,"Bu bölüm biraz zor oldu, olsun! İstersen önce daha kolay bir bölümü deneyelim.",Beş başarısız denemeden sonra daha kolay bölüm teklifi (YZ-03),
 onboarding.welcome,"Merhaba! Ben Roboya. Başlamak için bir büyüğünün yardımına ihtiyacım var.",İlk açılış: veli kilidine yönlendirme (A1),
+rest.battery_empty,"Şarjım bitti! Biraz dinlenelim, yarın yine oynarız. Güle güle!",Günlük süre dolunca; devam eden bölüm bitebilir (VEL-02),

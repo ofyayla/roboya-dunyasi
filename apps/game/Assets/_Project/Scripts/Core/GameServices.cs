@@ -17,7 +17,8 @@ namespace Roboya.Core
             IslandLayout island,
             ISceneNavigator navigator,
             LocalizedStrings strings,
-            LocalNotice notice)
+            LocalNotice notice,
+            ScreenTimeService screenTime)
         {
             Catalog = catalog;
             Voice = voice;
@@ -30,6 +31,7 @@ namespace Roboya.Core
             Navigator = navigator;
             Strings = strings;
             Notice = notice;
+            ScreenTime = screenTime;
         }
 
         /// <summary>All levels, parsed once at start-up.</summary>
@@ -62,5 +64,8 @@ namespace Roboya.Core
 
         /// <summary>The privacy notice the parent consents to before the first profile.</summary>
         public LocalNotice Notice { get; }
+
+        /// <summary>Today's play time and the daily limit (VEL-02).</summary>
+        public ScreenTimeService ScreenTime { get; }
     }
 }

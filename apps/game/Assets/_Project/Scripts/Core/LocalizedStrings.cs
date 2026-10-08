@@ -78,6 +78,12 @@ namespace Roboya.Core
         public const string ProfileRemoveConfirm = "profile.remove_confirm";
         public const string ProfileLimit = "profile.limit";
         public const string ProfileActive = "profile.active";
+        public const string TimeTitle = "time.title";
+        public const string TimeMinutes = "time.minutes";
+        public const string TimeUnlimited = "time.unlimited";
+        public const string TimeToday = "time.today";
+        public const string TimeNote = "time.note";
+        public const string RestParent = "rest.parent";
 
         public static readonly string[] All =
         {
@@ -85,7 +91,7 @@ namespace Roboya.Core
             OnboardingNoticeTitle, OnboardingAccept, OnboardingDecline, ProfileTitle, ProfileNickname, ProfileAvatar,
             ProfileAge, ProfileAgeMinik, ProfileAgeKasif, ProfileAgeMucit, ProfileSave, ProfileCancel,
             ProfileDefaultNickname, ProfileListTitle, ProfileAdd, ProfileRemove, ProfileRemoveConfirm, ProfileLimit,
-            ProfileActive,
+            ProfileActive, TimeTitle, TimeMinutes, TimeUnlimited, TimeToday, TimeNote, RestParent,
         };
     }
 }

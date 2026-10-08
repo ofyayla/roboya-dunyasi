@@ -25,5 +25,11 @@
   "profile.remove": "Sil",
   "profile.remove_confirm": "Emin misiniz? Bu profilin tüm ilerlemesi silinir. Bir kez daha dokunun.",
   "profile.limit": "Bu cihazda en fazla {0} profil olabilir.",
-  "profile.active": "Seçili"
+  "profile.active": "Seçili",
+  "time.title": "Günlük süre sınırı",
+  "time.minutes": "{0} dk",
+  "time.unlimited": "Sınırsız",
+  "time.today": "Bugün oynanan: {0} dk",
+  "time.note": "Süre dolunca devam eden bölüm bitirilebilir, yenisi başlamaz. Roboya'nın şarjı biter.",
+  "rest.parent": "Süreyi değiştir"
 }

@@ -3,6 +3,8 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
+using Roboya.CodingEngine.Parents;
+using Roboya.CodingEngine.Profiles;
 using Roboya.Core;
 using Roboya.UI;
 using UnityEngine;
@@ -186,6 +188,49 @@ namespace Roboya.Tests.PlayMode
             yield return null;
             Assert.IsFalse(map.Q("gate-pad").enabledSelf, "locked after three wrong answers");
             Assert.IsNotEmpty(map.Q<Label>("gate-message").text);
+        }
+
+        [UnityTest]
+        public IEnumerator DailyLimitUsedUp_MapShowsRest_StoneStaysClosed_ParentCanRaiseTheLimit()
+        {
+            Seed(1);
+            var manager = ProfileManager.Load(_progressDir);
+            var book = new ScreenTimeBook();
+            book.SetLimit(manager.Active.Id, 10);
+            book.AddUsage(manager.Active.Id, DateTime.Now.Date, 600);
+            File.WriteAllText(Path.Combine(_progressDir, ScreenTimeService.File), book.ToJson());
+
+            VisualElement map = null;
+            yield return SceneManager.LoadSceneAsync("Boot");
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Map" && (map = FindRoot())?.Q("rest") != null, 10f);
+            yield return null;
+            yield return null;
+            Assert.AreEqual(DisplayStyle.Flex, map.Q("rest").resolvedStyle.display, "VEL-02: Roboya rests when the day's time is used up");
+            yield return WaitForVoice("rest.battery_empty");
+            yield return Capture(map, "16-rest");
+
+            // The parent opens the gate from the rest screen and raises the limit.
+            Tap(map.Q("rest-parent"));
+            yield return null;
+            yield return null;
+            var gate = map.Q<ParentGateView>("parent-gate");
+            Assert.IsTrue(gate.IsOpen);
+            TypeDigits(map, Roboya.CodingEngine.Parents.ParentGate.ExpectedFor(gate.Challenge));
+            Tap(map.Q("gate-confirm"));
+            yield return null;
+            yield return null;
+            map.Q<ScrollView>("parent-sections").ScrollTo(map.Q("time-0"));
+            yield return null;
+            yield return null;
+            yield return Capture(map, "17-parent-time");
+            Tap(map.Q("time-0"));
+            yield return null;
+            Assert.IsTrue(map.Q("time-0").ClassListContains("is-selected"));
+
+            Tap(map.Q("parent-back"));
+            yield return null;
+            Assert.AreEqual(DisplayStyle.None, map.Q("rest").resolvedStyle.display, "unlimited: the island is back");
+            Assert.AreEqual(DisplayStyle.Flex, map.Q("island").resolvedStyle.display);
         }
 
         private static void TypeDigits(VisualElement map, string digits)

@@ -26,11 +26,13 @@ namespace Roboya.Map
         private readonly List<VisualElement> _stones = new List<VisualElement>();
         private readonly VisualElement _robot = new VisualElement { name = "path-robot" };
         private NodeState[] _states = new NodeState[0];
+        private readonly Action _onRest;
         private float _time;
 
-        public PathView(GameServices services, RegionArt art, PartArt partArt, Action onIsland, Action onWorkshop)
+        public PathView(GameServices services, RegionArt art, PartArt partArt, Action onIsland, Action onWorkshop, Action onRest)
         {
             _services = services;
+            _onRest = onRest;
             name = "path";
             AddToClassList("map-view");
             AddToClassList("path");
@@ -140,6 +142,12 @@ namespace Roboya.Map
             {
                 case NodeState.Completed:
                 case NodeState.Current:
+                    if (_services.ScreenTime.IsExhausted)
+                    {
+                        _onRest();
+                        break;
+                    }
+
                     _services.Navigator.PlayLevel(_path[index]);
                     break;
                 case NodeState.NeedsGrownUp:
