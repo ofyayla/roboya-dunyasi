@@ -70,6 +70,8 @@ internal static class LevelChecker
             CheckStarterProgram(dto, level, report);
         }
 
+        CheckLooks(dto, level, report);
+        CheckScenery(dto, level, report);
         CheckLocation(dto, path, report);
 
         if (voice != null)
@@ -91,6 +93,41 @@ internal static class LevelChecker
         return report;
     }
 
+    /// <summary>Obstacle looks (v2) must dress a blocked cell, once.</summary>
+    private static void CheckLooks(LevelDto dto, Level level, LevelReport report)
+    {
+        var seen = new HashSet<(long, long)>();
+        foreach (var look in dto.Grid.Looks ?? [])
+        {
+            var at = new GridPosition((int)look.X, (int)look.Y);
+            if (!level.Grid.Contains(at) || level.Grid[at] != CellType.Blocked)
+            {
+                report.Errors.Add($"grid.looks ({look.X},{look.Y}) is not a blocked '#' cell");
+            }
+
+            if (!seen.Add((look.X, look.Y)))
+            {
+                report.Errors.Add($"grid.looks ({look.X},{look.Y}) is listed twice");
+            }
+        }
+    }
+
+    /// <summary>Scenery (v2) sits just outside the playable cells, so it can never be mistaken for a path.</summary>
+    private static void CheckScenery(LevelDto dto, Level level, LevelReport report)
+    {
+        int w = level.Grid.Width;
+        int h = level.Grid.Height;
+        foreach (var item in dto.Scenery ?? [])
+        {
+            bool inRange = item.X >= -1 && item.X <= w && item.Y >= -1 && item.Y <= h;
+            bool outside = item.X == -1 || item.X == w || item.Y == -1 || item.Y == h;
+            if (!inRange || !outside)
+            {
+                report.Errors.Add($"scenery ({item.X},{item.Y}) must be on the ring just outside the grid (x or y = -1 or the grid size)");
+            }
+        }
+    }
+
     /// <summary>Writes the solver's shortest length into the file, preserving key order.</summary>
     public static string WithShortestLength(string json, int shortest)
     {
@@ -105,6 +142,11 @@ internal static class LevelChecker
         if (dto.Voice.Success != null)
         {
             yield return dto.Voice.Success;
+        }
+
+        if (dto.Cards?.Introduces is { } introduced)
+        {
+            yield return LevelStory.CardIntroVoice(introduced);
         }
 
         foreach (var hint in dto.Voice.Hints ?? [])

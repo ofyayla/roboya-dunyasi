@@ -52,6 +52,7 @@ namespace Roboya.UI
         private readonly LogShape[] _logs = new LogShape[MaxProps];
         private readonly List<Actor> _front = new List<Actor>();
         private readonly IconButton _continue;
+        private readonly VisualElement _cardHost = new VisualElement { name = "story-card" };
 
         private int _session;
         private float _time;
@@ -59,6 +60,9 @@ namespace Roboya.UI
         private bool _celebrating;
         private bool _continueRequested;
         private int _propCount;
+        private CardElement _card;
+        private string _cardVoice;
+        private float _cardAge = -1f;
 
         public StoryStage(RegionArt art, IVoicePlayer voice)
         {
@@ -110,6 +114,11 @@ namespace Roboya.UI
                 }
             }
 
+            // YON-01: a level's new card pops up large between the friends; tapping it repeats its narration.
+            _cardHost.AddToClassList("story__card");
+            _cardHost.RegisterCallback<ClickEvent>(_ => _voice.Play(_cardVoice));
+            Add(_cardHost);
+
             _continue = new IconButton(IconKind.Next, () => _continueRequested = true) { name = "story-continue" };
             _continue.AddToClassList("story__continue");
             Add(_continue);
@@ -128,18 +137,34 @@ namespace Roboya.UI
             await Tween.Delay(EnterSeconds, token);
             _voice.Play(beat.VoiceKey);
 
+            if (beat.NewCard.HasValue)
+            {
+                await WaitForQuietAsync(session, 0.3f, token);
+                if (session == _session && !_continueRequested)
+                {
+                    _cardAge = 0f;
+                    _cardHost.style.display = DisplayStyle.Flex;
+                    _voice.Play(beat.NewCardVoiceKey);
+                }
+            }
+
+            await WaitForQuietAsync(session, AutoContinueDelay, token);
+            if (session == _session)
+            {
+                await CloseAsync(token);
+            }
+        }
+
+        /// <summary>Waits until the child taps continue or the narration has been quiet for <paramref name="quietSeconds"/>.</summary>
+        private async Awaitable WaitForQuietAsync(int session, float quietSeconds, CancellationToken token)
+        {
             float quiet = 0f;
             float waited = 0f;
-            while (session == _session && !_continueRequested && quiet < AutoContinueDelay && waited < MaxWaitSeconds)
+            while (session == _session && !_continueRequested && quiet < quietSeconds && waited < MaxWaitSeconds)
             {
                 await Awaitable.NextFrameAsync(token);
                 waited += Time.deltaTime;
                 quiet = _voice.IsPlaying ? 0f : quiet + Time.deltaTime;
-            }
-
-            if (session == _session)
-            {
-                await CloseAsync(token);
             }
         }
 
@@ -181,8 +206,29 @@ namespace Roboya.UI
             }
 
             StageProps(beat.Props);
+            StageCard(beat);
             _ = RunAsync(session, token);
             return session;
+        }
+
+        private void StageCard(StoryBeat beat)
+        {
+            _cardAge = -1f;
+            _cardHost.style.display = DisplayStyle.None;
+            _cardVoice = beat.NewCardVoiceKey;
+            if (_card != null)
+            {
+                _card.RemoveFromHierarchy();
+                _card = null;
+            }
+
+            if (beat.NewCard.HasValue)
+            {
+                _card = new CardElement(beat.NewCard.Value) { pickingMode = PickingMode.Ignore };
+                _card.Icon.pickingMode = PickingMode.Ignore;
+                _card.AddToClassList("story__card-face");
+                _cardHost.Add(_card);
+            }
         }
 
         private async Awaitable CloseAsync(CancellationToken token)
@@ -241,6 +287,11 @@ namespace Roboya.UI
                     float dt = Time.deltaTime;
                     _time += dt;
                     _enterT = Mathf.Min(1f, _enterT + (dt / EnterSeconds));
+                    if (_cardAge >= 0f)
+                    {
+                        _cardAge += dt;
+                    }
+
                     Animate();
                     Layout();
                     await Awaitable.NextFrameAsync(token);
@@ -286,6 +337,13 @@ namespace Roboya.UI
                 _props[i].Enter = 0f;
             }
 
+            if (_cardAge >= 0f)
+            {
+                float pop = EaseOutBack(Mathf.Min(1f, _cardAge / 0.45f));
+                _cardHost.style.scale = new Scale(new Vector3(pop, pop, 1f));
+                _cardHost.style.rotate = new Rotate(new Angle(Mathf.Sin(t * 1.6f) * 3f, AngleUnit.Degree));
+            }
+
             if (_continue.style.display == DisplayStyle.Flex)
             {
                 float pulse = 1f + (Mathf.Max(0f, Mathf.Sin(t * 4f)) * 0.08f);
@@ -305,6 +363,25 @@ namespace Roboya.UI
             for (int i = 0; i < _propCount; i++)
             {
                 Place(_props[i], w, h, FootY + 0.01f);
+            }
+
+            if (_card != null)
+            {
+                float size = h * 0.42f;
+                float face = h * 0.26f;
+                _cardHost.style.width = size;
+                _cardHost.style.height = size;
+                _cardHost.style.borderTopLeftRadius = size * 0.5f;
+                _cardHost.style.borderTopRightRadius = size * 0.5f;
+                _cardHost.style.borderBottomLeftRadius = size * 0.5f;
+                _cardHost.style.borderBottomRightRadius = size * 0.5f;
+                float bob = Mathf.Sin(_time * 2.2f) * h * 0.012f;
+                _cardHost.style.translate = new Translate((w * 0.5f) - (size * 0.5f), (h * 0.36f) - (size * 0.5f) + bob);
+                _card.style.width = face;
+                _card.style.height = face;
+                SetPadding(_card, face * 0.18f);
+                SetRadius(_card, face * 0.2f);
+                _card.style.borderBottomWidth = face * 0.07f;
             }
 
             Place(_friend, w, h, FootY - 0.02f);
@@ -353,6 +430,29 @@ namespace Roboya.UI
 
             a.View.style.backgroundImage = new StyleBackground(sprite);
             a.Aspect = Aspect(sprite);
+        }
+
+        private static void SetPadding(VisualElement e, float v)
+        {
+            e.style.paddingLeft = v;
+            e.style.paddingRight = v;
+            e.style.paddingTop = v;
+            e.style.paddingBottom = v;
+        }
+
+        private static void SetRadius(VisualElement e, float v)
+        {
+            e.style.borderTopLeftRadius = v;
+            e.style.borderTopRightRadius = v;
+            e.style.borderBottomLeftRadius = v;
+            e.style.borderBottomRightRadius = v;
+        }
+
+        private static float EaseOutBack(float x)
+        {
+            const float c1 = 1.70158f;
+            const float c3 = c1 + 1f;
+            return 1f + (c3 * Mathf.Pow(x - 1f, 3f)) + (c1 * Mathf.Pow(x - 1f, 2f));
         }
 
         private static float Aspect(Sprite s) => s != null && s.rect.height > 0f ? s.rect.width / s.rect.height : 1f;

@@ -70,6 +70,8 @@ Kaynak sayfalar (yeniden kesim için): `docs/art/sources/`.
 - **Bitiş sahnesi:** yıldızlar gökyüzünde, "tekrar" ve "sonraki" düğmeleri sağ altta görünür; karakterler görünür kalır.
 - **Veri:** ifadeler ve nesneler bölüm JSON'undaki `story` alanından gelir (şema v2). Alan yoksa varsayılan ifadeler kullanılır. Ses `voice.intro` ve `voice.success` anahtarlarıdır.
 - **Kütük** (`log`) kodla çizilir (`LogShape`); elimizdeki kütük görseli çimli bir karo olduğu için sahnede kullanılamıyor.
+- **Yeni kart (YON-01):** kartı tanıtan bölümde, bölüm sesi bitince kart iki karakterin arasında, beyaz bir halkanın içinde büyük olarak belirir ve kendi tanıtım satırı çalar. Karta dokununca satır tekrar çalar.
+- **Tahta sesle uyumlu olmalı:** seste adı geçen nesne tahtada da görünür. Engelin görünüşü `grid.looks`, tahtanın kenarındaki süsler `scenery` ile seçilir.
 - Bölge açılış sahnesi ve değer kartı (F1-24) özel çizimle ayrıca yapılacak.
 
 ## Üretim yöntemi

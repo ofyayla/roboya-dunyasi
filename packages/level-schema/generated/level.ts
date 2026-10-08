@@ -35,6 +35,13 @@ export type ValueId = "patience" | "sharing" | "helping" | "kindness" | "respons
  */
 export type AgeLevel = "minik" | "kasif" | "mucit";
 /**
+ * Region obstacle art; `log` is drawn in code.
+ *
+ * This interface was referenced by `LevelDto`'s JSON-Schema
+ * via the `definition` "obstacleLook".
+ */
+export type ObstacleLook = "tree" | "rock" | "bush" | "log";
+/**
  * This interface was referenced by `LevelDto`'s JSON-Schema
  * via the `definition` "direction".
  */
@@ -129,6 +136,12 @@ export interface LevelDto {
    */
   items?: ItemDto[];
   goal: GoalDto;
+  /**
+   * Decoration just outside the playable cells (v2), e.g. the tree the narration mentions. x or y is -1 or the grid width/height; never on a walkable cell.
+   *
+   * @maxItems 6
+   */
+  scenery?: SceneryDto[];
   cards: CardsDto;
   /**
    * Pre-filled program (Kodlama Kutusu 'hata avcısı': contains wrong cards to find, KUT-01).
@@ -179,6 +192,17 @@ export interface GridDto {
    * @maxItems 12
    */
   rows: string[];
+  /**
+   * How blocked cells look (v2). Cells not listed get a stable mix of the region's obstacles.
+   *
+   * @maxItems 144
+   */
+  looks?: ObstacleLookDto[];
+}
+export interface ObstacleLookDto {
+  x: number;
+  y: number;
+  look: ObstacleLook;
 }
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
@@ -223,6 +247,11 @@ export interface GoalDto {
 export interface PositionDto {
   x: number;
   y: number;
+}
+export interface SceneryDto {
+  x: number;
+  y: number;
+  look: ObstacleLook;
 }
 /**
  * Card palette and plan strip. `introduces` names a card presented with a short introduction moment in this level (YON-01).

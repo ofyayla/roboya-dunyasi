@@ -109,7 +109,12 @@ namespace Roboya.Tests.PlayMode
             for (int i = 0; i < levels.Count; i++)
             {
                 var solution = Roboya.CodingEngine.Solving.Solver.Solve(levels[i].Level).Solution;
-                yield return PassStory(root, i == 6 ? "04-level7-story" : i == 7 ? "04-level8-story" : null);
+                yield return PassStory(root, StoryShot(i), waitForCard: i == 2);
+                if (i == 3 || i == 6)
+                {
+                    yield return Capture(root, "06-level" + (i + 1) + "-board"); // looks and scenery match the narration
+                }
+
                 if (i == 8)
                 {
                     yield return Capture(root, "04-level9-start");
@@ -165,13 +170,34 @@ namespace Roboya.Tests.PlayMode
 
         private static StoryStage Story(VisualElement root) => root.Q<StoryStage>("story");
 
+        private static string StoryShot(int levelIndex)
+        {
+            switch (levelIndex)
+            {
+                case 2: return "04-level3-new-card";
+                case 3: return "04-level4-story";
+                case 6: return "04-level7-story";
+                case 7: return "04-level8-story";
+                default: return null;
+            }
+        }
+
         /// <summary>Waits for the intro scene, optionally captures it, then taps continue and waits for the board.</summary>
-        private static IEnumerator PassStory(VisualElement root, string shot = null)
+        private static IEnumerator PassStory(VisualElement root, string shot = null, bool waitForCard = false)
         {
             var story = Story(root);
             Assert.IsNotNull(story, "story stage exists");
             yield return WaitUntil(() => story.IsOpen, 10f);
             yield return new WaitForSeconds(StoryStage.EnterSeconds + 0.2f);
+            if (waitForCard)
+            {
+                // YON-01: the new card pops up after the level line, with its own narration.
+                var card = root.Q("story-card");
+                yield return WaitUntil(() => card.resolvedStyle.display == DisplayStyle.Flex, 20f);
+                Assert.IsNotNull(card.Q<CardElement>(), "the introduced card is shown");
+                yield return new WaitForSeconds(0.8f);
+            }
+
             if (shot != null)
             {
                 yield return Capture(root, shot);

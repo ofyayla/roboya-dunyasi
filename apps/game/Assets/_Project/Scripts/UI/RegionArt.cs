@@ -102,6 +102,18 @@ namespace Roboya.UI
             }
         }
 
+        /// <summary>Board obstacle chosen by the level (grid.looks / scenery); null for the code-drawn log.</summary>
+        public Sprite LookSprite(ObstacleLook look)
+        {
+            switch (look)
+            {
+                case ObstacleLook.Tree: return propTree;
+                case ObstacleLook.Rock: return propRock;
+                case ObstacleLook.Bush: return propBush;
+                default: return null;
+            }
+        }
+
         public Sprite ItemFor(string kind, string color)
         {
             if (kind == "ship-part")

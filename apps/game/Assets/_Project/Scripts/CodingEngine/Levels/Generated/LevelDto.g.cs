@@ -64,6 +64,13 @@ namespace Roboya.CodingEngine.Levels.Generated
         public RobotDto Robot { get; set; }
 
         /// <summary>
+        /// Decoration just outside the playable cells (v2), e.g. the tree the narration mentions. x
+        /// or y is -1 or the grid width/height; never on a walkable cell.
+        /// </summary>
+        [JsonProperty("scenery", NullValueHandling = NullValueHandling.Ignore)]
+        public List<SceneryDto> Scenery { get; set; }
+
+        /// <summary>
         /// 2 adds the optional `story` block. Migrate with scripts/migrate-v2.mjs.
         /// </summary>
         [JsonProperty("schemaVersion")]
@@ -131,10 +138,28 @@ namespace Roboya.CodingEngine.Levels.Generated
     public partial class GridDto
     {
         /// <summary>
+        /// How blocked cells look (v2). Cells not listed get a stable mix of the region's obstacles.
+        /// </summary>
+        [JsonProperty("looks", NullValueHandling = NullValueHandling.Ignore)]
+        public List<ObstacleLookDto> Looks { get; set; }
+
+        /// <summary>
         /// Row 0 is north. '.' floor, '#' blocked. All rows equal length, 2..12.
         /// </summary>
         [JsonProperty("rows")]
         public List<string> Rows { get; set; }
+    }
+
+    public partial class ObstacleLookDto
+    {
+        [JsonProperty("look")]
+        public ObstacleLook Look { get; set; }
+
+        [JsonProperty("x")]
+        public long X { get; set; }
+
+        [JsonProperty("y")]
+        public long Y { get; set; }
     }
 
     public partial class ItemDto
@@ -210,6 +235,18 @@ namespace Roboya.CodingEngine.Levels.Generated
     {
         [JsonProperty("facing")]
         public Facing Facing { get; set; }
+
+        [JsonProperty("x")]
+        public long X { get; set; }
+
+        [JsonProperty("y")]
+        public long Y { get; set; }
+    }
+
+    public partial class SceneryDto
+    {
+        [JsonProperty("look")]
+        public ObstacleLook Look { get; set; }
 
         [JsonProperty("x")]
         public long X { get; set; }
@@ -322,6 +359,11 @@ namespace Roboya.CodingEngine.Levels.Generated
     public enum GameId { BalPesinde, BirlikteBasaralim, DonguDansi, KodlamaKutusu, RobotAtolyesi, SerbestMucit, YonAvcisi };
 
     /// <summary>
+    /// Region obstacle art; `log` is drawn in code.
+    /// </summary>
+    public enum ObstacleLook { Bush, Log, Rock, Tree };
+
+    /// <summary>
     /// Never the only signal: the view pairs every colour with a shape.
     /// </summary>
     public enum Color { Blue, Green, Orange, Purple, Red, Yellow };
@@ -372,6 +414,7 @@ namespace Roboya.CodingEngine.Levels.Generated
             {
                 CardIdConverter.Singleton,
                 GameIdConverter.Singleton,
+                ObstacleLookConverter.Singleton,
                 ColorConverter.Singleton,
                 KindConverter.Singleton,
                 AgeLevelConverter.Singleton,
@@ -523,6 +566,57 @@ namespace Roboya.CodingEngine.Levels.Generated
         }
 
         public static readonly GameIdConverter Singleton = new GameIdConverter();
+    }
+
+    internal class ObstacleLookConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(ObstacleLook) || t == typeof(ObstacleLook?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "bush":
+                    return ObstacleLook.Bush;
+                case "log":
+                    return ObstacleLook.Log;
+                case "rock":
+                    return ObstacleLook.Rock;
+                case "tree":
+                    return ObstacleLook.Tree;
+            }
+            throw new Exception("Cannot unmarshal type ObstacleLook");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (ObstacleLook)untypedValue;
+            switch (value)
+            {
+                case ObstacleLook.Bush:
+                    serializer.Serialize(writer, "bush");
+                    return;
+                case ObstacleLook.Log:
+                    serializer.Serialize(writer, "log");
+                    return;
+                case ObstacleLook.Rock:
+                    serializer.Serialize(writer, "rock");
+                    return;
+                case ObstacleLook.Tree:
+                    serializer.Serialize(writer, "tree");
+                    return;
+            }
+            throw new Exception("Cannot marshal type ObstacleLook");
+        }
+
+        public static readonly ObstacleLookConverter Singleton = new ObstacleLookConverter();
     }
 
     internal class ColorConverter : JsonConverter

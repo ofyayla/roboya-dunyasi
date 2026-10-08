@@ -61,6 +61,34 @@
     "goal": {
       "$ref": "#/$defs/goal"
     },
+    "scenery": {
+      "description": "Decoration just outside the playable cells (v2), e.g. the tree the narration mentions. x or y is -1 or the grid width/height; never on a walkable cell.",
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "title": "SceneryDto",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "x",
+          "y",
+          "look"
+        ],
+        "properties": {
+          "x": {
+            "type": "integer",
+            "minimum": -1
+          },
+          "y": {
+            "type": "integer",
+            "minimum": -1
+          },
+          "look": {
+            "$ref": "#/$defs/obstacleLook"
+          }
+        }
+      }
+    },
     "cards": {
       "$ref": "#/$defs/cards"
     },
@@ -226,6 +254,34 @@
           "items": {
             "type": "string",
             "pattern": "^[.#]{2,12}$"
+          }
+        },
+        "looks": {
+          "description": "How blocked cells look (v2). Cells not listed get a stable mix of the region's obstacles.",
+          "type": "array",
+          "maxItems": 144,
+          "items": {
+            "title": "ObstacleLookDto",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "x",
+              "y",
+              "look"
+            ],
+            "properties": {
+              "x": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "y": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "look": {
+                "$ref": "#/$defs/obstacleLook"
+              }
+            }
           }
         }
       }
@@ -679,6 +735,17 @@
           }
         }
       }
+    },
+    "obstacleLook": {
+      "title": "ObstacleLook",
+      "description": "Region obstacle art; `log` is drawn in code.",
+      "type": "string",
+      "enum": [
+        "tree",
+        "rock",
+        "bush",
+        "log"
+      ]
     }
   }
 }

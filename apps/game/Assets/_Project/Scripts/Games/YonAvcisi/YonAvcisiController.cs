@@ -93,7 +93,7 @@ namespace Roboya.Games.YonAvcisi
             }
 
             bool ghost = _entry.Dto.Options?.GhostPath ?? false;
-            _board.Show(_entry.Level, ghost);
+            _board.Show(_entry.Level, ghost, _entry.Dto);
             _tray.Bind(_session.Plan, _entry.Level.AvailableCards);
             _tray.SetLocked(false);
             _result.AddToClassList("hidden");

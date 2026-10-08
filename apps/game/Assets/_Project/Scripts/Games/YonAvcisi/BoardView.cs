@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using Roboya.CodingEngine.Commands;
+using LevelDto = Roboya.CodingEngine.Levels.Generated.LevelDto;
+using ObstacleLook = Roboya.CodingEngine.Levels.Generated.ObstacleLook;
 using Roboya.CodingEngine.Solving;
 using Roboya.CodingEngine.World;
 using Roboya.UI;
@@ -71,6 +73,7 @@ namespace Roboya.Games.YonAvcisi
         private float _hop;
         private float _wobble;
         private int _robotDepthBucket = int.MinValue;
+        private bool _hasNorthScenery;
 
         public BoardView(RegionArt art = null)
         {
@@ -88,9 +91,11 @@ namespace Roboya.Games.YonAvcisi
 
         private bool UseSprites => _art != null && _art.RobotFront != null;
 
-        public void Show(Level level, bool ghostPath)
+        /// <param name="dto">Level data for v2 looks and scenery; null draws the region's default obstacle mix.</param>
+        public void Show(Level level, bool ghostPath, LevelDto dto = null)
         {
             _level = level;
+            _hasNorthScenery = false;
             _decals.Clear();
             _layer.Clear();
             _pieces.Clear();
@@ -121,17 +126,18 @@ namespace Roboya.Games.YonAvcisi
                         continue;
                     }
 
-                    var sprite = UseSprites ? _art.ObstacleFor(x, y) : null;
-                    var obstacle = sprite != null
-                        ? AddSprite(sprite, CellAnchor(x, y), width: ObstacleWidth)
+                    var look = LookAt(dto, x, y);
+                    var obstacle = UseSprites
+                        ? AddLook(look, CellAnchor(x, y), (x, y))
                         : AddPiece(new VisualElement(), CellAnchor(x, y), height: 0.6f);
-                    obstacle.View.AddToClassList(sprite != null ? "piece--obstacle" : "piece--block");
+                    obstacle.View.AddToClassList(UseSprites ? "piece--obstacle" : "piece--block");
                 }
             }
 
             if (UseSprites)
             {
                 AddDecor(level);
+                AddScenery(dto, level);
             }
 
             if (level.Goal.Reach.HasValue)
@@ -337,6 +343,66 @@ namespace Roboya.Games.YonAvcisi
             return piece;
         }
 
+        private static ObstacleLook? LookAt(LevelDto dto, int x, int y)
+        {
+            if (dto?.Grid?.Looks == null)
+            {
+                return null;
+            }
+
+            foreach (var look in dto.Grid.Looks)
+            {
+                if (look.X == x && look.Y == y)
+                {
+                    return look.Look;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>An obstacle in the level's chosen look, or the region's stable mix when none is given.</summary>
+        private Piece AddLook(ObstacleLook? look, Vector2 anchor, (int x, int y) mixKey)
+        {
+            if (look == ObstacleLook.Log)
+            {
+                var view = new VisualElement();
+                view.Add(new LogShape());
+                var log = AddPiece(view, anchor, width: ObstacleWidth);
+                log.Aspect = LogShape.Aspect;
+                return log;
+            }
+
+            var sprite = look.HasValue ? _art.LookSprite(look.Value) : null;
+            if (sprite == null)
+            {
+                sprite = _art.ObstacleFor(mixKey.x, mixKey.y);
+            }
+
+            return AddSprite(sprite, anchor, width: ObstacleWidth);
+        }
+
+        /// <summary>Scenery (v2) just outside the grid, e.g. the tree the turtle waits behind in level 4.</summary>
+        private void AddScenery(LevelDto dto, Level level)
+        {
+            if (dto?.Scenery == null)
+            {
+                return;
+            }
+
+            int w = level.Grid.Width;
+            int h = level.Grid.Height;
+            foreach (var item in dto.Scenery)
+            {
+                // Sit just beyond the slab edge rather than a full cell away.
+                float ax = item.X < 0 ? -0.35f : item.X >= w ? w + 0.35f : item.X + 0.5f;
+                float ay = item.Y < 0 ? -0.05f : item.Y >= h ? h + 0.3f : item.Y + 0.5f;
+                _hasNorthScenery |= item.Y < 0;
+                var piece = AddLook(item.Look, new Vector2(ax, ay), ((int)item.X, (int)item.Y));
+                piece.View.AddToClassList("piece--scenery");
+            }
+        }
+
         /// <summary>A few region props beside the slab so the board sits in the forest rather than on top of it.</summary>
         private void AddDecor(Level level)
         {
@@ -388,7 +454,8 @@ namespace Roboya.Games.YonAvcisi
                 return;
             }
 
-            _proj = new ObliqueProjection(_level.Grid.Width, _level.Grid.Height, contentRect.size);
+            // Scenery behind the back row needs more room above the board.
+            _proj = new ObliqueProjection(_level.Grid.Width, _level.Grid.Height, contentRect.size, headroom: _hasNorthScenery ? 1.05f : 0.75f);
             _ground.SetProjection(_proj);
             if (!_proj.IsValid)
             {
