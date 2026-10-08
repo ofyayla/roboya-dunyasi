@@ -25,7 +25,7 @@ setup: ## Install deps, start Docker services, load seed data
 	cd apps/api && uv run alembic upgrade head && uv run python -m app.seed
 
 api-dev: ## Run the API locally with reload
-	cd apps/api && uv run uvicorn app.main:app --reload --port 8000
+	cd apps/api && uv run uvicorn app.main:app --reload --port 8000 --no-access-log
 
 web-dev: ## Run the web panels locally
 	npm run dev -w @roboya/web
