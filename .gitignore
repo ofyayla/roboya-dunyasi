@@ -78,3 +78,4 @@ apps/game/Assets/StreamingAssets/levels.meta
 tmp/
 apps/game/Assets/StreamingAssets/voice/
 apps/game/Assets/StreamingAssets/voice.meta
+apps/game/.utmp/

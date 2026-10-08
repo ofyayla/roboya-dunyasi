@@ -59,6 +59,11 @@ namespace Roboya.EditorTools
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android, ScriptingImplementation.IL2CPP);
             PlayerSettings.iOS.targetOSVersionString = "16.0";
 
+            // Low-end school tablets (Android 9, 2 GB) often lack Vulkan or ship buggy drivers: GLES3 first,
+            // Vulkan as fallback. Unity 6's default list fails to start on such devices and on emulators.
+            PlayerSettings.SetUseDefaultGraphicsAPIs(BuildTarget.Android, false);
+            PlayerSettings.SetGraphicsAPIs(BuildTarget.Android, new[] { GraphicsDeviceType.OpenGLES3, GraphicsDeviceType.Vulkan });
+
             // Unity 6 allows hiding the splash on all plans; the app opens with Roboya's own intro.
             PlayerSettings.SplashScreen.show = false;
             PlayerSettings.SplashScreen.showUnityLogo = false;
