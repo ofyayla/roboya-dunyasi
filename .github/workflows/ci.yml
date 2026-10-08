@@ -82,6 +82,8 @@ jobs:
           dotnet-version: "10.0.x"
       - run: npm ci
       - run: npm test -w @roboya/level-schema
+      - name: TTS tool tests
+        run: make test-tools
       - name: Validate levels (schema + solver + voice keys)
         run: make validate-content DOTNET=dotnet
       - name: Generated code is up to date
