@@ -36,13 +36,37 @@ namespace Roboya.Games.YonAvcisi
         private LevelEntry _entry;
         private LevelSession _session;
 
-        public YonAvcisiController(VisualElement root, GameServices services, IReadOnlyList<LevelEntry> levels)
+        public YonAvcisiController(VisualElement root, GameServices services, IReadOnlyList<LevelEntry> levels, RegionArt art = null)
         {
             _services = services;
             _levels = levels;
 
-            _board = new BoardView();
+            _board = new BoardView(art);
             root.Q("board-host").Add(_board);
+            if (art != null && art.RobotHappy != null && art.GoalHappy != null)
+            {
+                // Success moment shows both friends next to the stars (the panel covers the board).
+                var stars = root.Q("stars");
+                var left = new VisualElement { name = "result-robot" };
+                left.AddToClassList("result__cast");
+                left.style.backgroundImage = new StyleBackground(art.RobotHappy);
+                var right = new VisualElement { name = "result-goal" };
+                right.AddToClassList("result__cast");
+                right.style.backgroundImage = new StyleBackground(art.GoalHappy);
+                var row = new VisualElement();
+                row.AddToClassList("result__row");
+                stars.parent.Insert(stars.parent.IndexOf(stars), row);
+                row.Add(left);
+                row.Add(stars);
+                row.Add(right);
+            }
+
+            if (art != null && art.Background != null)
+            {
+                var screen = root.Q("screen");
+                screen.style.backgroundImage = new StyleBackground(art.Background);
+                screen.AddToClassList("screen--art");
+            }
             _tray = new CardTray(root.Q("palette"), root.Q("plan"), root.Q("drag-layer"));
             _tray.Changed += OnPlanChanged;
 

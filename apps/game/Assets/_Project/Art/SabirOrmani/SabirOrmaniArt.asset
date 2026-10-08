@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e1fe4132b19d42d883ea28ee3a2f67d, type: 3}
+  m_Name: SabirOrmaniArt
+  m_EditorClassIdentifier: Roboya.UI::Roboya.UI.RegionArt
+  robotFront: {fileID: 21300000, guid: 66a1502abfa974980b489c145f6c7094, type: 3}
+  robotBack: {fileID: 21300000, guid: 681ac39c9eb8b4d4dac611fb446abc90, type: 3}
+  robotSide: {fileID: 21300000, guid: 774b27811ab8e4c729b445696fb9b3cb, type: 3}
+  robotHappy: {fileID: 21300000, guid: d6685a778ead2498ea1e1f8c9430f9bf, type: 3}
+  robotLaughing: {fileID: 21300000, guid: 233a50734c62e40fbba7f7da1733e1e4, type: 3}
+  goalIdle: {fileID: 21300000, guid: 6c8b32bec68af4d09abd56fdc8ab6949, type: 3}
+  goalHappy: {fileID: 21300000, guid: 4ad1c62e44cfb43fa8704b1a5d32fff8, type: 3}
+  tileFloor: {fileID: 21300000, guid: 35085070a4a1240e9a79ec7d1193ee1b, type: 3}
+  tilePath: {fileID: 21300000, guid: 94934bebb3b3c431ba53812552f5fce2, type: 3}
+  obstacles:
+  - {fileID: 21300000, guid: ede7f0f8eae004f95866fbe34ac1fce1, type: 3}
+  - {fileID: 21300000, guid: ea27f1fafc8c2473ea28b351e9dc2ec9, type: 3}
+  - {fileID: 21300000, guid: 571206f3653d74e6789e5edd4cbc6cad, type: 3}
+  background: {fileID: 21300000, guid: 67b9a17faf99449079e8a9f8f32cf257, type: 3}
+  fruitRed: {fileID: 21300000, guid: 3dd18bc28e45c45e1acf3cbc2346198f, type: 3}
+  fruitYellow: {fileID: 21300000, guid: 828cc3380528f4d57a91b6909d9fd24c, type: 3}
+  shipPart: {fileID: 21300000, guid: 7e50167cb578f4ebabd72babc93bf2ac, type: 3}

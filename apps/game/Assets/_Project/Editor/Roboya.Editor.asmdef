@@ -3,6 +3,7 @@
     "rootNamespace": "Roboya.EditorTools",
     "references": [
         "Roboya.Core",
+        "Roboya.UI",
         "Roboya.Games.YonAvcisi",
         "Unity.RenderPipelines.Universal.Runtime",
         "Unity.RenderPipelines.Core.Runtime",
