@@ -526,7 +526,7 @@ Kesikli çizgi, bölge içerik paketlerinin sunucuyu yormadan doğrudan CDN'den 
 | Veritabanı | PostgreSQL | İlişkisel model, raporlama sorguları |
 | Abonelik doğrulama | StoreKit 2 ve Google Play Billing sunucu bildirimleri, sunucu tarafında hak hesaplama | Tek doğruluk kaynağı sunucudaki hak tablosu |
 | Bölüm editörü | İç kullanım web aracı; bölümleri JSON olarak üretir ve doğrular | Pedagoji ekibi geliştiriciye bağlı kalmadan bölüm üretir |
-| Barındırma | Türkiye'de veri merkezi olan bir bulut veya yerel sağlayıcı | KVKK ve okul beklentileri |
+| Barındırma | AB bölgesinde yönetilen bulut (ör. Frankfurt); KVKK m.9 standart sözleşmesiyle aktarım | Yönetilen veritabanı, maliyet, düşük işletim yükü, KVKK uyumu |
 | Analitik | Birinci taraf olay toplama (kendi sunucumuz) | Çocuk kategorisi mağaza kuralları ve gizlilik |
 
 **Veri modeli (ana varlıklar)**
@@ -562,7 +562,7 @@ Kesikli çizgi, bölge içerik paketlerinin sunucuyu yormadan doğrudan CDN'den 
 - **UYM-01 (P0):** Aydınlatma metni ve veliden açık rıza, profil oluşturulmadan önce alınır ve sürümüyle kaydedilir.
 - **UYM-02 (P0):** Okul modunda veri sorumlusu ve veri işleyen rolleri okul sözleşmesinde tanımlanır; okul velilerden gerekli onayı alır, şablon metin Roboya Kids tarafından sağlanır.
 - **UYM-03 (P0):** Veli, gizlilik merkezinden veriyi görüntüleyebilir, indirebilir ve silme talebinde bulunabilir; silme 30 gün içinde tamamlanır.
-- **UYM-04 (P0):** Veriler Türkiye'de barındırılır; yurt dışı aktarım gerektiren bir servis kullanılacaksa güncel KVKK aktarım kurallarına göre hukuki değerlendirme yapılır.
+- **UYM-04 (P0):** Kişisel veriler yurt dışında (AB bölgesi) barındırılabilir. Yurt dışı aktarım KVKK m.9'a uygun bir mekanizmayla yapılır: yeterlilik kararı yoksa Kurum'un ilan ettiği standart sözleşme imzalanır ve imzadan sonra 5 iş günü içinde Kurum'a bildirilir. Açık rızaya dayalı arızi aktarım sürekli barındırma için kullanılmaz. Aktarım (alıcı, ülke, amaç, veri kategorileri) aydınlatma metninde ve okul veri işleme sözleşmesinde belirtilir. Kişisel veri taşıyan her yeni yurt dışı servis bu süreçten geçer ve aktarım envanterine eklenir (ADR 0007).
 - **UYM-05 (P0):** VERBİS kayıt yükümlülüğü ve veri envanteri hukuk danışmanıyla netleştirilir.
 
 **Uygulama mağazası kuralları**
@@ -659,7 +659,7 @@ Aşağıdaki tablo genel bilgiye dayanır; lansman öncesi güncel fiyat ve öze
 1. **Okuma gerektirmeyen Türkçe deneyim:** 3.5 yaşındaki çocuk tek başına oynayabilir.
 2. **Değerler mekaniğe gömülü:** Rakiplerin kolayca kopyalayamayacağı hikâye evreni ve karakterler.
 3. **Tek üründe aile ve okul:** Okul-ev köprüsü hem güven hem düşük maliyetli edinim sağlar.
-4. **Veliye güven:** Reklamsız, ölçülü süre, şeffaf rapor, Türkiye'de barındırılan veri.
+4. **Veliye güven:** Reklamsız, ölçülü süre, şeffaf rapor; en az veriyle, şifreli ve KVKK'ya uygun saklanan bilgiler.
 5. **Mühendis güvencesi:** Müfredatı sahada çocuklarla çalışan mühendis eğitmenler tasarlar.
 
 **Konumlandırma cümlesi:** "Roboya Dünyası, 3.5–10 yaş çocukların okumayı bilmeden kodlamayı ve iyi değerleri birlikte öğrendiği, reklamsız ve ölçülü bir Türkçe oyun dünyasıdır."
@@ -726,7 +726,7 @@ Aşağıdaki kararlar MVP geliştirmesi başlamadan önce netleşmelidir.
 - [x] Okul lisansı için sınıf başı mı, öğrenci başı mı fiyatlama ana model olacak?(okul lisansı da öğrenci başı)
 - [ ] Okul ailesi indirim oranı ve "ev erişimi" eklentisinin fiyatı.(fiyatları daha sonra belirleriz)
 - [x] Oyun motoru kararı: Unity mi, Godot mu? Ekip yetkinliği ve lisans maliyetine göre. (Unity ile yapalım)
-- [x] Barındırma sağlayıcısı ve Türkiye veri merkezi seçimi.(önerilerine göre ilerleyelim)
+- [x] Barındırma sağlayıcısı ve veri merkezi seçimi.(önerilerine göre ilerleyelim; 2026-10-08: Türkiye şartı kaldırıldı, AB bölgesi + KVKK standart sözleşmesi — ADR 0007)
 - [x] Seslendirme sanatçısı seçimi ve Roboya'nın ses karakteri.(başlangıçta TTS kullanırız elevenlab gibi bir kaynaktan, sonrasında gerçek seslendiririz)
 - [ ] Pilot okullar: hangi 3–5 okul, hangi yaş grupları, hangi tarihlerde?(belli değil)
 - [ ] Okul öncesi eğitim danışmanı ve olası üniversite iş birliği (etki çalışması için). (belli değil)

@@ -1,40 +1,69 @@
 # 0007 — Barındırma: staging ve üretim
 
-- Durum: **Önerildi** (üretim sağlayıcısı yazılı tekliflerden sonra seçilecek)
-- Tarih: 2026-10-08
-- İlgili: F0-19; UYM-04; ADR 0001; plan "Ortamlar, altyapı ve CI/CD"
+- Durum: **Kabul edildi** — üretim AB bölgesinde (Frankfurt). Sağlayıcı, KVKK standart sözleşmesini imzalayacağının yazılı teyidine bağlı.
+- Tarih: 2026-10-08 (aynı gün yeniden yazıldı; ilk sürüm Türkiye'de yerli sağlayıcı öneriyordu)
+- İlgili: F0-19; UYM-04 (yeniden yazıldı), UYM-02; ADR 0001; [KVKK yurt dışı aktarım özeti](../kvkk/yurt-disi-aktarim.md)
 
 ## Bağlam
 
-- Kişisel veri (veli e-postası, çocuk takma adı ve ilerlemesi, okul kayıtları) yalnız üretimde bulunur ve Türkiye'de tutulmalıdır (UYM-04). Staging'de yalnız sentetik veri olur (ADR 0001).
-- Başlangıç yükü küçük: kapalı beta 50–100 aile, ardından birkaç bin aktif profil. Ekip tek geliştirici; operasyon yükü düşük tutulmalı.
-- 2026-10-08'deki araştırmada Türkiye bölgesinde **yönetilen PostgreSQL** sunan bir hiper ölçekli bulut doğrulanamadı. AWS İstanbul Local Zone'da yönetilen veritabanı yok; Google Cloud'un Türkiye bölgesi 2028–2029'da bekleniyor. Yerli sağlayıcıların (Türk Telekom Bulut, Turkcell, Bulutistan, Kuzey DC vb.) yönetilen veritabanı ve fiyat bilgisi herkese açık değil.
+- Kişisel veri (veli e-postası, çocuk takma adı ve ilerlemesi, okul kayıtları) yalnız üretimde bulunur. Staging'de yalnız sentetik veri olur (ADR 0001).
+- İlk sürümdeki "kişisel veri Türkiye'de" şartı kaldırıldı:
+  - Türkiye'de yönetilen PostgreSQL sunan bir hiper ölçekli bulut doğrulanamadı. AWS İstanbul Local Zone'da yönetilen veritabanı yok; Google Cloud'un Türkiye bölgesi 2028–2029'da bekleniyor.
+  - Yerli sağlayıcıların yönetilen veritabanı ve fiyat bilgisi herkese açık değil.
+  - Ekip tek geliştirici; işletim yükü düşük olmalı.
+- KVKK m.9 (7499 sayılı Kanun, 2024) yurt dışı aktarımı standart sözleşme ile mümkün kılıyor. Sürekli barındırma için doğru mekanizma budur; açık rızaya dayalı arızi aktarım değil.
+
+## Seçenekler (Frankfurt, yönetilen PostgreSQL 16)
+
+Fiyatlar 2026 yazı-sonbaharı ikincil kaynaklarından, yalnız örnek amaçlıdır; disk, yedek, trafik ve KDV hariç. "Doğrulanacak" alanlar sağlayıcı belgelerinden veya fiyat hesaplayıcısından kontrol edilmeden karar girdisi sayılmaz. AWS Multi-AZ SLA'sı da AWS'nin güncel SLA sayfasından teyit edilmeli.
+
+| Sağlayıcı | Başlangıç maliyeti | Yüksek erişilebilirlik ve yedek | SLA | İşletim yükü | Not |
+| --- | --- | --- | --- | --- | --- |
+| **AWS RDS** (eu-central-1) | db.t4g.small ≈ 27 $/ay (1 yıl rezerv ≈ 17 $); Multi-AZ yaklaşık iki katı | Multi-AZ, otomatik yedek, PITR, KMS şifreleme | Multi-AZ %99,95 | Düşük | En olgun ekosistem; standart sözleşme teyidi gerekli |
+| Google Cloud SQL (europe-west3) | Fiyat hesaplayıcıyla doğrulanacak | Bölgesel HA, PITR | Doğrulanacak | Düşük | Türkiye bölgesi açılınca taşıma kolay |
+| Azure Database for PostgreSQL (Germany West Central) | Fiyat hesaplayıcıyla doğrulanacak | Bölge içi HA, PITR | Doğrulanacak | Düşük | Standart sözleşme talebi kullanıcılarca gündemde |
+| DigitalOcean Managed PostgreSQL (FRA1) | ≈ 15 $/ay'dan; yedek düğüm ek ücretli | Günlük yedek, PITR, yedek düğüm | Doğrulanacak | Çok düşük | Basit; kurumsal sözleşme süreçleri sınırlı |
+| Hetzner + kendi PostgreSQL'imiz (veya Ubicloud) | ≈ 12 $/ay'dan | Yedek ve HA bizde | Yok veya sınırlı | **Yüksek** | En ucuz; tek geliştirici için riskli |
+| Türkiye'de yerli sağlayıcı (eski seçenek) | Yazılı teklif gerekli | Teklife bağlı | Teklife bağlı | Orta | Yurt dışı aktarım yok; okul satışında artı |
+
+Tüm AB seçenekleri için ortak noktalar:
+
+- **KVKK mekanizması:** standart sözleşme Modül 2 (veri sorumlusundan veri işleyene) ve 5 iş günü içinde Kurum'a bildirim.
+- **Gecikme:** İstanbul–Frankfurt yaklaşık 40–50 ms. Oyun çevrimdışı öncelikli ve eşitleme arka planda çalıştığı için yeterli.
 
 ## Karar
 
-1. **Staging:** Türkiye şartı yok (sentetik veri). Uygun maliyetli herhangi bir bulutta 1 sanal sunucu + Docker Compose (API, PostgreSQL 16, Redis). Ana dala birleşmede otomatik dağıtım.
-2. **Üretim:** Türkiye'de veri merkezi olan yerli bir sağlayıcı. Seçim aşağıdaki tekliflerle yapılır. Teklifler gelene kadar mimari sağlayıcıdan bağımsız kalır: konteyner + standart PostgreSQL + S3 uyumlu nesne depolama.
-3. **Başlangıç kurulumu:** 2 sanal sunucu (uygulama + iş kuyruğu), yönetilen PostgreSQL varsa o; yoksa ayrı sanal sunucuda PostgreSQL + günlük şifreli yedek + ikinci lokasyona kopya + aylık geri yükleme testi. Kubernetes'e yalnız yük gerektirirse geçilir.
+1. **Üretim:** AB bölgesi, Frankfurt.
+   - **Önerilen sağlayıcı: AWS** (RDS PostgreSQL, Multi-AZ; uygulama için ECS Fargate veya küçük EC2; S3 ve KMS). Olgun yönetilen veritabanı, PITR, şifreleme ve SLA tek geliştiricinin işletim yükünü en aza indiriyor.
+   - **Önkoşul:** AWS'nin KVKK standart sözleşmesini (Modül 2, Kurul metniyle) imzalayacağının yazılı teyidi.
+   - Teyit alınamazsa veya maliyet sorun olursa sıradaki seçenek **DigitalOcean FRA1**; aynı teyit onun için de aranır.
+2. **Staging:** yalnız sentetik veri; en ucuz seçenek (ör. Hetzner, tek sunucu + Docker Compose). Kişisel veri olmadığı için aktarım mekanizması gerekmez.
+3. **Yedekleme:** günlük otomatik yedek + PITR, 30 gün saklama, aynı sağlayıcıda ikinci bir AB bölgesine veya ayrı hesaba şifreli kopya, ayda bir geri yükleme testi. Silme talepleri (UYM-03) yedek saklama süresiyle uyumlu yürür.
 4. **İçerik paketleri** (bölümler, sesler, çizimler; kişisel veri yok): global CDN.
+5. **Mimari** sağlayıcıdan bağımsız kalır: konteyner + standart PostgreSQL + S3 uyumlu nesne depolama.
 
-## Teklif kontrol listesi (sağlayıcılardan yazılı istenecek)
+## Yurt dışı aktarım envanteri
 
-| Kalem | Neden |
-| --- | --- |
-| Veri merkezi şehri ve ülkesi sözleşmede yazılı | KVKK; "bulut" ifadesi yetmez |
-| Yönetilen PostgreSQL 16: vCPU/RAM/disk fiyatı, yüksek erişilebilirlik, otomatik yedek, saklama süresi, PITR | Tek geliştiricinin operasyon yükü |
-| Sanal sunucu (2 vCPU / 4 GB) aylık TL fiyatı ve kur maddesi | Bütçe, enflasyon |
-| Ağ çıkış (egress) ücreti | API trafiği |
-| S3 uyumlu nesne depolama | Yedekler, öğretmen PDF raporları |
-| SLA (≥ %99,5) ve destek kanalı | PRD fonksiyonel olmayan gereksinim |
-| KVKK veri işleyen sözleşmesi, ISO 27001 belgesi | Uyum, okul sözleşmeleri |
-| Disk şifreleme ve anahtar yönetimi | CLAUDE.md §11 |
-| Yurt dışına veri aktarımı yapılıp yapılmadığı (yedek, izleme, destek) | UYM-04 |
+Kişisel veri taşıyan her yeni servis bu tabloya eklenmeden üretimde kullanılmaz (CLAUDE.md §11).
 
-Aday listesi (doğrulanacak): Türk Telekom Bulut, Turkcell bulut hizmetleri, Bulutistan, Kuzey DC; ayrıca Huawei Cloud ve Oracle Cloud'un Türkiye bölgesi olup olmadığı.
+| Servis | Kişisel veri | Ülke | Mekanizma | Bildirim tarihi | Aydınlatma metninde |
+| --- | --- | --- | --- | --- | --- |
+| Barındırma ve yedek (AWS önerisi) | Evet: veli, çocuk profili, okul | Almanya (AB) | Standart sözleşme Modül 2 | — | Eklenecek |
+| E-posta ile tek kullanımlık kod (sağlayıcı seçilecek) | Evet: veli/öğretmen e-postası | Seçime bağlı | Standart sözleşme | — | Eklenecek |
+| App Store / Google Play bildirimleri | Abonelik kimlikleri | ABD / AB | Mağaza rolü hukukçuyla değerlendirilecek | — | — |
+| CDN | IP adresi loglanıyorsa evet | Global | Log kapatılır veya kısaltılır; değilse standart sözleşme | — | — |
+| ElevenLabs (TTS) | **Hayır**: yalnız senaryo metni | ABD | Aktarım değil | — | — |
+| GitHub (kod, CI) | **Hayır**: sentetik veri (ADR 0001) | ABD | Aktarım değil | — | — |
+
+## Süreç
+
+1. Sağlayıcıdan standart sözleşme teyidi alınır ve imzalanır (yetki belgeleriyle).
+2. İmzadan sonra **5 iş günü içinde** Kurum'a bildirilir; tarih envantere yazılır.
+3. Aydınlatma metnine (F1-25) ve okul veri işleme sözleşmesine (F2-17) aktarım cümlesi eklenir: alıcı, ülke, amaç, veri kategorileri, mekanizma.
+4. Seçim F1-14'ten (ilk gerçek kişisel veri) önce tamamlanır; kapalı beta (Ay 5) bu ortamda çalışır.
 
 ## Sonuçlar
 
-- Üretim seçimi F1-14'ten (veli hesabı, ilk kişisel veri) **önce** yapılmalıdır. Kapalı beta (Ay 5) üretim ortamında çalışacak.
-- Seçilen sağlayıcı bu ADR'ye eklenip durum "Kabul edildi" yapılır.
-- Google Cloud Türkiye bölgesi açılınca taşıma seçeneği açık kalır (konteyner + standart PostgreSQL).
+- PRD'deki "Türkiye'de barındırılan veri" pazarlama vaadi kaldırıldı. Yerine en az veri, şifreleme ve KVKK uyumu vurgulanır.
+- Okullar (B2B) Türkiye'de barındırma isteyebilir. Mimari taşınabilir kaldığı için ileride Türkiye'de ikinci bir dağıtım veya Google Cloud Türkiye bölgesi seçeneği açıktır. Bu bir satış riski olarak izlenir.
+- Yeni bir yurt dışı veri işleyen eklemek artık bir süreçtir: sözleşme, bildirim, aydınlatma ve envanter.
