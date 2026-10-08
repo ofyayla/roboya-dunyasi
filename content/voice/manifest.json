@@ -44,6 +44,13 @@
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },
+    "roboya.alternative_offer": {
+      "file": "audio/tr/roboya.alternative_offer.mp3",
+      "source": "tts",
+      "textHash": "4a349a10e5691303",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
     "roboya.ask_grownup": {
       "file": "audio/tr/roboya.ask_grownup.mp3",
       "source": "tts",

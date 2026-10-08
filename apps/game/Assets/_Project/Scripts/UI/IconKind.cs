@@ -24,5 +24,6 @@ namespace Roboya.UI
         Ship,
         Island,
         Grownup,
+        Easier,
     }
 }

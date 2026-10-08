@@ -86,6 +86,69 @@ public class ContentValidatorTests
         Assert.That(output, Does.Contain("its own alternative"));
     }
 
+    private JObject Level(int order, int difficulty, string? alternative = null, string game = "yon-avcisi")
+    {
+        var level = Fixtures.Level();
+        level["id"] = $"sabir-ormani.{game}.{order:D2}";
+        level["game"] = game;
+        level["order"] = order;
+        level["meta"]!["difficulty"] = difficulty;
+        if (alternative != null)
+        {
+            level["alternativeLevelId"] = alternative;
+        }
+
+        return level;
+    }
+
+    [Test]
+    public void Run_EasierFreeAlternativeInTheSameGame_IsValid()
+    {
+        Write(Level(1, 1));
+        Write(Level(2, 2, alternative: "sabir-ormani.yon-avcisi.01"));
+
+        var (code, output) = Run();
+
+        Assert.That(code, Is.EqualTo(0), output);
+    }
+
+    [Test]
+    public void Run_HarderAlternative_IsReported()
+    {
+        Write(Level(1, 3));
+        Write(Level(2, 1, alternative: "sabir-ormani.yon-avcisi.01"));
+
+        Assert.That(Run().Output, Does.Contain("is harder"));
+    }
+
+    [Test]
+    public void Run_AlternativeInAnotherGame_IsReported()
+    {
+        Write(Level(1, 1, game: "kodlama-kutusu"));
+        Write(Level(2, 2, alternative: "sabir-ormani.kodlama-kutusu.01"));
+
+        Assert.That(Run().Output, Does.Contain("same game and region"));
+    }
+
+    [Test]
+    public void Run_FreeLevelWithAPaidAlternative_IsReported()
+    {
+        // Order 4 is past the free tier (3), so a free level may not point at it.
+        Write(Level(3, 2, alternative: "sabir-ormani.yon-avcisi.04"));
+        Write(Level(4, 1));
+
+        Assert.That(Run().Output, Does.Contain("free levels stay free"));
+    }
+
+    [Test]
+    public void Run_PaidLevelMayUseAPaidAlternative()
+    {
+        Write(Level(4, 2, alternative: "sabir-ormani.yon-avcisi.05"));
+        Write(Level(5, 1));
+
+        Assert.That(Run().Code, Is.EqualTo(0));
+    }
+
     [Test]
     public void Run_DuplicateIds_AreReported()
     {
