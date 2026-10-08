@@ -41,13 +41,6 @@ export type AgeLevel = "minik" | "kasif" | "mucit";
 export type Facing = "north" | "east" | "south" | "west";
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
- * via the `definition` "goal".
- */
-export type GoalDto = {
-  [k: string]: unknown;
-};
-/**
- * This interface was referenced by `LevelDto`'s JSON-Schema
  * via the `definition` "card".
  */
 export type CardId = "forward" | "backward" | "turn_left" | "turn_right" | "repeat" | "if" | "call" | "action";
@@ -145,13 +138,13 @@ export interface LevelMeta {
   /**
    * @minItems 1
    */
-  concepts: [Concept, ...Concept[]];
+  concepts: Concept[];
   value: ValueId;
   difficulty: number;
   /**
    * @minItems 1
    */
-  ageLevels: [AgeLevel, ...AgeLevel[]];
+  ageLevels: AgeLevel[];
   /**
    * MEB curriculum outcome codes (F3-12).
    */
@@ -172,18 +165,7 @@ export interface GridDto {
    * @minItems 2
    * @maxItems 12
    */
-  rows:
-    | [string, string]
-    | [string, string, string]
-    | [string, string, string, string]
-    | [string, string, string, string, string]
-    | [string, string, string, string, string, string]
-    | [string, string, string, string, string, string, string]
-    | [string, string, string, string, string, string, string, string]
-    | [string, string, string, string, string, string, string, string, string]
-    | [string, string, string, string, string, string, string, string, string, string]
-    | [string, string, string, string, string, string, string, string, string, string, string]
-    | [string, string, string, string, string, string, string, string, string, string, string, string];
+  rows: string[];
 }
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
@@ -209,6 +191,27 @@ export interface ItemDto {
   y: number;
 }
 /**
+ * This interface was referenced by `LevelDto`'s JSON-Schema
+ * via the `definition` "goal".
+ */
+export interface GoalDto {
+  reach?: PositionDto;
+  /**
+   * Item ids that must all be collected.
+   *
+   * @minItems 1
+   */
+  collect?: string[];
+}
+/**
+ * This interface was referenced by `LevelDto`'s JSON-Schema
+ * via the `definition` "position".
+ */
+export interface PositionDto {
+  x: number;
+  y: number;
+}
+/**
  * Card palette and plan strip. `introduces` names a card presented with a short introduction moment in this level (YON-01).
  *
  * This interface was referenced by `LevelDto`'s JSON-Schema
@@ -218,7 +221,7 @@ export interface CardsDto {
   /**
    * @minItems 1
    */
-  palette: [CardId, ...CardId[]];
+  palette: CardId[];
   /**
    * Slots on the plan strip.
    */
@@ -255,19 +258,11 @@ export interface VoiceDto {
   /**
    * @maxItems 3
    */
-  hints?: [] | [VoiceKey] | [VoiceKey, VoiceKey] | [VoiceKey, VoiceKey, VoiceKey];
+  hints?: VoiceKey[];
 }
 /**
  * Written by the validator (`--fix`); CI fails when it does not match the solver.
  */
 export interface SolutionDto {
   shortestLength: number;
-}
-/**
- * This interface was referenced by `LevelDto`'s JSON-Schema
- * via the `definition` "position".
- */
-export interface PositionDto {
-  x: number;
-  y: number;
 }

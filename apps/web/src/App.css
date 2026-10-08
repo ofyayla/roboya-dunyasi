@@ -1,0 +1,59 @@
+.skip-link {
+  position: absolute;
+  left: -999px;
+}
+
+.skip-link:focus {
+  left: var(--space-4);
+  top: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-surface-raised);
+}
+
+.app-header {
+  padding: var(--space-8) var(--space-6) var(--space-4);
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  color: var(--color-brand-strong);
+}
+
+.app-header p {
+  margin: var(--space-1) 0 0;
+  color: var(--color-ink-muted);
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4);
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-6) var(--space-8);
+}
+
+.role-card {
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-card);
+}
+
+.role-card h2 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-lg);
+}
+
+.badge {
+  display: inline-block;
+  margin-top: var(--space-3);
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  font-size: var(--font-size-sm);
+  background: var(--color-border);
+}

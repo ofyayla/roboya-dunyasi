@@ -1,0 +1,17 @@
+{
+  "app": {
+    "title": "Roboya Dünyası",
+    "tagline": "Veli, öğretmen ve kurum paneli",
+    "skipToContent": "İçeriğe geç"
+  },
+  "roles": {
+    "parent": { "title": "Veli", "description": "Çocuğunuzun ilerlemesini, süre sınırlarını ve aboneliğinizi yönetin." },
+    "teacher": { "title": "Öğretmen", "description": "Sınıfınızı açın, bölümleri atayın ve ilerlemeyi izleyin." },
+    "admin": { "title": "Kurum yöneticisi", "description": "Lisansları, kampusları ve öğretmenleri yönetin." }
+  },
+  "status": {
+    "comingSoon": "Yakında",
+    "apiHealthy": "Sunucu bağlantısı hazır",
+    "apiUnavailable": "Sunucuya ulaşılamıyor"
+  }
+}

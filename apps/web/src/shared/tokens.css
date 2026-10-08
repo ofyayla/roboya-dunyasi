@@ -1,0 +1,66 @@
+/* Design tokens shared by parent, teacher and admin panels. Brand: Roboya Kids warm orange.
+   Adult screens: 48 px minimum touch targets (CLAUDE.md §7); colour never carries meaning alone. */
+:root {
+  --color-brand: #f28c28;
+  --color-brand-strong: #b85d0f;
+  --color-ink: #3a2a1d;
+  --color-ink-muted: #6e5a48;
+  --color-surface: #fffaf3;
+  --color-surface-raised: #ffffff;
+  --color-border: #ecdcc7;
+  --color-success: #2f7d3a;
+  --color-danger: #b3261e;
+  --color-focus: #1f5fbf;
+
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.75rem;
+  --line-height: 1.5;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --touch-target: 48px;
+  --shadow-card: 0 1px 2px rgb(58 42 29 / 8%), 0 4px 16px rgb(58 42 29 / 6%);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height);
+  color: var(--color-ink);
+  background: var(--color-surface);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+button {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-brand-strong);
+  cursor: pointer;
+}

@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "level-editor",
+      "runtimeExecutable": "make",
+      "runtimeArgs": ["editor-dev"],
+      "port": 5174,
+      "url": "http://127.0.0.1:5174"
+    },
+    {
+      "name": "web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "-w", "@roboya/web"],
+      "port": 5173
+    }
+  ]
+}

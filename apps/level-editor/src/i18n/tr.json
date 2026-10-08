@@ -1,0 +1,39 @@
+{
+  "app": { "title": "Roboya Bölüm Editörü", "subtitle": "İç araç · yalnız yerel geliştirme sunucusunda çalışır" },
+  "levels": { "heading": "Bölümler", "new": "Yeni bölüm", "empty": "Bölüm bulunamadı" },
+  "tools": {
+    "heading": "Araç",
+    "wall": "Engel",
+    "floor": "Zemin",
+    "robot": "Robot (tekrar tıkla: döndür)",
+    "goal": "Hedef (kaplumbağa)",
+    "item": "Nesne",
+    "erase": "Sil",
+    "kind": "Nesne türü",
+    "color": "Renk",
+    "noColor": "Renksiz"
+  },
+  "grid": { "heading": "Izgara", "width": "Genişlik", "height": "Yükseklik", "cell": "Hücre {{x}},{{y}}", "robot": "robot ({{facing}})", "goal": "hedef", "wall": "engel", "item": "nesne {{id}}", "step": "çözüm adımı {{n}}" },
+  "cards": { "heading": "Kartlar", "maxLength": "Plan şeridi uzunluğu", "introduces": "Tanıtılan kart", "none": "Yok" },
+  "meta": { "heading": "Bilgiler", "id": "Kimlik", "order": "Sıra", "difficulty": "Zorluk (1–5)", "value": "Değer", "concepts": "Kavramlar", "ageLevels": "Yaş seviyeleri", "notes": "İç notlar (çocuğa gösterilmez)", "ghostPath": "Hayalet yol (YON-03)", "guided": "Destekli bölüm" },
+  "voice": { "heading": "Ses anahtarları", "intro": "Giriş", "success": "Başarı", "missing": "senaryoda yok" },
+  "status": {
+    "heading": "Doğrulama",
+    "solving": "Çözücü çalışıyor…",
+    "solverDown": "Çözücüye ulaşılamıyor. `make editor-dev` ile başlatın.",
+    "solvable": "Çözülebilir · en kısa çözüm {{n}} kart",
+    "unsolvable": "Çözülemiyor",
+    "schemaOk": "Şema geçerli",
+    "schemaErrors": "Şema hataları",
+    "save": "Kaydet",
+    "saved": "Kaydedildi: {{path}}",
+    "saveBlocked": "Kaydetmeden önce hataları düzeltin"
+  },
+  "card": { "forward": "İleri", "backward": "Geri", "turn_left": "Sola dön", "turn_right": "Sağa dön", "repeat": "Tekrarla", "if": "Eğer", "call": "Fonksiyon", "action": "Eylem" },
+  "facing": { "north": "kuzey", "east": "doğu", "south": "güney", "west": "batı" },
+  "value": { "patience": "Sabır", "sharing": "Paylaşma", "helping": "Yardımlaşma", "kindness": "Nezaket", "responsibility": "Sorumluluk", "creativity": "Üretkenlik" },
+  "concept": { "direction": "Yön", "sequencing": "Sıralama", "debugging": "Hata ayıklama", "loops": "Döngü", "conditionals": "Koşul", "functions": "Fonksiyon", "events": "Olaylar", "counting": "Sayma" },
+  "age": { "minik": "Minik (3.5–5)", "kasif": "Kaşif (5–7)", "mucit": "Mucit (7–10)" },
+  "kind": { "flower": "Çiçek", "honey": "Bal", "gear": "Çark", "star": "Yıldız", "fruit": "Meyve", "ship-part": "Gemi parçası" },
+  "color": { "red": "Kırmızı", "yellow": "Sarı", "blue": "Mavi", "green": "Yeşil", "purple": "Mor", "orange": "Turuncu" }
+}
