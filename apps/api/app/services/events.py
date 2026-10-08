@@ -17,8 +17,8 @@ MAX_FUTURE = timedelta(minutes=5)
 async def ingest(session: AsyncSession, batch: EventBatchIn, now: datetime) -> tuple[int, int]:
     """Stores the batch; returns (new events, events dropped for a time far from now).
 
-    A phone that played offline may send events up to 30 days old; anything older or from the future is
-    dropped, so a wrong device clock cannot scatter rows across partitions.
+    A phone that played offline may send events up to 30 days old; anything older or from the
+    future is dropped, so a wrong device clock cannot scatter rows across partitions.
     """
     rows: list[repo.EventRow] = []
     dropped = 0

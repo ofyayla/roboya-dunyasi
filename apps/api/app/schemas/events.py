@@ -5,8 +5,8 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-# PRD "Temel olaylar". Purchase facts (trial, purchase, renewal) come from the store notifications on
-# the server, never from the app, so they are not accepted here.
+# PRD "Temel olaylar". Purchase facts (trial, purchase, renewal) come from the store
+# notifications on the server, never from the app, so they are not accepted here.
 EventName = Literal[
     "app_open",
     "level_start",

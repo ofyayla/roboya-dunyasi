@@ -1,4 +1,4 @@
-"""Scheduled upkeep for the events table: create upcoming monthly partitions, drop old ones (PRD: 24 months).
+"""Upkeep for the events table: create upcoming monthly partitions, drop old ones (PRD: 24 months).
 
 Run from a job (cron / worker): `python -m app.maintenance`. Both steps are idempotent.
 """

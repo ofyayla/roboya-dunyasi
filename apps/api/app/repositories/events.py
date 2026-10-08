@@ -42,7 +42,7 @@ async def ensure_month_partition(session: AsyncSession, year: int, month: int) -
     name = f"events_{year}_{month:02d}"
     await session.execute(
         text(
-            f"CREATE TABLE IF NOT EXISTS {name} PARTITION OF events "  # noqa: S608 - ints only
+            f"CREATE TABLE IF NOT EXISTS {name} PARTITION OF events "
             f"FOR VALUES FROM ('{year}-{month:02d}-01 00:00:00+00') "
             f"TO ('{ny}-{nm:02d}-01 00:00:00+00')"
         )
@@ -62,4 +62,4 @@ async def partition_names(session: AsyncSession) -> list[str]:
 async def drop_partition(session: AsyncSession, name: str) -> None:
     if not name.startswith("events_20") or len(name) != len("events_2026_10"):
         raise ValueError("not a monthly events partition")
-    await session.execute(text(f"DROP TABLE IF EXISTS {name}"))  # noqa: S608 - name validated above
+    await session.execute(text(f"DROP TABLE IF EXISTS {name}"))
