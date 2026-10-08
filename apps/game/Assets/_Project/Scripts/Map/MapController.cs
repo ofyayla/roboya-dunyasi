@@ -27,9 +27,10 @@ namespace Roboya.Map
         {
             _services = services;
             var host = root.Q("map-root") ?? root;
-            _island = new IslandView(services, art, partArt, OnRegion, () => services.Voice.Play(RegionLockedVoice));
-            _path = new PathView(services, art, partArt, ShowIsland, ShowGarage);
-            _garage = new GarageView(services, art, partArt, ShowPath);
+            var wardrobe = new RobotWardrobe(services.Parts, services.Anchors, partArt, () => services.Progress.Book.AllEquipped);
+            _island = new IslandView(services, art, partArt, wardrobe, OnRegion, () => services.Voice.Play(RegionLockedVoice));
+            _path = new PathView(services, art, wardrobe, ShowIsland, ShowGarage);
+            _garage = new GarageView(services, art, partArt, wardrobe, ShowPath);
             host.Add(_island);
             host.Add(_path);
             host.Add(_garage);

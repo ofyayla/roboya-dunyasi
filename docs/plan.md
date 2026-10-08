@@ -462,5 +462,5 @@ Planın en kırılgan noktası tek geliştiricili kapasite ve pilot okulların h
 - **F0-20 (2026-10-08):** Satın alma yöntemi kararı verildi: Unity IAP yerine StoreKit 2 ve Play Billing üzerine ince yerel köprü (ADR 0008). Localization ve Addressables kararları ADR 0005'te.
 - **F0-21 (2026-10-08):** Çocuk testlerinin pedagoji ekibiyle tamamlandığı kullanıcı tarafından bildirildi.
 - **Fps ölçümü (2026-10-08):** Kullanıcı kararıyla Faz 0'da yapılmadı. Bellek Redmi Pad 2'de 438 MB (hedef ≤ 600 MB).
-- **F1-05 ve F1-06 (2026-10-08):** Ada haritası (Higgsfield), Sabır Ormanı patikası, ücretsiz 3 bölüm kilidi ("büyüklerine sor"), yerel ilerleme, robot parçası ödülleri ve garaj yapıldı. Ada genel görünümü, kullanıcı isteğiyle ikinci bölgeyi beklemeden eklendi. Takılı parçalar hikâye sahnelerinde ve tahtada henüz görünmüyor.
+- **F1-05 ve F1-06 (2026-10-08):** Ada haritası (Higgsfield), Sabır Ormanı patikası, ücretsiz 3 bölüm kilidi ("büyüklerine sor"), yerel ilerleme, robot parçası ödülleri ve garaj yapıldı. Ada genel görünümü, kullanıcı isteğiyle ikinci bölgeyi beklemeden eklendi. Takılı parçalar sonradan hikâye sahnelerine ve tahtaya da eklendi (poz çapalarıyla).
 - **Barındırma, geçici durum (2026-10-08):** Geliştirme şimdilik yerelde sürüyor. Sağlayıcı teyidi ve sözleşme yine F1-14'ten (ilk gerçek kişisel veri) önce tamamlanmalı.

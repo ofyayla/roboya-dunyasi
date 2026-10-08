@@ -1,12 +1,12 @@
 {
   "parts": [
-    { "id": "antenna-star", "slot": "antenna", "order": 1, "sprite": "part_antenna_star", "x": 0.235, "y": 0.095, "width": 0.2, "behind": false },
-    { "id": "hat-acorn", "slot": "hat", "order": 2, "sprite": "part_hat_acorn", "x": 0.56, "y": 0.2, "width": 0.46, "behind": false },
-    { "id": "wings-leaf", "slot": "wings", "order": 3, "sprite": "part_wings_leaf", "x": 0.5, "y": 0.6, "width": 1.25, "behind": true },
-    { "id": "color-blue", "slot": "color", "order": 4, "sprite": "roboya_front_blue" },
-    { "id": "hat-party", "slot": "hat", "order": 5, "sprite": "part_hat_party", "x": 0.58, "y": 0.13, "width": 0.3, "behind": false },
-    { "id": "wings-paper", "slot": "wings", "order": 6, "sprite": "part_wings_paper", "x": 0.5, "y": 0.58, "width": 1.2, "behind": true },
-    { "id": "antenna-heart", "slot": "antenna", "order": 7, "sprite": "part_antenna_heart", "x": 0.235, "y": 0.095, "width": 0.2, "behind": false },
-    { "id": "color-purple", "slot": "color", "order": 8, "sprite": "roboya_front_purple" }
+    { "id": "antenna-star", "slot": "antenna", "order": 1, "sprite": "part_antenna_star", "anchor": "bulb", "scale": 1.7, "dy": 0, "behind": false },
+    { "id": "hat-acorn", "slot": "hat", "order": 2, "sprite": "part_hat_acorn", "anchor": "head-top", "scale": 0.62, "dy": 0.06, "behind": false },
+    { "id": "wings-leaf", "slot": "wings", "order": 3, "sprite": "part_wings_leaf", "anchor": "head-center", "scale": 1.8, "dy": 0.12, "behind": true },
+    { "id": "color-blue", "slot": "color", "order": 4, "sprite": "roboya_{pose}_blue" },
+    { "id": "hat-party", "slot": "hat", "order": 5, "sprite": "part_hat_party", "anchor": "head-top", "scale": 0.45, "dy": 0.06, "behind": false },
+    { "id": "wings-paper", "slot": "wings", "order": 6, "sprite": "part_wings_paper", "anchor": "head-center", "scale": 1.75, "dy": 0.1, "behind": true },
+    { "id": "antenna-heart", "slot": "antenna", "order": 7, "sprite": "part_antenna_heart", "anchor": "bulb", "scale": 1.7, "dy": 0, "behind": false },
+    { "id": "color-purple", "slot": "color", "order": 8, "sprite": "roboya_{pose}_purple" }
   ]
 }
