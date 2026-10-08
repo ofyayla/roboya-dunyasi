@@ -159,6 +159,29 @@ namespace Roboya.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator ExistingProfileWithoutConsent_AcceptingTheNotice_GoesStraightToTheIsland()
+        {
+            // An older install: the child's progress exists, the parent's consent does not.
+            ProfileManager.Load(_dir).Add("Mucit", "robot-mavi", AgeBand.Minik);
+            VisualElement map = null;
+            yield return OpenMap(r => map = r, "welcome");
+
+            Tap(map.Q("welcome-start"));
+            yield return null;
+            yield return null;
+            AnswerGate(map);
+            yield return null;
+            yield return null;
+            Tap(map.Q("notice-accept"));
+            yield return null;
+            yield return null;
+
+            Assert.AreEqual(DisplayStyle.None, map.Q("notice").resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.None, map.Q("profile-editor").resolvedStyle.display, "the free tier already holds its one profile");
+            Assert.AreEqual(DisplayStyle.Flex, map.Q("island").resolvedStyle.display, "the child must not be left on an empty screen");
+        }
+
+        [UnityTest]
         public IEnumerator ChangedNotice_AsksForConsentAgain()
         {
             var manager = ProfileManager.Load(_dir);
