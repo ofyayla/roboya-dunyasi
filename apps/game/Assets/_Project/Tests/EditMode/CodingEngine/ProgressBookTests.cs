@@ -81,6 +81,20 @@ namespace Roboya.Tests.CodingEngine
             Assert.AreEqual(ProgressBook.CurrentVersion, copy.Version);
         }
 
+        [Test]
+        public void ToJson_WritesOnlySavedFields_NotComputedProperties()
+        {
+            var book = new ProgressBook();
+            book.Record("a", 1);
+
+            var json = book.ToJson();
+
+            StringAssert.Contains("\"stars\"", json);
+            StringAssert.Contains("\"shipPartsSeen\"", json);
+            StringAssert.DoesNotContain("CompletedCount", json);
+            StringAssert.DoesNotContain("\"Version\"", json);
+        }
+
         [TestCase("{ not json")]
         [TestCase("null")]
         [TestCase("{\"version\": 99}")]

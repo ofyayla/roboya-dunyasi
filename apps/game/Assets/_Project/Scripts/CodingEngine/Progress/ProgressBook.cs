@@ -9,6 +9,7 @@ namespace Roboya.CodingEngine.Progress
     /// watched being fitted. Earned parts are not stored; <see cref="RewardRules"/> derives them from completed
     /// levels. Holds no personal data. Files written by older builds may carry an "equipped" map; it is ignored.
     /// </summary>
+    [JsonObject(MemberSerialization.OptIn)]
     public sealed class ProgressBook
     {
         public const int CurrentVersion = 1;
