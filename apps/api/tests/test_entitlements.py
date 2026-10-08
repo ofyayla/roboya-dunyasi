@@ -5,7 +5,7 @@ import pytest
 from httpx import AsyncClient
 
 from tests.conftest import FakeClock, FakeEmailSender, StoreSigner
-from tests.helpers import bearer, sign_in
+from tests.helpers import bearer, sign_in, sign_in_with_consent
 
 PROFILE = {"nickname": "Elif", "avatar_id": "robot-mavi", "age_band": "minik"}
 
@@ -291,7 +291,7 @@ async def test_twoSubscriptions_theLongerOneCounts(
 async def test_profileLimit_premiumAllowsFourFreeAllowsOne(
     client: AsyncClient, mailbox: FakeEmailSender, fake_clock: FakeClock, store_signer: StoreSigner
 ):
-    tokens = await sign_in(client, mailbox)
+    tokens = await sign_in_with_consent(client, mailbox)
     await client.put(f"/v1/me/profiles/{uuid.uuid4()}", json=PROFILE, headers=bearer(tokens))
     blocked = await client.put(
         f"/v1/me/profiles/{uuid.uuid4()}", json=PROFILE, headers=bearer(tokens)

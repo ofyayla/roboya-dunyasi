@@ -10,7 +10,7 @@ from app.core.config import Settings
 from app.models.account import Account
 from app.models.profile import ChildProfile
 from app.repositories import profiles
-from app.services import entitlements
+from app.services import entitlements, privacy
 from app.services.errors import NotFoundError, ProfileLimitError
 
 
@@ -34,6 +34,8 @@ async def save_profile(
     now: datetime,
 ) -> ChildProfile:
     """Creates the profile or updates the parent's own; the app makes the id (offline-first)."""
+    # Child data is written only with the parent's consent (UYM-01).
+    await privacy.require_consent(session, account, settings)
     existing = await profiles.get_owned(session, account.id, profile_id)
     if existing is not None:
         existing.nickname = fields.nickname
@@ -77,12 +79,14 @@ async def sync_progress(
     account: Account,
     profile_id: uuid.UUID,
     stars: dict[str, int],
+    settings: Settings,
     now: datetime,
 ) -> dict[str, int]:
     """Merges the device's stars into the server's, keeping the higher value per level.
 
     Taking the maximum makes the merge order-independent, repeatable and safe for several devices.
     """
+    await privacy.require_consent(session, account, settings)
     if await profiles.get_owned(session, account.id, profile_id) is None:
         raise NotFoundError
     await profiles.merge_stars(session, profile_id, stars, now)
