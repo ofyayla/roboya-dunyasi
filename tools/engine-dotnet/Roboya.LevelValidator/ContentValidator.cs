@@ -5,7 +5,8 @@ namespace Roboya.LevelValidator;
 /// <summary>Validates a whole content tree: per-level checks plus cross-level rules.</summary>
 internal sealed class ContentValidator(TextWriter output)
 {
-    public int Run(string levelsDir, string? voicePath, bool fix, string? manifestPath = null)
+    /// <param name="freeLevelCount">Levels on a region path that are free (product decision, server config).</param>
+    public int Run(string levelsDir, string? voicePath, bool fix, string? manifestPath = null, int freeLevelCount = 3)
     {
         if (!Directory.Exists(levelsDir))
         {
@@ -50,7 +51,7 @@ internal sealed class ContentValidator(TextWriter output)
             reports.Add(report);
         }
 
-        var crossErrors = CrossLevelErrors(levelsDir, files, reports);
+        var crossErrors = CrossLevelErrors(files, freeLevelCount);
 
         foreach (var r in reports)
         {
@@ -81,12 +82,13 @@ internal sealed class ContentValidator(TextWriter output)
         return errors == 0 ? 0 : 1;
     }
 
-    private static List<string> CrossLevelErrors(string levelsDir, List<string> files, List<LevelReport> reports)
+    private static List<string> CrossLevelErrors(List<string> files, int freeLevelCount)
     {
         var errors = new List<string>();
         var ids = new HashSet<string>(StringComparer.Ordinal);
         var orders = new Dictionary<string, string>(StringComparer.Ordinal);
         var alternatives = new List<(string Id, string Alt)>();
+        var facts = new Dictionary<string, Roboya.CodingEngine.Levels.Generated.LevelDto>(StringComparer.Ordinal);
 
         foreach (var file in files)
         {
@@ -115,6 +117,7 @@ internal sealed class ContentValidator(TextWriter output)
                 orders[orderKey] = dto.Id;
             }
 
+            facts[dto.Id] = dto;
             if (dto.AlternativeLevelId != null)
             {
                 alternatives.Add((dto.Id, dto.AlternativeLevelId));
@@ -131,8 +134,35 @@ internal sealed class ContentValidator(TextWriter output)
             {
                 errors.Add($"'{id}' cannot be its own alternative");
             }
+            else
+            {
+                errors.AddRange(AlternativeErrors(facts[id], facts[alt], freeLevelCount));
+            }
         }
 
         return errors;
+    }
+
+    /// <summary>
+    /// YZ-03: the easier level offered after repeated failures must be in the same game and region,
+    /// no harder than the level it replaces, and free whenever the level it replaces is free.
+    /// </summary>
+    private static IEnumerable<string> AlternativeErrors(
+        Roboya.CodingEngine.Levels.Generated.LevelDto level, Roboya.CodingEngine.Levels.Generated.LevelDto alt, int freeLevelCount)
+    {
+        if (level.Game != alt.Game || level.Region != alt.Region)
+        {
+            yield return $"'{level.Id}': alternative '{alt.Id}' must be in the same game and region";
+        }
+
+        if (alt.Meta.Difficulty > level.Meta.Difficulty)
+        {
+            yield return $"'{level.Id}': alternative '{alt.Id}' is harder (difficulty {alt.Meta.Difficulty} > {level.Meta.Difficulty})";
+        }
+
+        if (level.Order <= freeLevelCount && alt.Order > freeLevelCount)
+        {
+            yield return $"'{level.Id}' is free but its alternative '{alt.Id}' is not (free levels stay free)";
+        }
     }
 }

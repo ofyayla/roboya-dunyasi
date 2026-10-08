@@ -36,3 +36,4 @@ roboya.locked_wait,"Önce bir önceki taşa gidelim!",Patikada sırası gelmemi�
 roboya.ask_grownup,"Devamını oynamak için büyüklerine sorar mısın?",Ücretsiz bölümlerin sonu (GLR-01); satış dili yok,
 reward.part_unlocked,"Gemimin yeni bir parçasını bulduk! Haritada yerine takalım.",Gemi parçası kazanma anı (ILR-03),
 workshop.welcome,"Gemimi birlikte onarıyoruz! Bak, ne kadar yol aldık.",Gemi atölyesi açılışı (ILR-03),
+roboya.alternative_offer,"Bu bölüm biraz zor oldu, olsun! İstersen önce daha kolay bir bölümü deneyelim.",Beş başarısız denemeden sonra daha kolay bölüm teklifi (YZ-03),

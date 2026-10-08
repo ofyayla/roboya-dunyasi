@@ -196,6 +196,43 @@ namespace Roboya.Tests.PlayMode
             }
         }
 
+        [UnityTest]
+        public IEnumerator Level2_FiveFailedRuns_OffersTheEasierLevelAndTheChildCanTakeIt()
+        {
+            Seed(1);
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            yield return OpenForest(map);
+            Tap(map.Q("stone-2"));
+
+            VisualElement game = null;
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
+            yield return PassStory(game);
+            Assert.IsTrue(game.Q("easier").ClassListContains("hidden"), "no offer before any failure");
+
+            // Two steps are needed; one card always ends short of the turtle. Five tries, no penalty.
+            var forward = game.Q("palette").Children().First();
+            Tap(forward);
+            for (int i = 0; i < 5; i++)
+            {
+                Tap(game.Q("play"));
+                yield return new WaitForSeconds(0.2f);
+                yield return WaitUntil(() => game.Q("play").enabledSelf, 15f);
+            }
+
+            yield return WaitUntil(() => !game.Q("easier").ClassListContains("hidden"), 10f);
+            Assert.IsTrue(game.Q("result").ClassListContains("hidden"), "failing is never punished");
+            yield return Capture(game, "15-easier-offer");
+
+            var previous = game;
+            Tap(game.Q("easier"));
+            // The Game scene reloads under the same name: wait for the new UI root, not the old one.
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot()) != previous && game?.Q("progress")?.childCount > 0, 10f);
+            yield return PassStory(game);
+            var dots = game.Q("progress").Children().ToList();
+            Assert.IsTrue(dots[0].ClassListContains("progress__dot--current"), "the easier level is level 1");
+        }
+
         private void Seed(int completed)
         {
             var store = new FileProgressStore(_progressDir);

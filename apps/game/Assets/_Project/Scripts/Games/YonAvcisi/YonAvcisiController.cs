@@ -23,6 +23,7 @@ namespace Roboya.Games.YonAvcisi
         private const string MissingItemsVoice = "roboya.missing_items.01";
         private const string PlayPromptVoice = "roboya.play_prompt";
         private const string AskGrownUpVoice = "roboya.ask_grownup";
+        private const string AlternativeVoice = "roboya.alternative_offer";
         private const string PartUnlockedVoice = "reward.part_unlocked";
 
         private readonly GameServices _services;
@@ -42,7 +43,10 @@ namespace Roboya.Games.YonAvcisi
         private int _index;
         private LevelEntry _entry;
         private LevelSession _session;
+        private readonly IconButton _easier;
         private bool _guided;
+        private bool _alternativeOffered;
+        private LevelEntry _alternative;
         private bool _guideDone;
 
         public YonAvcisiController(VisualElement root, GameServices services, IReadOnlyList<LevelEntry> levels, RegionArt art = null, PartArt partArt = null)
@@ -72,6 +76,10 @@ namespace Roboya.Games.YonAvcisi
             root.Q("top-left").Add(home);
             var listen = new IconButton(IconKind.Listen, Listen) { name = "listen" };
             root.Q("top-left").Add(listen);
+            _easier = new IconButton(IconKind.Easier, GoToAlternative) { name = "easier" };
+            _easier.AddToClassList("icon-button--hint");
+            _easier.AddToClassList("hidden");
+            root.Q("top-right").Add(_easier);
             _hint = new IconButton(IconKind.Hint, Hint) { name = "hint" };
             _hint.AddToClassList("icon-button--hint");
             root.Q("top-right").Add(_hint);
@@ -104,8 +112,13 @@ namespace Roboya.Games.YonAvcisi
                 _session.Plan.Load(CardsOf(_entry));
             }
 
-            _guided = _entry.Dto.Options?.Guided ?? false;
-            bool ghost = _entry.Dto.Options?.GhostPath ?? false;
+            // YZ-02: after three three-star levels in a concept the next level starts with less help.
+            var support = SupportPlanner.For(_services.Catalog, _entry, _services.Progress.Book);
+            _guided = support.Guided;
+            bool ghost = support.GhostPath;
+            _alternativeOffered = false;
+            _alternative = null;
+            _easier.AddToClassList("hidden");
             _board.Show(_entry.Level, ghost, _entry.Dto);
             _tray.Bind(_session.Plan, _entry.Level.AvailableCards);
             _tray.SetLocked(false);
@@ -238,6 +251,7 @@ namespace Roboya.Games.YonAvcisi
             _tray.SetLocked(false);
             UpdateGuide();
             UpdateButtons();
+            await OfferAlternativeIfNeeded(token);
         }
 
         private async Awaitable ShowSuccess(CancellationToken token)
@@ -356,6 +370,48 @@ namespace Roboya.Games.YonAvcisi
             var step = GuidedPlan.Next(_entry.Level, _session.Plan.Cards);
             _guideDone = step.IsComplete;
             _tray.Guide(step.NextCard);
+        }
+
+        /// <summary>YZ-03: after five failed runs Roboya offers an easier level; the child can always say no.</summary>
+        private async Awaitable OfferAlternativeIfNeeded(CancellationToken token)
+        {
+            if (_alternativeOffered || !_session.ShouldOfferAlternative)
+            {
+                return;
+            }
+
+            var path = ProgressQueries.PathOf(_services.Catalog, _entry.Dto.Region);
+            var states = ProgressQueries.PathStates(_services, path);
+            _alternative = SupportPlanner.AlternativeFor(_services.Catalog, _entry, id =>
+            {
+                int i = path.IndexOf(id);
+                return i >= 0 && PathRules.CanPlay(states[i]);
+            });
+            if (_alternative == null)
+            {
+                return;
+            }
+
+            _alternativeOffered = true;
+            _easier.RemoveFromClassList("hidden");
+            _easier.AddToClassList("icon-button--pulse");
+            // Let the "not there yet" line finish first; a new line would cut it off.
+            float waited = 0f;
+            while (_services.Voice.IsPlaying && waited < 6f)
+            {
+                await Awaitable.NextFrameAsync(token);
+                waited += Time.deltaTime;
+            }
+
+            _services.Voice.Play(AlternativeVoice);
+        }
+
+        private void GoToAlternative()
+        {
+            if (_alternative != null)
+            {
+                _services.Navigator.PlayLevel(_alternative.Id);
+            }
         }
 
         private void SaveProgress()

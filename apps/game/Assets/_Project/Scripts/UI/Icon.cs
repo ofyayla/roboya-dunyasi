@@ -225,6 +225,15 @@ namespace Roboya.UI
                     p.Arc(P(0.5f, 0.54f), s * 0.13f, Angle.Degrees(0f), Angle.Degrees(360f));
                     p.Fill();
                     break;
+                case IconKind.Easier:
+                    // Steps going down: "an easier level", no text needed.
+                    RoundedRect(p, P(0.12f, 0.2f), P(0.4f, 0.4f), s * 0.04f);
+                    p.Fill();
+                    RoundedRect(p, P(0.34f, 0.44f), P(0.62f, 0.64f), s * 0.04f);
+                    p.Fill();
+                    RoundedRect(p, P(0.56f, 0.68f), P(0.84f, 0.88f), s * 0.04f);
+                    p.Fill();
+                    break;
                 case IconKind.Grownup:
                     // A tall figure beside a small one: "a grown-up" without any text.
                     p.BeginPath();

@@ -149,4 +149,88 @@ namespace Roboya.Tests.Core
             Assert.Throws<FormatException>(() => IslandLayout.Parse("{\"regions\":[{\"id\":\"x\",\"x\":1.4,\"y\":0.5,\"radius\":0.1}]}"));
         }
     }
+
+    public class SupportPlannerTests
+    {
+        private static string Level(int order, string options, string alternative = null, string introduces = null)
+        {
+            string alt = alternative == null ? string.Empty : ",\"alternativeLevelId\": \"sabir-ormani.yon-avcisi." + alternative + "\"";
+            string intro = introduces == null ? string.Empty : ",\"introduces\": \"" + introduces + "\"";
+            return @"{
+  ""schemaVersion"": 2,
+  ""id"": ""sabir-ormani.yon-avcisi." + order.ToString("D2") + @""",
+  ""region"": ""sabir-ormani"", ""game"": ""yon-avcisi"", ""order"": " + order + @",
+  ""meta"": { ""concepts"": [""sequencing""], ""value"": ""patience"", ""difficulty"": 1, ""ageLevels"": [""minik""] },
+  ""grid"": { ""rows"": ["".."", ""..""] },
+  ""robot"": { ""x"": 0, ""y"": 1, ""facing"": ""north"" },
+  ""goal"": { ""reach"": { ""x"": 0, ""y"": 0 } },
+  ""cards"": { ""palette"": [""forward""], ""maxProgramLength"": 3" + intro + @" },
+  ""options"": " + options + @",
+  ""voice"": { ""intro"": ""yon_avcisi.x.intro"" }" + alt + @",
+  ""solution"": { ""shortestLength"": 1 }
+}";
+        }
+
+        private static LevelCatalog Catalog() => LevelCatalog.Parse(new[]
+        {
+            Level(1, "{ \"ghostPath\": true, \"guided\": true }"),
+            Level(2, "{ \"ghostPath\": true, \"guided\": true }", alternative: "01"),
+            Level(3, "{ \"ghostPath\": true, \"guided\": true }", alternative: "02"),
+            Level(4, "{ \"ghostPath\": true, \"guided\": true }", alternative: "03"),
+            Level(5, "{ \"ghostPath\": true, \"guided\": true }", introduces: "forward"),
+        });
+
+        [Test]
+        public void For_NewChild_KeepsAuthoredHelp()
+        {
+            var catalog = Catalog();
+
+            var support = SupportPlanner.For(catalog, catalog.Find("sabir-ormani.yon-avcisi.04"), new Roboya.CodingEngine.Progress.ProgressBook());
+
+            Assert.IsTrue(support.GhostPath);
+            Assert.IsTrue(support.Guided);
+        }
+
+        [Test]
+        public void For_ThreeThreeStarLevels_RemovesHelpOnTheNextLevel()
+        {
+            var catalog = Catalog();
+            var book = new Roboya.CodingEngine.Progress.ProgressBook();
+            for (int i = 1; i <= 3; i++)
+            {
+                book.Record("sabir-ormani.yon-avcisi.0" + i, 3);
+            }
+
+            var support = SupportPlanner.For(catalog, catalog.Find("sabir-ormani.yon-avcisi.04"), book);
+
+            Assert.IsFalse(support.GhostPath);
+            Assert.IsFalse(support.Guided);
+        }
+
+        [Test]
+        public void For_CardIntroduction_AlwaysKeepsHelp()
+        {
+            var catalog = Catalog();
+            var book = new Roboya.CodingEngine.Progress.ProgressBook();
+            for (int i = 1; i <= 4; i++)
+            {
+                book.Record("sabir-ormani.yon-avcisi.0" + i, 3);
+            }
+
+            var support = SupportPlanner.For(catalog, catalog.Find("sabir-ormani.yon-avcisi.05"), book);
+
+            Assert.IsTrue(support.Guided);
+        }
+
+        [Test]
+        public void AlternativeFor_ReturnsThePlayableEasierLevelOrNull()
+        {
+            var catalog = Catalog();
+            var level3 = catalog.Find("sabir-ormani.yon-avcisi.03");
+
+            Assert.AreEqual("sabir-ormani.yon-avcisi.02", SupportPlanner.AlternativeFor(catalog, level3, id => true).Id);
+            Assert.IsNull(SupportPlanner.AlternativeFor(catalog, level3, id => false), "not playable yet");
+            Assert.IsNull(SupportPlanner.AlternativeFor(catalog, catalog.Find("sabir-ormani.yon-avcisi.01"), id => true), "level 1 has none");
+        }
+    }
 }

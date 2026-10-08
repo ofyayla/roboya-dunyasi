@@ -70,6 +70,10 @@ Bölüm, tahtadan önce bir giriş sahnesiyle açılır ve başarıdan sonra bir
 
 Şema sürümü 2'dir. Eski (v1) dosyalar `node packages/level-schema/scripts/migrate-v2.mjs content/levels` ile dönüştürülür.
 
+## Daha kolay alternatif (`alternativeLevelId`, YZ-03)
+
+Bir bölümde beş başarısız denemeden sonra Roboya daha kolay bir bölüm önerir; çocuk kabul etmezse aynı bölümde devam eder. Doğrulayıcı şunları zorunlu tutar: alternatif aynı oyunda ve bölgede olmalı, bölümden daha zor olmamalı ve ücretsiz bir bölümün alternatifi de ücretsiz olmalı (ücretsiz bölüm sayısı 3). Alternatif, çocuk için oynanabilir (açık) değilse teklif gösterilmez.
+
 ## Doğrulama
 
 ```bash
