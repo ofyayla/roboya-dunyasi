@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Roboya.CodingEngine.Profiles;
 
 namespace Roboya.CodingEngine.Progress
 {
@@ -13,6 +14,9 @@ namespace Roboya.CodingEngine.Progress
         /// <summary>An earlier level is not finished yet.</summary>
         Locked,
 
+        /// <summary>Before the child's age-based start and not finished: open to play, but not "the next one" (premium only).</summary>
+        Open,
+
         /// <summary>Beyond the free tier without premium: Roboya asks the child to ask a grown-up (GLR-01).</summary>
         NeedsGrownUp,
     }
@@ -23,7 +27,34 @@ namespace Roboya.CodingEngine.Progress
     /// </summary>
     public static class PathRules
     {
-        public static NodeState[] StatesOf(IReadOnlyList<string> path, ProgressBook book, int freeLevelCount, bool hasPremium)
+        /// <summary>
+        /// The first level of the path meant for <paramref name="band"/> (F1-08, PRD age levels). When no level names the
+        /// band (Mucit content arrives later) the nearest younger band is used; otherwise the path begins at its start.
+        /// </summary>
+        public static int StartIndex(IReadOnlyList<IReadOnlyCollection<AgeBand>> bandsPerLevel, AgeBand band)
+        {
+            for (int b = (int)band; b >= 0; b--)
+            {
+                for (int i = 0; i < bandsPerLevel.Count; i++)
+                {
+                    foreach (var named in bandsPerLevel[i])
+                    {
+                        if (named == (AgeBand)b)
+                        {
+                            return i;
+                        }
+                    }
+                }
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        /// <paramref name="startIndex"/> is where the child's age puts them. The free tier is the first
+        /// <paramref name="freeLevelCount"/> levels from there, so an older child's free levels are the ones meant for them.
+        /// </summary>
+        public static NodeState[] StatesOf(IReadOnlyList<string> path, ProgressBook book, int freeLevelCount, bool hasPremium, int startIndex = 0)
         {
             var states = new NodeState[path.Count];
             bool previousDone = true;
@@ -33,7 +64,13 @@ namespace Roboya.CodingEngine.Progress
                 bool done = book.IsCompleted(path[i]);
                 // Beyond the free tier the grown-up gate applies even to finished levels (e.g. premium lapsed);
                 // the stars stay in the book and return with premium.
-                bool paid = i >= freeLevelCount && !hasPremium;
+                bool paid = (i < startIndex || i >= startIndex + freeLevelCount) && !hasPremium;
+                if (i < startIndex && !paid && !done)
+                {
+                    states[i] = NodeState.Open;
+                    continue;
+                }
+
                 if (paid)
                 {
                     states[i] = NodeState.NeedsGrownUp;
@@ -52,13 +89,14 @@ namespace Roboya.CodingEngine.Progress
                     states[i] = NodeState.Locked;
                 }
 
-                previousDone = done;
+                previousDone = i < startIndex || done;
             }
 
             return states;
         }
 
         /// <summary>True when the level at <paramref name="index"/> may be opened now.</summary>
-        public static bool CanPlay(NodeState state) => state == NodeState.Completed || state == NodeState.Current;
+        public static bool CanPlay(NodeState state) =>
+            state == NodeState.Completed || state == NodeState.Current || state == NodeState.Open;
     }
 }

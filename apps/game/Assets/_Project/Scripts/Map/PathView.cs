@@ -85,7 +85,7 @@ namespace Roboya.Map
             {
                 var stone = _stones[i];
                 var state = _states[i];
-                foreach (var c in new[] { "stone--done", "stone--current", "stone--locked", "stone--grownup" })
+                foreach (var c in new[] { "stone--done", "stone--current", "stone--locked", "stone--grownup", "stone--open" })
                 {
                     stone.RemoveFromClassList(c);
                 }
@@ -93,6 +93,7 @@ namespace Roboya.Map
                 stone.AddToClassList(state == NodeState.Completed ? "stone--done"
                     : state == NodeState.Current ? "stone--current"
                     : state == NodeState.Locked ? "stone--locked"
+                    : state == NodeState.Open ? "stone--open"
                     : "stone--grownup");
 
                 stone.Q<Icon>("stone-icon").Kind = state == NodeState.NeedsGrownUp ? IconKind.Lock : IconKind.Forward;

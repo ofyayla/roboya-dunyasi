@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Roboya.CodingEngine.Levels.Generated;
+using Roboya.CodingEngine.Profiles;
 using Roboya.CodingEngine.Progress;
 
 namespace Roboya.Core
@@ -48,6 +49,33 @@ namespace Roboya.Core
             RewardRules.EarnedCount(s.Progress.Book.CompletedCount, CompletedRegions(s.Catalog, s.Progress.Book), s.ProgressRules);
 
         public static NodeState[] PathStates(GameServices s, IReadOnlyList<string> path) =>
-            PathRules.StatesOf(path, s.Progress.Book, s.ProgressRules.FreeLevelCount, s.Entitlements.HasPremium);
+            PathRules.StatesOf(path, s.Progress.Book, s.ProgressRules.FreeLevelCount, s.Entitlements.HasPremium, StartIndex(s, path));
+
+        /// <summary>Where the active child's age band begins on a path (F1-08); the first level when no profile is active.</summary>
+        public static int StartIndex(GameServices s, IReadOnlyList<string> path)
+        {
+            if (!s.Profiles.HasActive)
+            {
+                return 0;
+            }
+
+            var bands = new List<IReadOnlyCollection<AgeBand>>();
+            foreach (var id in path)
+            {
+                var set = new List<AgeBand>();
+                var levels = s.Catalog.Find(id)?.Dto.Meta.AgeLevels;
+                if (levels != null)
+                {
+                    foreach (var l in levels)
+                    {
+                        set.Add(l == AgeLevel.Minik ? AgeBand.Minik : l == AgeLevel.Kasif ? AgeBand.Kasif : AgeBand.Mucit);
+                    }
+                }
+
+                bands.Add(set);
+            }
+
+            return PathRules.StartIndex(bands, s.Profiles.Active.AgeBand);
+        }
     }
 }

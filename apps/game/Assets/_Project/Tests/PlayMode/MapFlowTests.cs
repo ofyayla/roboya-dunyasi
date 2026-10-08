@@ -191,6 +191,21 @@ namespace Roboya.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Path_KasifChild_StartsAtTheirLevelWithFreeLevelsFromThere()
+        {
+            var manager = ProfileManager.Load(_progressDir);
+            manager.Update(manager.Active.Id, manager.Active.Nickname, manager.Active.AvatarId, AgeBand.Kasif);
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            yield return OpenForest(map);
+
+            Assert.IsTrue(map.Q("stone-6").ClassListContains("stone--current"), "F1-08: level 6 is the first meant for Kaşif");
+            Assert.IsTrue(map.Q("stone-1").ClassListContains("stone--grownup"), "earlier levels are outside this child's free levels");
+            Assert.IsTrue(map.Q("stone-8").ClassListContains("stone--locked"));
+            Assert.IsTrue(map.Q("stone-9").ClassListContains("stone--grownup"), "three free levels counted from the start");
+        }
+
+        [UnityTest]
         public IEnumerator DailyLimitUsedUp_MapShowsRest_StoneStaysClosed_ParentCanRaiseTheLimit()
         {
             Seed(1);

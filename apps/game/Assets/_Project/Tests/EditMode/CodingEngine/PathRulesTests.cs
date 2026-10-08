@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using NUnit.Framework;
+using Roboya.CodingEngine.Profiles;
 using Roboya.CodingEngine.Progress;
 
 namespace Roboya.Tests.CodingEngine
@@ -80,6 +82,68 @@ namespace Roboya.Tests.CodingEngine
         public void StatesOf_EmptyPath_ReturnsEmpty()
         {
             Assert.AreEqual(0, PathRules.StatesOf(new string[0], new ProgressBook(), 3, false).Length);
+        }
+
+        private static IReadOnlyList<IReadOnlyCollection<AgeBand>> Bands(params AgeBand[][] levels)
+        {
+            var list = new List<IReadOnlyCollection<AgeBand>>();
+            foreach (var l in levels)
+            {
+                list.Add(l);
+            }
+
+            return list;
+        }
+
+        [Test]
+        public void StartIndex_BandNamedByALevel_ReturnsFirstSuchLevel()
+        {
+            var bands = Bands(new[] { AgeBand.Minik }, new[] { AgeBand.Minik, AgeBand.Kasif }, new[] { AgeBand.Kasif });
+            Assert.AreEqual(0, PathRules.StartIndex(bands, AgeBand.Minik));
+            Assert.AreEqual(1, PathRules.StartIndex(bands, AgeBand.Kasif));
+        }
+
+        [Test]
+        public void StartIndex_NoLevelForTheBand_FallsBackToTheYoungerBand()
+        {
+            var bands = Bands(new[] { AgeBand.Minik }, new[] { AgeBand.Kasif });
+            Assert.AreEqual(1, PathRules.StartIndex(bands, AgeBand.Mucit));
+        }
+
+        [Test]
+        public void StartIndex_NothingMatches_ReturnsZero()
+        {
+            Assert.AreEqual(0, PathRules.StartIndex(Bands(new AgeBand[0], new AgeBand[0]), AgeBand.Kasif));
+        }
+
+        [Test]
+        public void StatesOf_StartInTheMiddle_FreeLevelsCountFromTheStart()
+        {
+            var s = PathRules.StatesOf(Path, new ProgressBook(), 2, false, 2);
+
+            CollectionAssert.AreEqual(
+                new[] { NodeState.NeedsGrownUp, NodeState.NeedsGrownUp, NodeState.Current, NodeState.Locked, NodeState.NeedsGrownUp }, s);
+        }
+
+        [Test]
+        public void StatesOf_PremiumStartInTheMiddle_EarlierLevelsAreOpenNotCurrent()
+        {
+            var s = PathRules.StatesOf(Path, new ProgressBook(), 2, true, 2);
+
+            CollectionAssert.AreEqual(
+                new[] { NodeState.Open, NodeState.Open, NodeState.Current, NodeState.Locked, NodeState.Locked }, s);
+            Assert.IsTrue(PathRules.CanPlay(NodeState.Open));
+        }
+
+        [Test]
+        public void StatesOf_PremiumStartInTheMiddle_FinishedEarlierLevelStaysCompleted()
+        {
+            var book = new ProgressBook();
+            book.Record("l1", 2);
+            var s = PathRules.StatesOf(Path, book, 2, true, 2);
+
+            Assert.AreEqual(NodeState.Completed, s[0]);
+            Assert.AreEqual(NodeState.Open, s[1]);
         }
     }
 }
