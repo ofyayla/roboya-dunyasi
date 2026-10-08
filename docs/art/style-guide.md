@@ -44,6 +44,15 @@ Karar (2026-10-08, veli/ürün sahibi): **düz vektör** stil. Oyun içi tüm va
 
 Kaynak sayfalar (yeniden kesim için): `docs/art/sources/`.
 
+## Oyunda kullanım
+
+- Bölge sprite seti `Art/SabirOrmani/SabirOrmaniArt.asset` (`Roboya.UI.RegionArt`); sahneye `SceneBuilder` bağlar, elle düzenlenmez.
+- **Robotun yönü görünümle gösterilir:** kuzey = arka görünüm, güney = ön, batı = yan, doğu = aynalanmış yan. Dönüşte kısa bir "sıkış-çevir" animasyonu oynar.
+- Çarpmada `laughing`, başarıda `happy` ifadesi; kaplumbağa başarıda `turtle_happy` olur ve yana kayar.
+- Hayalet yol (YON-03) toprak yol karosuyla, engeller hücreye göre sabit seçilen ağaç/kaya/çalı ile çizilir.
+- Sprite atanmamış bir alan varsa kodla çizilen yedek simge kullanılır.
+- **Çocuk testinde gözlenecek:** başlangıçta robot yukarı bakıyorsa arkası görünür (yüzü görünmez). Çocukların bunu "yukarı gidiyor" diye anlayıp anlamadığı F0-21'de not edilmeli.
+
 ## Üretim yöntemi
 
 Higgsfield, GPT Image 2.5 Sunburst; High kalite, 2K, saydam arka plan. Ana Roboya (`sources/master-2.png`) **her yeni karakter ve varlık üretiminde referans** olarak verilir. Sayfalar ızgara halinde üretilir ve `tools/art` dışı tek seferlik bir betikle bağlı bileşen analizine göre tek tek PNG'lere kesilir. Bu yöntem tutarlılığı korur ve maliyeti düşürür. Bu turda yaklaşık 30 kredi harcandı.

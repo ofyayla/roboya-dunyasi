@@ -1,6 +1,7 @@
 using System.IO;
 using Roboya.Core;
 using Roboya.Games.YonAvcisi;
+using Roboya.UI;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -18,6 +19,8 @@ namespace Roboya.EditorTools
         private const string PanelSettingsPath = UiDir + "/ChildPanelSettings.asset";
         private const string ThemePath = UiDir + "/RoboyaTheme.tss";
         private const string YonAvcisiUxml = UiDir + "/YonAvcisi/YonAvcisi.uxml";
+        private const string ArtDir = "Assets/_Project/Art";
+        private const string SabirOrmaniArtPath = ArtDir + "/SabirOrmani/SabirOrmaniArt.asset";
 
         public static void Build(string scenesDir)
         {
@@ -82,10 +85,50 @@ namespace Roboya.EditorTools
             var screen = go.GetComponent<YonAvcisiScreen>() ?? go.AddComponent<YonAvcisiScreen>();
             var so = new SerializedObject(screen);
             so.FindProperty("document").objectReferenceValue = doc;
+            so.FindProperty("art").objectReferenceValue = EnsureSabirOrmaniArt();
             so.ApplyModifiedPropertiesWithoutUndo();
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
+        }
+
+        /// <summary>Creates or refreshes the region sprite set from the files in Art/ (F0-17, docs/art/style-guide.md).</summary>
+        private static RegionArt EnsureSabirOrmaniArt()
+        {
+            var art = AssetDatabase.LoadAssetAtPath<RegionArt>(SabirOrmaniArtPath);
+            if (art == null)
+            {
+                art = ScriptableObject.CreateInstance<RegionArt>();
+                AssetDatabase.CreateAsset(art, SabirOrmaniArtPath);
+            }
+
+            Sprite S(string rel) => AssetDatabase.LoadAssetAtPath<Sprite>(ArtDir + "/" + rel + ".png");
+            var so = new SerializedObject(art);
+            so.FindProperty("robotFront").objectReferenceValue = S("Characters/Roboya/roboya_front");
+            so.FindProperty("robotBack").objectReferenceValue = S("Characters/Roboya/roboya_back");
+            so.FindProperty("robotSide").objectReferenceValue = S("Characters/Roboya/roboya_side");
+            so.FindProperty("robotHappy").objectReferenceValue = S("Characters/Roboya/roboya_happy");
+            so.FindProperty("robotLaughing").objectReferenceValue = S("Characters/Roboya/roboya_laughing");
+            so.FindProperty("goalIdle").objectReferenceValue = S("Characters/BilgeKaplumbaga/turtle_front");
+            so.FindProperty("goalHappy").objectReferenceValue = S("Characters/BilgeKaplumbaga/turtle_happy");
+            so.FindProperty("tileFloor").objectReferenceValue = S("SabirOrmani/tile_grass");
+            so.FindProperty("tilePath").objectReferenceValue = S("SabirOrmani/tile_path");
+            so.FindProperty("background").objectReferenceValue = S("SabirOrmani/bg_sabir_ormani");
+            so.FindProperty("fruitRed").objectReferenceValue = S("SabirOrmani/item_apple");
+            so.FindProperty("fruitYellow").objectReferenceValue = S("SabirOrmani/item_pear");
+            so.FindProperty("shipPart").objectReferenceValue = S("SabirOrmani/item_gear");
+            var obstacles = so.FindProperty("obstacles");
+            string[] names = { "SabirOrmani/prop_tree", "SabirOrmani/prop_rock", "SabirOrmani/prop_bush" };
+            obstacles.arraySize = names.Length;
+            for (int i = 0; i < names.Length; i++)
+            {
+                obstacles.GetArrayElementAtIndex(i).objectReferenceValue = S(names[i]);
+            }
+
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(art);
+            AssetDatabase.SaveAssets();
+            return art;
         }
 
         private static GameObject FindOrCreate(string name)

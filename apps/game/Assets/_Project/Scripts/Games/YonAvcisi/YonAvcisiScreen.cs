@@ -1,5 +1,6 @@
 using Roboya.CodingEngine.Levels.Generated;
 using Roboya.Core;
+using Roboya.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -10,6 +11,7 @@ namespace Roboya.Games.YonAvcisi
     {
         [SerializeField] private UIDocument document;
         [SerializeField] private int startLevelIndex;
+        [SerializeField] private RegionArt art;
 
         private YonAvcisiController _controller;
 
@@ -25,7 +27,7 @@ namespace Roboya.Games.YonAvcisi
                     return;
                 }
 
-                _controller = new YonAvcisiController(document.rootVisualElement, services, levels);
+                _controller = new YonAvcisiController(document.rootVisualElement, services, levels, art);
                 _controller.Start(startLevelIndex);
             }
             catch (System.Exception e)

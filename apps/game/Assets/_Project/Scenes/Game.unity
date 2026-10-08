@@ -243,6 +243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Roboya.Games.YonAvcisi::Roboya.Games.YonAvcisi.YonAvcisiScreen
   document: {fileID: 563097582}
   startLevelIndex: 0
+  art: {fileID: 11400000, guid: ee0ee93bacabb4fe09e89a04f1b0d051, type: 2}
 --- !u!114 &563097582
 MonoBehaviour:
   m_ObjectHideFlags: 0
