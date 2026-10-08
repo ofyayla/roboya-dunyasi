@@ -179,6 +179,7 @@ Ek kurallar:
 - Yapay zekâ (LLM) kullanan özellikler yalnız yetişkin arayüzlerinde bulunur; çocuk verisi modele gönderilmez; çıktılar kaydedilir.
 - Veri silme talebi uçtan uca çalışır ve 30 gün içinde tamamlanır; silme işlevine dokunan değişiklik testsiz birleştirilmez.
 - Aktarımda TLS, sunucuda ve cihazda şifreli depolama.
+- Kişisel veri yurt dışında (AB bölgesi) barındırılabilir; ancak kişisel veri taşıyan yeni bir yurt dışı servis (barındırma, e-posta, izleme vb.) KVKK standart sözleşmesi, imzadan sonra 5 iş günü içinde Kurum'a bildirim, aydınlatma metni güncellemesi ve ADR 0007'deki aktarım envanterine satır eklenmeden kullanılmaz.
 
 ## 12. Ödeme, abonelik ve lisans
 

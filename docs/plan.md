@@ -23,7 +23,7 @@ Bu plan, Roboya Dünyası'nı Faz 0'dan v2.0'a kadar yaklaşık 21 ayda (Ay 0–
 | Okul lisansı | Öğrenci başı yıllık | Lisansta koltuk = öğrenci profili; koltuk sayımı ve aşım uyarısı Faz 2'de |
 | Okul ailesi indirimi, ev erişimi | Fiyatlar sonra | Teklif kodu ve ev erişimi hakkı Faz 3'te fiyattan bağımsız, parametrik kurulur |
 | Oyun motoru | Unity | Unity 6 LTS, 2D, C#; kurallar CLAUDE.md'de |
-| Barındırma | Önerimiz izlenir | Kişisel veri Türkiye'de yerel bir bulut sağlayıcıda; içerik paketleri global CDN'de (bkz. Ortamlar) |
+| Barındırma | Önerimiz izlenir; 2026-10-08'de Türkiye şartı kaldırıldı | Kişisel veri AB bölgesinde (Frankfurt), KVKK m.9 standart sözleşmesiyle; içerik paketleri global CDN'de (bkz. Ortamlar, ADR 0007) |
 | Seslendirme | Önce ElevenLabs benzeri TTS, sonra profesyonel ses | TTS'e yalnız senaryo metni gider; ses dosyaları tek bir ses kütüphanesinden yönetilir ki sonradan kolayca değişsin |
 | KVKK metinleri | Taslaklar yapay zekâ ile hazırlanır | Taslaklar Faz 1'de; çocuk verisi içerdiği için lansman öncesi tek seferlik hukukçu kontrolü önerilir |
 | Mucit seviyesi (7–10 yaş) | Cevaplanmadı | Varsayım: MVP dışında, Faz 4'te |
@@ -127,7 +127,7 @@ roboya-dunyasi/
 
 ## Ortamlar, altyapı ve CI/CD
 
-Kişisel veri yalnız üretim ortamında ve Türkiye'de bulunur; kalan her şey sentetik veriyle çalışır ve konteyner tabanlı olduğu için sağlayıcı değiştirmek kolaydır.
+Kişisel veri yalnız üretim ortamında bulunur. Üretim AB bölgesindedir (Frankfurt) ve yurt dışı aktarım KVKK m.9 standart sözleşmesiyle yapılır. Kalan her şey sentetik veriyle çalışır ve konteyner tabanlı olduğu için sağlayıcı değiştirmek kolaydır.
 
 **Ortamlar**
 
@@ -135,16 +135,16 @@ Kişisel veri yalnız üretim ortamında ve Türkiye'de bulunur; kalan her şey 
 | --- | --- | --- | --- |
 | Yerel | Geliştirme | Sentetik tohum verisi | Docker Compose (API, PostgreSQL, Redis, web) |
 | Staging | Entegrasyon, iç test, demo | Yalnız sentetik; gerçek çocuk verisi yasak | Uygun maliyetli herhangi bir bulut |
-| Üretim | Gerçek kullanıcılar | Kişisel veri | Türkiye'de veri merkezi olan yerel bulut sağlayıcı |
+| Üretim | Gerçek kullanıcılar | Kişisel veri | AB bölgesinde yönetilen bulut (öneri: AWS Frankfurt; ADR 0007) |
 
 **Barındırma önerisi**
 
-- **API ve veritabanı:** Türkiye'de veri merkezi olan yerel bir bulut sağlayıcı (ör. Turkcell veya Türk Telekom bulut hizmetleri). Faz 0'da yönetilen PostgreSQL, konteyner desteği, yedekleme, SLA, KVKK sözleşmesi ve fiyat üzerinden kısa bir karşılaştırma yapılır.
-- **Başlangıç kurulumu:** 2 sanal sunucu üzerinde Docker Compose + yönetilen PostgreSQL. Kubernetes'e ancak yük gerektirirse geçilir.
-- **Taşınabilirlik:** Google Cloud'un Türkiye bölgesinin 2028–2029'da açılması planlanıyor ([kaynak](https://www.qnbinvest.com.tr/investodak/qnbarastirma/turkcell-google-cloud-stratejik-is-birligi)). Mimari konteyner ve standart PostgreSQL ile kurulduğu için o gün taşıma seçeneği açık kalır.
+- **API ve veritabanı:** AB bölgesinde (Frankfurt) yönetilen PostgreSQL. Öneri AWS (RDS Multi-AZ); önkoşul, sağlayıcının KVKK standart sözleşmesini (Modül 2) imzalayacağının yazılı teyidi. İmzadan sonra 5 iş günü içinde Kurum'a bildirim yapılır (ADR 0007, [KVKK özeti](kvkk/yurt-disi-aktarim.md)).
+- **Başlangıç kurulumu:** Konteyner tabanlı uygulama (ör. ECS Fargate veya 2 sanal sunucu) + yönetilen PostgreSQL. Kubernetes'e ancak yük gerektirirse geçilir.
+- **Taşınabilirlik:** Google Cloud'un Türkiye bölgesinin 2028–2029'da açılması planlanıyor ([kaynak](https://www.qnbinvest.com.tr/investodak/qnbarastirma/turkcell-google-cloud-stratejik-is-birligi)). Mimari konteyner ve standart PostgreSQL ile kurulduğu için o gün, ya da okullar Türkiye'de barındırma isterse, taşıma seçeneği açık kalır.
 - **İçerik paketleri:** Kişisel veri içermeyen çizim, ses ve bölüm paketleri global bir CDN üzerinden dağıtılır; düşük gecikme ve düşük maliyet sağlar.
-- **Dikkat:** E-posta gönderimi ve Google Play abonelik bildirimleri (Pub/Sub) gibi yurt dışı servislere giden veri en aza indirilir; e-posta sağlayıcısı seçiminde yurt dışı aktarım kuralları değerlendirilir.
-- **Yedekleme:** Günlük veritabanı yedeği, 30 gün saklama, Türkiye'de ikinci bir lokasyon; ayda bir geri yükleme testi.
+- **Yurt dışı aktarım envanteri:** Barındırma, e-posta, mağaza bildirimleri ve CDN gibi kişisel veri taşıyan her servis ADR 0007'deki envantere mekanizması, bildirim tarihi ve aydınlatma metni satırıyla eklenir; envantere girmeyen servis üretimde kullanılmaz.
+- **Yedekleme:** Günlük otomatik yedek + PITR, 30 gün saklama, aynı sağlayıcıda ikinci bir AB bölgesine veya ayrı hesaba şifreli kopya; ayda bir geri yükleme testi.
 - **Sırlar:** API anahtarları ve mağaza kimlik bilgileri sır yöneticisinde tutulur; repoya asla girmez.
 
 **CI/CD hatları**
@@ -230,7 +230,7 @@ Faz 1 sonunda Sabır Ormanı'nın 36 bölümü, veli alanı ve aile aboneliği �
 | F1-22 | Seslendirme senaryosu ve TTS üretimi | İçerik | M | Karar: önce TTS |
 | F1-23 | Sanat: Sabır Ormanı arka planları, Roboya animasyonları, Bilge Kaplumbağa, arayüz | Sanat | L | Dış kaynak |
 | F1-24 | Sabır değer kartı animasyonu | Sanat | M |  |
-| F1-25 | KVKK aydınlatma ve rıza metinleri (yapay zekâ taslağı), rıza kaydı akışı | Uyum / API | M | UYM-01 |
+| F1-25 | KVKK aydınlatma ve rıza metinleri (yapay zekâ taslağı; yurt dışı aktarım bilgisi dahil), rıza kaydı akışı | Uyum / API | M | UYM-01, UYM-04 |
 | F1-26 | Mağaza çocuk kategorisi kontrolü, gizlilik etiketleri ve veri güvenliği formları | Uyum | S | UYM-06 |
 | F1-27 | Kapalı beta: TestFlight ve Play kapalı test, 50–100 aile, geri bildirim formu, fiyat anketi | Ürün | M |  |
 | F1-28 | 3–5 pilot okulla protokol | İş | M | En geç Ay 4 |
@@ -264,7 +264,7 @@ Faz 2 iki işi birlikte bitirir: okul modu ile kurumsal lisansı satılabilir ha
 | F2-14 | Profesyonel seslendirme: MVP ve Paylaşım Köyü satırları, TTS dosyalarının değişimi | İçerik | M | Karar: sonra gerçek ses |
 | F2-15 | Performans: 2 GB RAM tablette 30 fps, açılış ≤ 5 sn, ilk indirme ≤ 150 MB | Oyun | L |  |
 | F2-16 | Erişilebilirlik ve renk körlüğü kontrolü | Oyun / Web | S |  |
-| F2-17 | KVKK metinlerinin hukukçu kontrolü ve okul veri işleme sözleşmesi şablonu | Uyum | M | UYM-02 |
+| F2-17 | KVKK metinlerinin hukukçu kontrolü, okul veri işleme sözleşmesi şablonu ve yurt dışı aktarım (standart sözleşmeler, Kurum bildirimi, çocuk verisi) | Uyum | M | UYM-02, UYM-04 |
 | F2-18 | Bağımsız sızma testi ve bulguların kapatılması | Güvenlik | M |  |
 | F2-19 | Mağaza sayfaları: ekran görüntüleri, tanıtım videosu, Türkçe açıklamalar | Pazarlama | M |  |
 | F2-20 | Destek kanalı, SSS ve durum sayfası | Operasyon | S |  |
@@ -420,6 +420,7 @@ Her madde bir faz kapısına bağlıdır; işaretlenmeden o kapı geçilmez.
 
 - [ ] KVKK aydınlatma ve rıza metinleri hukukçu kontrolünden geçti; okul veri işleme sözleşmesi şablonu hazır.
 - [ ] VERBİS yükümlülüğü netleşti; veri envanteri ve saklama süreleri yazılı.
+- [ ] Yurt dışı aktarım: her alıcı için standart sözleşme imzalı ve 5 iş günü içinde Kurum'a bildirilmiş; ADR 0007'deki aktarım envanteri güncel; aydınlatma metni ve okul veri işleme sözleşmesi aktarımı (alıcı, ülke, amaç, veri kategorileri) belirtiyor; çocuk verisi ve okul (alt veri işleyen) durumu için hukukçu görüşü alındı.
 - [ ] Rol tabanlı erişim testleri: öğretmen yalnız kendi sınıfını, yönetici yalnız kendi kurumunu görüyor.
 - [ ] Bağımsız sızma testi yapıldı; yüksek ve kritik bulgular kapandı.
 - [ ] Okul lisanslarının mağaza dışı satışı güncel mağaza yönergelerine göre kontrol edildi; uygulamada mağaza dışı ödeme bağlantısı yok.
@@ -456,4 +457,5 @@ Planın en kırılgan noktası tek geliştiricili kapasite ve pilot okulların h
 ## Notlar (Faz 0 sırasında öğrenilenler)
 
 - **Unity 6.6 ve OpenGL ES 3.1 (2026-10-08):** Unity 6.6 Android'de en az OpenGL ES 3.1 istiyor. "2 GB RAM, Android 9" hedef tabletlerin çoğu bunu karşılar, ama pilot okulların cihaz listesi F1-28'de kontrol edilmeli (ADR 0005). Mac'teki Android emülatörü ES 3.0 ile sınırlı olduğu için cihaz testleri gerçek tablette yapılır.
-- **Barındırma (2026-10-08):** Türkiye'de yönetilen PostgreSQL sunan sağlayıcıların fiyatları herkese açık değil; ADR 0007'deki kontrol listesiyle yazılı teklif istenmeli. Üretim seçimi F1-14'ten önce tamamlanmalı.
+- **Barındırma (2026-10-08):** Kişisel verinin Türkiye'de tutulması zorunluluğu kaldırıldı (UYM-04 yeniden yazıldı). Üretim AB bölgesinde (Frankfurt); öneri AWS, sağlayıcının KVKK standart sözleşmesini imzalama teyidine bağlı (ADR 0007). Seçim ve sözleşme F1-14'ten önce tamamlanmalı.
+- **F0-18 (2026-10-08):** Marka tescili ve mağaza adı kontrolü yapıldı; sorun bulunmadı.
