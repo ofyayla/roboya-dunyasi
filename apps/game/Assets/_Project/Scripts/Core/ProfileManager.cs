@@ -140,6 +140,9 @@ namespace Roboya.Core
             Changed?.Invoke();
         }
 
+        /// <summary>Progress of any profile on this device (the sync service needs more than the active one).</summary>
+        public IProgressStore ProgressOf(string id) => StoreFor(id);
+
         private IProgressStore StoreFor(string id)
         {
             if (!_stores.TryGetValue(id, out var store))

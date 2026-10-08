@@ -63,5 +63,12 @@
   "account.error.too_many_requests": "Çok sık denendi. Biraz sonra tekrar dene.",
   "account.error.device_limit": "Bu hesapta en fazla 10 cihaz olabilir.",
   "account.error.network": "Sunucuya ulaşılamadı. İnternet bağlantını kontrol et.",
-  "account.error.generic": "Bir sorun oldu. Tekrar dene."
+  "account.error.generic": "Bir sorun oldu. Tekrar dene.",
+  "account.sync": "Şimdi eşitle",
+  "account.sync.done": "Profiller ve ilerleme hesapla eşitlendi.",
+  "account.sync.offline": "Sunucuya ulaşılamadı. Oyun çevrimdışı çalışır, bağlanınca eşitlenir.",
+  "account.sync.consent": "Eşitlemek için aydınlatma metnini bu cihazda onaylamak gerekir.",
+  "account.sync.outdated": "Aydınlatma metni sunucuyla uyuşmuyor. Uygulamayı güncelle.",
+  "account.sync.partly": "Bazı profiller hesabın profil sınırı nedeniyle saklanamadı.",
+  "account.sync.failed": "Eşitleme tamamlanamadı. Sonra tekrar dene."
 }

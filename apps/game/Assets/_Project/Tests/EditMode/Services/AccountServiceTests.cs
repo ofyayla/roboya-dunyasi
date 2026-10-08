@@ -11,10 +11,16 @@ namespace Roboya.Tests.Services
     {
         public readonly List<HttpRequest> Sent = new List<HttpRequest>();
         public readonly Queue<HttpResponse> Replies = new Queue<HttpResponse>();
+        public Func<HttpRequest, HttpResponse> Handler;
 
         public Task<HttpResponse> SendAsync(HttpRequest request)
         {
             Sent.Add(request);
+            if (Handler != null)
+            {
+                return Task.FromResult(Handler(request));
+            }
+
             return Task.FromResult(Replies.Count > 0 ? Replies.Dequeue() : new HttpResponse(0, null));
         }
     }
