@@ -30,8 +30,10 @@ api-dev: ## Run the API locally with reload
 web-dev: ## Run the web panels locally
 	npm run dev -w @roboya/web
 
-editor-dev: ## Run the internal level editor locally
-	npm run dev -w @roboya/level-editor
+editor-dev: ## Run the level editor (http://127.0.0.1:5174) with the C# solver server (ADR 0002)
+	@$(DOTNET) build tools/engine-dotnet/Roboya.LevelValidator -c Release -v q --nologo
+	@$(DOTNET) run --no-build --project tools/engine-dotnet/Roboya.LevelValidator -c Release -- serve --voice content/voice/script.csv & \
+		SOLVER=$$!; trap "kill $$SOLVER" EXIT INT TERM; npm run dev -w @roboya/level-editor
 
 test: test-engine test-api test-web test-content test-tools ## Run all API, web, engine and content tests
 
