@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="../Common/Common.uss" />
+    <Style src="Map.uss" />
+    <ui:VisualElement name="map-root" class="map-root" />
+</ui:UXML>

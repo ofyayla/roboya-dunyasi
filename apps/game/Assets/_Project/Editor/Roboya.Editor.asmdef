@@ -5,6 +5,7 @@
         "Roboya.Core",
         "Roboya.UI",
         "Roboya.Games.YonAvcisi",
+        "Roboya.Map",
         "Unity.RenderPipelines.Universal.Runtime",
         "Unity.RenderPipelines.Core.Runtime",
         "Unity.RenderPipelines.Universal.2D.Runtime"
