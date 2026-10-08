@@ -57,6 +57,7 @@ namespace Roboya.Core
             await LoadAsync(firstScene);
             // A signed-in parent's profiles and stars catch up in the background; offline simply does nothing.
             _ = _services.Sync.SyncAsync();
+            _ = _services.Privacy.FlushPendingAsync();
             _services.Analytics.Track("app_open");
             _ = _services.Analytics.FlushAsync();
         }
@@ -116,6 +117,7 @@ namespace Roboya.Core
             var serverEntitlements = new EntitlementService(api, account, ProgressFolder);
             entitlements = entitlements ?? serverEntitlements;
             // Rules will come from server configuration once the API exists (CLAUDE.md §6).
+            var sync = new SyncService(api, account, profiles, notice, ProgressFolder, serverEntitlements);
             return new GameServices(
                 catalog,
                 await ComposeVoiceAsync(),
@@ -130,8 +132,9 @@ namespace Roboya.Core
                 notice,
                 new ScreenTimeService(ProgressFolder, profiles),
                 account,
-                new SyncService(api, account, profiles, notice, ProgressFolder, serverEntitlements),
-                new AnalyticsService(api, profiles, notice, ProgressFolder, Application.version, PlatformWord));
+                sync,
+                new AnalyticsService(api, profiles, notice, ProgressFolder, Application.version, PlatformWord),
+                new PrivacyService(api, account, profiles, sync, ProgressFolder));
         }
 
         /// <summary>Tests point this at a temporary folder so each run starts with fresh progress.</summary>

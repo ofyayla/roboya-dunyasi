@@ -295,6 +295,65 @@ namespace Roboya.Tests.PlayMode
             }
         }
 
+        private static IEnumerator OpenParentArea(VisualElement map)
+        {
+            Tap(map.Q("to-parent"));
+            yield return null;
+            yield return null;
+            var gate = map.Q<ParentGateView>("parent-gate");
+            TypeDigits(map, Roboya.CodingEngine.Parents.ParentGate.ExpectedFor(gate.Challenge));
+            Tap(map.Q("gate-confirm"));
+            yield return null;
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator PrivacyCentre_ReadNotice_ThenWithdrawConsentNeedsTwoTaps_AndReturnsToTheWelcome()
+        {
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            yield return OpenParentArea(map);
+            map.Q<ScrollView>("parent-sections").ScrollTo(map.Q("privacy-section"));
+            yield return null;
+
+            Tap(map.Q("privacy-read"));
+            yield return null;
+            Assert.AreEqual(DisplayStyle.Flex, map.Q("notice-reader").resolvedStyle.display);
+            StringAssert.Contains("yurt dışına aktarılır", map.Q<Label>("notice-reader-text").text);
+            Tap(map.Q("notice-reader-close"));
+            yield return null;
+            Assert.AreEqual(DisplayStyle.Flex, map.Q("parent").resolvedStyle.display);
+
+            map.Q<ScrollView>("parent-sections").ScrollTo(map.Q("privacy-withdraw"));
+            yield return null;
+            Tap(map.Q("privacy-withdraw"));
+            yield return null;
+            Assert.IsTrue(ProfileManager.Load(_progressDir).Registry.HasConsentFor(TestProfiles.CurrentNoticeVersion()), "one tap only asks");
+            Tap(map.Q("privacy-withdraw"));
+            yield return WaitUntil(() => map.Q("welcome").resolvedStyle.display == DisplayStyle.Flex, 5f);
+            Assert.IsFalse(ProfileManager.Load(_progressDir).Registry.HasConsentFor(TestProfiles.CurrentNoticeVersion()));
+        }
+
+        [UnityTest]
+        public IEnumerator PrivacyCentre_WipeDevice_RemovesProfilesAndProgress_ThenWelcome()
+        {
+            Seed(2);
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            yield return OpenParentArea(map);
+            map.Q<ScrollView>("parent-sections").ScrollTo(map.Q("privacy-wipe"));
+            yield return null;
+            Tap(map.Q("privacy-wipe"));
+            yield return null;
+            Tap(map.Q("privacy-wipe"));
+            yield return WaitUntil(() => map.Q("welcome").resolvedStyle.display == DisplayStyle.Flex, 5f);
+
+            var after = ProfileManager.Load(_progressDir);
+            Assert.AreEqual(0, after.Registry.Profiles.Count);
+            Assert.IsFalse(after.Registry.HasConsentFor(TestProfiles.CurrentNoticeVersion()));
+            Assert.AreEqual(0, Directory.GetFiles(_progressDir, "*-*-*-*-*.json").Length, "no progress file is left");
+        }
+
         [UnityTest]
         public IEnumerator DailyLimitUsedUp_MapShowsRest_StoneStaysClosed_ParentCanRaiseTheLimit()
         {

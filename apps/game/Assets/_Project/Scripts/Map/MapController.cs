@@ -32,6 +32,7 @@ namespace Roboya.Map
         private readonly NoticeView _notice;
         private readonly ProfileEditorView _editor;
         private readonly RestView _rest;
+        private readonly NoticeReader _reader;
 
         public MapController(VisualElement root, GameServices services, RegionArt art, PartArt partArt)
         {
@@ -48,8 +49,10 @@ namespace Roboya.Map
             _parent.AddSection(new ProfilesSection(services, profile => _editor.Open(profile), OpenEditorForNew));
             _rest = new RestView(art, () => _gate.Open(ShowParent));
             _parent.AddSection(new AccountSection(services));
+            _reader = new NoticeReader(services, () => Show(_parent));
             _parent.AddSection(new ReportSection(services));
             _parent.AddSection(new ScreenTimeSection(services));
+            _parent.AddSection(new PrivacySection(services, () => Show(_reader), ShowWelcome));
             _grownup = new IconButton(IconKind.Grownup, () => _gate.Open(ShowParent)) { name = "to-parent" };
             _grownup.AddToClassList("map__grownup");
             host.Add(_island);
@@ -58,6 +61,7 @@ namespace Roboya.Map
             host.Add(_parent);
             host.Add(_grownup);
             host.Add(_welcome);
+            host.Add(_reader);
             // The rest screen sits below the gate: a parent opens the gate from it.
             host.Add(_rest);
             host.Add(_gate);
@@ -233,7 +237,7 @@ namespace Roboya.Map
 
         private void Show(VisualElement view)
         {
-            foreach (var v in new VisualElement[] { _island, _path, _workshop, _parent, _welcome, _rest })
+            foreach (var v in new VisualElement[] { _island, _path, _workshop, _parent, _welcome, _rest, _reader })
             {
                 v.style.display = v == view ? DisplayStyle.Flex : DisplayStyle.None;
             }
