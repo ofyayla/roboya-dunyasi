@@ -56,6 +56,22 @@ Kaynak sayfalar (yeniden kesim için): `docs/art/sources/`.
 - Sprite atanmamış bir alan varsa kodla çizilen yedek simge kullanılır.
 - **Çocuk testinde gözlenecek:** başlangıçta robot yukarı bakıyorsa arkası görünür (yüzü görünmez). Çocukların bunu "yukarı gidiyor" diye anlayıp anlamadığı F0-21'de not edilmeli.
 
+## Hikâye sahneleri
+
+- Her bölüm geniş açılı kısa bir sahneyle açılır ve kapanır (`Roboya.UI.StoryStage`). Sahne yeni çizim gerektirmez; bölge arka planı, karakter ifadeleri ve nesnelerle kodla kurulur.
+- **Yerleşim:**
+  - Roboya sol üçte birde, ekran yüksekliğinin ~%52'si boyunda.
+  - Bölge karakteri sağ üçte birde, ~%44 boyunda.
+  - Nesneler ikisinin arasında yerde durur.
+  - Alt köşelerdeki büyük çalılar ön plan çerçevesi olur.
+  - Arka plan yavaşça yakınlaşır; bu kamera hareketi hissi verir.
+- **Hareket:** karakterler kenarlardan zıplayarak girer. Ses çalarken Roboya küçük sekmelerle konuşur, kaplumbağa başını sallar. Bitişte ikisi birlikte zıplar.
+- **Giriş sahnesi:** ses bitince 1,2 sn sonra kendiliğinden tahtaya geçer; büyük yeşil "devam" düğmesiyle de geçilebilir. "Tekrar oyna" sahneyi atlar.
+- **Bitiş sahnesi:** yıldızlar gökyüzünde, "tekrar" ve "sonraki" düğmeleri sağ altta görünür; karakterler görünür kalır.
+- **Veri:** ifadeler ve nesneler bölüm JSON'undaki `story` alanından gelir (şema v2). Alan yoksa varsayılan ifadeler kullanılır. Ses `voice.intro` ve `voice.success` anahtarlarıdır.
+- **Kütük** (`log`) kodla çizilir (`LogShape`); elimizdeki kütük görseli çimli bir karo olduğu için sahnede kullanılamıyor.
+- Bölge açılış sahnesi ve değer kartı (F1-24) özel çizimle ayrıca yapılacak.
+
 ## Üretim yöntemi
 
 Higgsfield, GPT Image 2.5 Sunburst; High kalite, 2K, saydam arka plan. Ana Roboya (`sources/master-2.png`) **her yeni karakter ve varlık üretiminde referans** olarak verilir. Sayfalar ızgara halinde üretilir ve `tools/art` dışı tek seferlik bir betikle bağlı bileşen analizine göre tek tek PNG'lere kesilir. Bu yöntem tutarlılığı korur ve maliyeti düşürür. Bu turda yaklaşık 30 kredi harcandı.

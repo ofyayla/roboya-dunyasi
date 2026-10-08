@@ -92,13 +92,25 @@ export type ConditionDto =
  * via the `definition` "voiceKey".
  */
 export type VoiceKey = string;
+/**
+ * Roboya's expression.
+ */
+export type RobotPose = "front" | "happy" | "curious" | "surprised" | "proud" | "laughing";
+/**
+ * Expression of the region character (Sabır Ormanı: Bilge Kaplumbağa).
+ */
+export type FriendPose = "front" | "happy" | "explaining" | "thanks";
+export type StoryProp = "apple" | "pear" | "gear" | "log" | "tree" | "bush" | "rock";
 
 /**
  * Roboya Dünyası level, schema version 1. Single source of truth for the game, validator and editor.
  */
 export interface LevelDto {
   $schema?: string;
-  schemaVersion: 1;
+  /**
+   * 2 adds the optional `story` block. Migrate with scripts/migrate-v2.mjs.
+   */
+  schemaVersion: 2;
   /**
    * Stable id: <region>.<game>.<nn>. Used by progress records; never reuse a deleted id.
    */
@@ -124,6 +136,7 @@ export interface LevelDto {
   starterProgram?: CommandDto[];
   options?: LevelOptions;
   voice: VoiceDto;
+  story?: StoryDto;
   /**
    * Easier level offered after repeated failures (YZ-03).
    */
@@ -259,6 +272,30 @@ export interface VoiceDto {
    * @maxItems 3
    */
   hints?: VoiceKey[];
+}
+/**
+ * Wide story scenes before and after the board (PRD principle 2). Narration comes from `voice.intro` and `voice.success`; when a scene is missing the game uses default poses.
+ *
+ * This interface was referenced by `LevelDto`'s JSON-Schema
+ * via the `definition` "story".
+ */
+export interface StoryDto {
+  intro?: StorySceneDto;
+  outro?: StorySceneDto;
+}
+/**
+ * This interface was referenced by `LevelDto`'s JSON-Schema
+ * via the `definition` "storyScene".
+ */
+export interface StorySceneDto {
+  roboya?: RobotPose;
+  friend?: FriendPose;
+  /**
+   * Objects standing between the characters.
+   *
+   * @maxItems 3
+   */
+  props?: StoryProp[];
 }
 /**
  * Written by the validator (`--fix`); CI fails when it does not match the solver.

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Roboya.CodingEngine.Execution;
+using Roboya.CodingEngine.Levels;
 using Roboya.CodingEngine.Play;
 using Roboya.Core;
 using Roboya.UI;
@@ -11,7 +12,7 @@ using UnityEngine.UIElements;
 namespace Roboya.Games.YonAvcisi
 {
     /// <summary>
-    /// Flow of one Yön Avcısı level: plan → play (animate events) → result → retry or next.
+    /// Flow of one Yön Avcısı level: story intro → plan → play (animate events) → story outro + result → retry or next.
     /// Owns no game rules; those live in <see cref="LevelSession"/> (pure C#, tested in CI).
     /// </summary>
     public sealed class YonAvcisiController : IDisposable
@@ -30,6 +31,7 @@ namespace Roboya.Games.YonAvcisi
         private readonly VisualElement _result;
         private readonly VisualElement _stars;
         private readonly VisualElement _progress;
+        private readonly StoryStage _story;
         private readonly CancellationTokenSource _lifetime = new CancellationTokenSource();
 
         private int _index;
@@ -43,24 +45,6 @@ namespace Roboya.Games.YonAvcisi
 
             _board = new BoardView(art);
             root.Q("board-host").Add(_board);
-            if (art != null && art.RobotHappy != null && art.GoalHappy != null)
-            {
-                // Success moment shows both friends next to the stars (the panel covers the board).
-                var stars = root.Q("stars");
-                var left = new VisualElement { name = "result-robot" };
-                left.AddToClassList("result__cast");
-                left.style.backgroundImage = new StyleBackground(art.RobotHappy);
-                var right = new VisualElement { name = "result-goal" };
-                right.AddToClassList("result__cast");
-                right.style.backgroundImage = new StyleBackground(art.GoalHappy);
-                var row = new VisualElement();
-                row.AddToClassList("result__row");
-                stars.parent.Insert(stars.parent.IndexOf(stars), row);
-                row.Add(left);
-                row.Add(stars);
-                row.Add(right);
-            }
-
             if (art != null && art.Background != null)
             {
                 var screen = root.Q("screen");
@@ -85,6 +69,10 @@ namespace Roboya.Games.YonAvcisi
 
             _progress = root.Q("progress");
             _result = root.Q("result");
+
+            // The story scene covers the whole screen; the result panel stays above it.
+            _story = new StoryStage(art, services.Voice);
+            _result.parent.Insert(_result.parent.IndexOf(_result), _story);
             _stars = root.Q("stars");
             var retry = new IconButton(IconKind.Retry, Retry) { name = "retry" };
             var next = new IconButton(IconKind.Next, Next) { name = "next" };
@@ -93,7 +81,8 @@ namespace Roboya.Games.YonAvcisi
             root.Q("result-buttons").Add(next);
         }
 
-        public void Start(int index)
+        /// <param name="withStory">False on retry: the child has just heard the story, go straight to the board.</param>
+        public void Start(int index, bool withStory = true)
         {
             _index = Mathf.Clamp(index, 0, _levels.Count - 1);
             _entry = _levels[_index];
@@ -108,20 +97,21 @@ namespace Roboya.Games.YonAvcisi
             _tray.Bind(_session.Plan, _entry.Level.AvailableCards);
             _tray.SetLocked(false);
             _result.AddToClassList("hidden");
+            _story.Hide();
             RenderProgress();
             UpdateButtons();
-            _ = IntroAsync(_entry);
+            _ = IntroAsync(_entry, withStory);
         }
 
-        /// <summary>Loads this level's lines first so the intro and feedback play without a gap.</summary>
-        private async Awaitable IntroAsync(LevelEntry entry)
+        /// <summary>Loads this level's lines first so the story scene and feedback play without a gap.</summary>
+        private async Awaitable IntroAsync(LevelEntry entry, bool withStory)
         {
             try
             {
                 await _services.Voice.PreloadAsync(new[] { entry.Dto.Voice.Intro });
-                if (_entry == entry)
+                if (_entry == entry && withStory)
                 {
-                    _services.Voice.Play(entry.Dto.Voice.Intro);
+                    await _story.PlayIntroAsync(LevelStory.Intro(entry.Dto), _lifetime.Token);
                 }
 
                 var rest = new List<string> { BumpVoice, NotThereVoice, MissingItemsVoice, PlayPromptVoice };
@@ -136,6 +126,10 @@ namespace Roboya.Games.YonAvcisi
                 }
 
                 await _services.Voice.PreloadAsync(rest);
+            }
+            catch (OperationCanceledException)
+            {
+                // Screen closed during the story.
             }
             catch (Exception e)
             {
@@ -232,8 +226,8 @@ namespace Roboya.Games.YonAvcisi
 
         private async Awaitable ShowSuccess(CancellationToken token)
         {
-            _services.Voice.Play(_entry.Dto.Voice.Success);
             await _board.Celebrate(token);
+            await _story.PlayOutroAsync(LevelStory.Outro(_entry.Dto), token);
             _stars.Clear();
             for (int i = 0; i < 3; i++)
             {
@@ -291,7 +285,7 @@ namespace Roboya.Games.YonAvcisi
 
         private void Retry()
         {
-            Start(_index);
+            Start(_index, withStory: false);
         }
 
         private void Next()

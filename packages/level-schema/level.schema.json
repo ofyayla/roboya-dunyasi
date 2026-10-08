@@ -23,7 +23,8 @@
       "type": "string"
     },
     "schemaVersion": {
-      "const": 1
+      "description": "2 adds the optional `story` block. Migrate with scripts/migrate-v2.mjs.",
+      "const": 2
     },
     "id": {
       "description": "Stable id: <region>.<game>.<nn>. Used by progress records; never reuse a deleted id.",
@@ -75,6 +76,9 @@
     },
     "voice": {
       "$ref": "#/$defs/voice"
+    },
+    "story": {
+      "$ref": "#/$defs/story"
     },
     "alternativeLevelId": {
       "description": "Easier level offered after repeated failures (YZ-03).",
@@ -609,6 +613,69 @@
           "maxItems": 3,
           "items": {
             "$ref": "#/$defs/voiceKey"
+          }
+        }
+      }
+    },
+    "story": {
+      "title": "StoryDto",
+      "description": "Wide story scenes before and after the board (PRD principle 2). Narration comes from `voice.intro` and `voice.success`; when a scene is missing the game uses default poses.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "intro": {
+          "$ref": "#/$defs/storyScene"
+        },
+        "outro": {
+          "$ref": "#/$defs/storyScene"
+        }
+      }
+    },
+    "storyScene": {
+      "title": "StorySceneDto",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "roboya": {
+          "title": "RobotPose",
+          "description": "Roboya's expression.",
+          "type": "string",
+          "enum": [
+            "front",
+            "happy",
+            "curious",
+            "surprised",
+            "proud",
+            "laughing"
+          ]
+        },
+        "friend": {
+          "title": "FriendPose",
+          "description": "Expression of the region character (Sabır Ormanı: Bilge Kaplumbağa).",
+          "type": "string",
+          "enum": [
+            "front",
+            "happy",
+            "explaining",
+            "thanks"
+          ]
+        },
+        "props": {
+          "description": "Objects standing between the characters.",
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "title": "StoryProp",
+            "type": "string",
+            "enum": [
+              "apple",
+              "pear",
+              "gear",
+              "log",
+              "tree",
+              "bush",
+              "rock"
+            ]
           }
         }
       }

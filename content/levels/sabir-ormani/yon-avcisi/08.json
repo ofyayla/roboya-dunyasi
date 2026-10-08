@@ -1,6 +1,6 @@
 {
   "$schema": "../../../../packages/level-schema/level.schema.json",
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "sabir-ormani.yon-avcisi.08",
   "region": "sabir-ormani",
   "game": "yon-avcisi",
@@ -65,6 +65,22 @@
       "roboya.hint.check_card",
       "roboya.hint.show_card"
     ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining",
+      "props": [
+        "apple"
+      ]
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "thanks",
+      "props": [
+        "apple"
+      ]
+    }
   },
   "solution": {
     "shortestLength": 7

@@ -49,7 +49,7 @@ test("validateFile_nestedCommands_areAccepted", () => {
 });
 
 test("validateFile_wrongSchemaVersion_isRejected", () => {
-  assert.ok(withLevel((l) => (l.schemaVersion = 2)).length > 0);
+  assert.ok(withLevel((l) => (l.schemaVersion = 3)).length > 0);
 });
 
 test("validateFile_invalidJson_reportsParseError", () => {
@@ -61,4 +61,30 @@ test("validateFile_invalidJson_reportsParseError", () => {
 
 test("walk_contentTree_findsAllLevels", () => {
   assert.ok(walk(new URL("../../../content/levels", import.meta.url).pathname).length >= 10);
+});
+
+test("validateFile_storyScenes_areAccepted", () => {
+  const errors = withLevel((l) => {
+    l.story = {
+      intro: { roboya: "surprised", friend: "explaining", props: ["log", "apple"] },
+      outro: { roboya: "proud", friend: "thanks" },
+    };
+  });
+  assert.deepEqual(errors, []);
+});
+
+test("validateFile_storyUnknownPose_isRejected", () => {
+  assert.ok(withLevel((l) => (l.story = { intro: { roboya: "angry" } })).length > 0);
+});
+
+test("validateFile_storyTooManyProps_isRejected", () => {
+  assert.ok(withLevel((l) => (l.story = { intro: { props: ["apple", "pear", "gear", "log"] } })).length > 0);
+});
+
+test("validateFile_storyUnknownField_isRejected", () => {
+  assert.ok(withLevel((l) => (l.story = { intro: { childName: "Ali" } })).length > 0);
+});
+
+test("validateFile_schemaVersion1_isRejected", () => {
+  assert.ok(withLevel((l) => (l.schemaVersion = 1)).length > 0);
 });

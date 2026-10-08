@@ -18,6 +18,8 @@ namespace Roboya.Core
         {
         }
 
+        public bool IsPlaying => false;
+
         public async Awaitable PreloadAsync(IEnumerable<string> keys)
         {
             await Awaitable.NextFrameAsync();

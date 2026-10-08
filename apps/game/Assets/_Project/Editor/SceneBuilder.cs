@@ -109,14 +109,22 @@ namespace Roboya.EditorTools
             so.FindProperty("robotSide").objectReferenceValue = S("Characters/Roboya/roboya_side");
             so.FindProperty("robotHappy").objectReferenceValue = S("Characters/Roboya/roboya_happy");
             so.FindProperty("robotLaughing").objectReferenceValue = S("Characters/Roboya/roboya_laughing");
+            so.FindProperty("robotCurious").objectReferenceValue = S("Characters/Roboya/roboya_curious");
+            so.FindProperty("robotSurprised").objectReferenceValue = S("Characters/Roboya/roboya_surprised");
+            so.FindProperty("robotProud").objectReferenceValue = S("Characters/Roboya/roboya_proud");
             so.FindProperty("goalIdle").objectReferenceValue = S("Characters/BilgeKaplumbaga/turtle_front");
             so.FindProperty("goalHappy").objectReferenceValue = S("Characters/BilgeKaplumbaga/turtle_happy");
+            so.FindProperty("goalExplaining").objectReferenceValue = S("Characters/BilgeKaplumbaga/turtle_explaining");
+            so.FindProperty("goalThanks").objectReferenceValue = S("Characters/BilgeKaplumbaga/turtle_thanks");
             so.FindProperty("tileFloor").objectReferenceValue = S("SabirOrmani/tile_grass");
             so.FindProperty("tilePath").objectReferenceValue = S("SabirOrmani/tile_path");
             so.FindProperty("background").objectReferenceValue = S("SabirOrmani/bg_sabir_ormani");
             so.FindProperty("fruitRed").objectReferenceValue = S("SabirOrmani/item_apple");
             so.FindProperty("fruitYellow").objectReferenceValue = S("SabirOrmani/item_pear");
             so.FindProperty("shipPart").objectReferenceValue = S("SabirOrmani/item_gear");
+            so.FindProperty("propTree").objectReferenceValue = S("SabirOrmani/prop_tree");
+            so.FindProperty("propRock").objectReferenceValue = S("SabirOrmani/prop_rock");
+            so.FindProperty("propBush").objectReferenceValue = S("SabirOrmani/prop_bush");
             SetSprites(so.FindProperty("obstacles"), S, "SabirOrmani/prop_tree", "SabirOrmani/prop_rock", "SabirOrmani/prop_bush");
             SetSprites(so.FindProperty("decor"), S, "SabirOrmani/prop_bush", "SabirOrmani/prop_tree", "SabirOrmani/prop_bush");
 

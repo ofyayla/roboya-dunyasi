@@ -30,6 +30,25 @@ Koordinatlar: `x` soldan sağa, `y` yukarıdan aşağıya, 0'dan başlar. Robotu
 
 `voice.intro`, `voice.success` ve `voice.hints` anahtarları [`content/voice/script.csv`](../voice/script.csv) dosyasında bulunmalıdır. Metinler yalnız bu dosyaya yazılır; bölüm dosyasına Türkçe yönerge yazılmaz (`meta.notes` iç notlar içindir ve çocuğa gösterilmez).
 
+## Hikâye sahneleri (şema v2)
+
+Bölüm, tahtadan önce bir giriş sahnesiyle açılır ve başarıdan sonra bir bitiş sahnesiyle kapanır. Sahnede ses olarak `voice.intro` ve `voice.success` çalar. `story` alanı yalnız ifadeleri ve nesneleri seçer:
+
+```json
+"story": {
+  "intro": { "roboya": "surprised", "friend": "explaining", "props": ["log"] },
+  "outro": { "roboya": "happy", "friend": "thanks", "props": ["log"] }
+}
+```
+
+- `roboya`: `front`, `happy`, `curious`, `surprised`, `proud`, `laughing`
+- `friend` (bölge karakteri): `front`, `happy`, `explaining`, `thanks`
+- `props` (en çok 3): `apple`, `pear`, `gear`, `log`, `tree`, `bush`, `rock`
+
+`story` yazılmazsa giriş için `curious` + `explaining`, bitiş için `happy` + `happy` kullanılır. İfadeyi ses metniyle uyumlu seçin. Örneğin "Eyvah, yola bir kütük devrilmiş!" satırı için `surprised` ve `log`.
+
+Şema sürümü 2'dir. Eski (v1) dosyalar `node packages/level-schema/scripts/migrate-v2.mjs content/levels` ile dönüştürülür.
+
 ## Doğrulama
 
 ```bash

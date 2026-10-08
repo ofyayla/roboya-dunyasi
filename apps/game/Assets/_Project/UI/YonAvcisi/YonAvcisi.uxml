@@ -1,5 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <Style src="../Common/Common.uss" />
+    <Style src="../Story/Story.uss" />
     <Style src="YonAvcisi.uss" />
     <ui:VisualElement name="screen" class="screen">
         <ui:VisualElement name="top-bar" class="top-bar">

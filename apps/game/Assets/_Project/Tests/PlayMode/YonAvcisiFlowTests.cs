@@ -11,7 +11,7 @@ using UnityEngine.UIElements;
 
 namespace Roboya.Tests.PlayMode
 {
-    /// <summary>Critical flow (CLAUDE.md §7): open level → build plan → play → finish with stars.</summary>
+    /// <summary>Critical flow (CLAUDE.md §7): open level → story → build plan → play → finish with stars.</summary>
     public class YonAvcisiFlowTests
     {
         private static readonly string ShotsDir = Path.Combine(Application.dataPath, "..", "TestResults", "screens");
@@ -49,6 +49,7 @@ namespace Roboya.Tests.PlayMode
                 10f);
             Assert.AreEqual("yon_avcisi.l01.intro", voice.clip.name, "intro narration is loaded by key");
             Assert.Greater(voice.clip.length, 1f);
+            yield return PassStory(root, "01-level1-story");
             yield return Capture(root, "01-level1-start");
 
             var forward = root.Q("palette").Children().First();
@@ -61,6 +62,8 @@ namespace Roboya.Tests.PlayMode
             Tap(root.Q("play"));
             yield return WaitUntil(() => !root.Q("result").ClassListContains("hidden"), 15f);
             yield return null; // the overlay is laid out one frame after it becomes visible
+            Assert.IsTrue(Story(root).IsOpen, "the outro scene stays behind the result");
+            yield return new WaitForSeconds(0.4f);
             yield return Capture(root, "03-level1-result");
 
             var stars = root.Q("stars").Children().OfType<Icon>().Count(i => i.Kind == IconKind.Star);
@@ -69,6 +72,7 @@ namespace Roboya.Tests.PlayMode
             Tap(root.Q("next"));
             yield return null;
             Assert.IsTrue(root.Q("result").ClassListContains("hidden"));
+            yield return PassStory(root);
             Assert.AreEqual(0, root.Q("plan").Query(className: "card").ToList().Count);
             var dots = root.Q("progress").Children().ToList();
             Assert.IsTrue(dots[1].ClassListContains("progress__dot--current"), "next button opens level 2");
@@ -79,6 +83,7 @@ namespace Roboya.Tests.PlayMode
         {
             VisualElement root = null;
             yield return StartGame(r => root = r);
+            yield return PassStory(root);
 
             Tap(root.Q("palette").Children().First());
             Tap(root.Q("play"));
@@ -104,6 +109,7 @@ namespace Roboya.Tests.PlayMode
             for (int i = 0; i < levels.Count; i++)
             {
                 var solution = Roboya.CodingEngine.Solving.Solver.Solve(levels[i].Level).Solution;
+                yield return PassStory(root, i == 6 ? "04-level7-story" : i == 7 ? "04-level8-story" : null);
                 if (i == 8)
                 {
                     yield return Capture(root, "04-level9-start");
@@ -124,6 +130,7 @@ namespace Roboya.Tests.PlayMode
                 Assert.AreEqual(3, stars, levels[i].Id + " should earn 3 stars with the shortest plan on the first try");
                 if (i == levels.Count - 1)
                 {
+                    yield return new WaitForSeconds(0.4f);
                     yield return Capture(root, "05-level10-result");
                 }
                 else
@@ -132,6 +139,46 @@ namespace Roboya.Tests.PlayMode
                     yield return null;
                 }
             }
+        }
+
+        [UnityTest]
+        public IEnumerator FirstLevel_RetryAfterSuccess_SkipsStoryAndKeepsBoard()
+        {
+            VisualElement root = null;
+            yield return StartGame(r => root = r);
+            yield return PassStory(root);
+
+            var forward = root.Q("palette").Children().First();
+            Tap(forward);
+            Tap(forward);
+            Tap(root.Q("play"));
+            yield return WaitUntil(() => !root.Q("result").ClassListContains("hidden"), 15f);
+            yield return null;
+
+            Tap(root.Q("retry"));
+            yield return new WaitForSeconds(0.5f);
+
+            Assert.IsFalse(Story(root).IsOpen, "retry goes straight to the board");
+            Assert.IsTrue(root.Q("result").ClassListContains("hidden"));
+            Assert.IsTrue(root.Q("progress").Children().First().ClassListContains("progress__dot--current"), "same level");
+        }
+
+        private static StoryStage Story(VisualElement root) => root.Q<StoryStage>("story");
+
+        /// <summary>Waits for the intro scene, optionally captures it, then taps continue and waits for the board.</summary>
+        private static IEnumerator PassStory(VisualElement root, string shot = null)
+        {
+            var story = Story(root);
+            Assert.IsNotNull(story, "story stage exists");
+            yield return WaitUntil(() => story.IsOpen, 10f);
+            yield return new WaitForSeconds(StoryStage.EnterSeconds + 0.2f);
+            if (shot != null)
+            {
+                yield return Capture(root, shot);
+            }
+
+            Tap(root.Q("story-continue"));
+            yield return WaitUntil(() => !story.IsOpen, 5f);
         }
 
         private static VisualElement FindRoot()

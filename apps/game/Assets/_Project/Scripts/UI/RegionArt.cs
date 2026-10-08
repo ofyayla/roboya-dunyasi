@@ -1,3 +1,4 @@
+using Roboya.CodingEngine.Levels.Generated;
 using UnityEngine;
 
 namespace Roboya.UI
@@ -15,10 +16,15 @@ namespace Roboya.UI
         [SerializeField] private Sprite robotSide;
         [SerializeField] private Sprite robotHappy;
         [SerializeField] private Sprite robotLaughing;
+        [SerializeField] private Sprite robotCurious;
+        [SerializeField] private Sprite robotSurprised;
+        [SerializeField] private Sprite robotProud;
 
         [Header("Goal character")]
         [SerializeField] private Sprite goalIdle;
         [SerializeField] private Sprite goalHappy;
+        [SerializeField] private Sprite goalExplaining;
+        [SerializeField] private Sprite goalThanks;
 
         [Header("Board")]
         [SerializeField] private Sprite tileFloor;
@@ -33,6 +39,11 @@ namespace Roboya.UI
         [SerializeField] private Sprite fruitRed;
         [SerializeField] private Sprite fruitYellow;
         [SerializeField] private Sprite shipPart;
+
+        [Header("Story scene props")]
+        [SerializeField] private Sprite propTree;
+        [SerializeField] private Sprite propRock;
+        [SerializeField] private Sprite propBush;
 
         public Sprite RobotFront => robotFront;
 
@@ -70,6 +81,27 @@ namespace Roboya.UI
             return obstacles[i < 0 ? -i : i];
         }
 
+        /// <summary>Story pose for Roboya; an unassigned pose falls back to the front view.</summary>
+        public Sprite RobotPoseSprite(RobotPose pose) => OrFallback(RobotPoseOrNull(pose), robotFront);
+
+        /// <summary>Story pose for the region friend; an unassigned pose falls back to the idle sprite.</summary>
+        public Sprite FriendPoseSprite(FriendPose pose) => OrFallback(FriendPoseOrNull(pose), goalIdle);
+
+        /// <summary>Sprite for a story prop, or null when the region draws it in code (log) or lacks it.</summary>
+        public Sprite PropSprite(StoryProp prop)
+        {
+            switch (prop)
+            {
+                case StoryProp.Apple: return fruitRed;
+                case StoryProp.Pear: return fruitYellow;
+                case StoryProp.Gear: return shipPart;
+                case StoryProp.Tree: return propTree;
+                case StoryProp.Rock: return propRock;
+                case StoryProp.Bush: return propBush;
+                default: return null;
+            }
+        }
+
         public Sprite ItemFor(string kind, string color)
         {
             if (kind == "ship-part")
@@ -79,5 +111,32 @@ namespace Roboya.UI
 
             return color == "yellow" ? fruitYellow : fruitRed;
         }
+
+        private Sprite RobotPoseOrNull(RobotPose pose)
+        {
+            switch (pose)
+            {
+                case RobotPose.Happy: return robotHappy;
+                case RobotPose.Curious: return robotCurious;
+                case RobotPose.Surprised: return robotSurprised;
+                case RobotPose.Proud: return robotProud;
+                case RobotPose.Laughing: return robotLaughing;
+                default: return robotFront;
+            }
+        }
+
+        private Sprite FriendPoseOrNull(FriendPose pose)
+        {
+            switch (pose)
+            {
+                case FriendPose.Happy: return goalHappy;
+                case FriendPose.Explaining: return goalExplaining;
+                case FriendPose.Thanks: return goalThanks;
+                default: return goalIdle;
+            }
+        }
+
+        // Unity objects: explicit null checks, not ??, so unassigned slots fall back correctly.
+        private static Sprite OrFallback(Sprite sprite, Sprite fallback) => sprite != null ? sprite : fallback;
     }
 }
