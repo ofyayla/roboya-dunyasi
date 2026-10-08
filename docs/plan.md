@@ -456,3 +456,4 @@ Planın en kırılgan noktası tek geliştiricili kapasite ve pilot okulların h
 ## Notlar (Faz 0 sırasında öğrenilenler)
 
 - **Unity 6.6 ve OpenGL ES 3.1 (2026-10-08):** Unity 6.6 Android'de en az OpenGL ES 3.1 istiyor. "2 GB RAM, Android 9" hedef tabletlerin çoğu bunu karşılar, ama pilot okulların cihaz listesi F1-28'de kontrol edilmeli (ADR 0005). Mac'teki Android emülatörü ES 3.0 ile sınırlı olduğu için cihaz testleri gerçek tablette yapılır.
+- **Barındırma (2026-10-08):** Türkiye'de yönetilen PostgreSQL sunan sağlayıcıların fiyatları herkese açık değil; ADR 0007'deki kontrol listesiyle yazılı teklif istenmeli. Üretim seçimi F1-14'ten önce tamamlanmalı.
