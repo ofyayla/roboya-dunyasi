@@ -1,0 +1,23 @@
+# ninja log v5
+655	692	1791444083972638264	/Users/ofyayla/roboya/apps/game/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/1o6k2jv2/obj/armeabi-v7a/libgame.so	ac5e0ac493cb227d
+0	655	1791444083934190813	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	10e673ee5a70a413
+1	616	1791444083895844779	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	edc9e5183cc7388c
+1	545	1791444083825206757	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	6895694e5dc6dc7f
+1	521	1791444083799710818	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	6d22990fe8773d29
+1	498	1791444083777952465	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	ef29243334dca3bd
+1	478	1791444083756807947	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	5895414751a08553
+1	478	1791444083756312738	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	13c58fb20ad52ad8
+1	474	1791444083753415444	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	492c29020023ebf3
+71	169	1791444083436677662	/Users/ofyayla/roboya/apps/game/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/1o6k2jv2/obj/armeabi-v7a/libswappywrapper.so	81f93fe5d8d3a176
+2	70	1791444083352138045	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	598415425db78c9f
+4	102	1791444308760422203	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	598415425db78c9f
+102	178	1791444308832937686	/Users/ofyayla/roboya/apps/game/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/1o6k2jv2/obj/armeabi-v7a/libswappywrapper.so	81f93fe5d8d3a176
+3	551	1791444309211539717	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	6d22990fe8773d29
+3	560	1791444309221512660	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	ef29243334dca3bd
+3	562	1791444309223511790	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	5895414751a08553
+3	588	1791444309250398525	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	492c29020023ebf3
+3	615	1791444309277531262	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	13c58fb20ad52ad8
+3	649	1791444309311207056	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	6895694e5dc6dc7f
+3	742	1791444309404202169	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	edc9e5183cc7388c
+2	811	1791444309463382488	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	10e673ee5a70a413
+811	846	1791444309509598481	/Users/ofyayla/roboya/apps/game/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/1o6k2jv2/obj/armeabi-v7a/libgame.so	ac5e0ac493cb227d

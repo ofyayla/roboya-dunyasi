@@ -25,11 +25,15 @@ Uygulama mağazaların çocuk kategorisinde yayınlanacak. Unity'nin bazı paket
 **Çıkarılan modüller:** `unityanalytics` (gizlilik), `ai`, `cloth`, `physics` (3D), `terrain`, `terrainphysics`, `tetgen`, `umbra`, `vehicles`, `wind`, `xr`. Eklenen paketlerin hiçbiri `unityanalytics` veya `com.unity.services.*` paketlerini geri getirmiyor (`packages-lock.json` ile doğrulandı).
 
 **Motor ayarları** (`Assets/_Project/Editor/ProjectSetup.cs`, YAML elle düzenlenmez):
-Unity Analytics, Cloud Diagnostics (çökme raporlama), Performance Reporting ve `enableCrashReportAPI` kapalı; kamera, mikrofon ve konum kullanım açıklamaları boş; Unity açılış ekranı kapalı; paket kimliği `com.roboyakids.roboyadunyasi`; yalnız yatay ekran; Android 9+ (API 28), IL2CPP, ARMv7 + ARM64; iOS 16+.
+Unity Analytics, Cloud Diagnostics (çökme raporlama), Performance Reporting ve `enableCrashReportAPI` kapalı; kamera, mikrofon ve konum kullanım açıklamaları boş; Unity açılış ekranı kapalı; paket kimliği `com.roboyakids.roboyadunyasi`; yalnız yatay ekran; Android 9+ (API 28), IL2CPP, ARMv7 + ARM64; Android grafik arayüzü önce OpenGL ES 3, sonra Vulkan (Unity 6 varsayılanı Vulkan'sız cihazlarda ve emülatörde açılmadı; 2026-10-08); iOS 16+.
 
 **Mağaza içi satın alma: karar açık.** Unity IAP'nin güncel sürümü Unity Gaming Services çekirdeğini (`com.unity.services.core`) başlatıyor. F1-16'dan önce şu iki seçenek karşılaştırılacak ve bu ADR güncellenecek:
 1. Unity IAP: ağ trafiği gözlenerek UGS'nin hangi veriyi gönderdiği ölçülür; kapatılabiliyorsa kullanılır.
 2. İnce yerel köprü: iOS'ta StoreKit 2, Android'de Play Billing Library; fiş doğrulaması zaten sunucuda (GLR-03).
+
+## Android grafik gereksinimi (2026-10-08)
+
+Unity 6.6 Android'de **en az OpenGL ES 3.1** istiyor; ES 3.0 desteği kaldırıldı (Unity'ye göre oyuncuların ~%0,4'ü, çoğunlukla Adreno 300 GPU'lu çok eski cihazlar). macOS'taki Android emülatörü yalnız ES 3.0 sunduğu için oyun emülatörde açılmıyor; doğrulama gerçek cihazda yapılır. Pilot okulların tablet modelleri (F1-28) bu gereksinime göre kontrol edilmeli; ES 3.0'a mahkûm bir tablet filosu çıkarsa 6.3 LTS'ye dönüş bu ADR ile yeniden değerlendirilir.
 
 ## Sonuçlar
 
