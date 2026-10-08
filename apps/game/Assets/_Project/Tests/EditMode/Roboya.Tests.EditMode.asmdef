@@ -3,6 +3,7 @@
     "rootNamespace": "Roboya.Tests",
     "references": [
         "Roboya.CodingEngine",
+        "Roboya.UI",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

@@ -49,7 +49,10 @@ Kaynak sayfalar (yeniden kesim için): `docs/art/sources/`.
 - Bölge sprite seti `Art/SabirOrmani/SabirOrmaniArt.asset` (`Roboya.UI.RegionArt`); sahneye `SceneBuilder` bağlar, elle düzenlenmez.
 - **Robotun yönü görünümle gösterilir:** kuzey = arka görünüm, güney = ön, batı = yan, doğu = aynalanmış yan. Dönüşte kısa bir "sıkış-çevir" animasyonu oynar.
 - Çarpmada `laughing`, başarıda `happy` ifadesi; kaplumbağa başarıda `turtle_happy` olur ve yana kayar.
-- Hayalet yol (YON-03) toprak yol karosuyla, engeller hücreye göre sabit seçilen ağaç/kaya/çalı ile çizilir.
+- **Eğik tahta:** tahta hafif perspektifle, önden ve yukarıdan görülür (`Roboya.UI.ObliqueProjection`). Arka sıra ön sıranın %80'i kadardır. Izgara çizgileri düz kalır ve ekranda yukarı her zaman kuzeydir.
+- Zemin kodla çizilir (`ObliqueGround`): çim yüzey, sayılabilsin diye hafif dama deseni, toprak ön yüz ve kontur. Karo sprite'ları (`tile_grass`, `tile_path`) perspektife uymadığı için tahtada kullanılmaz.
+- Karakter, nesne ve engeller hücrenin üzerinde ayakta durur. Uzaktan yakına doğru sıralanır, derinliğe göre küçülür ve altlarında yumuşak gölge olur.
+- Hayalet yol (YON-03), başlangıçtan hedefe kesintisiz bir toprak patika olarak çizilir. Engeller hücreye göre sabit seçilen ağaç, kaya veya çalıdır. Tahtanın kenarında birkaç çalı ve ağaç (`decor`) tahtayı ormana oturtur.
 - Sprite atanmamış bir alan varsa kodla çizilen yedek simge kullanılır.
 - **Çocuk testinde gözlenecek:** başlangıçta robot yukarı bakıyorsa arkası görünür (yüzü görünmez). Çocukların bunu "yukarı gidiyor" diye anlayıp anlamadığı F0-21'de not edilmeli.
 

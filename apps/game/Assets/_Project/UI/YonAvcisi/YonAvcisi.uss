@@ -59,27 +59,9 @@
     flex-grow: 1;
 }
 
-.board__grid {
-    position: absolute;
-    flex-direction: row;
-    flex-wrap: wrap;
-    border-radius: 16px;
-    overflow: hidden;
-    background-color: var(--c-forest-dark);
-}
-
-.cell {
-    background-color: var(--c-forest);
-    border-width: 2px;
-    border-color: var(--c-forest-dark);
-}
-
-.cell--blocked {
-    background-color: rgb(122, 84, 52);
-    border-radius: 24px;
-}
-
-.board__pieces {
+/* Oblique board: ground drawn in code, pieces positioned by BoardView in panel units. */
+.board__ground,
+.board__layer {
     position: absolute;
     left: 0;
     top: 0;
@@ -88,16 +70,23 @@
 }
 
 .piece,
-.ghost-dot,
+.piece__shadow,
 .trail-dot {
     position: absolute;
     left: 0;
     top: 0;
 }
 
-.ghost-dot {
+.piece__shadow {
     border-radius: 999px;
-    background-color: rgba(255, 255, 255, 0.45);
+    background-color: rgba(58, 42, 29, 0.22);
+}
+
+.piece--block {
+    border-radius: 24px;
+    border-width: 3px;
+    border-color: rgb(58, 42, 29);
+    background-color: rgb(122, 84, 52);
 }
 
 .trail-dot {
@@ -234,33 +223,12 @@
     flex-direction: row;
 }
 
-/* Sprite art (F0-17). Tiles carry their own outline, so the grid frame is removed. */
+/* Sprite art (F0-17). */
 .screen--art {
     -unity-background-scale-mode: scale-and-crop;
 }
 
 .sprite {
-    -unity-background-scale-mode: scale-to-fit;
-}
-
-.board__grid--sprites {
-    background-color: rgba(0, 0, 0, 0);
-    border-radius: 0;
-    overflow: visible;
-}
-
-.board__grid--sprites .cell {
-    border-width: 0;
-    background-color: rgba(0, 0, 0, 0);
-    -unity-background-scale-mode: stretch-to-fill;
-}
-
-.cell__obstacle {
-    position: absolute;
-    left: 6%;
-    top: -4%;
-    width: 88%;
-    height: 88%;
     -unity-background-scale-mode: scale-to-fit;
 }
 
