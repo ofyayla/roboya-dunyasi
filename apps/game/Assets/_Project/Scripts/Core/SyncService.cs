@@ -39,12 +39,14 @@ namespace Roboya.Core
         private readonly AccountService _account;
         private readonly ProfileManager _profiles;
         private readonly LocalNotice _notice;
+        private readonly EntitlementService _entitlements;
         private readonly string _path;
         private readonly HashSet<string> _onServer;
         private bool _running;
 
-        public SyncService(ApiClient api, AccountService account, ProfileManager profiles, LocalNotice notice, string folder)
+        public SyncService(ApiClient api, AccountService account, ProfileManager profiles, LocalNotice notice, string folder, EntitlementService entitlements = null)
         {
+            _entitlements = entitlements;
             _api = api;
             _account = account;
             _profiles = profiles;
@@ -104,6 +106,12 @@ namespace Roboya.Core
                 }
 
                 await _api.SendAsync("POST", "/v1/me/consents", new { notice_version = _notice.Version }, token);
+                // First, so the profile limit the server applies below matches what this device shows.
+                if (_entitlements != null)
+                {
+                    await _entitlements.RefreshAsync();
+                }
+
                 bool partly = false;
                 foreach (var profile in new List<ChildProfileData>(_profiles.Registry.Profiles))
                 {
