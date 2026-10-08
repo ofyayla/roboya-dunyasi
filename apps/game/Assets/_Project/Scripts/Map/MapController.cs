@@ -43,7 +43,7 @@ namespace Roboya.Map
             _parent = new ParentView(services.Strings, ShowHome);
             _gate = new ParentGateView(services.Strings);
             _welcome = new WelcomeView(art, () => _gate.Open(AfterGate));
-            _notice = new NoticeView(services, OpenEditorForNew, ShowWelcome);
+            _notice = new NoticeView(services, AfterConsent, ShowWelcome);
             _editor = new ProfileEditorView(services.Strings, SaveProfile, OnEditorCancelled);
             _parent.AddSection(new ProfilesSection(services, profile => _editor.Open(profile), OpenEditorForNew));
             _rest = new RestView(art, () => _gate.Open(ShowParent));
@@ -143,6 +143,19 @@ namespace Roboya.Map
             if (!_services.Profiles.Registry.HasConsentFor(_services.Notice.Version))
             {
                 _notice.Open();
+            }
+            else
+            {
+                AfterConsent();
+            }
+        }
+
+        /// <summary>A profile may already exist (an older install, or consent renewed): go on to the island, else make one.</summary>
+        private void AfterConsent()
+        {
+            if (_services.Profiles.HasActive)
+            {
+                ShowIsland();
             }
             else
             {
