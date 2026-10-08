@@ -28,3 +28,8 @@ class DeviceLimitError(ApiError):
 class NotFoundError(ApiError):
     status_code = 404
     code = "not_found"
+
+
+class ProfileLimitError(ApiError):
+    status_code = 409
+    code = "profile_limit"

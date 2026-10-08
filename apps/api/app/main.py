@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 from app.core.config import DEFAULT_SECRET, Settings, get_settings
 from app.core.logging import configure_logging
-from app.routers import auth, health, me
+from app.routers import auth, health, me, profiles
 from app.services.errors import ApiError
 from app.services.health import API_VERSION
 
@@ -37,6 +37,7 @@ def create_app() -> FastAPI:
     app.include_router(health.router)
     app.include_router(auth.router)
     app.include_router(me.router)
+    app.include_router(profiles.router)
     return app
 
 

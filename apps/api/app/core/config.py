@@ -26,6 +26,11 @@ class Settings(BaseSettings):
     login_code_max_attempts: int = 5
     login_codes_per_hour: int = 5
     max_devices_per_account: int = 10
+    # Child profiles per account: 1 free, 4 with Family Premium (PRD). The premium value is applied
+    # by services/entitlements.py once store entitlements exist.
+    max_profiles_free: int = 1
+    max_profiles_premium: int = 4
+    max_sync_entries: int = 500
     # "outbox" writes codes to a local file for development; a real provider needs the transfer
     # process in CLAUDE.md §11 (contract, notification, inventory) before it is switched on.
     email_backend: Literal["outbox"] = "outbox"
