@@ -26,6 +26,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ea27f1fafc8c2473ea28b351e9dc2ec9, type: 3}
   - {fileID: 21300000, guid: 571206f3653d74e6789e5edd4cbc6cad, type: 3}
   background: {fileID: 21300000, guid: 67b9a17faf99449079e8a9f8f32cf257, type: 3}
+  decor:
+  - {fileID: 21300000, guid: 571206f3653d74e6789e5edd4cbc6cad, type: 3}
+  - {fileID: 21300000, guid: ede7f0f8eae004f95866fbe34ac1fce1, type: 3}
+  - {fileID: 21300000, guid: 571206f3653d74e6789e5edd4cbc6cad, type: 3}
   fruitRed: {fileID: 21300000, guid: 3dd18bc28e45c45e1acf3cbc2346198f, type: 3}
   fruitYellow: {fileID: 21300000, guid: 828cc3380528f4d57a91b6909d9fd24c, type: 3}
   shipPart: {fileID: 21300000, guid: 7e50167cb578f4ebabd72babc93bf2ac, type: 3}

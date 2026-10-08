@@ -14,5 +14,5 @@ Kök `CLAUDE.md` §7 geçerlidir; burada yalnız ayrıntı vardır.
 - Paket ekleme/çıkarma ADR 0005'in güncellenmesini gerektirir.
 - Oyun kuralları (plan şeridi, oturum, ipucu kademesi, yıldız) `CodingEngine/Play` ve `CodingEngine/Scoring` altında saf C#'tır; oyun assembly'leri yalnız görünüm ve akış içerir.
 - Bileşim kökü `Roboya.Core.Bootstrap` (Boot sahnesi). Sahneler `ISceneEntry` ile servisleri alır; singleton yazılmaz.
-- Çocuk ekranlarında yazı yok; simgeler `Roboya.UI.Icon` ile kodla çizilir (F0-17 görselleri gelene kadar).
+- Çocuk ekranlarında yazı yok. Görseller bölgenin `RegionArt` sprite setinden gelir; eksik sprite için `Roboya.UI.Icon` kodla çizilmiş yedeği kullanılır. Oyun tahtası `ObliqueProjection` ile eğik çizilir (bkz. `docs/art/style-guide.md`).
 - Komutlar: `make unity-test` (EditMode, batch), `make unity-playmode` (kritik akışlar + ekran görüntüleri), `make test-engine` (motor, .NET + kapsam ≥ %90).

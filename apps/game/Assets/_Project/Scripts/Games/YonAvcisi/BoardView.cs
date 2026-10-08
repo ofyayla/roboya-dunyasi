@@ -10,15 +10,26 @@ using UnityEngine.UIElements;
 namespace Roboya.Games.YonAvcisi
 {
     /// <summary>
-    /// The grid, robot, goal and items. Pure view: positions come from engine state; animations are awaited
-    /// by the controller one execution event at a time. Uses region sprites when available and falls back to
-    /// code-drawn icons otherwise.
+    /// The board seen at a gentle angle (ObliqueProjection): a code-drawn ground with the robot, goal, items and
+    /// obstacles standing on it, sorted by depth. Pure view: positions come from engine state; animations are
+    /// awaited by the controller one execution event at a time. Uses region sprites when available and falls back
+    /// to code-drawn icons otherwise.
     /// </summary>
     public sealed class BoardView : VisualElement
     {
         public const float MoveSeconds = 0.45f;
         public const float TurnSeconds = 0.3f;
         public const float BumpSeconds = 0.5f;
+
+        // Sprite sizes in front-cell units. Characters are a little taller than a cell so they read as standing.
+        private const float RobotHeight = 1.12f;
+        private const float GoalHeight = 0.95f;
+        private const float ItemHeight = 0.55f;
+        private const float ObstacleWidth = 0.98f;
+        private const float DecorWidth = 0.9f;
+
+        // Generated sprites keep ~3.5% transparent margin under the feet.
+        private const float FeetFraction = 0.965f;
 
         private enum Mood
         {
@@ -27,18 +38,31 @@ namespace Roboya.Games.YonAvcisi
             Happy,
         }
 
+        private sealed class Piece
+        {
+            public VisualElement View;
+            public VisualElement Shadow;
+            public Vector2 Anchor;
+            public float Height;
+            public float Width;
+            public float Aspect = 1f;
+            public float Lift;
+            public int Order;
+        }
+
         private readonly RegionArt _art;
-        private readonly VisualElement _grid = new VisualElement { name = "grid" };
+        private readonly ObliqueGround _ground = new ObliqueGround();
+        private readonly VisualElement _decals = new VisualElement { name = "decals" };
         private readonly VisualElement _layer = new VisualElement { name = "pieces" };
-        private readonly List<VisualElement> _items = new List<VisualElement>();
-        private readonly List<VisualElement> _ghost = new List<VisualElement>();
+        private readonly List<Piece> _pieces = new List<Piece>();
+        private readonly List<Piece> _items = new List<Piece>();
         private readonly List<VisualElement> _trail = new List<VisualElement>();
 
         private Level _level;
-        private VisualElement _robot;
-        private VisualElement _goal;
-        private float _cell;
-        private Vector2 _origin;
+        private ObliqueProjection _proj;
+        private Piece _robot;
+        private Piece _goal;
+        private Vector2 _goalHome;
         private Vector2 _robotPos;
         private float _robotAngle;
         private Direction _facing;
@@ -46,15 +70,18 @@ namespace Roboya.Games.YonAvcisi
         private float _squash = 1f;
         private float _hop;
         private float _wobble;
+        private int _robotDepthBucket = int.MinValue;
 
         public BoardView(RegionArt art = null)
         {
             _art = art;
             AddToClassList("board");
-            _grid.AddToClassList("board__grid");
-            _layer.AddToClassList("board__pieces");
+            _decals.AddToClassList("board__layer");
+            _layer.AddToClassList("board__layer");
+            _decals.pickingMode = PickingMode.Ignore;
             _layer.pickingMode = PickingMode.Ignore;
-            Add(_grid);
+            Add(_ground);
+            Add(_decals);
             Add(_layer);
             RegisterCallback<GeometryChangedEvent>(_ => Layout());
         }
@@ -64,91 +91,85 @@ namespace Roboya.Games.YonAvcisi
         public void Show(Level level, bool ghostPath)
         {
             _level = level;
-            _grid.Clear();
+            _decals.Clear();
             _layer.Clear();
+            _pieces.Clear();
             _items.Clear();
-            _ghost.Clear();
             _trail.Clear();
-            _grid.EnableInClassList("board__grid--sprites", UseSprites);
+            _goal = null;
+            _robotDepthBucket = int.MinValue;
 
-            var ghostCells = ghostPath ? new HashSet<GridPosition>(GhostCells(level)) : new HashSet<GridPosition>();
+            // YON-03: the ghost route is drawn as a dirt path from the start through the grass.
+            var path = new HashSet<GridPosition>();
+            if (ghostPath)
+            {
+                path.Add(level.Start.Position);
+                foreach (var p in GhostCells(level))
+                {
+                    path.Add(p);
+                }
+            }
+
+            _ground.Set(level.Grid, path);
+
             for (int y = 0; y < level.Grid.Height; y++)
             {
                 for (int x = 0; x < level.Grid.Width; x++)
                 {
-                    var p = new GridPosition(x, y);
-                    bool blocked = level.Grid[p] == CellType.Blocked;
-                    var cell = new VisualElement();
-                    cell.AddToClassList("cell");
-                    if (UseSprites)
+                    if (level.Grid[new GridPosition(x, y)] != CellType.Blocked)
                     {
-                        // YON-03: the ghost route is drawn as a dirt path through the grass.
-                        SetSprite(cell, ghostCells.Contains(p) && _art.TilePath != null ? _art.TilePath : _art.TileFloor);
-                        if (blocked)
-                        {
-                            var obstacle = new VisualElement();
-                            obstacle.AddToClassList("cell__obstacle");
-                            SetSprite(obstacle, _art.ObstacleFor(x, y));
-                            cell.Add(obstacle);
-                        }
-                    }
-                    else if (blocked)
-                    {
-                        cell.AddToClassList("cell--blocked");
+                        continue;
                     }
 
-                    _grid.Add(cell);
+                    var sprite = UseSprites ? _art.ObstacleFor(x, y) : null;
+                    var obstacle = sprite != null
+                        ? AddSprite(sprite, CellAnchor(x, y), width: ObstacleWidth)
+                        : AddPiece(new VisualElement(), CellAnchor(x, y), height: 0.6f);
+                    obstacle.View.AddToClassList(sprite != null ? "piece--obstacle" : "piece--block");
                 }
             }
 
-            if (!UseSprites)
+            if (UseSprites)
             {
-                foreach (var p in ghostCells)
-                {
-                    var dot = new VisualElement();
-                    dot.AddToClassList("ghost-dot");
-                    _ghost.Add(dot);
-                    dot.userData = p;
-                    _layer.Add(dot);
-                }
+                AddDecor(level);
             }
 
             if (level.Goal.Reach.HasValue)
             {
+                var g = level.Goal.Reach.Value;
+                _goalHome = CellAnchor(g.X, g.Y);
                 _goal = UseSprites && _art.GoalIdle != null
-                    ? SpritePiece(_art.GoalIdle)
-                    : new Icon(IconKind.Turtle) { Color = new Color(0.36f, 0.62f, 0.31f), Accent = new Color(0.62f, 0.8f, 0.45f) };
-                _goal.name = "goal";
-                _goal.AddToClassList("piece");
-                _goal.AddToClassList("piece--goal");
-                _goal.userData = level.Goal.Reach.Value;
-                _layer.Add(_goal);
+                    ? AddSprite(_art.GoalIdle, _goalHome, height: GoalHeight)
+                    : AddPiece(new Icon(IconKind.Turtle) { Color = new Color(0.36f, 0.62f, 0.31f), Accent = new Color(0.62f, 0.8f, 0.45f) }, _goalHome, height: 0.8f);
+                _goal.View.name = "goal";
+                _goal.View.AddToClassList("piece--goal");
             }
 
             foreach (var item in level.Items)
             {
                 var sprite = UseSprites ? _art.ItemFor(item.Kind, item.Color) : null;
-                VisualElement piece = sprite != null
-                    ? SpritePiece(sprite)
-                    : new Icon(item.Kind == "ship-part" ? IconKind.Gear : IconKind.Fruit)
-                    {
-                        Color = ItemColor(item.Color),
-                        Accent = item.Kind == "ship-part" ? new Color(0.35f, 0.35f, 0.4f) : new Color(0.3f, 0.6f, 0.25f),
-                    };
-                piece.AddToClassList("piece");
-                piece.AddToClassList("piece--item");
-                piece.userData = item.Position;
+                var anchor = CellAnchor(item.Position.X, item.Position.Y);
+                var piece = sprite != null
+                    ? AddSprite(sprite, anchor, height: ItemHeight)
+                    : AddPiece(
+                        new Icon(item.Kind == "ship-part" ? IconKind.Gear : IconKind.Fruit)
+                        {
+                            Color = ItemColor(item.Color),
+                            Accent = item.Kind == "ship-part" ? new Color(0.35f, 0.35f, 0.4f) : new Color(0.3f, 0.6f, 0.25f),
+                        },
+                        anchor,
+                        height: 0.5f);
+                piece.View.AddToClassList("piece--item");
                 _items.Add(piece);
-                _layer.Add(piece);
             }
 
+            var start = CellAnchor(level.Start.Position.X, level.Start.Position.Y);
             _robot = UseSprites
-                ? SpritePiece(_art.RobotFront)
-                : new Icon(IconKind.Robot) { Color = new Color(0.96f, 0.55f, 0.16f), Accent = Color.white };
-            _robot.name = "robot";
-            _robot.AddToClassList("piece");
-            _robot.AddToClassList("piece--robot");
-            _layer.Add(_robot);
+                ? AddSprite(_art.RobotFront, start, height: RobotHeight)
+                : AddPiece(new Icon(IconKind.Robot) { Color = new Color(0.96f, 0.55f, 0.16f), Accent = Color.white }, start, height: 0.82f);
+            _robot.View.name = "robot";
+            _robot.View.AddToClassList("piece--robot");
+            _robot.Order = 1; // in front of an item sharing its cell
 
             ResetRobot(level.Start);
             Layout();
@@ -163,19 +184,21 @@ namespace Roboya.Games.YonAvcisi
             _squash = 1f;
             _hop = 0f;
             _wobble = 0f;
-            for (int i = 0; i < _items.Count; i++)
+            foreach (var item in _items)
             {
-                _items[i].RemoveFromClassList("piece--collected");
+                item.View.RemoveFromClassList("piece--collected");
+                item.Shadow.RemoveFromClassList("piece--collected");
             }
 
-            if (_goal != null && UseSprites && _art.GoalIdle != null)
+            if (_goal != null)
             {
-                SetSprite(_goal, _art.GoalIdle);
-            }
+                _goal.Anchor = _goalHome;
+                if (UseSprites && _art.GoalIdle != null)
+                {
+                    SetSprite(_goal, _art.GoalIdle);
+                }
 
-            if (_goal != null && _cell > 0f)
-            {
-                Position(_goal, (GridPosition)_goal.userData, UseSprites ? 0.92f : 0.8f);
+                Place(_goal);
             }
 
             ClearTrail();
@@ -257,9 +280,10 @@ namespace Roboya.Games.YonAvcisi
             }
 
             var item = _items[itemIndex];
-            await Tween.Run(0.3f, t => item.style.scale = new Scale(Vector3.one * (1f + 0.5f * t)), token);
-            item.AddToClassList("piece--collected");
-            item.style.scale = new Scale(Vector3.one);
+            await Tween.Run(0.3f, t => item.View.style.scale = new Scale(Vector3.one * (1f + 0.5f * t)), token);
+            item.View.AddToClassList("piece--collected");
+            item.Shadow.AddToClassList("piece--collected");
+            item.View.style.scale = new Scale(Vector3.one);
         }
 
         public async Awaitable Celebrate(CancellationToken token)
@@ -271,12 +295,13 @@ namespace Roboya.Games.YonAvcisi
             }
 
             // Robot and turtle meet in the same cell: the turtle steps aside so both are visible.
-            Vector3 goalHome = _goal != null ? _goal.resolvedStyle.translate : Vector3.zero;
+            bool sameCell = _goal != null && _goalHome == RobotAnchor();
             var slide = Tween.Run(0.8f, t =>
             {
-                if (_goal != null && _goal.userData is GridPosition g && new Vector2(g.X, g.Y) == _robotPos)
+                if (sameCell)
                 {
-                    _goal.style.translate = new Translate(goalHome.x + _cell * 0.45f * Mathf.Min(1f, t * 3f), goalHome.y);
+                    _goal.Anchor = _goalHome + new Vector2(0.5f * Mathf.Min(1f, t * 3f), 0f);
+                    Place(_goal);
                 }
             }, token);
             await Tween.Run(0.8f, t =>
@@ -289,14 +314,61 @@ namespace Roboya.Games.YonAvcisi
             PlaceRobot();
         }
 
+        private Piece AddSprite(Sprite sprite, Vector2 anchor, float height = 0f, float width = 0f)
+        {
+            var view = new VisualElement();
+            view.AddToClassList("sprite");
+            var piece = AddPiece(view, anchor, height, width);
+            SetSprite(piece, sprite);
+            return piece;
+        }
+
+        private Piece AddPiece(VisualElement view, Vector2 anchor, float height = 0f, float width = 0f)
+        {
+            view.pickingMode = PickingMode.Ignore;
+            view.AddToClassList("piece");
+            var shadow = new VisualElement { pickingMode = PickingMode.Ignore };
+            shadow.AddToClassList("piece__shadow");
+            var piece = new Piece { View = view, Shadow = shadow, Anchor = anchor, Height = height, Width = width };
+            view.userData = piece;
+            _decals.Add(shadow);
+            _layer.Add(view);
+            _pieces.Add(piece);
+            return piece;
+        }
+
+        /// <summary>A few region props beside the slab so the board sits in the forest rather than on top of it.</summary>
+        private void AddDecor(Level level)
+        {
+            int w = level.Grid.Width;
+            int h = level.Grid.Height;
+            var spots = new[]
+            {
+                new Vector2(-0.35f, h - 0.1f),
+                new Vector2(w + 0.4f, h * 0.45f),
+                new Vector2(-0.3f, h * 0.3f),
+            };
+            for (int i = 0; i < spots.Length; i++)
+            {
+                var sprite = _art.DecorAt(i);
+                if (sprite == null)
+                {
+                    continue;
+                }
+
+                var decor = AddSprite(sprite, spots[i], width: DecorWidth);
+                decor.View.AddToClassList("piece--decor");
+            }
+        }
+
         private void AddTrailDot(GridPosition p)
         {
-            var dot = new VisualElement();
+            var dot = new VisualElement { pickingMode = PickingMode.Ignore };
             dot.AddToClassList("trail-dot");
-            dot.userData = p;
+            dot.userData = CellAnchor(p.X, p.Y);
             _trail.Add(dot);
-            _layer.Insert(0, dot);
-            Position(dot, p, 0.24f);
+            _decals.Add(dot);
+            PlaceDot(dot);
         }
 
         private void ClearTrail()
@@ -316,48 +388,25 @@ namespace Roboya.Games.YonAvcisi
                 return;
             }
 
-            var size = contentRect.size;
-            _cell = Mathf.Floor(Mathf.Min(size.x / _level.Grid.Width, size.y / _level.Grid.Height));
-            if (_cell <= 0f)
+            _proj = new ObliqueProjection(_level.Grid.Width, _level.Grid.Height, contentRect.size);
+            _ground.SetProjection(_proj);
+            if (!_proj.IsValid)
             {
                 return;
             }
 
-            _origin = new Vector2((size.x - _cell * _level.Grid.Width) * 0.5f, (size.y - _cell * _level.Grid.Height) * 0.5f);
-            _grid.style.left = _origin.x;
-            _grid.style.top = _origin.y;
-            _grid.style.width = _cell * _level.Grid.Width;
-            _grid.style.height = _cell * _level.Grid.Height;
-            foreach (var child in _grid.Children())
+            foreach (var piece in _pieces)
             {
-                child.style.width = _cell;
-                child.style.height = _cell;
-            }
-
-            foreach (var dot in _ghost)
-            {
-                Position(dot, (GridPosition)dot.userData, 0.22f);
+                Place(piece);
             }
 
             foreach (var dot in _trail)
             {
-                Position(dot, (GridPosition)dot.userData, 0.24f);
+                PlaceDot(dot);
             }
 
-            if (_goal != null)
-            {
-                Position(_goal, (GridPosition)_goal.userData, UseSprites ? 0.92f : 0.8f);
-            }
-
-            foreach (var item in _items)
-            {
-                Position(item, (GridPosition)item.userData, 0.6f);
-            }
-
-            float robotSize = UseSprites ? 0.96f : 0.82f;
-            _robot.style.width = _cell * robotSize;
-            _robot.style.height = _cell * robotSize;
             PlaceRobot();
+            SortByDepth();
         }
 
         private void PlaceRobot()
@@ -367,26 +416,95 @@ namespace Roboya.Games.YonAvcisi
                 return;
             }
 
-            float size = _robot.resolvedStyle.width > 0f ? _robot.resolvedStyle.width : _cell * 0.9f;
-            float pad = (_cell - size) * 0.5f;
-            // Sprites stand up in their cell (drawn slightly higher so feet sit on the tile).
-            float lift = UseSprites ? _cell * 0.12f : 0f;
-            _robot.style.translate = new Translate(
-                _origin.x + _robotPos.x * _cell + pad,
-                _origin.y + (_robotPos.y - _hop) * _cell + pad - lift);
-
-            if (!UseSprites)
+            _robot.Anchor = RobotAnchor();
+            _robot.Lift = _hop;
+            if (UseSprites)
             {
-                _robot.style.rotate = new Rotate(new UnityEngine.UIElements.Angle(_robotAngle + _wobble, AngleUnit.Degree));
+                SetSprite(_robot, RobotSprite());
+                // The side sprite faces west; mirror it for east.
+                bool mirror = _mood == Mood.Normal && _facing == Direction.East;
+                _robot.View.style.scale = new Scale(new Vector3((mirror ? -1f : 1f) * _squash, 1f, 1f));
+                _robot.View.style.rotate = new Rotate(new UnityEngine.UIElements.Angle(_wobble, AngleUnit.Degree));
+            }
+            else
+            {
+                _robot.View.style.rotate = new Rotate(new UnityEngine.UIElements.Angle(_robotAngle + _wobble, AngleUnit.Degree));
+            }
+
+            Place(_robot);
+
+            // Re-sort only when the robot crosses a quarter row, not every frame.
+            int bucket = Mathf.FloorToInt(_robot.Anchor.y * 4f);
+            if (bucket != _robotDepthBucket)
+            {
+                _robotDepthBucket = bucket;
+                SortByDepth();
+            }
+        }
+
+        private void Place(Piece piece)
+        {
+            if (!_proj.IsValid)
+            {
                 return;
             }
 
-            // The side sprite faces west; mirror it for east.
-            bool mirror = _mood == Mood.Normal && _facing == Direction.East;
-            _robot.style.scale = new Scale(new Vector3((mirror ? -1f : 1f) * _squash, 1f, 1f));
-            _robot.style.rotate = new Rotate(new UnityEngine.UIElements.Angle(_wobble, AngleUnit.Degree));
-            SetSprite(_robot, RobotSprite());
+            float unit = _proj.Cell * _proj.ScaleAt(piece.Anchor.y);
+            float w, h;
+            if (piece.Width > 0f)
+            {
+                w = piece.Width * unit;
+                h = w / piece.Aspect;
+            }
+            else
+            {
+                h = piece.Height * unit;
+                w = h * piece.Aspect;
+            }
+
+            var foot = _proj.Project(piece.Anchor.x, piece.Anchor.y);
+            piece.View.style.width = w;
+            piece.View.style.height = h;
+            piece.View.style.translate = new Translate(foot.x - (w * 0.5f), foot.y - (h * FeetFraction) - (piece.Lift * unit));
+
+            // The contact shadow stays on the ground and shrinks while hopping.
+            float sw = Mathf.Min(w * 0.75f, unit * 0.8f) * (1f - (piece.Lift * 0.8f));
+            float sh = sw * 0.32f;
+            piece.Shadow.style.width = sw;
+            piece.Shadow.style.height = sh;
+            piece.Shadow.style.translate = new Translate(foot.x - (sw * 0.5f), foot.y - (sh * 0.5f));
         }
+
+        private void PlaceDot(VisualElement dot)
+        {
+            if (!_proj.IsValid)
+            {
+                return;
+            }
+
+            var anchor = (Vector2)dot.userData;
+            float size = _proj.Cell * _proj.ScaleAt(anchor.y) * 0.24f;
+            var at = _proj.Project(anchor.x, anchor.y);
+            dot.style.width = size;
+            dot.style.height = size * 0.6f;
+            dot.style.translate = new Translate(at.x - (size * 0.5f), at.y - (size * 0.3f));
+        }
+
+        /// <summary>Painter's order: farther pieces first; ties broken by Order (robot over an item in its cell).</summary>
+        private void SortByDepth()
+        {
+            _layer.Sort((a, b) =>
+            {
+                var pa = (Piece)a.userData;
+                var pb = (Piece)b.userData;
+                int c = pa.Anchor.y.CompareTo(pb.Anchor.y);
+                return c != 0 ? c : pa.Order.CompareTo(pb.Order);
+            });
+        }
+
+        private Vector2 RobotAnchor() => new Vector2(_robotPos.x + 0.5f, _robotPos.y + 0.5f);
+
+        private static Vector2 CellAnchor(int x, int y) => new Vector2(x + 0.5f, y + 0.5f);
 
         private Sprite RobotSprite()
         {
@@ -407,29 +525,15 @@ namespace Roboya.Games.YonAvcisi
             return view != null ? view : _art.RobotFront;
         }
 
-        private void Position(VisualElement e, GridPosition p, float fraction)
+        private static void SetSprite(Piece piece, Sprite sprite)
         {
-            float size = _cell * fraction;
-            float pad = (_cell - size) * 0.5f;
-            e.style.width = size;
-            e.style.height = size;
-            e.style.translate = new Translate(_origin.x + p.X * _cell + pad, _origin.y + p.Y * _cell + pad);
-        }
-
-        private static VisualElement SpritePiece(Sprite sprite)
-        {
-            var e = new VisualElement { pickingMode = PickingMode.Ignore };
-            e.AddToClassList("sprite");
-            SetSprite(e, sprite);
-            return e;
-        }
-
-        private static void SetSprite(VisualElement e, Sprite sprite)
-        {
-            if (sprite != null && e.style.backgroundImage.value.sprite != sprite)
+            if (sprite == null || piece.View.style.backgroundImage.value.sprite == sprite)
             {
-                e.style.backgroundImage = new StyleBackground(sprite);
+                return;
             }
+
+            piece.View.style.backgroundImage = new StyleBackground(sprite);
+            piece.Aspect = sprite.rect.height > 0f ? sprite.rect.width / sprite.rect.height : 1f;
         }
 
         /// <summary>YON-03: cells along one shortest route.</summary>

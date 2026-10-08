@@ -26,6 +26,9 @@ namespace Roboya.UI
         [SerializeField] private Sprite[] obstacles;
         [SerializeField] private Sprite background;
 
+        [Tooltip("Props placed beside the board (front-left, right, back-left).")]
+        [SerializeField] private Sprite[] decor;
+
         [Header("Items")]
         [SerializeField] private Sprite fruitRed;
         [SerializeField] private Sprite fruitYellow;
@@ -51,6 +54,9 @@ namespace Roboya.UI
         public Sprite TilePath => tilePath;
 
         public Sprite Background => background;
+
+        public Sprite DecorAt(int index) =>
+            decor != null && index >= 0 && index < decor.Length ? decor[index] : null;
 
         /// <summary>Stable obstacle variety per cell so a level always looks the same.</summary>
         public Sprite ObstacleFor(int x, int y)

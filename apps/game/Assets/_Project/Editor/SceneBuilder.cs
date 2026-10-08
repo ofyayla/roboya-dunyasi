@@ -117,18 +117,22 @@ namespace Roboya.EditorTools
             so.FindProperty("fruitRed").objectReferenceValue = S("SabirOrmani/item_apple");
             so.FindProperty("fruitYellow").objectReferenceValue = S("SabirOrmani/item_pear");
             so.FindProperty("shipPart").objectReferenceValue = S("SabirOrmani/item_gear");
-            var obstacles = so.FindProperty("obstacles");
-            string[] names = { "SabirOrmani/prop_tree", "SabirOrmani/prop_rock", "SabirOrmani/prop_bush" };
-            obstacles.arraySize = names.Length;
-            for (int i = 0; i < names.Length; i++)
-            {
-                obstacles.GetArrayElementAtIndex(i).objectReferenceValue = S(names[i]);
-            }
+            SetSprites(so.FindProperty("obstacles"), S, "SabirOrmani/prop_tree", "SabirOrmani/prop_rock", "SabirOrmani/prop_bush");
+            SetSprites(so.FindProperty("decor"), S, "SabirOrmani/prop_bush", "SabirOrmani/prop_tree", "SabirOrmani/prop_bush");
 
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(art);
             AssetDatabase.SaveAssets();
             return art;
+        }
+
+        private static void SetSprites(SerializedProperty array, System.Func<string, Sprite> load, params string[] names)
+        {
+            array.arraySize = names.Length;
+            for (int i = 0; i < names.Length; i++)
+            {
+                array.GetArrayElementAtIndex(i).objectReferenceValue = load(names[i]);
+            }
         }
 
         private static GameObject FindOrCreate(string name)
