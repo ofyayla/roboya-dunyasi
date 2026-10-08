@@ -9,4 +9,5 @@ Kök `CLAUDE.md` §8 geçerlidir.
 - Testler gerçek PostgreSQL ile çalışır (`infra/docker-compose.yml` veya CI servisi). `ROBOYA_DATABASE_URL` test veritabanını gösterir.
 - Loglara e-posta, takma ad, IP yazılmaz. Bu yüzden uvicorn erişim günlüğü kapalı çalışır (`--no-access-log`).
 - Veli hesabı: e-posta ile tek kullanımlık kod, kısa ömürlü JWT ve dönen yenileme belirteci (ADR 0011). Geliştirmede e-posta `tmp/outbox.jsonl` dosyasına yazılır; gerçek sağlayıcı CLAUDE.md §11 sürecinden geçmeden bağlanmaz.
+- Hak hesabı ve mağaza: premium yalnız doğrulanmış mağaza aboneliğinden gelir (ADR 0013); `SignedDevVerifier` yalnız geliştirme ve testlerde, staging/üretimde başlatma reddedilir. Testlerde `store_signer` fixture'ı mağazayı oynar.
 - Testler `tests/conftest.py` ile göçleri gerçek veritabanında aşağı ve yukarı çalıştırır; sahte e-posta ve sahte saat fixture'ları vardır.

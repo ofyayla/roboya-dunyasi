@@ -31,6 +31,14 @@ class Settings(BaseSettings):
     max_profiles_free: int = 1
     max_profiles_premium: int = 4
     max_sync_entries: int = 500
+
+    # Store entitlements (F1-17). "signed-dev" accepts purchases and notifications signed with
+    # the key below (ES256); it is for development and tests. The App Store and Google Play
+    # adapters need store credentials and come with the store accounts; production refuses it.
+    store_backend: Literal["signed-dev"] = "signed-dev"
+    store_dev_public_key: str = ""
+    # How long an app may keep a granted entitlement without asking again (offline use).
+    entitlement_cache_hours: int = 72
     # "outbox" writes codes to a local file for development; a real provider needs the transfer
     # process in CLAUDE.md §11 (contract, notification, inventory) before it is switched on.
     email_backend: Literal["outbox"] = "outbox"

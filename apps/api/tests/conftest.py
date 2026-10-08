@@ -12,7 +12,10 @@ from collections.abc import AsyncIterator, Callable
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
+import jwt
 import pytest
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import ec
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import text
 
@@ -44,8 +47,8 @@ async def clean_tables(migrated_database: None) -> AsyncIterator[None]:
     async with get_engine().begin() as conn:
         await conn.execute(
             text(
-                "TRUNCATE progress_entries, child_profiles, refresh_tokens, login_codes, "
-                "device_registrations, accounts "
+                "TRUNCATE store_events, store_subscriptions, progress_entries, child_profiles, "
+                "refresh_tokens, login_codes, device_registrations, accounts "
                 "RESTART IDENTITY CASCADE"
             )
         )
@@ -94,9 +97,88 @@ def settings_override() -> dict[str, object]:
     return {}
 
 
+class StoreSigner:
+    """Plays the store: signs purchases and notifications with a throwaway ES256 key."""
+
+    def __init__(self) -> None:
+        self._private = ec.generate_private_key(ec.SECP256R1())
+        self.public_pem = (
+            self._private.public_key()
+            .public_bytes(
+                serialization.Encoding.PEM, serialization.PublicFormat.SubjectPublicKeyInfo
+            )
+            .decode()
+        )
+        self._counter = 0
+
+    def _sign(
+        self, claims: dict[str, object], key: ec.EllipticCurvePrivateKey | None = None
+    ) -> str:
+        return jwt.encode(claims, key or self._private, algorithm="ES256")
+
+    def purchase(
+        self,
+        clock_now: datetime,
+        *,
+        store: str = "apple",
+        otid: str = "tx-1",
+        days: float = 30,
+        trial: bool = False,
+        forged: bool = False,
+    ) -> str:
+        claims = {
+            "typ": "purchase",
+            "store": store,
+            "otid": otid,
+            "pid": "family_premium_monthly",
+            "expires": int((clock_now + timedelta(days=days)).timestamp()),
+            "trial": trial,
+        }
+        return self._sign(claims, ec.generate_private_key(ec.SECP256R1()) if forged else None)
+
+    def notification(
+        self,
+        clock_now: datetime,
+        kind: str,
+        *,
+        store: str = "apple",
+        otid: str = "tx-1",
+        days: float = 30,
+        trial: bool = False,
+        event_id: str | None = None,
+        at: datetime | None = None,
+    ) -> str:
+        self._counter += 1
+        claims = {
+            "typ": "notification",
+            "store": store,
+            "eid": event_id or f"evt-{self._counter}",
+            "kind": kind,
+            "at": int((at or clock_now).timestamp()),
+            "otid": otid,
+            "pid": "family_premium_monthly",
+            "expires": int((clock_now + timedelta(days=days)).timestamp()),
+            "trial": trial,
+        }
+        return self._sign(claims)
+
+    def raw(self, claims: dict[str, object]) -> str:
+        return self._sign(claims)
+
+
+@pytest.fixture
+def store_signer(settings_override: dict[str, object]) -> StoreSigner:
+    signer = StoreSigner()
+    settings_override["store_dev_public_key"] = signer.public_pem
+    return signer
+
+
 @pytest.fixture
 async def client(
-    mailbox: FakeEmailSender, fake_clock: FakeClock, settings_override: dict[str, object]
+    mailbox: FakeEmailSender,
+    fake_clock: FakeClock,
+    settings_override: dict[str, object],
+    store_signer: StoreSigner,
 ) -> AsyncIterator[AsyncClient]:
     app = create_app()
     app.dependency_overrides[get_email_sender] = lambda: mailbox

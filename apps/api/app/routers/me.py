@@ -4,9 +4,10 @@ from typing import Any
 from fastapi import APIRouter, Response, status
 
 from app.core import clock
-from app.routers.deps import AccountDep, SessionDep
+from app.routers.deps import AccountDep, SessionDep, SettingsDep
 from app.schemas.auth import DeviceOut, ErrorOut, MeOut
-from app.services import devices
+from app.schemas.store import EntitlementOut
+from app.services import devices, entitlements
 
 router = APIRouter(prefix="/v1/me", tags=["account"])
 
@@ -37,3 +38,16 @@ async def remove_device(
 ) -> Response:
     await devices.remove_device(session, account, registration_id, clock.now())
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.get(
+    "/entitlement",
+    response_model=EntitlementOut,
+    responses=_unauthorized,
+    operation_id="getEntitlement",
+)
+async def get_entitlement(
+    account: AccountDep, session: SessionDep, settings: SettingsDep
+) -> EntitlementOut:
+    result = await entitlements.compute(session, account, settings, clock.now())
+    return EntitlementOut(**result.__dict__)

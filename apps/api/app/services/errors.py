@@ -33,3 +33,13 @@ class NotFoundError(ApiError):
 class ProfileLimitError(ApiError):
     status_code = 409
     code = "profile_limit"
+
+
+class InvalidSignatureApiError(ApiError):
+    status_code = 401
+    code = "invalid_signature"
+
+
+class PurchaseLinkedError(ApiError):
+    status_code = 409
+    code = "purchase_linked"
