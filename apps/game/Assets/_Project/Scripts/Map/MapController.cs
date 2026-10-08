@@ -47,6 +47,7 @@ namespace Roboya.Map
             _editor = new ProfileEditorView(services.Strings, SaveProfile, OnEditorCancelled);
             _parent.AddSection(new ProfilesSection(services, profile => _editor.Open(profile), OpenEditorForNew));
             _rest = new RestView(art, () => _gate.Open(ShowParent));
+            _parent.AddSection(new AccountSection(services));
             _parent.AddSection(new ReportSection(services));
             _parent.AddSection(new ScreenTimeSection(services));
             _grownup = new IconButton(IconKind.Grownup, () => _gate.Open(ShowParent)) { name = "to-parent" };

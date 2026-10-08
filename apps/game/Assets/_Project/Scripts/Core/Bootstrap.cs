@@ -110,11 +110,25 @@ namespace Roboya.Core
                 this,
                 strings,
                 notice,
-                new ScreenTimeService(ProgressFolder, profiles));
+                new ScreenTimeService(ProgressFolder, profiles),
+                ComposeAccount());
         }
 
         /// <summary>Tests point this at a temporary folder so each run starts with fresh progress.</summary>
         public static string ProgressFolderOverride { get; set; }
+
+        /// <summary>Tests replace the network with a fake and give a placeholder server address.</summary>
+        public static Roboya.Services.IHttpTransport TransportOverride { get; set; }
+
+        private static Roboya.Services.AccountService ComposeAccount()
+        {
+            string url = Roboya.Services.ApiConfig.Resolve(ProgressFolder);
+            var api = url == null
+                ? null
+                : new Roboya.Services.ApiClient(url, TransportOverride ?? new Roboya.Services.UnityHttpTransport());
+            string platform = Application.platform == RuntimePlatform.IPhonePlayer ? "ios" : "android";
+            return new Roboya.Services.AccountService(api, ProgressFolder, platform);
+        }
 
         private static string ProgressFolder => ProgressFolderOverride ?? FileProgressStore.DefaultFolder;
 

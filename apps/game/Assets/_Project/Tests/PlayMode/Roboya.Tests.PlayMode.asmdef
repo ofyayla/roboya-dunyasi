@@ -3,6 +3,7 @@
     "rootNamespace": "Roboya.Tests.PlayMode",
     "references": [
         "Roboya.Core",
+        "Roboya.Services",
         "Roboya.CodingEngine",
         "Roboya.UI",
         "Roboya.Games.YonAvcisi",

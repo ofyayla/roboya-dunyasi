@@ -1,7 +1,7 @@
 {
     "name": "Roboya.Map",
     "rootNamespace": "Roboya.Map",
-    "references": ["Roboya.Core", "Roboya.CodingEngine", "Roboya.UI"],
+    "references": ["Roboya.Core", "Roboya.CodingEngine", "Roboya.UI", "Roboya.Services"],
     "includePlatforms": [],
     "autoReferenced": true,
     "overrideReferences": false,

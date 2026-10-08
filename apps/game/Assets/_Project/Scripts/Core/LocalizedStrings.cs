@@ -84,6 +84,20 @@ namespace Roboya.Core
         public const string TimeToday = "time.today";
         public const string TimeNote = "time.note";
         public const string RestParent = "rest.parent";
+        public const string AccountTitle = "account.title";
+        public const string AccountHint = "account.hint";
+        public const string AccountEmail = "account.email";
+        public const string AccountSendCode = "account.send_code";
+        public const string AccountCode = "account.code";
+        public const string AccountSignIn = "account.sign_in";
+        public const string AccountSignOut = "account.sign_out";
+        public const string AccountSignedIn = "account.signed_in";
+        public const string AccountCodeSent = "account.code_sent";
+        public const string AccountErrorCode = "account.error.invalid_code";
+        public const string AccountErrorMany = "account.error.too_many_requests";
+        public const string AccountErrorDevice = "account.error.device_limit";
+        public const string AccountErrorNetwork = "account.error.network";
+        public const string AccountErrorGeneric = "account.error.generic";
         public const string ReportTitle = "report.title";
         public const string ReportSummary = "report.summary";
         public const string ReportNote = "report.note";
@@ -103,6 +117,7 @@ namespace Roboya.Core
             ProfileDefaultNickname, ProfileListTitle, ProfileAdd, ProfileRemove, ProfileRemoveConfirm, ProfileLimit,
             ProfileActive, TimeTitle, TimeMinutes, TimeUnlimited, TimeToday, TimeNote, RestParent,
             ReportTitle, ReportSummary, ReportNote, ReportEmpty, ReportConcept, ReportNotStarted, ReportExploring, ReportGrowing, ReportConfident, ReportConceptLine,
+            AccountTitle, AccountHint, AccountEmail, AccountSendCode, AccountCode, AccountSignIn, AccountSignOut, AccountSignedIn, AccountCodeSent, AccountErrorCode, AccountErrorMany, AccountErrorDevice, AccountErrorNetwork, AccountErrorGeneric,
         };
     }
 }

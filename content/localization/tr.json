@@ -49,5 +49,19 @@
   "report.concept.functions": "Fonksiyonlar",
   "report.concept.events": "Olaylar",
   "report.concept.debugging": "Hata ayıklama",
-  "report.concept.counting": "Sayma"
+  "report.concept.counting": "Sayma",
+  "account.title": "Veli hesabı",
+  "account.hint": "Hesap yalnız satın alma ve cihazlar arası eşitleme içindir. Oyun hesapsız da oynanır.",
+  "account.email": "E-posta adresi",
+  "account.send_code": "Kod gönder",
+  "account.code": "E-postadaki 6 haneli kod",
+  "account.sign_in": "Giriş yap",
+  "account.sign_out": "Çıkış yap",
+  "account.signed_in": "Giriş yapıldı: {0}",
+  "account.code_sent": "Kod gönderildi. Birkaç dakika içinde e-postana ulaşır.",
+  "account.error.invalid_code": "Kod yanlış ya da süresi dolmuş.",
+  "account.error.too_many_requests": "Çok sık denendi. Biraz sonra tekrar dene.",
+  "account.error.device_limit": "Bu hesapta en fazla 10 cihaz olabilir.",
+  "account.error.network": "Sunucuya ulaşılamadı. İnternet bağlantını kontrol et.",
+  "account.error.generic": "Bir sorun oldu. Tekrar dene."
 }

@@ -5,6 +5,7 @@
         "Roboya.CodingEngine",
         "Roboya.UI",
         "Roboya.Core",
+        "Roboya.Services",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
