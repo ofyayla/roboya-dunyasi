@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Roboya.Core
 {
-    /// <summary>Placeholder until TTS clips exist (F0-15): logs the key so testers can follow the flow.</summary>
+    /// <summary>Fallback when no voice manifest is available: logs the key so testers can follow the flow.</summary>
     public sealed class LoggingVoicePlayer : IVoicePlayer
     {
         public void Play(string key)
@@ -15,6 +16,11 @@ namespace Roboya.Core
 
         public void Stop()
         {
+        }
+
+        public async Awaitable PreloadAsync(IEnumerable<string> keys)
+        {
+            await Awaitable.NextFrameAsync();
         }
     }
 }

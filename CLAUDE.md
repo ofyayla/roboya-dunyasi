@@ -58,6 +58,7 @@ Komutlar kök dizindeki `Makefile` üzerinden çalışır. Bir komut değişirse
 | `make lint` | ruff, mypy, eslint, tip kontrolü |
 | `make gen` | Bölüm şemasından ve OpenAPI'den C# / TypeScript kodu üretir |
 | `make validate-content` | Tüm bölümleri şema ve çözücüyle doğrular, ses manifestini kontrol eder |
+| `make tts` | Eksik veya metni değişmiş seslendirme satırlarını ElevenLabs ile üretir (`.env` gerekir) |
 | `make unity-test` | Unity EditMode testlerini batch modda çalıştırır |
 | `make unity-playmode` | Unity PlayMode kritik akış testleri; ekran görüntüleri `apps/game/TestResults/screens` |
 

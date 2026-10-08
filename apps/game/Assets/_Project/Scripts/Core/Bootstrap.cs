@@ -25,7 +25,7 @@ namespace Roboya.Core
 
             DontDestroyOnLoad(gameObject);
             Application.targetFrameRate = 60;
-            _services = Compose();
+            _services = await ComposeAsync();
             await LoadAsync(firstScene);
         }
 
@@ -45,7 +45,7 @@ namespace Roboya.Core
             Debug.LogError("Scene '" + sceneName + "' has no ISceneEntry component.");
         }
 
-        private static GameServices Compose()
+        private async Awaitable<GameServices> ComposeAsync()
         {
             ILevelSource levels;
 #if UNITY_EDITOR
@@ -56,7 +56,24 @@ namespace Roboya.Core
             levels = new StreamingAssetsLevelSource();
 #endif
             // Rules will come from server configuration once the API exists (CLAUDE.md §6).
-            return new GameServices(levels, new LoggingVoicePlayer(), SessionRules.Default);
+            return new GameServices(levels, await ComposeVoiceAsync(), SessionRules.Default);
+        }
+
+        private async Awaitable<IVoicePlayer> ComposeVoiceAsync()
+        {
+            try
+            {
+                var library = await VoiceLibrary.LoadAsync(VoiceLibrary.DefaultBaseUrl);
+                var source = gameObject.AddComponent<AudioSource>();
+                source.playOnAwake = false;
+                return new ClipVoicePlayer(source, library);
+            }
+            catch (System.IO.IOException e)
+            {
+                // The game stays playable without narration; testers see the keys in the log.
+                Debug.LogWarning(e.Message + " — falling back to logging voice player.");
+                return new LoggingVoicePlayer();
+            }
         }
     }
 }

@@ -73,3 +73,8 @@ coverage.json
 # Copied from content/levels at build time (ADR 0006)
 apps/game/Assets/StreamingAssets/levels/
 apps/game/Assets/StreamingAssets/levels.meta
+
+# Local scratch (voice samples, experiments)
+tmp/
+apps/game/Assets/StreamingAssets/voice/
+apps/game/Assets/StreamingAssets/voice.meta
