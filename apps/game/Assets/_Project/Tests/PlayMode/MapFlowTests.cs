@@ -124,6 +124,49 @@ namespace Roboya.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator FifthLevelDone_TapEarnedPart_OpensWorkshopWithPartDroppingOntoShip()
+        {
+            // The fifth stone on the path (a Bal Peşinde level) earns the first ship part; the four before it are finished.
+            var catalog = LevelCatalog.Parse(Directory.GetFiles(FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories).Select(File.ReadAllText));
+            var store = TestProfiles.Seed(_progressDir);
+            foreach (var entry in catalog.All.Where(e => e.Dto.Order < 5))
+            {
+                store.Book.Record(entry.Id, 3);
+            }
+
+            store.Save();
+            // Stones past the free tier need a grant; the dev entitlement stands in for the server's (reset in TearDown).
+            Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, "1");
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            yield return OpenForest(map);
+            map.Q("path").Q<ScrollView>().ScrollTo(map.Q("stone-5"));
+            yield return null;
+            yield return null;
+            Tap(map.Q("stone-5"));
+
+            VisualElement game = null;
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
+            yield return PassStory(game);
+            var fifth = catalog.All.First(e => e.Dto.Order == 5);
+            foreach (var card in Roboya.CodingEngine.Solving.Solver.Solve(fifth.Level).Solution)
+            {
+                Tap(game.Q("palette").Children().OfType<CardElement>().First(c => c.Card == card));
+            }
+
+            Tap(game.Q("play"));
+            yield return WaitUntil(() => game.Q("story-reward") != null && !game.Q("result").ClassListContains("hidden"), 30f);
+            yield return new WaitForSeconds(0.8f);
+
+            // The result overlay lies above the part but lets the tap through.
+            Tap(game.Q("story-reward").parent);
+
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Map" && (map = FindRoot())?.Q("workshop") != null, 10f);
+            yield return WaitUntil(() => map.Q("workshop").resolvedStyle.display == DisplayStyle.Flex, 5f);
+            Assert.IsNotNull(map.Q("workshop-ship").Q("ship-propeller"), "the earned part is fitted on the ship");
+        }
+
+        [UnityTest]
         public IEnumerator GuidedFirstLevel_PointsAtNextCardThenPlay_ButUnguidedLevelDoesNot()
         {
             VisualElement map = null;

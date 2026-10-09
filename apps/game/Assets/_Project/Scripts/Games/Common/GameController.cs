@@ -104,6 +104,14 @@ namespace Roboya.Games.Common
             _progress = root.Q("progress");
             _result = root.Q("result");
 
+            // The result overlay is see-through to taps except its buttons, so the earned ship part in the story scene below
+            // stays tappable (it opens the workshop).
+            _result.pickingMode = PickingMode.Ignore;
+            foreach (var container in _result.Query<VisualElement>().ToList())
+            {
+                container.pickingMode = PickingMode.Ignore;
+            }
+
             // The story scene covers the whole screen; the result panel stays above it.
             _story = new StoryStage(art, services.Voice);
             _result.parent.Insert(_result.parent.IndexOf(_result), _story);
@@ -542,7 +550,12 @@ namespace Roboya.Games.Common
 
             _services.Sfx.Play(SfxKind.Success);
             await _board.Celebrate(token);
-            await _story.PlayOutroAsync(LevelStory.Outro(_entry.Dto), token, reward, PartUnlockedVoice);
+            await _story.PlayOutroAsync(
+                LevelStory.Outro(_entry.Dto),
+                token,
+                reward,
+                PartUnlockedVoice,
+                reward != null ? (System.Action)(() => _services.Navigator.GoToWorkshop()) : null);
             if ((_index + 1) % ProgressQueries.CornerLength == 0)
             {
                 // The turtle's value moment closes each forest corner (the map marks the same stones).

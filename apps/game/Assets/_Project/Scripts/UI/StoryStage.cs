@@ -63,6 +63,7 @@ namespace Roboya.UI
         private CardElement _card;
         private VisualElement _reward;
         private string _cardVoice;
+        private System.Action _onReward;
         private float _cardAge = -1f;
 
         public StoryStage(RegionArt art, IVoicePlayer voice)
@@ -117,7 +118,17 @@ namespace Roboya.UI
 
             // YON-01: a level's new card pops up large between the friends; tapping it repeats its narration.
             _cardHost.AddToClassList("story__card");
-            _cardHost.RegisterCallback<ClickEvent>(_ => _voice.Play(_cardVoice));
+            _cardHost.RegisterCallback<ClickEvent>(_ =>
+            {
+                // A reward part is a button: tapping it carries the child to the workshop to fit it.
+                if (_reward != null && _onReward != null)
+                {
+                    _onReward();
+                    return;
+                }
+
+                _voice.Play(_cardVoice);
+            });
             Add(_cardHost);
 
             _continue = new IconButton(IconKind.Next, () => _continueRequested = true) { name = "story-continue" };
@@ -173,10 +184,12 @@ namespace Roboya.UI
         /// Outro: fades in over the board, plays the success line and keeps celebrating until <see cref="Hide"/>;
         /// returns once the characters are in place so the result panel can appear on top.
         /// </summary>
-        /// <param name="reward">A robot part earned with this level (ILR-03), shown after the success line.</param>
-        public async Awaitable PlayOutroAsync(StoryBeat beat, CancellationToken token, Sprite reward = null, string rewardVoice = null)
+        /// <param name="reward">A ship part earned with this level (ILR-03), shown after the success line.</param>
+        /// <param name="onRewardTapped">Called when the child taps the shown part (opens the workshop).</param>
+        public async Awaitable PlayOutroAsync(StoryBeat beat, CancellationToken token, Sprite reward = null, string rewardVoice = null, System.Action onRewardTapped = null)
         {
             int session = Open(beat, celebrate: true, showContinue: false, token);
+            _onReward = onRewardTapped;
             style.opacity = 0f;
             await Tween.Run(0.35f, t => style.opacity = t, token);
             _voice.Play(beat.VoiceKey);
@@ -203,6 +216,7 @@ namespace Roboya.UI
                 _reward.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
                 _cardHost.Add(_reward);
                 _cardVoice = voiceKey;
+                _cardHost.pickingMode = PickingMode.Position;
                 _cardAge = 0f;
                 _cardHost.style.display = DisplayStyle.Flex;
                 _voice.Play(voiceKey);
@@ -246,6 +260,7 @@ namespace Roboya.UI
         private void StageCard(StoryBeat beat)
         {
             _cardAge = -1f;
+            _onReward = null;
             _cardHost.style.display = DisplayStyle.None;
             _cardVoice = beat.NewCardVoiceKey;
             if (_card != null)
