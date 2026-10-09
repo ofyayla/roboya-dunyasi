@@ -9,7 +9,7 @@ using Roboya.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Roboya.Games.YonAvcisi
+namespace Roboya.Games.Common
 {
     /// <summary>
     /// The board seen at a gentle angle (ObliqueProjection): a code-drawn ground with the robot, goal, items and

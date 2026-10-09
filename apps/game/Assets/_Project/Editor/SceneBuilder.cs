@@ -1,6 +1,6 @@
 using System.IO;
 using Roboya.Core;
-using Roboya.Games.YonAvcisi;
+using Roboya.Games.Common;
 using Roboya.Map;
 using Roboya.UI;
 using UnityEditor;
@@ -86,7 +86,7 @@ namespace Roboya.EditorTools
             docSo.FindProperty("sourceAsset").objectReferenceValue = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(YonAvcisiUxml);
             docSo.ApplyModifiedPropertiesWithoutUndo();
 
-            var screen = go.GetComponent<YonAvcisiScreen>() ?? go.AddComponent<YonAvcisiScreen>();
+            var screen = go.GetComponent<GameScreen>() ?? go.AddComponent<GameScreen>();
             var so = new SerializedObject(screen);
             so.FindProperty("document").objectReferenceValue = doc;
             so.FindProperty("art").objectReferenceValue = EnsureSabirOrmaniArt();

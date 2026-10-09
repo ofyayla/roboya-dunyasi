@@ -1,0 +1,71 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.kodlama-kutusu.01",
+  "region": "sabir-ormani",
+  "game": "kodlama-kutusu",
+  "order": 11,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 1,
+    "ageLevels": [
+      "minik"
+    ],
+    "mebOutcomes": [],
+    "notes": "Kutu bölümü: kartlar karışık, doğru sıraya konur; yol iz bırakır."
+  },
+  "grid": {
+    "rows": [
+      "....",
+      "....",
+      "....",
+      "...."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 3,
+    "facing": "north"
+  },
+  "goal": {
+    "reach": {
+      "x": 1,
+      "y": 1
+    }
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_right"
+    ],
+    "maxProgramLength": 5
+  },
+  "options": {
+    "ghostPath": true
+  },
+  "voice": {
+    "intro": "kodlama_kutusu.l01.intro",
+    "success": "kodlama_kutusu.l01.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "happy"
+    }
+  },
+  "solution": {
+    "shortestLength": 4
+  }
+}

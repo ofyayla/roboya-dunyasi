@@ -23,6 +23,62 @@
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },
+    "kodlama_kutusu.l01.intro": {
+      "file": "audio/tr/kodlama_kutusu.l01.intro.mp3",
+      "source": "tts",
+      "textHash": "e75e0c40532dee19",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l01.success": {
+      "file": "audio/tr/kodlama_kutusu.l01.success.mp3",
+      "source": "tts",
+      "textHash": "9c8afe4ac392bdb2",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l02.intro": {
+      "file": "audio/tr/kodlama_kutusu.l02.intro.mp3",
+      "source": "tts",
+      "textHash": "3111efba312c96b6",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l02.success": {
+      "file": "audio/tr/kodlama_kutusu.l02.success.mp3",
+      "source": "tts",
+      "textHash": "ad51f181843cd2df",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l03.intro": {
+      "file": "audio/tr/kodlama_kutusu.l03.intro.mp3",
+      "source": "tts",
+      "textHash": "cd66c44ca7e4da63",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l03.success": {
+      "file": "audio/tr/kodlama_kutusu.l03.success.mp3",
+      "source": "tts",
+      "textHash": "a36e45b0deaf9064",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l04.intro": {
+      "file": "audio/tr/kodlama_kutusu.l04.intro.mp3",
+      "source": "tts",
+      "textHash": "e411738324ac747b",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l04.success": {
+      "file": "audio/tr/kodlama_kutusu.l04.success.mp3",
+      "source": "tts",
+      "textHash": "5ca6ad987e309ccc",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
     "map.region_locked": {
       "file": "audio/tr/map.region_locked.mp3",
       "source": "tts",

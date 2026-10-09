@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.kodlama-kutusu.04",
+  "region": "sabir-ormani",
+  "game": "kodlama-kutusu",
+  "order": 14,
+  "meta": {
+    "concepts": [
+      "sequencing",
+      "debugging"
+    ],
+    "value": "patience",
+    "difficulty": 4,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "Hata avcısı, Kaşif: yedi kartlık kodda iki yanlış kart var."
+  },
+  "grid": {
+    "rows": [
+      ".....",
+      ".....",
+      ".....",
+      ".....",
+      "....."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 4,
+    "facing": "north"
+  },
+  "goal": {
+    "reach": {
+      "x": 3,
+      "y": 1
+    }
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 9
+  },
+  "starterProgram": [
+    {
+      "op": "forward"
+    },
+    {
+      "op": "forward"
+    },
+    {
+      "op": "forward"
+    },
+    {
+      "op": "turn_left"
+    },
+    {
+      "op": "forward"
+    },
+    {
+      "op": "turn_right"
+    },
+    {
+      "op": "forward"
+    }
+  ],
+  "voice": {
+    "intro": "kodlama_kutusu.l04.intro",
+    "success": "kodlama_kutusu.l04.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "surprised",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "thanks"
+    }
+  },
+  "solution": {
+    "shortestLength": 7
+  }
+}

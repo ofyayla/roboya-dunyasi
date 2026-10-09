@@ -12,7 +12,7 @@ Kök `CLAUDE.md` §7 geçerlidir; burada yalnız ayrıntı vardır.
 - Testler: `Assets/_Project/Tests/EditMode` (motor testleri `dotnet test` ile de koşar) ve `PlayMode`.
 - Proje ayarları ve sahneler `Assets/_Project/Editor/ProjectSetup.cs` ile uygulanır (menü: Roboya → Project Setup). Ayar değişikliği bu betikte yapılır.
 - Paket ekleme/çıkarma ADR 0005'in güncellenmesini gerektirir.
-- Oyun kuralları (plan şeridi, oturum, ipucu kademesi, yıldız) `CodingEngine/Play` ve `CodingEngine/Scoring` altında saf C#'tır; oyun assembly'leri yalnız görünüm ve akış içerir.
+- Tüm oyunlar (Yön Avcısı, Kodlama Kutusu, ...) tek Game sahnesinde `Roboya.Games.Common` (`GameScreen`, `GameController`, `BoardView`, `CardTray`) ile oynanır; oyuna özgü fark bölüm verisinde ve küçük genişletme noktalarındadır (ADR 0025). Oyun kuralları (plan şeridi, oturum, ipucu kademesi, yıldız) `CodingEngine/Play` ve `CodingEngine/Scoring` altında saf C#'tır; oyun assembly'leri yalnız görünüm ve akış içerir.
 - Bileşim kökü `Roboya.Core.Bootstrap` (Boot sahnesi). Sahneler `ISceneEntry` ile servisleri alır; singleton yazılmaz.
 - Çocuk ekranlarında yazı yok. Görseller bölgenin `RegionArt` sprite setinden gelir; eksik sprite için `Roboya.UI.Icon` kodla çizilmiş yedeği kullanılır. Oyun tahtası `ObliqueProjection` ile eğik çizilir. Bölüm başı ve sonu hikâye sahneleri `StoryStage` ile kodla kurulur; veri bölüm JSON'undaki `story` alanındadır (bkz. `docs/art/style-guide.md`).
 - Sahne akışı: `Boot` → `Map` (ada → patika → gemi atölyesi, `Roboya.Map`) → `Game`. Geçişler `ISceneNavigator` (Bootstrap) ile yapılır. İlerleme `IProgressStore`'da, kilit kuralları `CodingEngine/Progress` altında (ADR 0009). İstemci premium hakkını kendisi vermez; `IEntitlementSource`'tan okur.

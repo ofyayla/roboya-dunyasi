@@ -1,34 +1,38 @@
+using System.Linq;
 using Roboya.CodingEngine.Levels.Generated;
 using Roboya.Core;
 using Roboya.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Roboya.Games.YonAvcisi
+namespace Roboya.Games.Common
 {
     /// <summary>Thin scene entry: opens the level chosen on the map and hands the UI root to the controller.</summary>
-    public sealed class YonAvcisiScreen : MonoBehaviour, ISceneEntry
+    public sealed class GameScreen : MonoBehaviour, ISceneEntry
     {
         [SerializeField] private UIDocument document;
         [SerializeField] private RegionArt art;
         [SerializeField] private PartArt partArt;
 
-        private YonAvcisiController _controller;
+        private GameController _controller;
         private GameServices _services;
         private bool _limitReported;
 
         public void Enter(GameServices services)
         {
             _services = services;
-            var levels = services.Catalog.ForGame(GameId.YonAvcisi);
+            // One path per region, all games mixed in play order: "next" simply follows it.
+            var selected = services.Catalog.Find(services.Navigator.SelectedLevelId);
+            var region = selected != null ? selected.Dto.Region : RegionId.SabirOrmani;
+            var levels = services.Catalog.All.Where(l => l.Dto.Region == region).ToList();
             if (levels.Count == 0)
             {
-                Debug.LogError("No Yön Avcısı levels found.");
+                Debug.LogError("No levels found for region " + region);
                 return;
             }
 
             int start = levels.FindIndex(l => l.Id == services.Navigator.SelectedLevelId);
-            _controller = new YonAvcisiController(document.rootVisualElement, services, levels, art, partArt);
+            _controller = new GameController(document.rootVisualElement, services, levels, art, partArt);
             _controller.Start(start < 0 ? 0 : start);
         }
 

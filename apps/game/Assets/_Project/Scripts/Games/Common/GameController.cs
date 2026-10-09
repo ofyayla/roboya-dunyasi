@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Roboya.CodingEngine.Execution;
 using Roboya.CodingEngine.Levels;
+using GameId = Roboya.CodingEngine.Levels.Generated.GameId;
 using Roboya.CodingEngine.Play;
 using Roboya.CodingEngine.Progress;
 using Roboya.Core;
@@ -10,13 +11,13 @@ using Roboya.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Roboya.Games.YonAvcisi
+namespace Roboya.Games.Common
 {
     /// <summary>
     /// Flow of one Yön Avcısı level: story intro → plan → play (animate events) → story outro + result → retry or next.
     /// Owns no game rules; those live in <see cref="LevelSession"/> (pure C#, tested in CI).
     /// </summary>
-    public sealed class YonAvcisiController : IDisposable
+    public sealed class GameController : IDisposable
     {
         private const string BumpVoice = "roboya.bump.01";
         private const string NotThereVoice = "roboya.not_there.01";
@@ -49,7 +50,7 @@ namespace Roboya.Games.YonAvcisi
         private LevelEntry _alternative;
         private bool _guideDone;
 
-        public YonAvcisiController(VisualElement root, GameServices services, IReadOnlyList<LevelEntry> levels, RegionArt art = null, PartArt partArt = null)
+        public GameController(VisualElement root, GameServices services, IReadOnlyList<LevelEntry> levels, RegionArt art = null, PartArt partArt = null)
         {
             _services = services;
             _levels = levels;
@@ -136,6 +137,7 @@ namespace Roboya.Games.YonAvcisi
             _services.Analytics.Track("level_start", _entry.Id, LevelProps());
         }
 
+        private const int ProgressDots = 9;
         private float _startedAt;
         private int _hintsUsed;
         private bool _open;
@@ -288,7 +290,8 @@ namespace Roboya.Games.YonAvcisi
                 _services.Voice.Play(result.Outcome == ExecutionOutcome.MissingItems ? MissingItemsVoice : NotThereVoice);
             }
 
-            await Tween.Delay(0.8f, token);
+            // Kodlama Kutusu (KUT-02): the footprints stay a little longer so the child can compare the planned and the real path.
+            await Tween.Delay(_entry.Dto.Game == GameId.KodlamaKutusu ? 2.5f : 0.8f, token);
             _board.ResetRobot(_entry.Level.Start);
             _tray.SetLocked(false);
             UpdateGuide();
@@ -499,7 +502,10 @@ namespace Roboya.Games.YonAvcisi
         private void RenderProgress()
         {
             _progress.Clear();
-            for (int i = 0; i < _levels.Count; i++)
+            // A region path can hold 36 levels: show a window of dots around the current one.
+            int first = Mathf.Clamp(_index - (ProgressDots / 2), 0, Mathf.Max(0, _levels.Count - ProgressDots));
+            int last = Mathf.Min(_levels.Count, first + ProgressDots);
+            for (int i = first; i < last; i++)
             {
                 var dot = new VisualElement();
                 dot.AddToClassList("progress__dot");
