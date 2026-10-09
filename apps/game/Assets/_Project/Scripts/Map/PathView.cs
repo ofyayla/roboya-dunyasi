@@ -86,9 +86,7 @@ namespace Roboya.Map
             schedule.Execute(Pulse).Every(33);
         }
 
-        public const int CornerLength = 9;
-
-        private static int CornerCount(int count) => count / CornerLength;
+        private static int CornerCount(int count) => count / ProgressQueries.CornerLength;
 
         public IReadOnlyList<string> Path => _path;
 
@@ -242,7 +240,7 @@ namespace Roboya.Map
 
             for (int c = 0; c < _corners.Count; c++)
             {
-                int last = ((c + 1) * CornerLength) - 1;
+                int last = ((c + 1) * ProgressQueries.CornerLength) - 1;
                 float cx = last + 1 < n ? (points[last].x + points[last + 1].x) * 0.5f : points[last].x + 90f;
                 float cy = last + 1 < n ? (points[last].y + points[last + 1].y) * 0.5f : points[last].y;
                 _corners[c].style.left = cx - 45f;

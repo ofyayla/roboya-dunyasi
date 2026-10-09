@@ -97,5 +97,8 @@
       "y": 2,
       "look": "tree"
     }
-  ]
+  ],
+  "options": {
+    "predict": true
+  }
 }

@@ -171,6 +171,14 @@ namespace Roboya.Tests.PlayMode
                 }
 
                 Tap(root.Q("play"));
+                if ((i + 1) % Roboya.Core.ProgressQueries.CornerLength == 0)
+                {
+                    // The end of a forest corner: the turtle's patience card comes before the result; a tap moves on.
+                    yield return WaitUntil(() => !root.Q("value-card").ClassListContains("hidden"), 40f);
+                    yield return new WaitForSeconds(0.3f);
+                    Tap(root.Q("value-card"));
+                }
+
                 yield return WaitUntil(() => !root.Q("result").ClassListContains("hidden"), 30f);
                 yield return null; // the overlay is laid out one frame after it becomes visible
                 int stars = root.Q("stars").Children().OfType<Icon>().Count(x => x.Kind == IconKind.Star);
@@ -281,18 +289,20 @@ namespace Roboya.Tests.PlayMode
         internal static void Tap(VisualElement element)
         {
             // Events sent to the panel's visual tree are hit-tested in panel coordinates.
+            // The element may leave the tree on pointer down (a tapped marker); keep the panel.
             Vector2 pos = element.worldBound.center;
-            Send(element, EventType.MouseDown, pos);
-            Send(element, EventType.MouseUp, pos);
+            var panel = element.panel;
+            Send(panel, EventType.MouseDown, pos);
+            Send(panel, EventType.MouseUp, pos);
         }
 
-        private static void Send(VisualElement element, EventType type, Vector2 pos)
+        private static void Send(IPanel panel, EventType type, Vector2 pos)
         {
             var e = new Event { type = type, mousePosition = pos, button = 0, clickCount = 1 };
             EventBase evt = type == EventType.MouseDown ? PointerDownEvent.GetPooled(e) : (EventBase)PointerUpEvent.GetPooled(e);
             using (evt)
             {
-                element.panel.visualTree.SendEvent(evt);
+                panel.visualTree.SendEvent(evt);
             }
         }
 

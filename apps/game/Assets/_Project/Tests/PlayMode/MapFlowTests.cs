@@ -553,6 +553,83 @@ namespace Roboya.Tests.PlayMode
             Assert.IsTrue(badge.Q(className: "goal-badge__item--done") != null, "the collected flower is marked");
         }
 
+        private IEnumerator OpenKutuLevel5(Roboya.CodingEngine.Profiles.AgeBand band, Action<VisualElement> found)
+        {
+            // Kodlama Kutusu 05 (order 16) asks for a guess; everything before it is finished and premium stands in for the server.
+            var files = Directory.GetFiles(Roboya.Core.FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories);
+            var catalog = Roboya.Core.LevelCatalog.Parse(files.Select(File.ReadAllText));
+            var store = TestProfiles.Seed(_progressDir, band);
+            // SetUp already seeded a profile; the age band is what this test is about.
+            var manager = ProfileManager.Load(_progressDir);
+            manager.Update(manager.Active.Id, manager.Active.Nickname, manager.Active.AvatarId, band);
+            foreach (var entry in catalog.All.Where(e => e.Dto.Order < 16))
+            {
+                store.Book.Record(entry.Id, 3);
+            }
+
+            store.Save();
+            Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, "1");
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            yield return OpenForest(map);
+            map.Q("path").Q<ScrollView>().ScrollTo(map.Q("stone-16"));
+            yield return null;
+            yield return null;
+            Tap(map.Q("stone-16"));
+            VisualElement game = null;
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
+            yield return PassStory(game);
+            found(game);
+        }
+
+        [UnityTest]
+        public IEnumerator KutuLevel_KasifGuessesWhereTheRobotEndsUp_ThenTheRunIsComparedWithTheGuess()
+        {
+            VisualElement game = null;
+            yield return OpenKutuLevel5(Roboya.CodingEngine.Profiles.AgeBand.Kasif, g => game = g);
+            try
+            {
+                var forward = game.Q("palette").Children().OfType<CardElement>().First(c => c.Card == Roboya.CodingEngine.Commands.CardType.Forward);
+                Tap(forward);
+                Tap(game.Q("play"));
+                yield return null;
+                Assert.Greater(game.Query(className: "trace-pick").ToList().Count, 0, "KUT-02: the free cells wait for a guess");
+                Assert.IsTrue(game.Q("play").enabledSelf, "the guess never blocks play");
+
+                Tap(game.Q(className: "trace-pick"));
+                yield return null;
+                Assert.IsNotNull(game.Q(className: "trace-predict"), "the guess is drawn on the board");
+                Assert.AreEqual(0, game.Query(className: "trace-pick").ToList().Count);
+                yield return new WaitForSeconds(0.2f);
+                yield return WaitUntil(() => game.Q("play").enabledSelf, 20f);
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, null);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator KutuLevel_MinikRunsAtOnce_AndPlayAgainSkipsTheGuessForKasif()
+        {
+            VisualElement game = null;
+            yield return OpenKutuLevel5(Roboya.CodingEngine.Profiles.AgeBand.Minik, g => game = g);
+            try
+            {
+                var forward = game.Q("palette").Children().OfType<CardElement>().First(c => c.Card == Roboya.CodingEngine.Commands.CardType.Forward);
+                Tap(forward);
+                Tap(game.Q("play"));
+                yield return null;
+                Assert.AreEqual(0, game.Query(className: "trace-pick").ToList().Count, "the youngest is not asked to guess");
+                yield return new WaitForSeconds(0.2f);
+                Assert.IsFalse(game.Q("play").enabledSelf, "the run started at once");
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, null);
+            }
+        }
+
         [UnityTest]
         public IEnumerator DailyLimitUsedUp_MapShowsRest_StoneStaysClosed_ParentCanRaiseTheLimit()
         {

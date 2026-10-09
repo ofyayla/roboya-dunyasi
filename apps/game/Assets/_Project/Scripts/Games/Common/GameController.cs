@@ -37,6 +37,7 @@ namespace Roboya.Games.Common
         private readonly IconButton _play;
         private readonly IconButton _hint;
         private readonly VisualElement _result;
+        private readonly ValueCard _valueCard;
         private readonly VisualElement _stars;
         private readonly VisualElement _progress;
         private readonly StoryStage _story;
@@ -106,6 +107,8 @@ namespace Roboya.Games.Common
             // The story scene covers the whole screen; the result panel stays above it.
             _story = new StoryStage(art, services.Voice);
             _result.parent.Insert(_result.parent.IndexOf(_result), _story);
+            _valueCard = new ValueCard(services.Voice);
+            _result.parent.Insert(_result.parent.IndexOf(_result), _valueCard);
             _stars = root.Q("stars");
             var retry = new IconButton(IconKind.Retry, Retry) { name = "retry" };
             var next = new IconButton(IconKind.Next, Next) { name = "next" };
@@ -124,6 +127,8 @@ namespace Roboya.Games.Common
             // Bal Peşinde: the bee keeps its place and its memory between runs (BAL-02).
             _bee = _entry.Dto.Game == GameId.BalPesinde;
             _clearedSinceRun = true;
+            _predicting = false;
+            _prediction = null;
             _lastPlanCount = 0;
             _session = new LevelSession(_entry.Level, _entry.ShortestLength, _services.Rules, keepsState: _bee);
             // The memory is invisible for the youngest (BAL, Minik): the strip shows blank cards, so only the count is seen.
@@ -367,6 +372,39 @@ namespace Roboya.Games.Common
             }
         }
 
+        private const string PredictAskVoice = "predict.ask";
+        private const string PredictSameVoice = "predict.same";
+        private const string PredictDifferVoice = "predict.differ";
+        private const string PatienceVoice = "value.patience";
+
+        private bool _predicting;
+        private Roboya.CodingEngine.World.GridPosition? _prediction;
+
+        /// <summary>
+        /// KUT-02 "tahmin et": a Kaşif-and-up child guesses where the robot will end up before the first run of a level that asks for it.
+        /// Pressing play again skips the guess, so it never blocks play; nothing is scored.
+        /// </summary>
+        private bool ShouldAskPrediction() =>
+            _entry.Dto.Options?.Predict == true
+            && _session.Attempts == 0
+            && _services.Profiles.HasActive
+            && _services.Profiles.Active.AgeBand != Roboya.CodingEngine.Profiles.AgeBand.Minik;
+
+        private void BeginPrediction()
+        {
+            _predicting = true;
+            _prediction = null;
+            _board.ClearPlanTrace();
+            _services.Voice.Play(PredictAskVoice);
+            _board.SetPredicting(true, cell =>
+            {
+                _predicting = false;
+                _prediction = cell;
+                _board.SetPredicting(false);
+                _ = PlayAsync();
+            });
+        }
+
         private async Awaitable PlayAsync()
         {
             if (!_session.CanPlay)
@@ -374,9 +412,28 @@ namespace Roboya.Games.Common
                 return;
             }
 
+            if (_predicting)
+            {
+                // Play pressed while waiting for a guess: skip the guess.
+                _predicting = false;
+                _prediction = null;
+                _board.SetPredicting(false);
+            }
+            else if (_prediction == null && ShouldAskPrediction())
+            {
+                BeginPrediction();
+                return;
+            }
+
             var token = _lifetime.Token;
             _tray.SetLocked(true);
             _board.ClearPlanTrace();
+            if (_prediction.HasValue)
+            {
+                // Stays on the board through the run so the guess and the real path can be compared.
+                _board.ShowPrediction(_prediction.Value);
+            }
+
             _tray.ClearMarks();
             _tray.Guide(null);
             _keptOldCommands = _bee && _session.Attempts > 0 && !_clearedSinceRun;
@@ -423,7 +480,7 @@ namespace Roboya.Games.Common
                 // BAL-02: the bee also ran what it still remembered; a gentle, teaching line rather than a scolding.
                 _services.Voice.Play(ForgotClearVoice);
             }
-            else if (result != null && result.Outcome != ExecutionOutcome.Bumped)
+            else if (result != null && result.Outcome != ExecutionOutcome.Bumped && !_prediction.HasValue)
             {
                 _services.Voice.Play(result.Outcome == ExecutionOutcome.MissingItems ? MissingItemsVoice : NotThereVoice);
             }
@@ -433,7 +490,14 @@ namespace Roboya.Games.Common
             if (result != null)
             {
                 _board.ShowStopRing(result.FinalState.Position);
+                if (_prediction.HasValue)
+                {
+                    // No score: the guess and the real stop are only shown side by side.
+                    _services.Voice.Play(_prediction.Value == result.FinalState.Position ? PredictSameVoice : PredictDifferVoice);
+                }
             }
+
+            _prediction = null;
 
             var pulse = _board.PulseMissing(result != null ? result.FinalState.CollectedMask : 0UL, token);
             await Tween.Delay(_entry.Dto.Game == GameId.KodlamaKutusu ? 2.5f : 1.5f, token);
@@ -479,6 +543,12 @@ namespace Roboya.Games.Common
             _services.Sfx.Play(SfxKind.Success);
             await _board.Celebrate(token);
             await _story.PlayOutroAsync(LevelStory.Outro(_entry.Dto), token, reward, PartUnlockedVoice);
+            if ((_index + 1) % ProgressQueries.CornerLength == 0)
+            {
+                // The turtle's value moment closes each forest corner (the map marks the same stones).
+                await _valueCard.ShowAsync(PatienceVoice, token);
+            }
+
             _stars.Clear();
             for (int i = 0; i < 3; i++)
             {

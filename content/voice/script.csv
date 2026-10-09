@@ -104,3 +104,7 @@ count.08,Sekiz!,Sayma: toplanan nesne sayısı sesli söylenir (BAL-01),
 count.09,Dokuz!,Sayma: toplanan nesne sayısı sesli söylenir (BAL-01),
 count.10,On!,Sayma: toplanan nesne sayısı sesli söylenir (BAL-01),
 card.backward.intro,Bu da geri kartı. Olduğum yerden bir adım arkaya yürürüm.,Kart tanıtım anı (Bal Peşinde),sabir-ormani.bal-pesinde.08
+predict.ask,"Robot nereye varacak? Parmağınla bir yere dokun, sonra oynat!",Tahmin et adımı: çalıştırmadan önce (KUT-02),sabir-ormani.kodlama-kutusu.05;sabir-ormani.kodlama-kutusu.07;sabir-ormani.kodlama-kutusu.10;sabir-ormani.kodlama-kutusu.12
+predict.same,Tahmin ettiğin yere vardım! Ama hedef biraz daha ileride.,"Tahmin tuttu, bölüm tamamlanmadı (KUT-02)",
+predict.differ,Ben başka bir yere vardım. Planına birlikte bakalım!,Tahmin tutmadı; ceza yok (KUT-02),
+value.patience,"Bilge Kaplumbağa der ki: sabır, acele etmeden önce planlamaktır. Bugün çok güzel planladın!",Sabır değer kartı: her orman köşesinin sonunda (F1-24),

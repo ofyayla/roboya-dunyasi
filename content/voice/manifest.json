@@ -471,6 +471,27 @@
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },
+    "predict.ask": {
+      "file": "audio/tr/predict.ask.mp3",
+      "source": "tts",
+      "textHash": "751aca7a557f38c6",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "predict.differ": {
+      "file": "audio/tr/predict.differ.mp3",
+      "source": "tts",
+      "textHash": "5cd5cdddf2ba927f",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "predict.same": {
+      "file": "audio/tr/predict.same.mp3",
+      "source": "tts",
+      "textHash": "5a4af1a68e3a23ca",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
     "rest.battery_empty": {
       "file": "audio/tr/rest.battery_empty.mp3",
       "source": "tts",
@@ -559,6 +580,13 @@
       "file": "audio/tr/roboya.success.generic.mp3",
       "source": "tts",
       "textHash": "2e4a5baeec846b2d",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "value.patience": {
+      "file": "audio/tr/value.patience.mp3",
+      "source": "tts",
+      "textHash": "f8f0bd54e0850925",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },

@@ -297,6 +297,10 @@ export interface LevelOptions {
    */
   beeMemoryVisible?: boolean;
   /**
+   * Kodlama Kutusu (KUT-02): before the first run the child taps where the robot will end up; the run is then compared with the guess.
+   */
+  predict?: boolean;
+  /**
    * Roboya builds the code together with the child (first level of a new concept).
    */
   guided?: boolean;

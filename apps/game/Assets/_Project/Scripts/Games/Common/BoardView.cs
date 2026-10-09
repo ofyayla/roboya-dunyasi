@@ -76,6 +76,8 @@ namespace Roboya.Games.Common
         private bool _hasNorthScenery;
         private ActorSprites _actor;
         private readonly List<VisualElement> _traceMarks = new List<VisualElement>();
+        private readonly List<VisualElement> _pickMarks = new List<VisualElement>();
+        private System.Action<GridPosition> _picked;
 
         public BoardView(RegionArt art = null)
         {
@@ -90,6 +92,14 @@ namespace Roboya.Games.Common
             Add(_layer);
             // Above the pieces: the robot is taller than a cell and would hide an arrow lying behind it.
             RegisterCallback<GeometryChangedEvent>(_ => Layout());
+            RegisterCallback<PointerDownEvent>(e =>
+            {
+                var cell = _picked != null ? CellAt(e.localPosition) : null;
+                if (cell.HasValue)
+                {
+                    _picked(cell.Value);
+                }
+            });
         }
 
         private bool UseSprites => _art != null && _art.RobotFront != null;
@@ -107,6 +117,8 @@ namespace Roboya.Games.Common
             _items.Clear();
             _trail.Clear();
             _traceMarks.Clear();
+            _pickMarks.Clear();
+            _picked = null;
             _goal = null;
             _robotDepthBucket = int.MinValue;
 
@@ -534,6 +546,11 @@ namespace Roboya.Games.Common
                 PlaceMark(mark);
             }
 
+            foreach (var mark in _pickMarks)
+            {
+                PlaceMark(mark);
+            }
+
             PlaceRobot();
             SortByDepth();
         }
@@ -632,6 +649,85 @@ namespace Roboya.Games.Common
         public void ShowStopRing(GridPosition at)
         {
             AddTraceMark("trace-stop", CellAnchor(at.X, at.Y), 0.9f);
+        }
+
+        /// <summary>
+        /// KUT-02 "tahmin et": while on, a tap on a free cell is reported (the child's guess of where the robot will end up).
+        /// Every free cell shows a small soft ring so the child sees what can be tapped.
+        /// </summary>
+        public void SetPredicting(bool on, System.Action<GridPosition> picked = null)
+        {
+            _picked = on ? picked : null;
+            foreach (var mark in _pickMarks)
+            {
+                mark.RemoveFromHierarchy();
+            }
+
+            _pickMarks.Clear();
+            if (!on || _level == null)
+            {
+                return;
+            }
+
+            for (int y = 0; y < _level.Grid.Height; y++)
+            {
+                for (int x = 0; x < _level.Grid.Width; x++)
+                {
+                    if (_level.Grid[new GridPosition(x, y)] == CellType.Blocked)
+                    {
+                        continue;
+                    }
+
+                    var mark = new VisualElement { pickingMode = PickingMode.Ignore };
+                    mark.AddToClassList("trace-mark");
+                    mark.AddToClassList("trace-pick");
+                    var anchor = CellAnchor(x, y);
+                    mark.userData = new Vector3(anchor.x, anchor.y, 0.5f);
+                    _pickMarks.Add(mark);
+                    _decals.Add(mark);
+                    PlaceMark(mark);
+                }
+            }
+        }
+
+        /// <summary>The child's guess, drawn as a blue ring; it stays while the run plays so the two can be compared.</summary>
+        public void ShowPrediction(GridPosition at)
+        {
+            AddTraceMark("trace-predict", CellAnchor(at.X, at.Y), 0.9f);
+        }
+
+        /// <summary>The cell under a point in this element's own space, or null (outside the board or on an obstacle).</summary>
+        public GridPosition? CellAt(Vector2 local)
+        {
+            if (_level == null || !_proj.IsValid)
+            {
+                return null;
+            }
+
+            GridPosition? best = null;
+            float bestDistance = float.MaxValue;
+            for (int y = 0; y < _level.Grid.Height; y++)
+            {
+                for (int x = 0; x < _level.Grid.Width; x++)
+                {
+                    var pos = new GridPosition(x, y);
+                    if (_level.Grid[pos] == CellType.Blocked)
+                    {
+                        continue;
+                    }
+
+                    var center = _proj.CellCenter(x, y);
+                    float reach = _proj.Cell * _proj.ScaleAt(y + 0.5f) * 0.55f;
+                    float d = Vector2.Distance(center, local);
+                    if (d < reach && d < bestDistance)
+                    {
+                        bestDistance = d;
+                        best = pos;
+                    }
+                }
+            }
+
+            return best;
         }
 
         public void ClearPlanTrace()
