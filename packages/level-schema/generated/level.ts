@@ -107,7 +107,20 @@ export type RobotPose = "front" | "happy" | "curious" | "surprised" | "proud" | 
  * Expression of the region character (Sabır Ormanı: Bilge Kaplumbağa).
  */
 export type FriendPose = "front" | "happy" | "explaining" | "thanks";
-export type StoryProp = "apple" | "pear" | "gear" | "log" | "tree" | "bush" | "rock";
+export type StoryProp =
+  | "apple"
+  | "pear"
+  | "gear"
+  | "log"
+  | "tree"
+  | "bush"
+  | "rock"
+  | "bee"
+  | "flower"
+  | "honey"
+  | "beehive"
+  | "box"
+  | "magnifier";
 
 /**
  * Roboya Dünyası level, schema version 1. Single source of truth for the game, validator and editor.

@@ -26,6 +26,24 @@ namespace Roboya.Games.Common
 
         public int Count => _items.Count;
 
+        /// <summary>How many of the wanted items are collected so far.</summary>
+        public int CollectedCount
+        {
+            get
+            {
+                int n = 0;
+                foreach (var (_, view) in _items)
+                {
+                    if (view.ClassListContains("goal-badge__item--done"))
+                    {
+                        n++;
+                    }
+                }
+
+                return n;
+            }
+        }
+
         public bool IsCollected(int itemIndex)
         {
             foreach (var (index, view) in _items)

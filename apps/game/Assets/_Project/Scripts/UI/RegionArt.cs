@@ -58,6 +58,10 @@ namespace Roboya.UI
         [SerializeField] private Sprite propTree;
         [SerializeField] private Sprite propRock;
         [SerializeField] private Sprite propBush;
+        [SerializeField] private Sprite propBox;
+        [SerializeField] private Sprite propMagnifier;
+        [SerializeField] private Sprite propBeehive;
+        [SerializeField] private Sprite propHoneyJar;
 
         /// <summary>
         /// The character the child is programming in a game: Ari the bee in Bal Peşinde, Roboya elsewhere. Ari's happy
@@ -126,6 +130,12 @@ namespace Roboya.UI
                 case StoryProp.Tree: return propTree;
                 case StoryProp.Rock: return propRock;
                 case StoryProp.Bush: return propBush;
+                case StoryProp.Bee: return ariFront;
+                case StoryProp.Flower: return flowerYellow;
+                case StoryProp.Honey: return propHoneyJar != null ? propHoneyJar : honeyDrop;
+                case StoryProp.Beehive: return propBeehive;
+                case StoryProp.Box: return propBox;
+                case StoryProp.Magnifier: return propMagnifier;
                 default: return null;
             }
         }

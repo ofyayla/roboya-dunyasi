@@ -515,6 +515,11 @@ namespace Roboya.UI
                 case StoryProp.Rock: return 0.16f;
                 case StoryProp.Log: return 0.1f;
                 case StoryProp.Gear: return 0.14f;
+                case StoryProp.Bee: return 0.24f;
+                case StoryProp.Beehive: return 0.22f;
+                case StoryProp.Box: return 0.18f;
+                case StoryProp.Magnifier: return 0.18f;
+                case StoryProp.Flower: return 0.16f;
                 default: return 0.12f;
             }
         }

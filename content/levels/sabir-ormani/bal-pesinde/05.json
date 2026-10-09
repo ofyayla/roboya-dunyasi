@@ -82,11 +82,20 @@
   "story": {
     "intro": {
       "roboya": "curious",
-      "friend": "explaining"
+      "friend": "explaining",
+      "props": [
+        "bee",
+        "flower",
+        "flower"
+      ]
     },
     "outro": {
       "roboya": "happy",
-      "friend": "happy"
+      "friend": "happy",
+      "props": [
+        "bee",
+        "flower"
+      ]
     }
   },
   "alternativeLevelId": "sabir-ormani.bal-pesinde.04",

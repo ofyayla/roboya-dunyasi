@@ -96,7 +96,7 @@ namespace Roboya.Map
                     : state == NodeState.Open ? "stone--open"
                     : "stone--grownup");
 
-                stone.Q<Icon>("stone-icon").Kind = state == NodeState.NeedsGrownUp ? IconKind.Lock : IconKind.Forward;
+                stone.Q<Icon>("stone-icon").Kind = state == NodeState.NeedsGrownUp ? IconKind.Lock : GameIcon(i);
                 var stars = stone.Q("stone-stars");
                 int earned = book.Stars(_path[i]);
                 for (int s = 0; s < 3; s++)
@@ -110,14 +110,44 @@ namespace Roboya.Map
             Layout();
         }
 
+        /// <summary>The stone's picture says which game it holds: compass, box or bee.</summary>
+        private IconKind GameIcon(int index)
+        {
+            switch (_services.Catalog.Find(_path[index])?.Dto.Game)
+            {
+                case Roboya.CodingEngine.Levels.Generated.GameId.KodlamaKutusu: return IconKind.Box;
+                case Roboya.CodingEngine.Levels.Generated.GameId.BalPesinde: return IconKind.Bee;
+                default: return IconKind.Compass;
+            }
+        }
+
+        private string GameClass(int index)
+        {
+            switch (_services.Catalog.Find(_path[index])?.Dto.Game)
+            {
+                case Roboya.CodingEngine.Levels.Generated.GameId.KodlamaKutusu: return "kutu";
+                case Roboya.CodingEngine.Levels.Generated.GameId.BalPesinde: return "bal";
+                default: return "yon";
+            }
+        }
+
         private VisualElement BuildStone(int index)
         {
             var stone = new VisualElement { name = "stone-" + (index + 1) };
             stone.AddToClassList("stone");
             var face = new VisualElement();
             face.AddToClassList("stone__face");
-            face.Add(new Icon(IconKind.Forward) { name = "stone-icon", Color = Color.white, Accent = new Color(0.45f, 0.36f, 0.3f) });
+            face.Add(new Icon(GameIcon(index)) { name = "stone-icon", Color = Color.white, Accent = new Color(0.45f, 0.36f, 0.3f) });
             stone.Add(face);
+            stone.AddToClassList("stone--" + GameClass(index));
+            // Every few levels the ship gets a repair part (ILR-03): a small gear marks those stones.
+            if ((index + 1) % _services.ProgressRules.LevelsPerPart == 0)
+            {
+                var gear = new Icon(IconKind.Gear) { Color = new Color(0.45f, 0.45f, 0.5f), Accent = Color.white, name = "stone-part" };
+                gear.AddToClassList("stone__part");
+                stone.Add(gear);
+            }
+
             var stars = new VisualElement { name = "stone-stars" };
             stars.AddToClassList("stone__stars");
             for (int s = 0; s < 3; s++)
