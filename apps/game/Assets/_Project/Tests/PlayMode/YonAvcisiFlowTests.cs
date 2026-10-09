@@ -66,8 +66,7 @@ namespace Roboya.Tests.PlayMode
             yield return null;
             AudioSource voice = null;
             yield return WaitUntil(
-                () => (voice = UnityEngine.Object.FindAnyObjectByType<AudioSource>()) != null && voice.clip != null
-                    && voice.clip.name == "yon_avcisi.l01.intro", // the map's welcome line may play first
+                () => (voice = VoiceSourcePlaying("yon_avcisi.l01.intro")) != null, // the map's welcome line may play first
                 10f);
             Assert.AreEqual("yon_avcisi.l01.intro", voice.clip.name, "intro narration is loaded by key");
             Assert.Greater(voice.clip.length, 1f);
@@ -257,6 +256,20 @@ namespace Roboya.Tests.PlayMode
 
             Tap(root.Q("story-continue"));
             yield return WaitUntil(() => !story.IsOpen, 5f);
+        }
+
+        /// <summary>The narration source holding this clip (sound effects use another source).</summary>
+        internal static AudioSource VoiceSourcePlaying(string key)
+        {
+            foreach (var source in UnityEngine.Object.FindObjectsByType<AudioSource>(FindObjectsSortMode.None))
+            {
+                if (source.clip != null && source.clip.name == key)
+                {
+                    return source;
+                }
+            }
+
+            return null;
         }
 
         internal static VisualElement FindRoot()
