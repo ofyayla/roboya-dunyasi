@@ -24,3 +24,10 @@ Ses "arı" ve "çiçek" diyor, ekranda Roboya ve elma vardı; toplama bölümler
 
 - **Tahta:** Kodlama Kutusu bölümleri çim yerine ahşap kutu kapağı üzerinde oynanır (`ObliqueGround.SetBox`: ahşap yüzey, çerçeve, ahşap damarı); PRD'deki "masa oyunu görünümü".
 - **Hata avcısı = izle → bul → düzelt:** bölüm hikâyesinden sonra hazır (yanlış) kod bir kez kendiliğinden çalışır ve ayak izi bırakarak yanlış yere varır (`LevelSession.Demo`, deneme sayılmaz, yıldız etkilenmez); Roboya "kutudan gelen kartlardan biri hatalı" der (`kodlama_kutusu.hunt`). Demo bitene kadar şerit kilitlidir. Hazır kartlar, çocuk değiştirene kadar ahşap çerçeve ve büyüteç simgesiyle ("kutudan") görünür; çocuğun koyduğu kart normal görünür. İpucu merdiveni (hatalı kartı vurgula) aynen çalışır.
+
+## Güncelleme: P1 (sayma, eksik gösterme, harita taşları, hikâye nesneleri)
+
+- **Sayma:** birden fazla nesne toplanacaksa her toplamada "Bir!", "İki!"… sesli söylenir (`count.01–10`).
+- **Eksik göster, ceza verme:** başarısız çalıştırmadan sonra toplanmamış hedef nesneler (hepsi toplandıysa hedef karakter) bir süre nabız atar.
+- **Harita taşları oyunu söyler:** pusula (Yön Avcısı, yuvarlak), kutu (Kodlama Kutusu, yuvarlatılmış kare), arı (Bal Peşinde, bal halkalı); her 5. taşta ödül parçasını gösteren küçük bir dişli.
+- **Hikâye nesneleri:** `StoryProp` değerlerine `bee, flower, honey, beehive, box, magnifier` eklendi (geriye uyumlu: yalnız yeni değerler; şema sürümü değişmedi, dönüştürme gerekmedi). Kodlama Kutusu sahnelerinde kutu (hata avcısında büyüteç da), Bal Peşinde sahnelerinde arı, çiçek, bal ve kovan görünür. Görseller Higgsfield ile üretildi (`docs/art/sources/prop-sheet.png`), geçici.

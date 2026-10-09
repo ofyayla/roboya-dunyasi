@@ -27,5 +27,8 @@ namespace Roboya.UI
         Easier,
         Battery,
         Magnifier,
+        Compass,
+        Box,
+        Bee,
     }
 }

@@ -236,6 +236,54 @@ namespace Roboya.UI
                     RoundedRect(p, P(0.15f, 0.36f), P(0.27f, 0.68f), s * 0.03f);
                     p.Fill();
                     break;
+                case IconKind.Compass:
+                    // Yön Avcısı: a compass with a north needle.
+                    p.lineWidth = s * 0.08f;
+                    p.BeginPath();
+                    p.Arc(P(0.5f, 0.5f), s * 0.38f, Angle.Degrees(0f), Angle.Degrees(360f));
+                    p.Stroke();
+                    p.BeginPath();
+                    p.MoveTo(P(0.5f, 0.18f));
+                    p.LineTo(P(0.63f, 0.5f));
+                    p.LineTo(P(0.37f, 0.5f));
+                    p.ClosePath();
+                    p.Fill();
+                    p.fillColor = _accent;
+                    p.BeginPath();
+                    p.MoveTo(P(0.5f, 0.82f));
+                    p.LineTo(P(0.63f, 0.5f));
+                    p.LineTo(P(0.37f, 0.5f));
+                    p.ClosePath();
+                    p.Fill();
+                    break;
+                case IconKind.Box:
+                    // Kodlama Kutusu: an open box seen from the front.
+                    p.lineWidth = s * 0.08f;
+                    RoundedRect(p, P(0.16f, 0.4f), P(0.84f, 0.84f), s * 0.06f);
+                    p.Stroke();
+                    Line(p, P(0.1f, 0.4f), P(0.9f, 0.4f));
+                    Line(p, P(0.4f, 0.58f), P(0.6f, 0.58f));
+                    Line(p, P(0.22f, 0.4f), P(0.3f, 0.2f));
+                    Line(p, P(0.78f, 0.4f), P(0.7f, 0.2f));
+                    break;
+                case IconKind.Bee:
+                    // Bal Peşinde: a round bee with two stripes and two wings.
+                    p.BeginPath();
+                    p.Arc(P(0.5f, 0.58f), s * 0.27f, Angle.Degrees(0f), Angle.Degrees(360f));
+                    p.Fill();
+                    p.strokeColor = _accent;
+                    p.lineWidth = s * 0.07f;
+                    Line(p, P(0.42f, 0.42f), P(0.42f, 0.76f));
+                    Line(p, P(0.58f, 0.42f), P(0.58f, 0.76f));
+                    p.strokeColor = _color;
+                    p.lineWidth = s * 0.06f;
+                    p.BeginPath();
+                    p.Arc(P(0.36f, 0.28f), s * 0.12f, Angle.Degrees(0f), Angle.Degrees(360f));
+                    p.Stroke();
+                    p.BeginPath();
+                    p.Arc(P(0.64f, 0.28f), s * 0.12f, Angle.Degrees(0f), Angle.Degrees(360f));
+                    p.Stroke();
+                    break;
                 case IconKind.Magnifier:
                     // A magnifying glass: the bug hunter's tool (Kodlama Kutusu hata avcısı).
                     p.lineWidth = s * 0.1f;

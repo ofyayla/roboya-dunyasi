@@ -227,6 +227,7 @@ namespace Roboya.Tests.PlayMode
             {
                 case 2: return "04-level3-new-card";
                 case 3: return "04-level4-story";
+                case 4: return "04-level5-story-bee";
                 case 6: return "04-level7-story";
                 case 7: return "04-level8-story";
                 default: return null;

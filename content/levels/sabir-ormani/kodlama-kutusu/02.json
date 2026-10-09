@@ -70,11 +70,18 @@
   "story": {
     "intro": {
       "roboya": "surprised",
-      "friend": "explaining"
+      "friend": "explaining",
+      "props": [
+        "box",
+        "magnifier"
+      ]
     },
     "outro": {
       "roboya": "happy",
-      "friend": "thanks"
+      "friend": "thanks",
+      "props": [
+        "box"
+      ]
     }
   },
   "solution": {

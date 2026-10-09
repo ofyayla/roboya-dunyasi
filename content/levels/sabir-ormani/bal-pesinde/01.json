@@ -65,11 +65,19 @@
   "story": {
     "intro": {
       "roboya": "curious",
-      "friend": "explaining"
+      "friend": "explaining",
+      "props": [
+        "bee",
+        "flower"
+      ]
     },
     "outro": {
       "roboya": "happy",
-      "friend": "happy"
+      "friend": "happy",
+      "props": [
+        "bee",
+        "flower"
+      ]
     }
   },
   "solution": {

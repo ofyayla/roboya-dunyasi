@@ -299,6 +299,57 @@ namespace Roboya.Games.Common
             item.View.style.scale = new Scale(Vector3.one);
         }
 
+        /// <summary>
+        /// After a run that fell short: what is still missing breathes for a moment, so the child sees where to go next. Items
+        /// still on the board that the goal needs pulse; when everything is collected the goal character pulses instead.
+        /// </summary>
+        public async Awaitable PulseMissing(ulong collectedMask, CancellationToken token)
+        {
+            if (_level == null)
+            {
+                return;
+            }
+
+            var targets = new List<Piece>();
+            ulong needed = _level.Goal.MustCollectMask;
+            for (int i = 0; i < _items.Count && i < Level.MaxItems; i++)
+            {
+                if ((needed & (1UL << i)) != 0 && (collectedMask & (1UL << i)) == 0)
+                {
+                    targets.Add(_items[i]);
+                }
+            }
+
+            if (targets.Count == 0 && _goal != null)
+            {
+                targets.Add(_goal);
+            }
+
+            if (targets.Count == 0)
+            {
+                return;
+            }
+
+            try
+            {
+                await Tween.Run(1.4f, t =>
+                {
+                    float s = 1f + (0.22f * Mathf.Abs(Mathf.Sin(t * Mathf.PI * 2f)));
+                    foreach (var piece in targets)
+                    {
+                        piece.View.style.scale = new Scale(new Vector3(s, s, 1f));
+                    }
+                }, token);
+            }
+            finally
+            {
+                foreach (var piece in targets)
+                {
+                    piece.View.style.scale = new Scale(Vector3.one);
+                }
+            }
+        }
+
         public async Awaitable Celebrate(CancellationToken token)
         {
             _mood = Mood.Happy;

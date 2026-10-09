@@ -387,7 +387,7 @@ namespace Roboya.CodingEngine.Levels.Generated
     /// </summary>
     public enum FriendPose { Explaining, Front, Happy, Thanks };
 
-    public enum StoryProp { Apple, Bush, Gear, Log, Pear, Rock, Tree };
+    public enum StoryProp { Apple, Bee, Beehive, Box, Bush, Flower, Gear, Honey, Log, Magnifier, Pear, Rock, Tree };
 
     /// <summary>
     /// Roboya's expression.
@@ -1168,12 +1168,24 @@ namespace Roboya.CodingEngine.Levels.Generated
             {
                 case "apple":
                     return StoryProp.Apple;
+                case "bee":
+                    return StoryProp.Bee;
+                case "beehive":
+                    return StoryProp.Beehive;
+                case "box":
+                    return StoryProp.Box;
                 case "bush":
                     return StoryProp.Bush;
+                case "flower":
+                    return StoryProp.Flower;
                 case "gear":
                     return StoryProp.Gear;
+                case "honey":
+                    return StoryProp.Honey;
                 case "log":
                     return StoryProp.Log;
+                case "magnifier":
+                    return StoryProp.Magnifier;
                 case "pear":
                     return StoryProp.Pear;
                 case "rock":
@@ -1197,14 +1209,32 @@ namespace Roboya.CodingEngine.Levels.Generated
                 case StoryProp.Apple:
                     serializer.Serialize(writer, "apple");
                     return;
+                case StoryProp.Bee:
+                    serializer.Serialize(writer, "bee");
+                    return;
+                case StoryProp.Beehive:
+                    serializer.Serialize(writer, "beehive");
+                    return;
+                case StoryProp.Box:
+                    serializer.Serialize(writer, "box");
+                    return;
                 case StoryProp.Bush:
                     serializer.Serialize(writer, "bush");
+                    return;
+                case StoryProp.Flower:
+                    serializer.Serialize(writer, "flower");
                     return;
                 case StoryProp.Gear:
                     serializer.Serialize(writer, "gear");
                     return;
+                case StoryProp.Honey:
+                    serializer.Serialize(writer, "honey");
+                    return;
                 case StoryProp.Log:
                     serializer.Serialize(writer, "log");
+                    return;
+                case StoryProp.Magnifier:
+                    serializer.Serialize(writer, "magnifier");
                     return;
                 case StoryProp.Pear:
                     serializer.Serialize(writer, "pear");

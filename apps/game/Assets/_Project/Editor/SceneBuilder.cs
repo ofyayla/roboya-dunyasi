@@ -209,6 +209,10 @@ namespace Roboya.EditorTools
             so.FindProperty("propTree").objectReferenceValue = S("SabirOrmani/prop_tree");
             so.FindProperty("propRock").objectReferenceValue = S("SabirOrmani/prop_rock");
             so.FindProperty("propBush").objectReferenceValue = S("SabirOrmani/prop_bush");
+            so.FindProperty("propBox").objectReferenceValue = S("SabirOrmani/prop_box");
+            so.FindProperty("propMagnifier").objectReferenceValue = S("SabirOrmani/prop_magnifier");
+            so.FindProperty("propBeehive").objectReferenceValue = S("SabirOrmani/prop_beehive");
+            so.FindProperty("propHoneyJar").objectReferenceValue = S("SabirOrmani/prop_honey_jar");
             SetSprites(so.FindProperty("obstacles"), S, "SabirOrmani/prop_tree", "SabirOrmani/prop_rock", "SabirOrmani/prop_bush");
             SetSprites(so.FindProperty("decor"), S, "SabirOrmani/prop_bush", "SabirOrmani/prop_tree", "SabirOrmani/prop_bush");
 

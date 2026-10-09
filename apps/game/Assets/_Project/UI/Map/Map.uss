@@ -561,3 +561,24 @@
     color: rgb(74, 51, 36);
     white-space: normal;
 }
+
+/* Stones show the game: compass (round), box (rounded square), bee (round with a honey ring). */
+.stone--kutu .stone__face {
+    border-radius: 22px;
+}
+
+.stone--bal .stone__face {
+    border-color: rgb(214, 160, 40);
+}
+
+.stone--current.stone--bal .stone__face {
+    border-color: rgb(255, 255, 255);
+}
+
+.stone__part {
+    position: absolute;
+    top: -10px;
+    right: -6px;
+    width: 38px;
+    height: 38px;
+}

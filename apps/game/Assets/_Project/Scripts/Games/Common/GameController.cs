@@ -28,6 +28,7 @@ namespace Roboya.Games.Common
         private const string PartUnlockedVoice = "reward.part_unlocked";
         private const string ForgotClearVoice = "bal_pesinde.forgot_clear";
         private const string HuntVoice = "kodlama_kutusu.hunt";
+        private const int CountVoices = 10;
 
         private readonly GameServices _services;
         private readonly IReadOnlyList<LevelEntry> _levels;
@@ -218,6 +219,12 @@ namespace Roboya.Games.Common
                     rest.Add(HuntVoice);
                 }
 
+                int wanted = entry.Dto.Goal?.Collect != null ? entry.Dto.Goal.Collect.Count : 0;
+                for (int n = 1; wanted >= 2 && n <= Mathf.Min(wanted, CountVoices); n++)
+                {
+                    rest.Add("count." + n.ToString("D2"));
+                }
+
                 await _services.Voice.PreloadAsync(rest);
                 if (_entry == entry && withStory && entry.Dto.StarterProgram != null)
                 {
@@ -276,6 +283,12 @@ namespace Roboya.Games.Common
                         break;
                     case ExecutionEventKind.Collected:
                         _badge.MarkCollected(e.ItemIndex);
+                        // Counting aloud (BAL-01): "bir, iki, üç" when more than one thing is wanted.
+                        if (_badge.Count >= 2 && _badge.CollectedCount >= 1 && _badge.CollectedCount <= CountVoices)
+                        {
+                            _services.Voice.Play("count." + _badge.CollectedCount.ToString("D2"));
+                        }
+
                         await _board.AnimateCollect(e.ItemIndex, token);
                         break;
                     case ExecutionEventKind.Finished:
@@ -393,7 +406,10 @@ namespace Roboya.Games.Common
             }
 
             // Kodlama Kutusu (KUT-02): the footprints stay a little longer so the child can compare the planned and the real path.
-            await Tween.Delay(_entry.Dto.Game == GameId.KodlamaKutusu ? 2.5f : 0.8f, token);
+            // What is still missing breathes meanwhile, so the child sees where to go next (no penalty, only direction).
+            var pulse = _board.PulseMissing(result != null ? result.FinalState.CollectedMask : 0UL, token);
+            await Tween.Delay(_entry.Dto.Game == GameId.KodlamaKutusu ? 2.5f : 1.5f, token);
+            await pulse;
             if (!_bee)
             {
                 _board.ResetRobot(_entry.Level.Start);

@@ -57,11 +57,17 @@
   "story": {
     "intro": {
       "roboya": "curious",
-      "friend": "explaining"
+      "friend": "explaining",
+      "props": [
+        "box"
+      ]
     },
     "outro": {
       "roboya": "happy",
-      "friend": "happy"
+      "friend": "happy",
+      "props": [
+        "box"
+      ]
     }
   },
   "alternativeLevelId": "sabir-ormani.kodlama-kutusu.04",

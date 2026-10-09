@@ -53,3 +53,7 @@ MonoBehaviour:
   propTree: {fileID: 21300000, guid: ede7f0f8eae004f95866fbe34ac1fce1, type: 3}
   propRock: {fileID: 21300000, guid: ea27f1fafc8c2473ea28b351e9dc2ec9, type: 3}
   propBush: {fileID: 21300000, guid: 571206f3653d74e6789e5edd4cbc6cad, type: 3}
+  propBox: {fileID: 21300000, guid: 74d8348f704e5421abc907bdce1e8417, type: 3}
+  propMagnifier: {fileID: 21300000, guid: cc217bd32d1114045bd46eba3dd7112e, type: 3}
+  propBeehive: {fileID: 21300000, guid: 50599eae583b046e3b7a44c2ca481abe, type: 3}
+  propHoneyJar: {fileID: 21300000, guid: a7444ea2a89124ead8f6fce91dc32ff9, type: 3}
