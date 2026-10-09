@@ -559,7 +559,9 @@ namespace Roboya.Games.Common
                 reward != null ? (System.Action)(() => _services.Navigator.GoToWorkshop()) : null);
             if ((_index + 1) % ProgressQueries.CornerLength == 0)
             {
-                // The turtle's value moment closes each forest corner (the map marks the same stones).
+                // The turtle's value moment closes each forest corner (the map marks the same stones). Roboya finishes his own
+                // success line first; starting the film would cut it off.
+                await WaitForQuietVoiceAsync(token);
                 await _valueCard.ShowAsync(PatienceVoice, token);
             }
 
@@ -573,6 +575,20 @@ namespace Roboya.Games.Common
 
             _result.RemoveFromClassList("hidden");
             RenderProgress();
+        }
+
+        /// <summary>Waits until no narration has played for a short moment (the success line, the part reward), at most 25 s.</summary>
+        private async Awaitable WaitForQuietVoiceAsync(CancellationToken token)
+        {
+            float quiet = 0f;
+            float waited = 0f;
+            while (quiet < 0.8f && waited < 25f)
+            {
+                await Awaitable.NextFrameAsync(token);
+                float dt = Time.unscaledDeltaTime;
+                waited += dt;
+                quiet = _services.Voice.IsPlaying ? 0f : quiet + dt;
+            }
         }
 
         /// <summary>
