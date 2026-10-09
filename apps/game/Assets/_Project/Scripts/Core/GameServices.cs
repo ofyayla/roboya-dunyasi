@@ -24,7 +24,8 @@ namespace Roboya.Core
             AnalyticsService analytics,
             PrivacyService privacy,
             SubscriptionService subscription,
-            ISfxPlayer sfx)
+            ISfxPlayer sfx,
+            IMusicPlayer music = null)
         {
             Catalog = catalog;
             Voice = voice;
@@ -44,6 +45,7 @@ namespace Roboya.Core
             Privacy = privacy;
             Subscription = subscription;
             Sfx = sfx;
+            Music = music ?? new NullMusic();
         }
 
         /// <summary>All levels, parsed once at start-up.</summary>
@@ -86,6 +88,8 @@ namespace Roboya.Core
 
         /// <summary>Short game sounds (steps, turns, collecting, bumping, placing, winning).</summary>
         public ISfxPlayer Sfx { get; }
+
+        public IMusicPlayer Music { get; }
 
         public ISceneNavigator Navigator { get; }
 

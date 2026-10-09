@@ -33,6 +33,8 @@
   "trace.title": "Yol gölgesi",
   "trace.on": "Açık",
   "trace.off": "Kapalı",
+  "music.title": "Müzik",
+  "music.note": "Haritada ve oyunda çalan sakin orman müziği bu cihaz için açılır veya kapatılır. Anlatım sesi bundan etkilenmez.",
   "trace.note": "Seçilen kartların robotun basacağı yerleri tahtada soluk gölge olarak gösterir. Minik ve Kaşif için varsayılan olarak açıktır.",
   "time.note": "Süre dolunca devam eden bölüm bitirilebilir, yenisi başlamaz. Roboya'nın şarjı biter.",
   "rest.parent": "Süreyi değiştir",
