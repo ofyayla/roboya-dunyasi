@@ -27,6 +27,8 @@ namespace Roboya.Map
         private readonly VisualElement _robot = new VisualElement { name = "path-robot" };
         private NodeState[] _states = new NodeState[0];
         private readonly Action _onRest;
+        // Points ahead from the next stone so a child back from a level sees the trail goes on.
+        private readonly Icon _ahead = new Icon(IconKind.Next) { name = "path-ahead", Color = new Color(1f, 0.78f, 0.15f), Accent = Color.white };
         private readonly List<VisualElement> _corners = new List<VisualElement>();
         private float _time;
         private bool _needsCentering = true;
@@ -73,6 +75,9 @@ namespace Roboya.Map
             }
 
             _scroll.Add(_robot);
+            _ahead.pickingMode = PickingMode.Ignore;
+            _ahead.AddToClassList("path__ahead");
+            _scroll.Add(_ahead);
 
             var bar = new VisualElement();
             bar.AddToClassList("map-bar");
@@ -255,6 +260,15 @@ namespace Roboya.Map
             _robot.style.left = points[current].x - (rh * 0.48f);
             _robot.style.top = points[current].y - (StoneSize * 0.3f) - rh;
 
+            int nextStone = Array.IndexOf(_states, NodeState.Current);
+            bool hasAhead = nextStone >= 0 && nextStone < n - 1;
+            _ahead.style.display = hasAhead ? DisplayStyle.Flex : DisplayStyle.None;
+            if (hasAhead)
+            {
+                _ahead.style.left = points[nextStone].x + (StoneSize * 0.5f) + 6f;
+                _ahead.style.top = points[nextStone].y - 24f;
+            }
+
             if (_needsCentering)
             {
                 // Roboya always sits on the next stone; bring that stretch of the trail into view.
@@ -274,6 +288,7 @@ namespace Roboya.Map
             }
 
             _robot.style.translate = new Translate(0f, -Mathf.Abs(Mathf.Sin(_time * 2.2f)) * 6f);
+            _ahead.style.translate = new Translate(Mathf.Abs(Mathf.Sin(_time * 3f)) * 10f, 0f);
         }
 
         /// <summary>The dirt trail under the stones, drawn with the board palette (ObliqueGround).</summary>

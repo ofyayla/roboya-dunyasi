@@ -24,6 +24,7 @@ namespace Roboya.Games.Common
         private const string MissingItemsVoice = "roboya.missing_items.01";
         private const string PlayPromptVoice = "roboya.play_prompt";
         private const string AskGrownUpVoice = "roboya.ask_grownup";
+        private const string MoreAheadVoice = "map.welcome";
         private const string AlternativeVoice = "roboya.alternative_offer";
         private const string PartUnlockedVoice = "reward.part_unlocked";
         private const string ForgotClearVoice = "bal_pesinde.forgot_clear";
@@ -660,36 +661,42 @@ namespace Roboya.Games.Common
             Start(_index, withStory: false);
         }
 
-        /// <summary>Next playable level on the path; otherwise back to the map (GLR-01: ask a grown-up past the free tier).</summary>
+        /// <summary>
+        /// After the result the child goes back to the map, where the trail shows the next stone; levels are not chained
+        /// so the child sees there is more ahead. Past the free tier Roboya asks a grown-up instead (GLR-01).
+        /// </summary>
         private void Next()
         {
             // Today's play time is used up: Roboya rests; the map shows the rest screen (VEL-02).
-            if (!_services.ScreenTime.IsExhausted)
+            if (_services.ScreenTime.IsExhausted)
             {
-                var states = ProgressQueries.PathStates(_services, _path);
-                int start = ProgressQueries.StartIndex(_services, _path);
-                for (int next = _index + 1; next < _levels.Count; next++)
+                _services.Navigator.GoToMap();
+                return;
+            }
+
+            var states = ProgressQueries.PathStates(_services, _path);
+            int start = ProgressQueries.StartIndex(_services, _path);
+            for (int next = _index + 1; next < _levels.Count; next++)
+            {
+                int pathIndex = _path.IndexOf(_levels[next].Id);
+                var state = pathIndex >= 0 ? states[pathIndex] : NodeState.Locked;
+                if (PathRules.CanPlay(state))
                 {
-                    int pathIndex = _path.IndexOf(_levels[next].Id);
-                    var state = pathIndex >= 0 ? states[pathIndex] : NodeState.Locked;
-                    if (PathRules.CanPlay(state))
-                    {
-                        Start(next);
-                        return;
-                    }
+                    _services.Navigator.GoToMap(MoreAheadVoice);
+                    return;
+                }
 
-                    // Levels before the child's age start are skipped quietly (they are paid and not theirs);
-                    // anything from the start on that is paid asks a grown-up (GLR-01).
-                    if (state == NodeState.NeedsGrownUp && pathIndex >= start)
-                    {
-                        _services.Navigator.GoToMap(AskGrownUpVoice);
-                        return;
-                    }
+                // Levels before the child's age start are skipped quietly (they are paid and not theirs);
+                // anything from the start on that is paid asks a grown-up (GLR-01).
+                if (state == NodeState.NeedsGrownUp && pathIndex >= start)
+                {
+                    _services.Navigator.GoToMap(AskGrownUpVoice);
+                    return;
+                }
 
-                    if (state != NodeState.NeedsGrownUp)
-                    {
-                        break;
-                    }
+                if (state != NodeState.NeedsGrownUp)
+                {
+                    break;
                 }
             }
 

@@ -91,12 +91,11 @@ namespace Roboya.Tests.PlayMode
             Assert.AreEqual(3, stars);
 
             Tap(root.Q("next"));
+            VisualElement map = null;
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Map" && (map = FindRoot())?.Q("path") != null, 10f);
             yield return null;
-            Assert.IsTrue(root.Q("result").ClassListContains("hidden"));
-            yield return PassStory(root);
-            Assert.AreEqual(0, root.Q("plan").Query(className: "card").ToList().Count);
-            var dots = root.Q("progress").Children().ToList();
-            Assert.IsTrue(dots[1].ClassListContains("progress__dot--current"), "next button opens level 2");
+            Assert.AreEqual(DisplayStyle.Flex, map.Q("path").resolvedStyle.display, "next returns to the path, not the next level");
+            Assert.AreEqual(DisplayStyle.Flex, map.Q("path-ahead").resolvedStyle.display, "an arrow shows there is more ahead");
         }
 
         [UnityTest]
@@ -199,7 +198,13 @@ namespace Roboya.Tests.PlayMode
                 else
                 {
                     Tap(root.Q("next"));
+                    VisualElement map = null;
+                    yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Map" && (map = FindRoot())?.Q("path") != null, 10f);
                     yield return null;
+                    Tap(map.Q("stone-" + (i + 2)));
+                    yield return WaitUntil(
+                        () => SceneManager.GetActiveScene().name == "Game" && (root = FindRoot()) != null && root.Q("palette")?.childCount > 0,
+                        10f);
                 }
             }
         }

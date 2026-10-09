@@ -594,3 +594,9 @@
 .path__corner--reached {
     opacity: 1;
 }
+
+.path__ahead {
+    position: absolute;
+    width: 56px;
+    height: 56px;
+}
