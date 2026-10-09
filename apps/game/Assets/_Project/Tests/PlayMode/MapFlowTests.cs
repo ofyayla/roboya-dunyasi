@@ -473,7 +473,9 @@ namespace Roboya.Tests.PlayMode
                 yield return WaitUntil(() => game.Q("play").enabledSelf, 15f);
                 yield return WaitForVoice("bal_pesinde.forgot_clear");
 
-                Tap(game.Q("clear"));
+                // Bal Peşinde has its own big "Temizle" button next to "Git"; the small corner one is hidden.
+                Assert.IsTrue(game.Q("clear").ClassListContains("hidden"));
+                Tap(game.Q("clear-big"));
                 yield return null;
                 Assert.AreEqual(0, game.Q("plan").Query(className: "card").ToList().Count);
             }
@@ -518,6 +520,8 @@ namespace Roboya.Tests.PlayMode
             // Collecting the flower lights the badge up.
             var forward = game.Q("palette").Children().OfType<CardElement>().First(c => c.Card == Roboya.CodingEngine.Commands.CardType.Forward);
             Tap(forward);
+            yield return new WaitForSeconds(0.3f);
+            yield return Capture(game, "22-card-preview"); // the arrow shows what the card does
             Tap(forward);
             Tap(game.Q("play"));
             yield return WaitUntil(() => !game.Q("result").ClassListContains("hidden"), 20f);

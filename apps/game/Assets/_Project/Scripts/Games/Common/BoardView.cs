@@ -77,6 +77,10 @@ namespace Roboya.Games.Common
         private ActorSprites _actor;
         private readonly FacingArrow _arrow = new FacingArrow();
         private readonly Vector2[] _arrowCells = new Vector2[FacingArrow.PointCount];
+        private int _previewId;
+        private bool _previewing;
+        private CardType _previewCard;
+        private float _previewT;
 
         public BoardView(RegionArt art = null)
         {
@@ -614,7 +618,12 @@ namespace Roboya.Games.Common
             // Facing north the robot's back and head cover the ground ahead, so the arrow sits a little further out.
             float ahead = _facing == Direction.North ? 1.5f : 1.0f;
             var centre = new Vector2(_robotPos.x + 0.5f + (dx * ahead), _robotPos.y + 0.5f + (dy * ahead));
-            bool onBoard = centre.x > 0.15f && centre.y > 0.15f && centre.x < _level.Grid.Width - 0.15f && centre.y < _level.Grid.Height - 0.15f;
+            if (_previewing)
+            {
+                ApplyPreview(ref dx, ref dy, ref centre, ahead);
+            }
+
+            bool onBoard = _previewing || (centre.x > 0.15f && centre.y > 0.15f && centre.x < _level.Grid.Width - 0.15f && centre.y < _level.Grid.Height - 0.15f);
             if (!onBoard || _mood != Mood.Normal)
             {
                 _arrow.Set(false);
@@ -628,6 +637,71 @@ namespace Roboya.Games.Common
             }
 
             _arrow.Set(true);
+        }
+
+        /// <summary>
+        /// A card's effect shown on the arrow: forward slides one step ahead, backward slides behind, a turn swings a quarter circle.
+        /// </summary>
+        private void ApplyPreview(ref float dx, ref float dy, ref Vector2 centre, float ahead)
+        {
+            var origin = new Vector2(_robotPos.x + 0.5f, _robotPos.y + 0.5f);
+            float t = _previewT;
+            switch (_previewCard)
+            {
+                case CardType.Forward:
+                    centre = origin + (new Vector2(dx, dy) * (ahead + t));
+                    break;
+                case CardType.Backward:
+                    dx = -dx;
+                    dy = -dy;
+                    centre = origin + (new Vector2(dx, dy) * (0.9f + t));
+                    break;
+                default:
+                    // Turn left or right: the arrow swings around the robot (screen clockwise = right).
+                    float turn = (_previewCard == CardType.TurnRight ? 1f : -1f) * 90f * t * Mathf.Deg2Rad;
+                    float cos = Mathf.Cos(turn);
+                    float sin = Mathf.Sin(turn);
+                    float rx = (dx * cos) - (dy * sin);
+                    float ry = (dx * sin) + (dy * cos);
+                    dx = rx;
+                    dy = ry;
+                    centre = origin + (new Vector2(dx, dy) * ahead);
+                    break;
+            }
+        }
+
+        /// <summary>Shows what a card does, on the arrow in front of the robot (no text; a short, repeatable demonstration).</summary>
+        public async Awaitable PreviewCard(CardType card, CancellationToken token)
+        {
+            int id = ++_previewId;
+            if (_level == null || (card != CardType.Forward && card != CardType.Backward && card != CardType.TurnLeft && card != CardType.TurnRight))
+            {
+                return;
+            }
+
+            _previewCard = card;
+            _previewing = true;
+            try
+            {
+                await Tween.Run(0.6f, t =>
+                {
+                    if (id != _previewId)
+                    {
+                        return;
+                    }
+
+                    _previewT = t;
+                    UpdateArrow();
+                }, token);
+            }
+            finally
+            {
+                if (id == _previewId)
+                {
+                    _previewing = false;
+                    UpdateArrow();
+                }
+            }
         }
 
         private void PlaceDot(VisualElement dot)
