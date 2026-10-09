@@ -430,6 +430,11 @@ namespace Roboya.Games.Common
 
             // Kodlama Kutusu (KUT-02): the footprints stay a little longer so the child can compare the planned and the real path.
             // What is still missing breathes meanwhile, so the child sees where to go next (no penalty, only direction).
+            if (result != null)
+            {
+                _board.ShowStopRing(result.FinalState.Position);
+            }
+
             var pulse = _board.PulseMissing(result != null ? result.FinalState.CollectedMask : 0UL, token);
             await Tween.Delay(_entry.Dto.Game == GameId.KodlamaKutusu ? 2.5f : 1.5f, token);
             await pulse;

@@ -625,6 +625,15 @@ namespace Roboya.Games.Common
             }
         }
 
+        /// <summary>
+        /// After a run that fell short: a soft ring on the cell where the robot stopped, so the child sees where the plan ended
+        /// and where the pulsing target still is. Direction, not penalty; the next plan trace replaces it.
+        /// </summary>
+        public void ShowStopRing(GridPosition at)
+        {
+            AddTraceMark("trace-stop", CellAnchor(at.X, at.Y), 0.9f);
+        }
+
         public void ClearPlanTrace()
         {
             foreach (var mark in _traceMarks)

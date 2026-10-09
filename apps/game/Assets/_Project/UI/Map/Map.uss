@@ -582,3 +582,15 @@
     width: 38px;
     height: 38px;
 }
+
+/* Forest corner: the turtle waits at the end of each stretch; faded until the child has walked it. */
+.path__corner {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    opacity: 0.45;
+}
+
+.path__corner--reached {
+    opacity: 1;
+}
