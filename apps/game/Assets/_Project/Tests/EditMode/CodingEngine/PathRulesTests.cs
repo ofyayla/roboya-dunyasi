@@ -145,5 +145,24 @@ namespace Roboya.Tests.CodingEngine
             Assert.AreEqual(NodeState.Completed, s[0]);
             Assert.AreEqual(NodeState.Open, s[1]);
         }
+
+        [Test]
+        public void StatesOf_UnlockAll_EveryUnfinishedLevelIsPlayable_AndFinishedStayCompleted()
+        {
+            var book = new ProgressBook();
+            book.Record("l1", 2);
+
+            var s = PathRules.StatesOf(Path, book, 3, false, 0, unlockAll: true);
+
+            CollectionAssert.AreEqual(
+                new[] { NodeState.Completed, NodeState.Current, NodeState.Open, NodeState.Open, NodeState.Open }, s);
+            Assert.IsTrue(PathRules.CanPlay(s[4]));
+        }
+
+        [Test]
+        public void ProgressRules_Default_NeverUnlocksAll()
+        {
+            Assert.IsFalse(ProgressRules.Default.UnlockAll);
+        }
     }
 }

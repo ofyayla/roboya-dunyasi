@@ -8,13 +8,20 @@ namespace Roboya.CodingEngine.Progress
     {
         public static readonly ProgressRules Default = new ProgressRules(3, 5, 1, 4);
 
-        public ProgressRules(int freeLevelCount, int levelsPerPart, int freeProfiles = 1, int premiumProfiles = 4)
+        public ProgressRules(int freeLevelCount, int levelsPerPart, int freeProfiles = 1, int premiumProfiles = 4, bool unlockAll = false)
         {
+            UnlockAll = unlockAll;
             FreeProfiles = freeProfiles;
             PremiumProfiles = premiumProfiles;
             FreeLevelCount = freeLevelCount;
             LevelsPerPart = levelsPerPart;
         }
+
+        /// <summary>
+        /// Testing only: every level can be opened, whatever the order and the free tier. Set solely by development player
+        /// builds (never in release builds or the editor), so it can never grant access to a real user.
+        /// </summary>
+        public bool UnlockAll { get; }
 
         /// <summary>Product decision: the first 3 levels are free.</summary>
         public int FreeLevelCount { get; }

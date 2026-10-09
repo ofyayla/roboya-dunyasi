@@ -49,7 +49,7 @@ namespace Roboya.Core
             RewardRules.EarnedCount(s.Progress.Book.CompletedCount, CompletedRegions(s.Catalog, s.Progress.Book), s.ProgressRules);
 
         public static NodeState[] PathStates(GameServices s, IReadOnlyList<string> path) =>
-            PathRules.StatesOf(path, s.Progress.Book, s.ProgressRules.FreeLevelCount, s.Entitlements.HasPremium, StartIndex(s, path));
+            PathRules.StatesOf(path, s.Progress.Book, s.ProgressRules.FreeLevelCount, s.Entitlements.HasPremium, StartIndex(s, path), s.ProgressRules.UnlockAll);
 
         /// <summary>Where the active child's age band begins on a path (F1-08); the first level when no profile is active.</summary>
         public static int StartIndex(GameServices s, IReadOnlyList<string> path)
