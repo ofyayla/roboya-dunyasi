@@ -138,7 +138,8 @@ namespace Roboya.Core
                 new AnalyticsService(api, profiles, notice, ProgressFolder, Application.version, PlatformWord),
                 new PrivacyService(api, account, profiles, sync, ProgressFolder),
                 new SubscriptionService(api, account, StoreBridgeOverride ?? new Roboya.Services.NoStoreBridge(), serverEntitlements, storeProducts),
-                ComposeSfx());
+                ComposeSfx(),
+                ComposeMusic());
         }
 
         /// <summary>Tests point this at a temporary folder so each run starts with fresh progress.</summary>
@@ -176,6 +177,12 @@ namespace Roboya.Core
             // A second source, so sound effects never cut the narration (the voice has its own).
             var source = gameObject.AddComponent<AudioSource>();
             return new ProceduralSfx(source);
+        }
+
+        private IMusicPlayer ComposeMusic()
+        {
+            // Its own looping source, so it never competes with the narration or the effects.
+            return new ProceduralMusic(gameObject.AddComponent<AudioSource>(), ProgressFolder);
         }
 
         private static string PlatformWord => Application.platform == RuntimePlatform.IPhonePlayer ? "ios" : "android";
