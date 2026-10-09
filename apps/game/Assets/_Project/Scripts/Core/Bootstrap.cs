@@ -25,7 +25,11 @@ namespace Roboya.Core
         /// <summary>True when the map should open on the region path (coming back from a level).</summary>
         public bool ReturningFromLevel { get; private set; }
 
+        public bool PendingWorkshop { get; private set; }
+
         public void ConsumeMapLine() => PendingMapLine = null;
+
+        public void ConsumeWorkshop() => PendingWorkshop = false;
 
         public void PlayLevel(string levelId)
         {
@@ -33,8 +37,19 @@ namespace Roboya.Core
             _ = LoadAsync(GameScene);
         }
 
+        public void GoToWorkshop()
+        {
+            PendingMapLine = null;
+            PendingWorkshop = true;
+            ReturningFromLevel = true;
+            _ = LoadAsync(MapScene);
+            _ = _services.Sync.SyncAsync();
+            _ = _services.Analytics.FlushAsync();
+        }
+
         public void GoToMap(string lineOnArrival = null)
         {
+            PendingWorkshop = false;
             PendingMapLine = lineOnArrival;
             ReturningFromLevel = true;
             _ = LoadAsync(MapScene);

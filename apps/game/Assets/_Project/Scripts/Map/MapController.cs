@@ -88,6 +88,14 @@ namespace Roboya.Map
             }
 
             var nav = _services.Navigator;
+            // The child tapped the part shown after a level: go straight to the workshop and fit it (ILR-03).
+            if (nav.PendingWorkshop)
+            {
+                nav.ConsumeWorkshop();
+                ShowWorkshop();
+                return;
+            }
+
             // A repair part earned but not yet seen: open on the island so it drops onto the ship (ILR-03).
             bool newPart = ProgressQueries.EarnedParts(_services) > _services.Progress.Book.ShipPartsSeen;
             if (!newPart && (nav.SelectedLevelId != null || nav.PendingMapLine != null))

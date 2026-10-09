@@ -86,7 +86,7 @@ namespace Roboya.Map
         {
             var book = _services.Progress.Book;
             int earned = ProgressQueries.EarnedParts(_services);
-            _ship.Show(earned, book.ShipPartsSeen, showComing: true);
+            _ship.Show(earned, book.ShipPartsSeen, showComing: true, () => _services.Sfx.Play(SfxKind.Place));
             foreach (var (tile, order) in _tiles)
             {
                 bool owned = order <= earned;

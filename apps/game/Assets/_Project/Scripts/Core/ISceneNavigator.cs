@@ -13,6 +13,14 @@ namespace Roboya.Core
 
         void PlayLevel(string levelId);
 
+        /// <summary>True when the map should open on the ship workshop (the child tapped a freshly earned part), consumed once.</summary>
+        bool PendingWorkshop { get; }
+
+        void ConsumeWorkshop();
+
         void GoToMap(string lineOnArrival = null);
+
+        /// <summary>Opens the map on the ship workshop so the earned part is fitted on the ship (ILR-03).</summary>
+        void GoToWorkshop();
     }
 }

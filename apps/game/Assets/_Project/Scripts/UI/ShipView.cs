@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Roboya.Core;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace Roboya.UI
         // Parts reach about 15% beyond the body on every side; the body is fitted with that margin.
         private const float Margin = 1.32f;
         private const float DropSeconds = 0.55f;
+        private const float SettleSeconds = 0.3f;
 
         private readonly PartArt _art;
         private readonly ShipPartCatalog _catalog;
@@ -23,6 +25,7 @@ namespace Roboya.UI
         private readonly VisualElement _front = new VisualElement();
         private readonly List<Layer> _layers = new List<Layer>();
         private float _bodyAspect = 1f;
+        private Action _onPartLanded;
 
         public ShipView(PartArt art, ShipPartCatalog catalog)
         {
@@ -51,9 +54,11 @@ namespace Roboya.UI
         /// <summary>
         /// Shows the first <paramref name="earned"/> parts. Parts after <paramref name="seen"/> drop in one by one.
         /// With <paramref name="showComing"/>, parts still to be earned appear as faint shapes.
+        /// <paramref name="onPartLanded"/> fires each time a dropping part lands, so the screen can answer with a sound.
         /// </summary>
-        public void Show(int earned, int seen, bool showComing)
+        public void Show(int earned, int seen, bool showComing, Action onPartLanded = null)
         {
+            _onPartLanded = onPartLanded;
             _back.Clear();
             _front.Clear();
             _layers.Clear();
@@ -111,7 +116,7 @@ namespace Roboya.UI
             float end = 0f;
             foreach (var l in _layers)
             {
-                end = Mathf.Max(end, l.Delay + DropSeconds);
+                end = Mathf.Max(end, l.Delay + DropSeconds + SettleSeconds);
             }
 
             while (t <= end + 0.05f && panel != null)
@@ -127,6 +132,19 @@ namespace Roboya.UI
                     float fall = (1f - EaseOutBack(k)) * -contentRect.height * 0.5f;
                     l.View.style.translate = new Translate(0f, fall);
                     l.View.style.opacity = k <= 0f ? 0f : Mathf.Min(1f, k * 3f);
+                    if (k >= 1f)
+                    {
+                        // Landing: a quick pop so the part feels fitted into place, not just shown.
+                        if (!l.Landed)
+                        {
+                            l.Landed = true;
+                            _onPartLanded?.Invoke();
+                        }
+
+                        float settle = Mathf.Clamp01((t - l.Delay - DropSeconds) / SettleSeconds);
+                        float pop = 1f + (0.14f * Mathf.Sin(settle * Mathf.PI) * (1f - settle));
+                        l.View.style.scale = new Scale(new Vector3(pop, pop, 1f));
+                    }
                 }
 
                 await Awaitable.NextFrameAsync();
@@ -137,6 +155,7 @@ namespace Roboya.UI
             {
                 l.View.style.translate = new Translate(0f, 0f);
                 l.View.style.opacity = StyleKeyword.Null;
+                l.View.style.scale = new Scale(Vector3.one);
             }
         }
 
@@ -192,6 +211,8 @@ namespace Roboya.UI
 
             /// <summary>Seconds before this layer drops in; negative when it is already in place.</summary>
             public float Delay;
+
+            public bool Landed;
         }
     }
 }
