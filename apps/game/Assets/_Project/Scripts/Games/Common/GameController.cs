@@ -90,9 +90,15 @@ namespace Roboya.Games.Common
             _hint = new IconButton(IconKind.Hint, Hint) { name = "hint" };
             _hint.AddToClassList("icon-button--hint");
             root.Q("top-right").Add(_hint);
-            var clear = new IconButton(IconKind.Clear, ClearPlan) { name = "clear" };
-            clear.AddToClassList("icon-button--small");
-            root.Q("top-right").Add(clear);
+            _clear = new IconButton(IconKind.Clear, ClearPlan) { name = "clear" };
+            _clear.AddToClassList("icon-button--small");
+            root.Q("top-right").Add(_clear);
+            // Bal Peşinde: "Temizle" is one of the bee's two big back buttons (next to "Git"), not a small corner icon (BAL-02).
+            _clearBig = new IconButton(IconKind.Clear, ClearPlan) { name = "clear-big" };
+            _clearBig.AddToClassList("icon-button--clear-big");
+            _clearBig.AddToClassList("hidden");
+            root.Q("play-host").Insert(0, _clearBig);
+            _paletteElement = root.Q("palette");
 
             _progress = root.Q("progress");
             _result = root.Q("result");
@@ -121,6 +127,9 @@ namespace Roboya.Games.Common
             _lastPlanCount = 0;
             _session = new LevelSession(_entry.Level, _entry.ShortestLength, _services.Rules, keepsState: _bee);
             // The memory is invisible for the youngest (BAL, Minik): the strip shows blank cards, so only the count is seen.
+            _paletteElement.EnableInClassList("palette--bee", _bee);
+            _clearBig.EnableInClassList("hidden", !_bee);
+            _clear.EnableInClassList("hidden", _bee);
             _planElement.EnableInClassList("plan--memory", _bee && _entry.Dto.Options?.BeeMemoryVisible != true);
             if (_entry.Dto.StarterProgram != null)
             {
@@ -154,6 +163,9 @@ namespace Roboya.Games.Common
 
         private const int ProgressDots = 9;
         private readonly VisualElement _planElement;
+        private readonly IconButton _clear;
+        private readonly IconButton _clearBig;
+        private readonly VisualElement _paletteElement;
         private readonly GoalBadge _badge;
         private bool _bee;
         private int _lastPlanCount;
@@ -473,6 +485,11 @@ namespace Roboya.Games.Common
             if (_session.Plan.Count > _lastPlanCount)
             {
                 _services.Sfx.Play(SfxKind.Place);
+                if (_session.State == SessionState.Planning)
+                {
+                    // What the card just placed will do, shown on the board (no text).
+                    _ = _board.PreviewCard(_session.Plan.Cards[_session.Plan.Count - 1], _lifetime.Token);
+                }
             }
 
             _lastPlanCount = _session.Plan.Count;
