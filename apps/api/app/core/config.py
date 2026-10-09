@@ -50,6 +50,9 @@ class Settings(BaseSettings):
     email_backend: Literal["outbox"] = "outbox"
     outbox_path: str = "tmp/outbox.jsonl"
 
+    # Self-hosted Sentry-compatible error server (F1-19). Empty = no error reporting leaves the API.
+    error_dsn: str = ""
+
 
 @lru_cache
 def get_settings() -> Settings:

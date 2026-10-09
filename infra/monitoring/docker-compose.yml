@@ -1,0 +1,103 @@
+# Self-hosted error tracking (GlitchTip, Sentry-compatible) and the analytics dashboards (Metabase).
+# Local development only: the passwords below are throwaway. Real deployments take secrets from the
+# environment and follow the hosting decision (ADR 0007, ADR 0028). Start with:
+#   docker compose -f infra/monitoring/docker-compose.yml up -d
+name: roboya-monitoring
+
+x-glitchtip: &glitchtip
+  image: glitchtip/glitchtip:v4.2
+  depends_on:
+    monitoring-db:
+      condition: service_healthy
+    monitoring-cache:
+      condition: service_healthy
+  environment: &glitchtip-env
+    DATABASE_URL: postgresql://monitoring:monitoring@monitoring-db:5432/glitchtip
+    SECRET_KEY: ${GLITCHTIP_SECRET_KEY:-local-only-glitchtip-secret-change-me}
+    PORT: "8000"
+    GLITCHTIP_DOMAIN: ${GLITCHTIP_DOMAIN:-http://localhost:8100}
+    EMAIL_URL: consolemail://
+    DEFAULT_FROM_EMAIL: errors@localhost
+    # Error reports hold no personal data (the API scrubs them), but registration stays closed anyway.
+    ENABLE_USER_REGISTRATION: "false"
+    ENABLE_ORGANIZATION_CREATION: "false"
+    CELERY_WORKER_AUTOSCALE: "1,3"
+
+services:
+  monitoring-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: monitoring
+      POSTGRES_PASSWORD: monitoring
+      POSTGRES_DB: glitchtip
+    volumes:
+      - monitoring-pg:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U monitoring -d glitchtip"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  monitoring-cache:
+    image: valkey/valkey:8-alpine
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  glitchtip-migrate:
+    <<: *glitchtip
+    command: ./bin/run-migrate.sh
+    restart: "no"
+
+  glitchtip-web:
+    <<: *glitchtip
+    environment:
+      <<: *glitchtip-env
+      VALKEY_URL: redis://monitoring-cache:6379
+    ports: ["8100:8000"]
+    depends_on:
+      glitchtip-migrate:
+        condition: service_completed_successfully
+      monitoring-db:
+        condition: service_healthy
+      monitoring-cache:
+        condition: service_healthy
+
+  glitchtip-worker:
+    <<: *glitchtip
+    command: ./bin/run-celery-with-beat.sh
+    environment:
+      <<: *glitchtip-env
+      VALKEY_URL: redis://monitoring-cache:6379
+    depends_on:
+      glitchtip-migrate:
+        condition: service_completed_successfully
+      monitoring-db:
+        condition: service_healthy
+      monitoring-cache:
+        condition: service_healthy
+
+  # Dashboards (F1-20). Metabase reads the API database only through the read-only `roboya_bi` role,
+  # which sees the anonymous aggregate views in the `bi` schema and nothing else (no e-mail, no profiles).
+  metabase:
+    image: metabase/metabase:v0.50.20
+    depends_on:
+      monitoring-db:
+        condition: service_healthy
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabase
+      MB_DB_PORT: "5432"
+      MB_DB_USER: monitoring
+      MB_DB_PASS: monitoring
+      MB_DB_HOST: monitoring-db
+      MB_ANON_TRACKING_ENABLED: "false"
+      MB_CHECK_FOR_UPDATES: "false"
+    ports: ["3100:3000"]
+    extra_hosts: ["host.docker.internal:host-gateway"]
+
+volumes:
+  monitoring-pg:
