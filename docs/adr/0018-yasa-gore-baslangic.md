@@ -19,3 +19,7 @@ Seviye yaşla başlar (PRD). Bölüm verisinde her bölümün `ageLevels` alanı
 
 - Minik için davranış değişmedi (başlangıç 0).
 - Kaşif başlangıcında kart tanıtan önceki bölümler (sağa/sola dön) atlanır; çocuk kartları bölüm içinde kullanır. Pedagoji gözden geçirmesi F1-21'de.
+
+## Güncelleme (2026-10-09): tanıtım bölümleri atlanmaz
+
+Yaş başlangıcından önce kalan **tanıtım bölümleri** (bir oyunun ilk bölümü ve bir kartı tanıtan bölümler, `ProgressQueries.IntroLevels`) çocuk için yine de oynanır: ücretsizdir, en erken bitmemiş olanı "sıradaki" olur ve çocuğun kendi başlangıç bölümü bunlar bitene kadar bekler. Böylece Kaşif çocuk Kodlama Kutusu'nu, Bal Peşinde'yi ve sağa/sola dönmeyi tanıtımsız görmez. Bölüm sonunda "sonraki", başlangıçtan önce kalan ücretli bölümleri sessizce atlar. Kaynak: `docs/review/sabir-ormani-oyun-ve-pedagoji-degerlendirmesi.md` P0 6.

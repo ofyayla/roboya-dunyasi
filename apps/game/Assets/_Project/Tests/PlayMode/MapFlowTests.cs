@@ -204,8 +204,12 @@ namespace Roboya.Tests.PlayMode
             yield return OpenMap(r => map = r);
             yield return OpenForest(map);
 
-            Assert.IsTrue(map.Q("stone-10").ClassListContains("stone--current"), "F1-08: level 10 is the first meant for Kaşif");
-            Assert.IsTrue(map.Q("stone-1").ClassListContains("stone--grownup"), "earlier levels are outside this child's free levels");
+            // Tutorials before the age start are played first: Yön Avcısı's first level, the first of the other two games and the
+            // two card introductions (levels 1, 3, 4, 5 and 9); only then comes the child's own start at level 10.
+            Assert.IsTrue(map.Q("stone-1").ClassListContains("stone--current"), "the first unfinished tutorial is next");
+            Assert.IsFalse(map.Q("stone-4").ClassListContains("stone--grownup"), "tutorials are free");
+            Assert.IsTrue(map.Q("stone-2").ClassListContains("stone--grownup"), "other early levels are not this child's");
+            Assert.IsTrue(map.Q("stone-10").ClassListContains("stone--locked"), "the start waits for the tutorials");
             Assert.IsTrue(map.Q("stone-12").ClassListContains("stone--locked"));
             Assert.IsTrue(map.Q("stone-13").ClassListContains("stone--grownup"), "three free levels counted from the start");
         }

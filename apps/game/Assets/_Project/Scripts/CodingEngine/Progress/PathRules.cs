@@ -53,8 +53,17 @@ namespace Roboya.CodingEngine.Progress
         /// <summary>
         /// <paramref name="startIndex"/> is where the child's age puts them. The free tier is the first
         /// <paramref name="freeLevelCount"/> levels from there, so an older child's free levels are the ones meant for them.
+        /// <paramref name="intro"/> marks introduction levels (a game's first level, a level that introduces a card): when the
+        /// child starts after them they are still played first, free of charge, so no child meets a mechanic untaught.
         /// </summary>
-        public static NodeState[] StatesOf(IReadOnlyList<string> path, ProgressBook book, int freeLevelCount, bool hasPremium, int startIndex = 0, bool unlockAll = false)
+        public static NodeState[] StatesOf(
+            IReadOnlyList<string> path,
+            ProgressBook book,
+            int freeLevelCount,
+            bool hasPremium,
+            int startIndex = 0,
+            bool unlockAll = false,
+            IReadOnlyList<bool> intro = null)
         {
             if (unlockAll)
             {
@@ -62,14 +71,29 @@ namespace Roboya.CodingEngine.Progress
             }
 
             var states = new NodeState[path.Count];
-            bool previousDone = true;
+            bool pendingIntro = false;
+            for (int i = 0; i < startIndex && i < path.Count; i++)
+            {
+                pendingIntro |= IsIntro(intro, i) && !book.IsCompleted(path[i]);
+            }
+
+            bool previousDone = !pendingIntro;
             bool currentGiven = false;
             for (int i = 0; i < path.Count; i++)
             {
                 bool done = book.IsCompleted(path[i]);
+                bool earlyIntro = i < startIndex && IsIntro(intro, i);
                 // Beyond the free tier the grown-up gate applies even to finished levels (e.g. premium lapsed);
                 // the stars stay in the book and return with premium.
-                bool paid = (i < startIndex || i >= startIndex + freeLevelCount) && !hasPremium;
+                bool paid = ((i < startIndex && !earlyIntro) || i >= startIndex + freeLevelCount) && !hasPremium;
+                if (earlyIntro && !done)
+                {
+                    // Tutorials before the age start come first: the earliest unfinished one is "the next".
+                    states[i] = !currentGiven ? NodeState.Current : NodeState.Open;
+                    currentGiven = true;
+                    continue;
+                }
+
                 if (i < startIndex && !paid && !done)
                 {
                     states[i] = NodeState.Open;
@@ -99,6 +123,9 @@ namespace Roboya.CodingEngine.Progress
 
             return states;
         }
+
+        private static bool IsIntro(IReadOnlyList<bool> intro, int index) =>
+            intro != null && index < intro.Count && intro[index];
 
         private static NodeState[] AllOpen(IReadOnlyList<string> path, ProgressBook book)
         {
