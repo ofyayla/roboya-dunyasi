@@ -34,6 +34,8 @@ Kök nedenler:
 | 16 | Sabır değeri yalnız seste; değer kartı anı yok (F1-24) | P2 | Sanat + kod (M) |
 | 17 | Planlanan/gerçekleşen karşılaştırması (KUT-02) yarım: hayalet yol çocuğun planı değil çözüm | P2 | Kod (M) + pedagoji |
 
+**Durum (2026-10-09):** 1–15 uygulandı (PR #36–#59); #10'daki "Minik'te bellek önce görünür" sırası ve #13'ün Minik sırası pedagoji ekibi onayı bekliyor; #15'te bölge müziği yok (lisanslı/özgün müzik gerekir). #8'deki "orman köşesi" kaplumbağa işaretleriyle karşılandı (köşe başına özel süs yok). #16 ve #17 açık: #16 kalıcı sanat (F1-24) ve değer anı metni, #17 "tahmin et" adımı çocuk deneyimi/pedagoji kararı gerektirdiği için başlatılmadı.
+
 P0 = kapalı betadan önce şart (ekran–ses uyumsuzluğu veya oynanamazlık). P1 = beta sırasında düzelmeli. P2 = beta sonrası.
 
 ## Ayrıntılar
