@@ -136,6 +136,7 @@ namespace Roboya.Tests.PlayMode
             for (int i = 0; i < levels.Count; i++)
             {
                 var solution = Roboya.CodingEngine.Solving.Solver.Solve(levels[i].Level).Solution;
+                Debug.Log("[test] playing " + levels[i].Id);
                 yield return PassStory(root, StoryShot(i), waitForCard: i == 2);
                 if (i == 3 || i == 6)
                 {
@@ -149,7 +150,14 @@ namespace Roboya.Tests.PlayMode
 
                 if (levels[i].Dto.StarterProgram != null)
                 {
-                    // Hata avcısı: the ready-made code is wrong; the child clears it and builds the right one.
+                    // Hata avcısı: the ready-made code runs once on its own and goes wrong; only then can the child edit.
+                    yield return WaitUntil(() => !root.Q("plan").ClassListContains("plan--locked") && root.Q("plan").Q(className: "slot--box") != null, 60f);
+                    if (levels[i].Id.EndsWith("kodlama-kutusu.02"))
+                    {
+                        yield return Capture(root, "21-hunt-level");
+                    }
+
+                    // The child clears it and builds the right one.
                     Assert.AreEqual(levels[i].Dto.StarterProgram.Count, root.Q("plan").Query(className: "card").ToList().Count, "the starter code is on the strip");
                     Tap(root.Q("clear"));
                     yield return null;

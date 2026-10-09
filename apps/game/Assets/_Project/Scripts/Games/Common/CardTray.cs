@@ -102,6 +102,12 @@ namespace Roboya.Games.Common
             }
         }
 
+        /// <summary>
+        /// Hata avcısı: the ready-made cards the child has not changed yet. They sit in a "from the box" frame with a magnifier,
+        /// so it is clear which cards are the box's and may hide the mistake; a card the child places looks normal.
+        /// </summary>
+        public IReadOnlyList<CardType> BoxCards { get; set; }
+
         public void Refresh()
         {
             _plan.Clear();
@@ -115,6 +121,11 @@ namespace Roboya.Games.Common
                     var element = new CardElement(_strip.Cards[i]);
                     RegisterDrag(element, _strip.Cards[i], fromSlot: i);
                     slot.Add(element);
+                    if (BoxCards != null && i < BoxCards.Count && BoxCards[i] == _strip.Cards[i])
+                    {
+                        slot.AddToClassList("slot--box");
+                        slot.Add(new Icon(IconKind.Magnifier) { Color = new Color(0.42f, 0.26f, 0.16f), name = "box-mark" });
+                    }
                 }
 
                 _slots.Add(slot);

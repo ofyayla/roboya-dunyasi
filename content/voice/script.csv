@@ -92,3 +92,4 @@ yon_avcisi.l11.intro,"Bak, bir armut! Engellerin arasından geçip alalım, sonr
 yon_avcisi.l11.success,Armut bizde! Dolambaçlı yolu çözdük.,Bölüm sonu,sabir-ormani.yon-avcisi.11
 yon_avcisi.l12.intro,Bilge Kaplumbağa son sınavı hazırladı! İki meyveyi toplayıp çıkışa gidelim.,Bölüm girişi,sabir-ormani.yon-avcisi.12
 yon_avcisi.l12.success,"Başardık! Orman yollarının sırrını çözdük, Bilge Kaplumbağa çok gurur duydu.",Bölüm sonu,sabir-ormani.yon-avcisi.12
+kodlama_kutusu.hunt,"Bak, kod yanlış çalıştı! Kutudan gelen kartlardan biri hatalı. Büyüteçli kartlara dokunup hatayı bulalım!",Hata avcısı: hazır kod bir kez çalışır ve yanlış gider; çocuktan hatayı bulması istenir,

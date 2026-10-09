@@ -198,6 +198,13 @@
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },
+    "kodlama_kutusu.hunt": {
+      "file": "audio/tr/kodlama_kutusu.hunt.mp3",
+      "source": "tts",
+      "textHash": "1a031fd7dcc11b3f",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
     "kodlama_kutusu.l01.intro": {
       "file": "audio/tr/kodlama_kutusu.l01.intro.mp3",
       "source": "tts",

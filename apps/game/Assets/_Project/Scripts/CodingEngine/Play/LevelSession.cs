@@ -72,6 +72,20 @@ namespace Roboya.CodingEngine.Play
             return Track(new Interpreter(Level, Plan.ToProgram()).Run(Robot));
         }
 
+        /// <summary>
+        /// Hata avcısı (KUT-01): runs the plan once from the level start without counting an attempt or changing the state, so the
+        /// child can watch the ready-made code go wrong before looking for the mistake.
+        /// </summary>
+        public IEnumerable<ExecutionEvent> Demo()
+        {
+            if (State != SessionState.Planning || Plan.IsEmpty)
+            {
+                throw new InvalidOperationException("Nothing to demonstrate.");
+            }
+
+            return new Interpreter(Level, Plan.ToProgram()).Run(Level.Start);
+        }
+
         /// <summary>Escalates one hint tier and returns what to show (YZ-01).</summary>
         public HintResult RequestHint()
         {
