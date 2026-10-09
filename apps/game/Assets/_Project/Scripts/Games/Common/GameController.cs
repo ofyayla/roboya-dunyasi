@@ -436,23 +436,33 @@ namespace Roboya.Games.Common
         /// <summary>Next playable level on the path; otherwise back to the map (GLR-01: ask a grown-up past the free tier).</summary>
         private void Next()
         {
-            int next = _index + 1;
             // Today's play time is used up: Roboya rests; the map shows the rest screen (VEL-02).
-            if (!_services.ScreenTime.IsExhausted && next < _levels.Count)
+            if (!_services.ScreenTime.IsExhausted)
             {
-                int pathIndex = _path.IndexOf(_levels[next].Id);
                 var states = ProgressQueries.PathStates(_services, _path);
-                var state = pathIndex >= 0 ? states[pathIndex] : NodeState.Locked;
-                if (PathRules.CanPlay(state))
+                int start = ProgressQueries.StartIndex(_services, _path);
+                for (int next = _index + 1; next < _levels.Count; next++)
                 {
-                    Start(next);
-                    return;
-                }
+                    int pathIndex = _path.IndexOf(_levels[next].Id);
+                    var state = pathIndex >= 0 ? states[pathIndex] : NodeState.Locked;
+                    if (PathRules.CanPlay(state))
+                    {
+                        Start(next);
+                        return;
+                    }
 
-                if (state == NodeState.NeedsGrownUp)
-                {
-                    _services.Navigator.GoToMap(AskGrownUpVoice);
-                    return;
+                    // Levels before the child's age start are skipped quietly (they are paid and not theirs);
+                    // anything from the start on that is paid asks a grown-up (GLR-01).
+                    if (state == NodeState.NeedsGrownUp && pathIndex >= start)
+                    {
+                        _services.Navigator.GoToMap(AskGrownUpVoice);
+                        return;
+                    }
+
+                    if (state != NodeState.NeedsGrownUp)
+                    {
+                        break;
+                    }
                 }
             }
 

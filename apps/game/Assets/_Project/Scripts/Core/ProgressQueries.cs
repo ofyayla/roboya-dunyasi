@@ -49,7 +49,22 @@ namespace Roboya.Core
             RewardRules.EarnedCount(s.Progress.Book.CompletedCount, CompletedRegions(s.Catalog, s.Progress.Book), s.ProgressRules);
 
         public static NodeState[] PathStates(GameServices s, IReadOnlyList<string> path) =>
-            PathRules.StatesOf(path, s.Progress.Book, s.ProgressRules.FreeLevelCount, s.Entitlements.HasPremium, StartIndex(s, path), s.ProgressRules.UnlockAll);
+            PathRules.StatesOf(path, s.Progress.Book, s.ProgressRules.FreeLevelCount, s.Entitlements.HasPremium, StartIndex(s, path), s.ProgressRules.UnlockAll, IntroLevels(s.Catalog, path));
+
+        /// <summary>A game's first level and every level that introduces a card: the tutorials a late starter must not skip.</summary>
+        public static List<bool> IntroLevels(LevelCatalog catalog, IReadOnlyList<string> path)
+        {
+            var seen = new HashSet<GameId>();
+            var flags = new List<bool>(path.Count);
+            foreach (var id in path)
+            {
+                var dto = catalog.Find(id)?.Dto;
+                bool first = dto != null && seen.Add(dto.Game);
+                flags.Add(first || (dto?.Cards?.Introduces != null));
+            }
+
+            return flags;
+        }
 
         /// <summary>Where the active child's age band begins on a path (F1-08); the first level when no profile is active.</summary>
         public static int StartIndex(GameServices s, IReadOnlyList<string> path)

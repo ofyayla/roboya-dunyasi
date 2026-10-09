@@ -164,5 +164,37 @@ namespace Roboya.Tests.CodingEngine
         {
             Assert.IsFalse(ProgressRules.Default.UnlockAll);
         }
+
+        private static readonly bool[] IntroAt1 = { false, true, false, false, false };
+
+        [Test]
+        public void StatesOf_LateStart_UnfinishedIntroBeforeTheStartComesFirst_AndIsFree()
+        {
+            var s = PathRules.StatesOf(Path, new ProgressBook(), 2, false, 3, false, IntroAt1);
+
+            CollectionAssert.AreEqual(
+                new[] { NodeState.NeedsGrownUp, NodeState.Current, NodeState.NeedsGrownUp, NodeState.Locked, NodeState.Locked }, s);
+        }
+
+        [Test]
+        public void StatesOf_LateStart_AfterTheIntroIsDone_TheStartLevelIsCurrent()
+        {
+            var book = new ProgressBook();
+            book.Record("l2", 1);
+
+            var s = PathRules.StatesOf(Path, book, 2, false, 3, false, IntroAt1);
+
+            CollectionAssert.AreEqual(
+                new[] { NodeState.NeedsGrownUp, NodeState.Completed, NodeState.NeedsGrownUp, NodeState.Current, NodeState.Locked }, s);
+        }
+
+        [Test]
+        public void StatesOf_NoLateStart_IntroMarksChangeNothing()
+        {
+            var plain = PathRules.StatesOf(Path, new ProgressBook(), 3, false);
+            var withIntro = PathRules.StatesOf(Path, new ProgressBook(), 3, false, 0, false, IntroAt1);
+
+            CollectionAssert.AreEqual(plain, withIntro);
+        }
     }
 }
