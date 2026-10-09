@@ -103,6 +103,7 @@ namespace Roboya.Games.Common
             _hasNorthScenery = false;
             _actor = _art != null ? _art.ActorFor(dto != null ? dto.Game : Roboya.CodingEngine.Levels.Generated.GameId.YonAvcisi) : default;
             _decals.Clear();
+            _ground.SetBox(dto != null && dto.Game == Roboya.CodingEngine.Levels.Generated.GameId.KodlamaKutusu);
             _layer.Clear();
             _pieces.Clear();
             _items.Clear();

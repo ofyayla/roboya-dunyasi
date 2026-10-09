@@ -27,6 +27,7 @@ namespace Roboya.Games.Common
         private const string AlternativeVoice = "roboya.alternative_offer";
         private const string PartUnlockedVoice = "reward.part_unlocked";
         private const string ForgotClearVoice = "bal_pesinde.forgot_clear";
+        private const string HuntVoice = "kodlama_kutusu.hunt";
 
         private readonly GameServices _services;
         private readonly IReadOnlyList<LevelEntry> _levels;
@@ -133,8 +134,10 @@ namespace Roboya.Games.Common
             _easier.AddToClassList("hidden");
             _board.Show(_entry.Level, ghost, _entry.Dto);
             _badge.Show(_entry.Level);
+            _tray.BoxCards = _entry.Dto.StarterProgram != null ? new List<Roboya.CodingEngine.Commands.CardType>(CardsOf(_entry)) : null;
             _tray.Bind(_session.Plan, _entry.Level.AvailableCards);
-            _tray.SetLocked(false);
+            // Hata avcısı: the child may edit only after the ready-made code has shown what goes wrong (DemoAsync unlocks).
+            _tray.SetLocked(withStory && _entry.Dto.StarterProgram != null);
             _result.AddToClassList("hidden");
             _story.Hide();
             RenderProgress();
@@ -210,7 +213,16 @@ namespace Roboya.Games.Common
                     rest.AddRange(entry.Dto.Voice.Hints);
                 }
 
+                if (entry.Dto.StarterProgram != null)
+                {
+                    rest.Add(HuntVoice);
+                }
+
                 await _services.Voice.PreloadAsync(rest);
+                if (_entry == entry && withStory && entry.Dto.StarterProgram != null)
+                {
+                    await DemoAsync(entry);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -220,6 +232,14 @@ namespace Roboya.Games.Common
             {
                 Debug.LogException(e);
             }
+            finally
+            {
+                // Whatever happened to the story or the demo, the child must never be left with a locked strip.
+                if (_entry == entry && withStory && entry.Dto.StarterProgram != null)
+                {
+                    _tray.SetLocked(false);
+                }
+            }
         }
 
         public void Dispose()
@@ -228,6 +248,88 @@ namespace Roboya.Games.Common
             _lifetime.Cancel();
             _lifetime.Dispose();
             _services.Voice.Stop();
+        }
+
+        /// <summary>Animates one run, event by event, and returns its result (null when it never finished).</summary>
+        private async Awaitable<ExecutionResult> AnimateAsync(IEnumerable<ExecutionEvent> events, CancellationToken token)
+        {
+            ExecutionResult result = null;
+            foreach (var e in events)
+            {
+                switch (e.Kind)
+                {
+                    case ExecutionEventKind.CommandStarted:
+                        _tray.HighlightSlot(e.CommandPath[0]);
+                        break;
+                    case ExecutionEventKind.Moved:
+                        await _board.AnimateMove(e.Before.Position, e.After.Position, token);
+                        break;
+                    case ExecutionEventKind.Turned:
+                        await _board.AnimateTurn(e.Before.Facing, e.After.Facing, token);
+                        break;
+                    case ExecutionEventKind.Bumped:
+                        _services.Voice.Play(BumpVoice);
+                        var bump = _board.AnimateBump(e.Before.Facing, token);
+                        var shake = _tray.ShakeSlot(e.CommandPath[0], token);
+                        await bump;
+                        await shake;
+                        break;
+                    case ExecutionEventKind.Collected:
+                        _badge.MarkCollected(e.ItemIndex);
+                        await _board.AnimateCollect(e.ItemIndex, token);
+                        break;
+                    case ExecutionEventKind.Finished:
+                        result = e.Result;
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Hata avcısı (KUT-01): the ready-made code runs once on its own, leaves its footprints and goes wrong, then Roboya asks the
+        /// child to find the card that is wrong. It does not count as an attempt, so stars are not affected.
+        /// </summary>
+        private async Awaitable DemoAsync(LevelEntry entry)
+        {
+            var token = _lifetime.Token;
+            try
+            {
+                _tray.SetLocked(true);
+                _tray.ClearMarks();
+                _board.ResetRobot(entry.Level.Start);
+                _badge.Set(0);
+                await Tween.Delay(0.5f, token);
+                if (_entry != entry || !_session.CanPlay)
+                {
+                    return;
+                }
+
+                await AnimateAsync(_session.Demo(), token);
+                _tray.HighlightSlot(-1);
+                await Tween.Delay(1.6f, token);
+                _board.ResetRobot(entry.Level.Start);
+                _badge.Set(0);
+                _services.Voice.Play(HuntVoice);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+            }
+            finally
+            {
+                if (_entry == entry)
+                {
+                    _tray.SetLocked(false);
+                    UpdateGuide();
+                    UpdateButtons();
+                }
+            }
         }
 
         private async Awaitable PlayAsync()
@@ -255,35 +357,7 @@ namespace Roboya.Games.Common
             ExecutionResult result = null;
             try
             {
-                foreach (var e in events)
-                {
-                    switch (e.Kind)
-                    {
-                        case ExecutionEventKind.CommandStarted:
-                            _tray.HighlightSlot(e.CommandPath[0]);
-                            break;
-                        case ExecutionEventKind.Moved:
-                            await _board.AnimateMove(e.Before.Position, e.After.Position, token);
-                            break;
-                        case ExecutionEventKind.Turned:
-                            await _board.AnimateTurn(e.Before.Facing, e.After.Facing, token);
-                            break;
-                        case ExecutionEventKind.Bumped:
-                            _services.Voice.Play(BumpVoice);
-                            var bump = _board.AnimateBump(e.Before.Facing, token);
-                            var shake = _tray.ShakeSlot(e.CommandPath[0], token);
-                            await bump;
-                            await shake;
-                            break;
-                        case ExecutionEventKind.Collected:
-                            _badge.MarkCollected(e.ItemIndex);
-                            await _board.AnimateCollect(e.ItemIndex, token);
-                            break;
-                        case ExecutionEventKind.Finished:
-                            result = e.Result;
-                            break;
-                    }
-                }
+                result = await AnimateAsync(events, token);
             }
             catch (OperationCanceledException)
             {

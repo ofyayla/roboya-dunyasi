@@ -19,6 +19,13 @@ namespace Roboya.Games.Common
         private static readonly Color GrassLight = Hex(0x96CA77);
         private static readonly Color GrassDark = Hex(0x5E9443);
         private static readonly Color GrassLip = Hex(0x6FA552);
+        private static readonly Color WoodSurface = Hex(0xE2BE8A);
+        private static readonly Color WoodLight = Hex(0xEBCB9E);
+        private static readonly Color WoodGrain = Hex(0xB98A56);
+        private static readonly Color WoodLip = Hex(0xC79A62);
+        private static readonly Color WoodFace = Hex(0x8A5A3B);
+        private static readonly Color WoodShade = Hex(0x6B432A);
+        private static readonly Color WoodRim = Hex(0xA4713F);
         private static readonly Color Dirt = Hex(0xE7C98F);
         private static readonly Color DirtEdge = Hex(0xD4AE6E);
         private static readonly Color SlabFace = Hex(0xB07D4F);
@@ -29,6 +36,7 @@ namespace Roboya.Games.Common
         private ObliqueProjection _projection;
         private BoardGrid _grid;
         private HashSet<GridPosition> _path = new HashSet<GridPosition>();
+        private bool _box;
 
         public ObliqueGround()
         {
@@ -41,6 +49,15 @@ namespace Roboya.Games.Common
         {
             _grid = grid;
             _path = path ?? new HashSet<GridPosition>();
+            MarkDirtyRepaint();
+        }
+
+        /// <summary>
+        /// Kodlama Kutusu (PRD "masa oyunu"): the board is a wooden box lid with a rim and wood grain instead of a grass slab.
+        /// </summary>
+        public void SetBox(bool box)
+        {
+            _box = box;
             MarkDirtyRepaint();
         }
 
@@ -70,19 +87,19 @@ namespace Roboya.Games.Common
             Polygon(p, DropShadow, bl + shadowOffset + new Vector2(-cell * 0.15f, 0f), br + shadowOffset + new Vector2(cell * 0.15f, 0f), br + down, bl + down);
 
             // Front face of the slab: earth with a darker lower band and a grass lip on top.
-            Polygon(p, SlabFace, bl, br, br + down, bl + down);
-            Polygon(p, SlabShade, bl + (down * 0.62f), br + (down * 0.62f), br + down, bl + down);
-            Polygon(p, GrassLip, bl, br, br + (down * 0.3f), bl + (down * 0.3f));
+            Polygon(p, _box ? WoodFace : SlabFace, bl, br, br + down, bl + down);
+            Polygon(p, _box ? WoodShade : SlabShade, bl + (down * 0.62f), br + (down * 0.62f), br + down, bl + down);
+            Polygon(p, _box ? WoodLip : GrassLip, bl, br, br + (down * 0.3f), bl + (down * 0.3f));
 
             // Surface and checker.
-            Polygon(p, Grass, tl, tr, br, bl);
+            Polygon(p, _box ? WoodSurface : Grass, tl, tr, br, bl);
             for (int y = 0; y < h; y++)
             {
                 for (int x = 0; x < w; x++)
                 {
                     if (((x + y) & 1) == 0)
                     {
-                        Quad(p, GrassLight, x, y, 0f);
+                        Quad(p, _box ? WoodLight : GrassLight, x, y, 0f);
                     }
                 }
             }
@@ -142,8 +159,31 @@ namespace Roboya.Games.Common
 
                     float ox = ((x * 37) + (y * 11)) % 2 == 0 ? 0.24f : 0.7f;
                     float oy = ((x * 13) + (y * 7)) % 2 == 0 ? 0.3f : 0.72f;
-                    Tuft(p, proj.Project(x + ox, y + oy), cell * proj.ScaleAt(y + oy) * 0.16f);
+                    if (_box)
+                    {
+                        Grain(p, proj.Project(x + ox, y + oy), cell * proj.ScaleAt(y + oy) * 0.2f);
+                    }
+                    else
+                    {
+                        Tuft(p, proj.Project(x + ox, y + oy), cell * proj.ScaleAt(y + oy) * 0.16f);
+                    }
                 }
+            }
+
+            if (_box)
+            {
+                // The box rim: a darker wooden frame just inside the edge of the lid.
+                float r = 0.07f;
+                p.strokeColor = WoodRim;
+                p.lineWidth = Mathf.Max(4f, cell * 0.09f);
+                p.lineJoin = LineJoin.Round;
+                p.BeginPath();
+                p.MoveTo(proj.Project(r, r));
+                p.LineTo(proj.Project(w - r, r));
+                p.LineTo(proj.Project(w - r, h - r));
+                p.LineTo(proj.Project(r, h - r));
+                p.ClosePath();
+                p.Stroke();
             }
 
             // One continuous outline around surface and front face.
@@ -200,6 +240,20 @@ namespace Roboya.Games.Common
             p.LineTo(d);
             p.ClosePath();
             p.Fill();
+        }
+
+        // Two short dark strokes read as wood grain; straight segments, like the tufts.
+        private static void Grain(Painter2D p, Vector2 at, float size)
+        {
+            p.strokeColor = WoodGrain;
+            p.lineWidth = Mathf.Max(1.5f, size * 0.22f);
+            p.lineCap = LineCap.Round;
+            p.BeginPath();
+            p.MoveTo(at + new Vector2(-size, 0f));
+            p.LineTo(at + new Vector2(size, -size * 0.12f));
+            p.MoveTo(at + new Vector2(-size * 0.5f, size * 0.45f));
+            p.LineTo(at + new Vector2(size * 0.7f, size * 0.4f));
+            p.Stroke();
         }
 
         private static void Tuft(Painter2D p, Vector2 at, float size)

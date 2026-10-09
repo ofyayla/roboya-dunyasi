@@ -26,5 +26,6 @@ namespace Roboya.UI
         Grownup,
         Easier,
         Battery,
+        Magnifier,
     }
 }

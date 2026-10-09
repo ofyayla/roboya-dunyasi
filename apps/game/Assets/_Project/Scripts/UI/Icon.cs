@@ -236,6 +236,15 @@ namespace Roboya.UI
                     RoundedRect(p, P(0.15f, 0.36f), P(0.27f, 0.68f), s * 0.03f);
                     p.Fill();
                     break;
+                case IconKind.Magnifier:
+                    // A magnifying glass: the bug hunter's tool (Kodlama Kutusu hata avcısı).
+                    p.lineWidth = s * 0.1f;
+                    p.BeginPath();
+                    p.Arc(P(0.42f, 0.42f), s * 0.27f, Angle.Degrees(0f), Angle.Degrees(360f));
+                    p.Stroke();
+                    p.lineWidth = s * 0.14f;
+                    Line(p, P(0.62f, 0.62f), P(0.86f, 0.86f));
+                    break;
                 case IconKind.Easier:
                     // Steps going down: "an easier level", no text needed.
                     RoundedRect(p, P(0.12f, 0.2f), P(0.4f, 0.4f), s * 0.04f);

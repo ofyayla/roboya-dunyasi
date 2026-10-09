@@ -19,3 +19,8 @@ Ses "arı" ve "çiçek" diyor, ekranda Roboya ve elma vardı; toplama bölümler
 
 - Görseller geçicidir (Higgsfield); kalıcı sanat aynı dosya adlarıyla gelir.
 - Kodlama Kutusu'nun masa görünümü ve hata avcısı akışı ayrı PR'dır.
+
+## Güncelleme: Kodlama Kutusu tahtası ve hata avcısı akışı
+
+- **Tahta:** Kodlama Kutusu bölümleri çim yerine ahşap kutu kapağı üzerinde oynanır (`ObliqueGround.SetBox`: ahşap yüzey, çerçeve, ahşap damarı); PRD'deki "masa oyunu görünümü".
+- **Hata avcısı = izle → bul → düzelt:** bölüm hikâyesinden sonra hazır (yanlış) kod bir kez kendiliğinden çalışır ve ayak izi bırakarak yanlış yere varır (`LevelSession.Demo`, deneme sayılmaz, yıldız etkilenmez); Roboya "kutudan gelen kartlardan biri hatalı" der (`kodlama_kutusu.hunt`). Demo bitene kadar şerit kilitlidir. Hazır kartlar, çocuk değiştirene kadar ahşap çerçeve ve büyüteç simgesiyle ("kutudan") görünür; çocuğun koyduğu kart normal görünür. İpucu merdiveni (hatalı kartı vurgula) aynen çalışır.
