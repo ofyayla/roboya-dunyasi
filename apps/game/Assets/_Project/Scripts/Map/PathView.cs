@@ -188,18 +188,21 @@ namespace Roboya.Map
                 return;
             }
 
+            // Open stones (all-open developer builds) play like the current one.
+            if (PathRules.CanPlay(_states[index]))
+            {
+                if (_services.ScreenTime.IsExhausted)
+                {
+                    _onRest();
+                    return;
+                }
+
+                _services.Navigator.PlayLevel(_path[index]);
+                return;
+            }
+
             switch (_states[index])
             {
-                case NodeState.Completed:
-                case NodeState.Current:
-                    if (_services.ScreenTime.IsExhausted)
-                    {
-                        _onRest();
-                        break;
-                    }
-
-                    _services.Navigator.PlayLevel(_path[index]);
-                    break;
                 case NodeState.NeedsGrownUp:
                     _services.Voice.Play(MapController.AskGrownUpVoice);
                     break;

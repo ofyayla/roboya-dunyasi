@@ -29,6 +29,10 @@ Unity Analytics, Cloud Diagnostics (çökme raporlama), Performance Reporting ve
 
 **Mağaza içi satın alma:** Unity IAP kullanılmaz. Yerine iOS'ta StoreKit 2, Android'de Play Billing Library üzerine ince bir yerel köprü yazılır ([ADR 0008](0008-in-app-purchase-bridge.md)). Nedeni: IAP 5.4+ Unity'ye kapatılamayan kişisel veri gönderiyor ve `com.unity.services.core` paketini getiriyor. `com.unity.services.*` paketleri projeye eklenmez.
 
+## Güncelleme (2026-10-09): video modülü
+
+`com.unity.modules.video` (yerleşik modül, üçüncü taraf veri yok; manifestte zaten vardı) kullanılmaya başlandı: sabır değer kartının ~30 sn'lik videosunu `VideoPlayer` ile oynatmak için (F1-24). Video StreamingAssets/content/video altında gelir, ağdan indirilmez; ses izi yoktur, anlatım `value.patience` anahtarıyla ayrı çalınır.
+
 ## Android grafik gereksinimi (2026-10-08)
 
 Unity 6.6 Android'de **en az OpenGL ES 3.1** istiyor; ES 3.0 desteği kaldırıldı (Unity'ye göre oyuncuların ~%0,4'ü, çoğunlukla Adreno 300 GPU'lu çok eski cihazlar). macOS'taki Android emülatörü yalnız ES 3.0 sunduğu için oyun emülatörde açılmıyor; doğrulama gerçek cihazda yapılır. Pilot okulların tablet modelleri (F1-28) bu gereksinime göre kontrol edilmeli; ES 3.0'a mahkûm bir tablet filosu çıkarsa 6.3 LTS'ye dönüş bu ADR ile yeniden değerlendirilir.

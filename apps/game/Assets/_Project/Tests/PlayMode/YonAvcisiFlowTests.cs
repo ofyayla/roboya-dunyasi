@@ -174,7 +174,14 @@ namespace Roboya.Tests.PlayMode
                 {
                     // The end of a forest corner: the turtle's patience card comes before the result; a tap moves on.
                     yield return WaitUntil(() => !root.Q("value-card").ClassListContains("hidden"), 40f);
-                    yield return new WaitForSeconds(0.3f);
+                    yield return new WaitForSeconds(2f);
+                    Assert.IsTrue(root.Q<Roboya.Games.Common.ValueCard>("value-card").PlayingFilm, "the film plays while the line is spoken");
+                    Assert.IsNotNull(VoiceSourcePlaying("value.patience.1"), "the first scene's line is spoken with the film");
+                    if (i == 8)
+                    {
+                        yield return Capture(root, "22-value-film");
+                    }
+
                     Tap(root.Q("value-card"));
                 }
 
@@ -200,6 +207,18 @@ namespace Roboya.Tests.PlayMode
                     Tap(root.Q("next"));
                     VisualElement map = null;
                     yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Map" && (map = FindRoot())?.Q("path") != null, 10f);
+                    yield return null;
+                    if (map.Q("path").resolvedStyle.display != DisplayStyle.Flex)
+                    {
+                        // After an earned ship part the map may open on the island: walk back into the forest.
+                        Tap(map.Q("region-sabir-ormani"));
+                        yield return WaitUntil(() => map.Q("path").resolvedStyle.display == DisplayStyle.Flex, 5f);
+                        yield return null;
+                    }
+
+                    // The path scrolls sideways and centres on the next stone; bring the one to tap into view first.
+                    map.Q("path").Q<ScrollView>().ScrollTo(map.Q("stone-" + (i + 2)));
+                    yield return null;
                     yield return null;
                     Tap(map.Q("stone-" + (i + 2)));
                     yield return WaitUntil(
@@ -311,14 +330,14 @@ namespace Roboya.Tests.PlayMode
             }
         }
 
-        internal static IEnumerator WaitUntil(Func<bool> condition, float timeout)
+        internal static IEnumerator WaitUntil(Func<bool> condition, float timeout, [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
         {
             float end = Time.realtimeSinceStartup + timeout;
             while (!condition())
             {
                 if (Time.realtimeSinceStartup > end)
                 {
-                    Assert.Fail("Timed out after " + timeout + "s");
+                    Assert.Fail("Timed out after " + timeout + "s (waiting at line " + line + ")");
                 }
 
                 yield return null;
