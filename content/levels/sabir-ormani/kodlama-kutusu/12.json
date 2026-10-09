@@ -128,5 +128,8 @@
       "y": 3,
       "look": "tree"
     }
-  ]
+  ],
+  "options": {
+    "predict": true
+  }
 }

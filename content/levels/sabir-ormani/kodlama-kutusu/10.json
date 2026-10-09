@@ -123,5 +123,8 @@
       "y": 4,
       "look": "bush"
     }
-  ]
+  ],
+  "options": {
+    "predict": true
+  }
 }

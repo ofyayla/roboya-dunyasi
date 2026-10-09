@@ -9,6 +9,9 @@ namespace Roboya.Core
     public static class ProgressQueries
     {
         /// <summary>The ordered level ids on a region's path (all games of the region, by order).</summary>
+        /// <summary>Levels per "forest corner": the path map marks the end of each stretch and the game closes it with a value moment.</summary>
+        public const int CornerLength = 9;
+
         public static List<string> PathOf(LevelCatalog catalog, RegionId region)
         {
             var ids = new List<string>();

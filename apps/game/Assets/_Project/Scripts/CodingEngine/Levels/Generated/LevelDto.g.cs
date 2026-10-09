@@ -229,6 +229,13 @@ namespace Roboya.CodingEngine.Levels.Generated
         /// </summary>
         [JsonProperty("guided", NullValueHandling = NullValueHandling.Ignore)]
         public bool? Guided { get; set; }
+
+        /// <summary>
+        /// Kodlama Kutusu (KUT-02): before the first run the child taps where the robot will end up;
+        /// the run is then compared with the guess.
+        /// </summary>
+        [JsonProperty("predict", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Predict { get; set; }
     }
 
     public partial class RobotDto
