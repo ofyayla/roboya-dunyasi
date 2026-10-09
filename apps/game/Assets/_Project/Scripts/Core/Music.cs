@@ -22,29 +22,37 @@ namespace Roboya.Core
     }
 
     /// <summary>
-    /// Region music composed in code (marimba-like plucks over a slow C-A-F-G pentatonic pattern), rendered once at start-up and looped.
-    /// Original by construction: no audio file, no licence, no download. The choice is kept in a marker file in the progress folder.
+    /// Region music: the looped recording in Resources/Music (see docs/art/music.md for its source and licence), or, when it is missing,
+    /// a marimba-like loop composed in code (slow C-A-F-G pentatonic pattern; original by construction). Looped on its own source.
+    /// The on/off choice is kept in a marker file in the progress folder.
     /// </summary>
     public sealed class ProceduralMusic : IMusicPlayer
     {
         public const int SampleRate = 22050;
         public const float Bpm = 84f;
         public const int Bars = 8;
+        public const string ClipPath = "Music/sabir_ormani";
         private const string OffMarker = "music.off";
 
         private readonly AudioSource _source;
         private readonly string _folder;
 
-        public ProceduralMusic(AudioSource source, string folder, float volume = 0.16f)
+        public ProceduralMusic(AudioSource source, string folder, float volume = 0.25f)
         {
             _source = source;
             _folder = folder;
             _source.playOnAwake = false;
             _source.loop = true;
             _source.volume = volume;
-            var samples = Render();
-            var clip = AudioClip.Create("music.sabir_ormani", samples.Length, 1, SampleRate, false);
-            clip.SetData(samples, 0);
+            // The recorded loop when it is in the build; the code-composed one otherwise (also what tests and editors without it hear).
+            var clip = Resources.Load<AudioClip>(ClipPath);
+            if (clip == null)
+            {
+                var samples = Render();
+                clip = AudioClip.Create("music.sabir_ormani", samples.Length, 1, SampleRate, false);
+                clip.SetData(samples, 0);
+            }
+
             _source.clip = clip;
             Enabled = !File.Exists(Path.Combine(folder, OffMarker));
             Apply();
