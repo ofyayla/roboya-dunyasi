@@ -74,6 +74,9 @@ namespace Roboya.Games.Common
         private float _wobble;
         private int _robotDepthBucket = int.MinValue;
         private bool _hasNorthScenery;
+        private ActorSprites _actor;
+        private readonly FacingArrow _arrow = new FacingArrow();
+        private readonly Vector2[] _arrowCells = new Vector2[FacingArrow.PointCount];
 
         public BoardView(RegionArt art = null)
         {
@@ -86,6 +89,8 @@ namespace Roboya.Games.Common
             Add(_ground);
             Add(_decals);
             Add(_layer);
+            // Above the pieces: the robot is taller than a cell and would hide an arrow lying behind it.
+            Add(_arrow);
             RegisterCallback<GeometryChangedEvent>(_ => Layout());
         }
 
@@ -96,6 +101,7 @@ namespace Roboya.Games.Common
         {
             _level = level;
             _hasNorthScenery = false;
+            _actor = _art != null ? _art.ActorFor(dto != null ? dto.Game : Roboya.CodingEngine.Levels.Generated.GameId.YonAvcisi) : default;
             _decals.Clear();
             _layer.Clear();
             _pieces.Clear();
@@ -171,7 +177,7 @@ namespace Roboya.Games.Common
 
             var start = CellAnchor(level.Start.Position.X, level.Start.Position.Y);
             _robot = UseSprites
-                ? AddSprite(_art.RobotFront, start, height: RobotHeight)
+                ? AddSprite(_actor.Front, start, height: RobotHeight)
                 : AddPiece(new Icon(IconKind.Robot) { Color = new Color(0.96f, 0.55f, 0.16f), Accent = Color.white }, start, height: 0.82f);
             _robot.View.name = "robot";
             _robot.View.AddToClassList("piece--robot");
@@ -499,6 +505,7 @@ namespace Roboya.Games.Common
             }
 
             Place(_robot);
+            UpdateArrow();
 
             // Re-sort only when the robot crosses a quarter row, not every frame.
             int bucket = Mathf.FloorToInt(_robot.Anchor.y * 4f);
@@ -542,6 +549,35 @@ namespace Roboya.Games.Common
             piece.Shadow.style.translate = new Translate(foot.x - (sw * 0.5f), foot.y - (sh * 0.5f));
         }
 
+        /// <summary>Lays the facing arrow on the ground one step ahead of the robot; hidden off the board and at celebrations.</summary>
+        private void UpdateArrow()
+        {
+            if (!_proj.IsValid || _level == null)
+            {
+                return;
+            }
+
+            float dx = _facing == Direction.East ? 1f : _facing == Direction.West ? -1f : 0f;
+            float dy = _facing == Direction.South ? 1f : _facing == Direction.North ? -1f : 0f;
+            // Facing north the robot's back and head cover the ground ahead, so the arrow sits a little further out.
+            float ahead = _facing == Direction.North ? 1.5f : 1.0f;
+            var centre = new Vector2(_robotPos.x + 0.5f + (dx * ahead), _robotPos.y + 0.5f + (dy * ahead));
+            bool onBoard = centre.x > 0.15f && centre.y > 0.15f && centre.x < _level.Grid.Width - 0.15f && centre.y < _level.Grid.Height - 0.15f;
+            if (!onBoard || _mood != Mood.Normal)
+            {
+                _arrow.Set(false);
+                return;
+            }
+
+            FacingArrow.Outline(centre, dx, dy, _arrowCells);
+            for (int i = 0; i < FacingArrow.PointCount; i++)
+            {
+                _arrow.Points[i] = _proj.Project(_arrowCells[i].x, _arrowCells[i].y);
+            }
+
+            _arrow.Set(true);
+        }
+
         private void PlaceDot(VisualElement dot)
         {
             if (!_proj.IsValid)
@@ -575,21 +611,21 @@ namespace Roboya.Games.Common
 
         private Sprite RobotSprite()
         {
-            if (_mood == Mood.Laughing && _art.RobotLaughing != null)
+            if (_mood == Mood.Laughing && _actor.Laughing != null)
             {
-                return _art.RobotLaughing;
+                return _actor.Laughing;
             }
 
-            if (_mood == Mood.Happy && _art.RobotHappy != null)
+            if (_mood == Mood.Happy && _actor.Happy != null)
             {
-                return _art.RobotHappy;
+                return _actor.Happy;
             }
 
             // Unity objects: use explicit null checks, not ??, so unassigned slots fall back correctly.
-            var view = _facing == Direction.North ? _art.RobotBack
-                : _facing == Direction.South ? _art.RobotFront
-                : _art.RobotSide;
-            return view != null ? view : _art.RobotFront;
+            var view = _facing == Direction.North ? _actor.Back
+                : _facing == Direction.South ? _actor.Front
+                : _actor.Side;
+            return view != null ? view : _actor.Front;
         }
 
         private static void SetSprite(Piece piece, Sprite sprite)

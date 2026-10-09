@@ -40,6 +40,8 @@ Karar (2026-10-08, veli/ürün sahibi): **düz vektör** stil. Oyun içi tüm va
 | --- | --- |
 | `Characters/Roboya` | `roboya_master`, `front`, `threequarter`, `side`, `back`, `happy`, `curious`, `surprised`, `laughing` (çarpma anı, OYN-03), `proud`, `walk` |
 | `Characters/BilgeKaplumbaga` | `turtle_front`, `threequarter`, `side_walk`, `happy`, `explaining`, `thanks` |
+| `Characters/Ari` | `ari_front`, `ari_back`, `ari_side` (batıya bakar), `ari_happy` (Bal Peşinde'nin oyuncu karakteri; Roboya orada yönlendirici) |
+| `SabirOrmani` (çiçek ve bal) | `item_flower_{yellow,red,blue,purple,orange,green}` (her renk ayrı yaprak biçimi: papatya, lale, yıldız, kalp, güneş ışını, yonca), `item_honey_drop`, `item_honeycomb` |
 | `SabirOrmani` | `tile_grass`, `tile_path`, `tile_log`, `prop_rock`, `prop_tree`, `prop_bush`, `item_apple`, `item_pear`, `item_gear`, `bg_sabir_ormani` |
 
 Kaynak sayfalar (yeniden kesim için): `docs/art/sources/`.
@@ -98,3 +100,7 @@ Higgsfield, GPT Image 2.5 Sunburst; High kalite, 2K, saydam arka plan. Ana Roboy
 - Görseller yapay zekâyla üretildi. Higgsfield planının ticari kullanım koşulları satın alma/abonelik sırasında doğrulanmalı.
 - Yapay zekâ çıktısının telif koruması belirsiz. **Marka olarak tescil edilecek ana Roboya**, lansmandan önce bu belgeyi referans alan bir illüstratör tarafından temize çekilmeli veya rötuşlanmalı.
 - Prototip ve çocuk testlerinde (F0-21) bu varlıklar kullanılabilir.
+
+## Arı, çiçek ve bal (2026-10-09)
+
+Higgsfield ile üretilmiş geçici setler (kaynak sayfalar `docs/art/sources/bee-sheet.png`, `flower-sheet.png`; `tools/art/slice_sheet.py` ile kesilir). Her çiçek rengi ayrı yaprak biçimine sahiptir; renk tek başına anlam taşımaz. Kalıcı sanat (F1-23) aynı dosya adlarıyla değişir.

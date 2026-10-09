@@ -60,6 +60,8 @@ namespace Roboya.Games.Common
 
             _board = new BoardView(art);
             root.Q("board-host").Add(_board);
+            _badge = new GoalBadge(art);
+            root.Q("board-host").Add(_badge);
             if (art != null && art.Background != null)
             {
                 var screen = root.Q("screen");
@@ -130,6 +132,7 @@ namespace Roboya.Games.Common
             _alternative = null;
             _easier.AddToClassList("hidden");
             _board.Show(_entry.Level, ghost, _entry.Dto);
+            _badge.Show(_entry.Level);
             _tray.Bind(_session.Plan, _entry.Level.AvailableCards);
             _tray.SetLocked(false);
             _result.AddToClassList("hidden");
@@ -146,6 +149,7 @@ namespace Roboya.Games.Common
 
         private const int ProgressDots = 9;
         private readonly VisualElement _planElement;
+        private readonly GoalBadge _badge;
         private bool _bee;
         private bool _clearedSinceRun = true;
         private bool _keptOldCommands;
@@ -242,6 +246,7 @@ namespace Roboya.Games.Common
             if (!_bee)
             {
                 _board.ResetRobot(_entry.Level.Start);
+                _badge.Set(0);
             }
 
             var events = _session.Play();
@@ -271,6 +276,7 @@ namespace Roboya.Games.Common
                             await shake;
                             break;
                         case ExecutionEventKind.Collected:
+                            _badge.MarkCollected(e.ItemIndex);
                             await _board.AnimateCollect(e.ItemIndex, token);
                             break;
                         case ExecutionEventKind.Finished:
@@ -317,6 +323,7 @@ namespace Roboya.Games.Common
             if (!_bee)
             {
                 _board.ResetRobot(_entry.Level.Start);
+                _badge.Set(0);
             }
 
             _tray.SetLocked(false);

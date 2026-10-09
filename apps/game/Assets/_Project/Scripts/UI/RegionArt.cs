@@ -20,6 +20,12 @@ namespace Roboya.UI
         [SerializeField] private Sprite robotSurprised;
         [SerializeField] private Sprite robotProud;
 
+        [Header("Ari the bee (Bal Peşinde)")]
+        [SerializeField] private Sprite ariFront;
+        [SerializeField] private Sprite ariBack;
+        [SerializeField] private Sprite ariSide;
+        [SerializeField] private Sprite ariHappy;
+
         [Header("Goal character")]
         [SerializeField] private Sprite goalIdle;
         [SerializeField] private Sprite goalHappy;
@@ -39,11 +45,33 @@ namespace Roboya.UI
         [SerializeField] private Sprite fruitRed;
         [SerializeField] private Sprite fruitYellow;
         [SerializeField] private Sprite shipPart;
+        [SerializeField] private Sprite flowerYellow;
+        [SerializeField] private Sprite flowerRed;
+        [SerializeField] private Sprite flowerBlue;
+        [SerializeField] private Sprite flowerPurple;
+        [SerializeField] private Sprite flowerOrange;
+        [SerializeField] private Sprite flowerGreen;
+        [SerializeField] private Sprite honeyDrop;
+        [SerializeField] private Sprite honeycomb;
 
         [Header("Story scene props")]
         [SerializeField] private Sprite propTree;
         [SerializeField] private Sprite propRock;
         [SerializeField] private Sprite propBush;
+
+        /// <summary>
+        /// The character the child is programming in a game: Ari the bee in Bal Peşinde, Roboya elsewhere. Ari's happy
+        /// pose also stands in for "laughing". Falls back to Roboya when Ari's sprites are missing.
+        /// </summary>
+        public ActorSprites ActorFor(GameId game)
+        {
+            if (game == GameId.BalPesinde && ariFront != null)
+            {
+                return new ActorSprites(ariFront, ariBack, ariSide, ariHappy, ariHappy);
+            }
+
+            return new ActorSprites(robotFront, robotBack, robotSide, robotHappy, robotLaughing);
+        }
 
         public Sprite RobotFront => robotFront;
 
@@ -121,7 +149,33 @@ namespace Roboya.UI
                 return shipPart;
             }
 
-            return color == "yellow" ? fruitYellow : fruitRed;
+            if (kind == "honey")
+            {
+                return honeyDrop != null ? honeyDrop : fruitYellow;
+            }
+
+            if (kind == "flower")
+            {
+                var flower = FlowerOf(color);
+                return flower != null ? flower : fruitYellow;
+            }
+
+            // Fruit: every colour gets a shape too (apple round, pear drop); green reads as the pear.
+            return color == "yellow" || color == "green" ? fruitYellow : fruitRed;
+        }
+
+        /// <summary>Each flower colour has its own petal shape, so colour is never the only signal.</summary>
+        private Sprite FlowerOf(string color)
+        {
+            switch (color)
+            {
+                case "red": return flowerRed;
+                case "blue": return flowerBlue;
+                case "purple": return flowerPurple;
+                case "orange": return flowerOrange;
+                case "green": return flowerGreen;
+                default: return flowerYellow;
+            }
         }
 
         private Sprite RobotPoseOrNull(RobotPose pose)
@@ -150,5 +204,28 @@ namespace Roboya.UI
 
         // Unity objects: explicit null checks, not ??, so unassigned slots fall back correctly.
         private static Sprite OrFallback(Sprite sprite, Sprite fallback) => sprite != null ? sprite : fallback;
+    }
+
+    /// <summary>The views of the character a game programs: front (south), back (north), side (west, mirrored for east).</summary>
+    public readonly struct ActorSprites
+    {
+        public ActorSprites(Sprite front, Sprite back, Sprite side, Sprite happy, Sprite laughing)
+        {
+            Front = front;
+            Back = back;
+            Side = side;
+            Happy = happy;
+            Laughing = laughing;
+        }
+
+        public Sprite Front { get; }
+
+        public Sprite Back { get; }
+
+        public Sprite Side { get; }
+
+        public Sprite Happy { get; }
+
+        public Sprite Laughing { get; }
     }
 }
