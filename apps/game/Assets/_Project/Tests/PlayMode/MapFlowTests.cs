@@ -59,6 +59,8 @@ namespace Roboya.Tests.PlayMode
             yield return Capture(map, "08-path");
 
             Assert.IsTrue(map.Q("stone-3").ClassListContains("stone--done"));
+            Assert.IsNotNull(map.Q("corner-4"), "a turtle waits at the end of each 9-level forest corner");
+            Assert.IsFalse(map.Q("corner-1").ClassListContains("path__corner--reached"), "faded until the stretch is walked");
             Assert.IsTrue(map.Q("stone-4").ClassListContains("stone--grownup"), "GLR-01: past the free tier");
             Assert.AreEqual(DisplayStyle.Flex, map.Q("stone-1").Q("stone-stars").resolvedStyle.display, "finished stones show stars");
 

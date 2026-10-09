@@ -322,6 +322,13 @@
     top: 0;
 }
 
+.trace-stop {
+    border-radius: 999px;
+    border-width: 5px;
+    border-color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(255, 255, 255, 0.18);
+}
+
 .trace-step {
     border-radius: 999px;
     background-color: rgba(40, 60, 30, 0.38);

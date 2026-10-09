@@ -27,7 +27,9 @@ namespace Roboya.Map
         private readonly VisualElement _robot = new VisualElement { name = "path-robot" };
         private NodeState[] _states = new NodeState[0];
         private readonly Action _onRest;
+        private readonly List<VisualElement> _corners = new List<VisualElement>();
         private float _time;
+        private bool _needsCentering = true;
 
         public PathView(GameServices services, RegionArt art, PartArt partArt, Action onIsland, Action onWorkshop, Action onRest)
         {
@@ -55,6 +57,15 @@ namespace Roboya.Map
                 _scroll.Add(stone);
             }
 
+            // Every few stones a "forest corner": the wise turtle waits at the end of each stretch (F1-24 value moment lives here later).
+            for (int c = 1; c <= CornerCount(_path.Count); c++)
+            {
+                var corner = new Icon(IconKind.Turtle) { name = "corner-" + c, Color = new Color(0.36f, 0.62f, 0.3f), Accent = Color.white };
+                corner.AddToClassList("path__corner");
+                _corners.Add(corner);
+                _scroll.Add(corner);
+            }
+
             _robot.AddToClassList("path__robot");
             if (art != null && art.RobotFront != null)
             {
@@ -74,6 +85,10 @@ namespace Roboya.Map
             RegisterCallback<GeometryChangedEvent>(_ => Layout());
             schedule.Execute(Pulse).Every(33);
         }
+
+        public const int CornerLength = 9;
+
+        private static int CornerCount(int count) => count / CornerLength;
 
         public IReadOnlyList<string> Path => _path;
 
@@ -107,6 +122,7 @@ namespace Roboya.Map
                 stars.style.display = state == NodeState.Completed ? DisplayStyle.Flex : DisplayStyle.None;
             }
 
+            _needsCentering = true;
             Layout();
         }
 
@@ -224,11 +240,30 @@ namespace Roboya.Map
                 current = Mathf.Max(0, Array.LastIndexOf(_states, NodeState.Completed));
             }
 
+            for (int c = 0; c < _corners.Count; c++)
+            {
+                int last = ((c + 1) * CornerLength) - 1;
+                float cx = last + 1 < n ? (points[last].x + points[last + 1].x) * 0.5f : points[last].x + 90f;
+                float cy = last + 1 < n ? (points[last].y + points[last + 1].y) * 0.5f : points[last].y;
+                _corners[c].style.left = cx - 45f;
+                _corners[c].style.top = cy - 150f;
+                bool reached = last < _states.Length && _states[last] == NodeState.Completed;
+                _corners[c].EnableInClassList("path__corner--reached", reached);
+            }
+
             float rh = Mathf.Min(170f, r.height * 0.24f);
             _robot.style.width = rh * 0.95f;
             _robot.style.height = rh;
             _robot.style.left = points[current].x - (rh * 0.48f);
             _robot.style.top = points[current].y - (StoneSize * 0.3f) - rh;
+
+            if (_needsCentering)
+            {
+                // Roboya always sits on the next stone; bring that stretch of the trail into view.
+                _needsCentering = false;
+                float target = Mathf.Max(0f, points[current].x - (r.width * 0.5f));
+                _scroll.schedule.Execute(() => _scroll.scrollOffset = new Vector2(target, 0f)).ExecuteLater(1);
+            }
         }
 
         private void Pulse()
