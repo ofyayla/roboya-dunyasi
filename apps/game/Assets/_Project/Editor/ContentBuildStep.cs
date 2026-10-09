@@ -33,11 +33,11 @@ namespace Roboya.EditorTools
                 }
 
                 Directory.CreateDirectory(Path.Combine(target, folder));
-                // Content is JSON; the privacy notice is a markdown file.
+                // Content is JSON; the privacy notice is a markdown file; the value card is a short mp4.
                 foreach (var file in Directory.GetFiles(source))
                 {
                     string ext = Path.GetExtension(file);
-                    if (ext == ".json" || ext == ".md")
+                    if (ext == ".json" || ext == ".md" || ext == ".mp4")
                     {
                         File.Copy(file, Path.Combine(target, folder, Path.GetFileName(file)));
                         count++;

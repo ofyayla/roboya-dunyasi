@@ -368,3 +368,13 @@
     width: 100%;
     height: 100%;
 }
+
+.value-card__film {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    -unity-background-scale-mode: scale-to-fit;
+    background-color: rgb(244, 236, 214);
+}

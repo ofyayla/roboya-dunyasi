@@ -13,10 +13,22 @@ namespace Roboya.Core
         public const string StreamingFolder = "content";
 
         /// <summary>Folders under content/ that ship with the app.</summary>
-        public static readonly string[] ShippedFolders = { "map", "rewards", "localization", "legal", "store" };
+        public static readonly string[] ShippedFolders = { "map", "rewards", "localization", "legal", "store", "video" };
 
         public static string RepositoryContentPath =>
             Path.GetFullPath(Path.Combine(Application.dataPath, "..", "..", "..", "content"));
+
+        /// <summary>A playable URL for a shipped content file (video): the repository file in the editor, StreamingAssets on a device. Null when missing.</summary>
+        public static string UrlOf(string relative)
+        {
+#if UNITY_EDITOR
+            string local = Path.Combine(RepositoryContentPath, relative);
+            return File.Exists(local) ? "file://" + local : null;
+#else
+            string url = Path.Combine(Application.streamingAssetsPath, StreamingFolder, relative);
+            return url.Contains("://") ? url : "file://" + url;
+#endif
+        }
 
         public static async Awaitable<string> ReadAsync(string relative)
         {

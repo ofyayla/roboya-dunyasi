@@ -590,6 +590,41 @@
       "voiceId": "MEJe6hPrI48Kt2lFuVe3",
       "model": "eleven_multilingual_v2"
     },
+    "value.patience.1": {
+      "file": "audio/tr/value.patience.1.mp3",
+      "source": "tts",
+      "textHash": "cdd851d87126b4fe",
+      "voiceId": "MEJe6hPrI48Kt2lFuVe3",
+      "model": "eleven_multilingual_v2"
+    },
+    "value.patience.2": {
+      "file": "audio/tr/value.patience.2.mp3",
+      "source": "tts",
+      "textHash": "ba6c19023130931c",
+      "voiceId": "MEJe6hPrI48Kt2lFuVe3",
+      "model": "eleven_multilingual_v2"
+    },
+    "value.patience.3": {
+      "file": "audio/tr/value.patience.3.mp3",
+      "source": "tts",
+      "textHash": "3dfff02d71ca4319",
+      "voiceId": "MEJe6hPrI48Kt2lFuVe3",
+      "model": "eleven_multilingual_v2"
+    },
+    "value.patience.4": {
+      "file": "audio/tr/value.patience.4.mp3",
+      "source": "tts",
+      "textHash": "bb2284a51e8d1652",
+      "voiceId": "MEJe6hPrI48Kt2lFuVe3",
+      "model": "eleven_multilingual_v2"
+    },
+    "value.patience.5": {
+      "file": "audio/tr/value.patience.5.mp3",
+      "source": "tts",
+      "textHash": "f6828f35e6361e12",
+      "voiceId": "MEJe6hPrI48Kt2lFuVe3",
+      "model": "eleven_multilingual_v2"
+    },
     "workshop.welcome": {
       "file": "audio/tr/workshop.welcome.mp3",
       "source": "tts",

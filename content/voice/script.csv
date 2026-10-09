@@ -108,3 +108,8 @@ predict.ask,"Robot nereye varacak? Parmağınla bir yere dokun, sonra oynat!",Ta
 predict.same,Tahmin ettiğin yere vardım! Ama hedef biraz daha ileride.,"Tahmin tuttu, bölüm tamamlanmadı (KUT-02)",
 predict.differ,Ben başka bir yere vardım. Planına birlikte bakalım!,Tahmin tutmadı; ceza yok (KUT-02),
 value.patience,"Bilge Kaplumbağa der ki: sabır, acele etmeden önce planlamaktır. Bugün çok güzel planladın!",Sabır değer kartı: her orman köşesinin sonunda (F1-24),
+value.patience.1,Roboya'nın çok acelesi var! Elmaları hemen toplamak istiyor.,"Sabır filmi, 1. sahne (F1-24)",
+value.patience.2,Ama koşarken kütüğü görmedi… tak! Elmalar saçıldı.,"Sabır filmi, 2. sahne (F1-24)",
+value.patience.3,"Bilge Kaplumbağa yavaşça geldi. Sakin ol Roboya.","Sabır filmi, 3. sahne (F1-24)",
+value.patience.4,"İkisi kartları sırayla dizdi. Önce plan, sonra yürüyüş.","Sabır filmi, 4. sahne (F1-24)",
+value.patience.5,"Roboya planı yürüdü, elmaları topladı. Sabır, acele etmeden planlamaktır!","Sabır filmi, 5. sahne (F1-24)",
