@@ -23,7 +23,8 @@ namespace Roboya.Core
             SyncService sync,
             AnalyticsService analytics,
             PrivacyService privacy,
-            SubscriptionService subscription)
+            SubscriptionService subscription,
+            ISfxPlayer sfx)
         {
             Catalog = catalog;
             Voice = voice;
@@ -42,6 +43,7 @@ namespace Roboya.Core
             Analytics = analytics;
             Privacy = privacy;
             Subscription = subscription;
+            Sfx = sfx;
         }
 
         /// <summary>All levels, parsed once at start-up.</summary>
@@ -81,6 +83,9 @@ namespace Roboya.Core
 
         /// <summary>Buying Aile Premium through the store bridge; the server decides what is granted (F1-16).</summary>
         public SubscriptionService Subscription { get; }
+
+        /// <summary>Short game sounds (steps, turns, collecting, bumping, placing, winning).</summary>
+        public ISfxPlayer Sfx { get; }
 
         public ISceneNavigator Navigator { get; }
 
