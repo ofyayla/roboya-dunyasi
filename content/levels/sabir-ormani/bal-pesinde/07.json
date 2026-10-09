@@ -1,0 +1,99 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.bal-pesinde.07",
+  "region": "sabir-ormani",
+  "game": "bal-pesinde",
+  "order": 23,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 3,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Kaşif: bellek görünür; üç çiçek, geniş yol."
+  },
+  "grid": {
+    "rows": [
+      ".....",
+      ".....",
+      ".....",
+      ".....",
+      "....."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 4,
+    "facing": "north"
+  },
+  "items": [
+    {
+      "id": "c1",
+      "kind": "flower",
+      "x": 0,
+      "y": 1,
+      "color": "red"
+    },
+    {
+      "id": "c2",
+      "kind": "flower",
+      "x": 2,
+      "y": 1,
+      "color": "red"
+    },
+    {
+      "id": "c3",
+      "kind": "flower",
+      "x": 4,
+      "y": 1,
+      "color": "red"
+    }
+  ],
+  "goal": {
+    "collect": [
+      "c1",
+      "c2",
+      "c3"
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "backward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 9
+  },
+  "options": {
+    "beeMemoryVisible": true
+  },
+  "voice": {
+    "intro": "bal_pesinde.l07.intro",
+    "success": "bal_pesinde.l07.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "proud",
+      "friend": "thanks"
+    }
+  },
+  "alternativeLevelId": "sabir-ormani.bal-pesinde.06",
+  "solution": {
+    "shortestLength": 8
+  }
+}

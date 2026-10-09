@@ -54,14 +54,126 @@
     "bal_pesinde.l04.intro": {
       "file": "audio/tr/bal_pesinde.l04.intro.mp3",
       "source": "tts",
-      "textHash": "7327734677e92f07",
+      "textHash": "9d67e135ff284a51",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },
     "bal_pesinde.l04.success": {
       "file": "audio/tr/bal_pesinde.l04.success.mp3",
       "source": "tts",
-      "textHash": "d5742fb029b3d6d3",
+      "textHash": "5ecbecae83e9a675",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l05.intro": {
+      "file": "audio/tr/bal_pesinde.l05.intro.mp3",
+      "source": "tts",
+      "textHash": "3ebaf68da4535701",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l05.success": {
+      "file": "audio/tr/bal_pesinde.l05.success.mp3",
+      "source": "tts",
+      "textHash": "3838c5ce77ca7ee0",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l06.intro": {
+      "file": "audio/tr/bal_pesinde.l06.intro.mp3",
+      "source": "tts",
+      "textHash": "38063d40220179e1",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l06.success": {
+      "file": "audio/tr/bal_pesinde.l06.success.mp3",
+      "source": "tts",
+      "textHash": "2bb17d6ddfebca3a",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l07.intro": {
+      "file": "audio/tr/bal_pesinde.l07.intro.mp3",
+      "source": "tts",
+      "textHash": "9858ad60d78b9848",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l07.success": {
+      "file": "audio/tr/bal_pesinde.l07.success.mp3",
+      "source": "tts",
+      "textHash": "80e6c8a0263c2309",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l08.intro": {
+      "file": "audio/tr/bal_pesinde.l08.intro.mp3",
+      "source": "tts",
+      "textHash": "1d9c9e4d854c3324",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l08.success": {
+      "file": "audio/tr/bal_pesinde.l08.success.mp3",
+      "source": "tts",
+      "textHash": "a7e68df7eb36785c",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l09.intro": {
+      "file": "audio/tr/bal_pesinde.l09.intro.mp3",
+      "source": "tts",
+      "textHash": "77f0686822eaf5b6",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l09.success": {
+      "file": "audio/tr/bal_pesinde.l09.success.mp3",
+      "source": "tts",
+      "textHash": "68067fa431bb7ad1",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l10.intro": {
+      "file": "audio/tr/bal_pesinde.l10.intro.mp3",
+      "source": "tts",
+      "textHash": "da32eac691455c92",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l10.success": {
+      "file": "audio/tr/bal_pesinde.l10.success.mp3",
+      "source": "tts",
+      "textHash": "e5cca75cb3246572",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l11.intro": {
+      "file": "audio/tr/bal_pesinde.l11.intro.mp3",
+      "source": "tts",
+      "textHash": "5a9bc8494eea3157",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l11.success": {
+      "file": "audio/tr/bal_pesinde.l11.success.mp3",
+      "source": "tts",
+      "textHash": "52759758abac7746",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l12.intro": {
+      "file": "audio/tr/bal_pesinde.l12.intro.mp3",
+      "source": "tts",
+      "textHash": "5989653f366584bb",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l12.success": {
+      "file": "audio/tr/bal_pesinde.l12.success.mp3",
+      "source": "tts",
+      "textHash": "a1f20c604676a90c",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },
@@ -117,28 +229,140 @@
     "kodlama_kutusu.l03.intro": {
       "file": "audio/tr/kodlama_kutusu.l03.intro.mp3",
       "source": "tts",
-      "textHash": "cd66c44ca7e4da63",
+      "textHash": "1aefad88a7935b26",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },
     "kodlama_kutusu.l03.success": {
       "file": "audio/tr/kodlama_kutusu.l03.success.mp3",
       "source": "tts",
-      "textHash": "a36e45b0deaf9064",
+      "textHash": "c49211f761a2ce03",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },
     "kodlama_kutusu.l04.intro": {
       "file": "audio/tr/kodlama_kutusu.l04.intro.mp3",
       "source": "tts",
-      "textHash": "e411738324ac747b",
+      "textHash": "8062c9f0f2d5313c",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },
     "kodlama_kutusu.l04.success": {
       "file": "audio/tr/kodlama_kutusu.l04.success.mp3",
       "source": "tts",
+      "textHash": "76545d2de605ce57",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l05.intro": {
+      "file": "audio/tr/kodlama_kutusu.l05.intro.mp3",
+      "source": "tts",
+      "textHash": "c3d6f00027a104d8",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l05.success": {
+      "file": "audio/tr/kodlama_kutusu.l05.success.mp3",
+      "source": "tts",
+      "textHash": "a36e45b0deaf9064",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l06.intro": {
+      "file": "audio/tr/kodlama_kutusu.l06.intro.mp3",
+      "source": "tts",
+      "textHash": "e6d3e15abbed186e",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l06.success": {
+      "file": "audio/tr/kodlama_kutusu.l06.success.mp3",
+      "source": "tts",
+      "textHash": "400a718adec01080",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l07.intro": {
+      "file": "audio/tr/kodlama_kutusu.l07.intro.mp3",
+      "source": "tts",
+      "textHash": "b0df425928728982",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l07.success": {
+      "file": "audio/tr/kodlama_kutusu.l07.success.mp3",
+      "source": "tts",
+      "textHash": "737b925c8ef911fc",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l08.intro": {
+      "file": "audio/tr/kodlama_kutusu.l08.intro.mp3",
+      "source": "tts",
+      "textHash": "e411738324ac747b",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l08.success": {
+      "file": "audio/tr/kodlama_kutusu.l08.success.mp3",
+      "source": "tts",
       "textHash": "5ca6ad987e309ccc",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l09.intro": {
+      "file": "audio/tr/kodlama_kutusu.l09.intro.mp3",
+      "source": "tts",
+      "textHash": "db6119ccebf2c728",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l09.success": {
+      "file": "audio/tr/kodlama_kutusu.l09.success.mp3",
+      "source": "tts",
+      "textHash": "8bfede963c718559",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l10.intro": {
+      "file": "audio/tr/kodlama_kutusu.l10.intro.mp3",
+      "source": "tts",
+      "textHash": "40a7cae662f214e4",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l10.success": {
+      "file": "audio/tr/kodlama_kutusu.l10.success.mp3",
+      "source": "tts",
+      "textHash": "e6b50450eaa8dda9",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l11.intro": {
+      "file": "audio/tr/kodlama_kutusu.l11.intro.mp3",
+      "source": "tts",
+      "textHash": "0a75bd50ebfc52a3",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l11.success": {
+      "file": "audio/tr/kodlama_kutusu.l11.success.mp3",
+      "source": "tts",
+      "textHash": "243a0d92d2e2a7e0",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l12.intro": {
+      "file": "audio/tr/kodlama_kutusu.l12.intro.mp3",
+      "source": "tts",
+      "textHash": "9979a685ee46d650",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "kodlama_kutusu.l12.success": {
+      "file": "audio/tr/kodlama_kutusu.l12.success.mp3",
+      "source": "tts",
+      "textHash": "9865a7f0a75739b8",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     },
@@ -398,6 +622,34 @@
       "file": "audio/tr/yon_avcisi.l10.success.mp3",
       "source": "tts",
       "textHash": "a7e62f0264be5418",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "yon_avcisi.l11.intro": {
+      "file": "audio/tr/yon_avcisi.l11.intro.mp3",
+      "source": "tts",
+      "textHash": "a7db059e86926e90",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "yon_avcisi.l11.success": {
+      "file": "audio/tr/yon_avcisi.l11.success.mp3",
+      "source": "tts",
+      "textHash": "dd1d48218d99ee4b",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "yon_avcisi.l12.intro": {
+      "file": "audio/tr/yon_avcisi.l12.intro.mp3",
+      "source": "tts",
+      "textHash": "4412fdbadc311c77",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "yon_avcisi.l12.success": {
+      "file": "audio/tr/yon_avcisi.l12.success.mp3",
+      "source": "tts",
+      "textHash": "aba37dad369381cb",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
       "model": "eleven_multilingual_v2"
     }

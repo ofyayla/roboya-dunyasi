@@ -4,19 +4,18 @@
   "id": "sabir-ormani.kodlama-kutusu.02",
   "region": "sabir-ormani",
   "game": "kodlama-kutusu",
-  "order": 12,
+  "order": 7,
   "meta": {
     "concepts": [
-      "sequencing",
-      "debugging"
+      "sequencing"
     ],
     "value": "patience",
-    "difficulty": 2,
+    "difficulty": 1,
     "ageLevels": [
       "minik"
     ],
     "mebOutcomes": [],
-    "notes": "İlk hata avcısı: kodda yanlış bir dönüş kartı var (sola dön yerine sağa dön)."
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] İlk hata avcısı: yanlış bir dönüş kartı var."
   },
   "grid": {
     "rows": [

@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.kodlama-kutusu.10",
+  "region": "sabir-ormani",
+  "game": "kodlama-kutusu",
+  "order": 30,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 5,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Uzun sıralama: yukarı çık, sonra sağa git."
+  },
+  "grid": {
+    "rows": [
+      "......",
+      ".####.",
+      "......",
+      ".#..#.",
+      ".#....",
+      "......"
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 5,
+    "facing": "north"
+  },
+  "goal": {
+    "reach": {
+      "x": 5,
+      "y": 0
+    }
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 13
+  },
+  "voice": {
+    "intro": "kodlama_kutusu.l10.intro",
+    "success": "kodlama_kutusu.l10.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "proud",
+      "friend": "thanks"
+    }
+  },
+  "alternativeLevelId": "sabir-ormani.kodlama-kutusu.09",
+  "solution": {
+    "shortestLength": 11
+  }
+}

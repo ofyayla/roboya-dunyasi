@@ -1,0 +1,109 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.kodlama-kutusu.09",
+  "region": "sabir-ormani",
+  "game": "kodlama-kutusu",
+  "order": 28,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 3,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Hata avcısı: toplamalı, tek yanlış kart."
+  },
+  "grid": {
+    "rows": [
+      ".....",
+      ".....",
+      "..#..",
+      ".....",
+      "....."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 4,
+    "facing": "north"
+  },
+  "items": [
+    {
+      "id": "armut",
+      "kind": "fruit",
+      "x": 0,
+      "y": 1,
+      "color": "green"
+    }
+  ],
+  "goal": {
+    "reach": {
+      "x": 4,
+      "y": 1
+    },
+    "collect": [
+      "armut"
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 10
+  },
+  "starterProgram": [
+    {
+      "op": "forward"
+    },
+    {
+      "op": "forward"
+    },
+    {
+      "op": "forward"
+    },
+    {
+      "op": "turn_left"
+    },
+    {
+      "op": "forward"
+    },
+    {
+      "op": "forward"
+    },
+    {
+      "op": "forward"
+    },
+    {
+      "op": "forward"
+    }
+  ],
+  "voice": {
+    "intro": "kodlama_kutusu.l09.intro",
+    "success": "kodlama_kutusu.l09.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "surprised",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "thanks"
+    }
+  },
+  "alternativeLevelId": "sabir-ormani.kodlama-kutusu.08",
+  "solution": {
+    "shortestLength": 8
+  }
+}

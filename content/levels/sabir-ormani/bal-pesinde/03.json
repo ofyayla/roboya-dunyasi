@@ -4,19 +4,18 @@
   "id": "sabir-ormani.bal-pesinde.03",
   "region": "sabir-ormani",
   "game": "bal-pesinde",
-  "order": 17,
+  "order": 11,
   "meta": {
     "concepts": [
       "sequencing"
     ],
     "value": "patience",
-    "difficulty": 3,
+    "difficulty": 2,
     "ageLevels": [
-      "minik",
       "kasif"
     ],
     "mebOutcomes": [],
-    "notes": "Renk eşleştirme: yalnız mor çiçeği topla, sarıya dokunma. Temizle düğmesi ilk kez gerekir."
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Renk: yalnız mor; ilk Temizle ihtiyacı."
   },
   "grid": {
     "rows": [
@@ -77,9 +76,10 @@
     },
     "outro": {
       "roboya": "happy",
-      "friend": "thanks"
+      "friend": "happy"
     }
   },
+  "alternativeLevelId": "sabir-ormani.bal-pesinde.02",
   "solution": {
     "shortestLength": 5
   }

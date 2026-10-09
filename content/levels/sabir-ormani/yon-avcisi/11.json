@@ -1,0 +1,83 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.yon-avcisi.11",
+  "region": "sabir-ormani",
+  "game": "yon-avcisi",
+  "order": 27,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 4,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Kaşif: armut ve engeller."
+  },
+  "grid": {
+    "rows": [
+      "......",
+      "..#.#.",
+      "..#...",
+      "....#.",
+      "##....",
+      "......"
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 5,
+    "facing": "east"
+  },
+  "items": [
+    {
+      "id": "armut",
+      "kind": "fruit",
+      "x": 3,
+      "y": 4,
+      "color": "green"
+    }
+  ],
+  "goal": {
+    "reach": {
+      "x": 5,
+      "y": 2
+    },
+    "collect": [
+      "armut"
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 12
+  },
+  "voice": {
+    "intro": "yon_avcisi.l11.intro",
+    "success": "yon_avcisi.l11.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "surprised",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "thanks"
+    }
+  },
+  "solution": {
+    "shortestLength": 10
+  }
+}

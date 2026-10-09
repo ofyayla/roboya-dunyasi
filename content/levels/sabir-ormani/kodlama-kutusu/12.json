@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.kodlama-kutusu.12",
+  "region": "sabir-ormani",
+  "game": "kodlama-kutusu",
+  "order": 34,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 5,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Kutu finali: iki meyve, engeller, uzun plan."
+  },
+  "grid": {
+    "rows": [
+      "......",
+      ".#.#..",
+      "......",
+      ".#.#..",
+      "......",
+      "......"
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 5,
+    "facing": "north"
+  },
+  "items": [
+    {
+      "id": "elma",
+      "kind": "fruit",
+      "x": 0,
+      "y": 2,
+      "color": "red"
+    },
+    {
+      "id": "armut",
+      "kind": "fruit",
+      "x": 4,
+      "y": 2,
+      "color": "green"
+    }
+  ],
+  "goal": {
+    "reach": {
+      "x": 4,
+      "y": 0
+    },
+    "collect": [
+      "elma",
+      "armut"
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 12
+  },
+  "voice": {
+    "intro": "kodlama_kutusu.l12.intro",
+    "success": "kodlama_kutusu.l12.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "proud",
+      "friend": "thanks"
+    }
+  },
+  "alternativeLevelId": "sabir-ormani.kodlama-kutusu.11",
+  "solution": {
+    "shortestLength": 11
+  }
+}

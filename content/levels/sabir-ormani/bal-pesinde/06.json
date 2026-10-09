@@ -1,0 +1,95 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.bal-pesinde.06",
+  "region": "sabir-ormani",
+  "game": "bal-pesinde",
+  "order": 20,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 3,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] İki bal damlası, engeller, mavi çeldirici."
+  },
+  "grid": {
+    "rows": [
+      ".....",
+      ".#.#.",
+      ".....",
+      ".#.#.",
+      "....."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 4,
+    "facing": "north"
+  },
+  "items": [
+    {
+      "id": "bal-1",
+      "kind": "honey",
+      "x": 0,
+      "y": 2,
+      "color": "orange"
+    },
+    {
+      "id": "bal-2",
+      "kind": "honey",
+      "x": 4,
+      "y": 2,
+      "color": "orange"
+    },
+    {
+      "id": "mavi",
+      "kind": "flower",
+      "x": 2,
+      "y": 0,
+      "color": "blue"
+    }
+  ],
+  "goal": {
+    "collect": [
+      "bal-1",
+      "bal-2"
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "backward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 8
+  },
+  "voice": {
+    "intro": "bal_pesinde.l06.intro",
+    "success": "bal_pesinde.l06.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "happy"
+    }
+  },
+  "alternativeLevelId": "sabir-ormani.bal-pesinde.05",
+  "solution": {
+    "shortestLength": 7
+  }
+}

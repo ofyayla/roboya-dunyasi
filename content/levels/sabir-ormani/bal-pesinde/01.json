@@ -4,11 +4,10 @@
   "id": "sabir-ormani.bal-pesinde.01",
   "region": "sabir-ormani",
   "game": "bal-pesinde",
-  "order": 15,
+  "order": 5,
   "meta": {
     "concepts": [
-      "sequencing",
-      "counting"
+      "sequencing"
     ],
     "value": "patience",
     "difficulty": 1,
@@ -16,7 +15,7 @@
       "minik"
     ],
     "mebOutcomes": [],
-    "notes": "İlk Bal Peşinde: arı tek çiçeğe gider; kod arının belleğinde, ekranda boş yuvarlaklar görünür."
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Arı tek çiçeğe gider; bellek görünmez."
   },
   "grid": {
     "rows": [

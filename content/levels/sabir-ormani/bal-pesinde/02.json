@@ -4,19 +4,18 @@
   "id": "sabir-ormani.bal-pesinde.02",
   "region": "sabir-ormani",
   "game": "bal-pesinde",
-  "order": 16,
+  "order": 8,
   "meta": {
     "concepts": [
-      "counting",
       "sequencing"
     ],
     "value": "patience",
-    "difficulty": 2,
+    "difficulty": 1,
     "ageLevels": [
       "minik"
     ],
     "mebOutcomes": [],
-    "notes": "Sayma: üç çiçek topla. Düz sıra: hepsi aynı yolda."
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Sayma: üç çiçek."
   },
   "grid": {
     "rows": [
@@ -89,6 +88,7 @@
       "friend": "happy"
     }
   },
+  "alternativeLevelId": "sabir-ormani.bal-pesinde.01",
   "solution": {
     "shortestLength": 3
   }

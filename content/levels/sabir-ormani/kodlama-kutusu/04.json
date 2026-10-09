@@ -4,19 +4,18 @@
   "id": "sabir-ormani.kodlama-kutusu.04",
   "region": "sabir-ormani",
   "game": "kodlama-kutusu",
-  "order": 14,
+  "order": 13,
   "meta": {
     "concepts": [
-      "sequencing",
-      "debugging"
+      "sequencing"
     ],
     "value": "patience",
-    "difficulty": 4,
+    "difficulty": 2,
     "ageLevels": [
       "kasif"
     ],
     "mebOutcomes": [],
-    "notes": "Hata avcısı, Kaşif: yedi kartlık kodda iki yanlış kart var."
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Hata avcısı: ikinci karta dikkat (sağa dön değil ileri)."
   },
   "grid": {
     "rows": [
@@ -29,12 +28,12 @@
   },
   "robot": {
     "x": 0,
-    "y": 4,
+    "y": 3,
     "facing": "north"
   },
   "goal": {
     "reach": {
-      "x": 3,
+      "x": 2,
       "y": 1
     }
   },
@@ -44,26 +43,20 @@
       "turn_left",
       "turn_right"
     ],
-    "maxProgramLength": 9
+    "maxProgramLength": 6
   },
   "starterProgram": [
     {
       "op": "forward"
     },
     {
-      "op": "forward"
-    },
-    {
-      "op": "forward"
-    },
-    {
-      "op": "turn_left"
-    },
-    {
-      "op": "forward"
+      "op": "turn_right"
     },
     {
       "op": "turn_right"
+    },
+    {
+      "op": "forward"
     },
     {
       "op": "forward"
@@ -88,7 +81,8 @@
       "friend": "thanks"
     }
   },
+  "alternativeLevelId": "sabir-ormani.kodlama-kutusu.03",
   "solution": {
-    "shortestLength": 7
+    "shortestLength": 5
   }
 }

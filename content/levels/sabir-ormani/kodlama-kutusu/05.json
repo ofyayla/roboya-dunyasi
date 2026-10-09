@@ -1,0 +1,71 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.kodlama-kutusu.05",
+  "region": "sabir-ormani",
+  "game": "kodlama-kutusu",
+  "order": 16,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 3,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Engelin etrafından dolaşan yol."
+  },
+  "grid": {
+    "rows": [
+      ".....",
+      "..#..",
+      ".....",
+      ".#...",
+      "....."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 4,
+    "facing": "north"
+  },
+  "goal": {
+    "reach": {
+      "x": 3,
+      "y": 1
+    }
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 9
+  },
+  "voice": {
+    "intro": "kodlama_kutusu.l05.intro",
+    "success": "kodlama_kutusu.l05.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "happy"
+    }
+  },
+  "alternativeLevelId": "sabir-ormani.kodlama-kutusu.04",
+  "solution": {
+    "shortestLength": 8
+  }
+}

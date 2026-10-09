@@ -117,6 +117,8 @@ namespace Roboya.Tests.PlayMode
             Assert.AreEqual(1, root.Q("plan").Query(className: "card").ToList().Count, "plan is kept so the child can fix it");
         }
 
+        // The whole 36-level region path is played through the UI, which takes minutes.
+        [Timeout(900000)]
         [UnityTest]
         public IEnumerator AllPrototypeLevels_SolverSolutionTappedThroughUi_EachCompletes()
         {
