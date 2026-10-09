@@ -4,7 +4,7 @@
     "references": [
         "Roboya.Core",
         "Roboya.UI",
-        "Roboya.Games.YonAvcisi",
+        "Roboya.Games.Common",
         "Roboya.Map",
         "Unity.RenderPipelines.Universal.Runtime",
         "Unity.RenderPipelines.Core.Runtime",

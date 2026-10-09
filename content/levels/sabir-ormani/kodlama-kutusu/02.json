@@ -1,0 +1,84 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.kodlama-kutusu.02",
+  "region": "sabir-ormani",
+  "game": "kodlama-kutusu",
+  "order": 12,
+  "meta": {
+    "concepts": [
+      "sequencing",
+      "debugging"
+    ],
+    "value": "patience",
+    "difficulty": 2,
+    "ageLevels": [
+      "minik"
+    ],
+    "mebOutcomes": [],
+    "notes": "İlk hata avcısı: kodda yanlış bir dönüş kartı var (sola dön yerine sağa dön)."
+  },
+  "grid": {
+    "rows": [
+      "....",
+      "....",
+      "....",
+      "...."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 3,
+    "facing": "north"
+  },
+  "goal": {
+    "reach": {
+      "x": 1,
+      "y": 2
+    }
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 4
+  },
+  "starterProgram": [
+    {
+      "op": "forward"
+    },
+    {
+      "op": "turn_left"
+    },
+    {
+      "op": "forward"
+    }
+  ],
+  "options": {
+    "ghostPath": true
+  },
+  "voice": {
+    "intro": "kodlama_kutusu.l02.intro",
+    "success": "kodlama_kutusu.l02.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "surprised",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "thanks"
+    }
+  },
+  "solution": {
+    "shortestLength": 3
+  }
+}

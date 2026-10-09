@@ -123,7 +123,8 @@ namespace Roboya.Tests.PlayMode
             var files = Directory.GetFiles(Roboya.Core.FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories);
             Array.Sort(files, StringComparer.Ordinal);
             var catalog = Roboya.Core.LevelCatalog.Parse(files.Select(File.ReadAllText));
-            var levels = catalog.ForGame(Roboya.CodingEngine.Levels.Generated.GameId.YonAvcisi);
+            // The whole region path, all games mixed in order: next goes from one game straight into the next.
+            var levels = catalog.All.Where(l => l.Dto.Region == Roboya.CodingEngine.Levels.Generated.RegionId.SabirOrmani).ToList();
 
             // Levels past the free tier need premium; the editor-only switch stands in for the server (ADR 0009).
             Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, "1");
@@ -142,6 +143,14 @@ namespace Roboya.Tests.PlayMode
                 if (i == 8)
                 {
                     yield return Capture(root, "04-level9-start");
+                }
+
+                if (levels[i].Dto.StarterProgram != null)
+                {
+                    // Hata avcısı: the ready-made code is wrong; the child clears it and builds the right one.
+                    Assert.AreEqual(levels[i].Dto.StarterProgram.Count, root.Q("plan").Query(className: "card").ToList().Count, "the starter code is on the strip");
+                    Tap(root.Q("clear"));
+                    yield return null;
                 }
 
                 foreach (var card in solution)

@@ -5,7 +5,7 @@ using BoardGrid = Roboya.CodingEngine.World.Grid;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Roboya.Games.YonAvcisi
+namespace Roboya.Games.Common
 {
     /// <summary>
     /// The board surface drawn in code with the region palette (docs/art/style-guide.md): a grass slab seen at an

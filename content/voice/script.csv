@@ -39,3 +39,11 @@ workshop.welcome,"Gemimi birlikte onarıyoruz! Bak, ne kadar yol aldık.",Gemi a
 roboya.alternative_offer,"Bu bölüm biraz zor oldu, olsun! İstersen önce daha kolay bir bölümü deneyelim.",Beş başarısız denemeden sonra daha kolay bölüm teklifi (YZ-03),
 onboarding.welcome,"Merhaba! Ben Roboya. Başlamak için bir büyüğünün yardımına ihtiyacım var.",İlk açılış: veli kilidine yönlendirme (A1),
 rest.battery_empty,"Şarjım bitti! Biraz dinlenelim, yarın yine oynarız. Güle güle!",Günlük süre dolunca; devam eden bölüm bitebilir (VEL-02),
+kodlama_kutusu.l01.intro,"Bu bir kodlama kutusu! Kartları doğru sıraya dizelim, sonra ben yürürüm.",Bölüm girişi; kutu bölümü tanıtımı,sabir-ormani.kodlama-kutusu.01
+kodlama_kutusu.l01.success,"Kartlar yerli yerinde! Arkamda bıraktığım izlere bak.",Bölüm sonu,sabir-ormani.kodlama-kutusu.01
+kodlama_kutusu.l02.intro,"Aaa, bu kodda bir hata saklanıyor! Hata avcısı olalım. Yanlış kartı bulabilir misin?",Bölüm girişi; ilk hata avcısı,sabir-ormani.kodlama-kutusu.02
+kodlama_kutusu.l02.success,"Hatayı buldun, harikasın! Şimdi doğru yoldan gittim.",Bölüm sonu,sabir-ormani.kodlama-kutusu.02
+kodlama_kutusu.l03.intro,"Kutuda yeni bir yol var. Engelin etrafından dolaşmayı planlayalım.",Bölüm girişi,sabir-ormani.kodlama-kutusu.03
+kodlama_kutusu.l03.success,"Engele çarpmadan vardım! Sabırlı planlamak işe yaradı.",Bölüm sonu,sabir-ormani.kodlama-kutusu.03
+kodlama_kutusu.l04.intro,"Bu kodda iki hata var! Dikkatli bak, hangi kartlar yanlış?",Bölüm girişi; iki hatalı kart,sabir-ormani.kodlama-kutusu.04
+kodlama_kutusu.l04.success,"İki hatayı da yakaladın! Çok iyi bir hata avcısısın.",Bölüm sonu,sabir-ormani.kodlama-kutusu.04

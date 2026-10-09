@@ -99,3 +99,11 @@ Doğrulayıcı şunları kontrol eder: şemaya uygunluk, bölümün tanımlı ka
 | 08 | Sıralama | İlk nesne toplama (elma) | 7 |
 | 09 | Sıralama | İki nesne + engeller | 8 |
 | 10 | Sıralama | Bölge finali: meyve + gemi parçası | 9 |
+
+## Kodlama Kutusu: hata avcısı ve sıralama
+
+`game: "kodlama-kutusu"`. Bölge patikasında `order` değerleri bölge içinde benzersizdir; oyunlar iç içe dizilir.
+
+- **Sıralama bölümü:** diğer oyunlarla aynı. Hayalet yol (`options.ghostPath`) planlanan rotayı, koşarken çizilen ayak izi gerçekleşeni gösterir (KUT-02).
+- **Hata avcısı bölümü:** `starterProgram` yanlış kartlı hazır kodu şeride koyar. Palette hem yanlış hem doğru kart bulunmalıdır. `solution.shortestLength` en kısa doğru çözümdür; hazır kodun yanlış kart sayısı Minik'te 1, Kaşif'te 1–2 olmalıdır. İpucu en kısa çözümle karşılaştırıp yanlış kartı gösterir.
+- Ses anahtarları `kodlama_kutusu.lNN.intro` / `.success`.

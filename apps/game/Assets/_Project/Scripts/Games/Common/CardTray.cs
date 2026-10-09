@@ -7,7 +7,7 @@ using Roboya.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Roboya.Games.YonAvcisi
+namespace Roboya.Games.Common
 {
     /// <summary>
     /// Card palette and plan strip with drag-and-drop. Tap a palette card to append it, tap a planned card to
