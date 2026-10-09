@@ -20,10 +20,13 @@ namespace Roboya.CodingEngine.Parents
                 default: return 20;
             }
         }
+
+        /// <summary>The plan shadow on the board is on by default for the younger bands; the parent can switch it either way.</summary>
+        public static bool PlanTraceDefault(AgeBand band) => band != AgeBand.Mucit;
     }
 
     /// <summary>
-    /// Play time per profile and day, and the parent's daily limit (F1-11, VEL-02). A parent setting kept apart from the
+    /// Play time per profile and day, the parent's daily limit (F1-11, VEL-02) and the other per-profile parent choices (plan shadow). A parent setting kept apart from the
     /// child profile (which holds only a nickname, avatar and age band). Pure logic; the clock is passed in. When the
     /// limit is used up a level in progress may be finished but a new one cannot start (the caller enforces that).
     /// </summary>
@@ -39,6 +42,9 @@ namespace Roboya.CodingEngine.Parents
         [JsonProperty("limits")]
         private Dictionary<string, int> _limits = new Dictionary<string, int>(StringComparer.Ordinal);
 
+        [JsonProperty("planTrace")]
+        private Dictionary<string, bool> _planTrace = new Dictionary<string, bool>(StringComparer.Ordinal);
+
         [JsonProperty("usage")]
         private Dictionary<string, Dictionary<string, double>> _usage =
             new Dictionary<string, Dictionary<string, double>>(StringComparer.Ordinal);
@@ -48,6 +54,20 @@ namespace Roboya.CodingEngine.Parents
         /// <summary>The limit in minutes (0 = unlimited): the parent's choice, or the recommendation for the age band.</summary>
         public int LimitMinutes(string profileId, AgeBand band) =>
             profileId != null && _limits.TryGetValue(profileId, out var minutes) ? minutes : ScreenTimeRules.RecommendedMinutes(band);
+
+        /// <summary>Whether the board shows the plan shadow: the parent's choice, or the default for the age band.</summary>
+        public bool PlanTraceEnabled(string profileId, AgeBand band) =>
+            profileId != null && _planTrace.TryGetValue(profileId, out var on) ? on : ScreenTimeRules.PlanTraceDefault(band);
+
+        public void SetPlanTrace(string profileId, bool enabled)
+        {
+            if (string.IsNullOrEmpty(profileId))
+            {
+                throw new ArgumentException("A profile id is required.", nameof(profileId));
+            }
+
+            _planTrace[profileId] = enabled;
+        }
 
         public bool HasChosenLimit(string profileId) => profileId != null && _limits.ContainsKey(profileId);
 
@@ -109,6 +129,14 @@ namespace Roboya.CodingEngine.Parents
                 }
             }
 
+            foreach (var id in new List<string>(_planTrace.Keys))
+            {
+                if (!keep.Contains(id))
+                {
+                    _planTrace.Remove(id);
+                }
+            }
+
             foreach (var id in new List<string>(_usage.Keys))
             {
                 if (!keep.Contains(id))
@@ -127,6 +155,7 @@ namespace Roboya.CodingEngine.Parents
             }
 
             _limits.Remove(profileId);
+            _planTrace.Remove(profileId);
             _usage.Remove(profileId);
         }
 
@@ -155,6 +184,7 @@ namespace Roboya.CodingEngine.Parents
             }
 
             book._limits = book._limits ?? new Dictionary<string, int>(StringComparer.Ordinal);
+            book._planTrace = book._planTrace ?? new Dictionary<string, bool>(StringComparer.Ordinal);
             book._usage = book._usage ?? new Dictionary<string, Dictionary<string, double>>(StringComparer.Ordinal);
             return book;
         }

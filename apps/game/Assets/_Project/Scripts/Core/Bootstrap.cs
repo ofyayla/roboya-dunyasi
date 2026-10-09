@@ -105,10 +105,10 @@ namespace Roboya.Core
             var storeProducts = StoreProducts.Parse(await ContentFiles.ReadAsync(StoreProducts.File));
 
             IEntitlementSource entitlements = null;
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (DevEntitlements.Requested)
             {
-                Debug.Log("[dev] " + DevEntitlements.Variable + "=1: all levels unlocked in the editor.");
+                Debug.Log("[dev] " + DevEntitlements.Variable + "=1: all levels unlocked (developer build).");
                 entitlements = new DevEntitlements();
             }
 #endif

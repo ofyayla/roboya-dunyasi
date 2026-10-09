@@ -13,7 +13,7 @@ Ses "arı" ve "çiçek" diyor, ekranda Roboya ve elma vardı; toplama bölümler
 1. **Oyuncu karakteri oyuna göre seçilir:** `RegionArt.ActorFor(GameId)` Bal Peşinde için Ari'yi (ön, arka, yan, mutlu), diğer oyunlar için Roboya'yı döndürür; sprite yoksa Roboya'ya düşer. `BoardView` bunu bölüm verisinin `game` alanından alır. Roboya Bal Peşinde'de hikâye sahnelerinde yönlendirici olarak kalır.
 2. **Nesne görselleri renk ve şekille:** çiçeğin her rengi ayrı yaprak biçimidir (papatya, lale, yıldız, kalp, güneş ışını, yonca); bal damlası ve petek ayrı nesnelerdir. Yeşil meyve artık armut olarak çizilir (eskiden elma).
 3. **Hedef rozeti (`GoalBadge`):** hedefte toplanacak nesneler tahtanın üstünde küçük resimlerle durur, toplandıkça parlar. Yazı yoktur. Çalıştırma başında (arı hariç) sıfırlanır; arıda bellek ve toplananlar kalıcı olduğu için rozet de kalıcıdır.
-4. **Yön oku (`FacingArrow`):** robotun önünde zemine yatan, tahtanın perspektifine uyan ok. Kuzeye bakarken robot gövdesi örteceği için biraz daha uzağa konur. Tahta dışına taşarsa ve kutlama anında gizlenir.
+4. **Yön oku (`FacingArrow`) — kaldırıldı (2026-10-09):** robotun önündeki zemin oku, Minik hayalet iziyle birlikte kalabalık ve kafa karıştırıcı bulundu; kod silindi. Bakış yönü robotun sprite'ından okunur.
 
 ## Sonuçlar
 

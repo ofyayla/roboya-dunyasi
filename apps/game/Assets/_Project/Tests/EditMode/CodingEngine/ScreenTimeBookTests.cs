@@ -162,5 +162,38 @@ namespace Roboya.Tests.CodingEngine
 
             Assert.AreEqual(10, book.LimitMinutes("a", AgeBand.Minik));
         }
+
+        [TestCase(AgeBand.Minik, true)]
+        [TestCase(AgeBand.Kasif, true)]
+        [TestCase(AgeBand.Mucit, false)]
+        public void PlanTraceEnabled_NoChoice_IsOnForMinikAndKasifOnly(AgeBand band, bool expected)
+        {
+            Assert.AreEqual(expected, new ScreenTimeBook().PlanTraceEnabled("p", band));
+        }
+
+        [Test]
+        public void SetPlanTrace_OverridesTheDefaultForThatProfileOnlyAndSurvivesSaving()
+        {
+            var book = new ScreenTimeBook();
+            book.SetPlanTrace("a", false);
+            book.SetPlanTrace("m", true);
+
+            var copy = ScreenTimeBook.FromJson(book.ToJson());
+
+            Assert.IsFalse(copy.PlanTraceEnabled("a", AgeBand.Minik));
+            Assert.IsTrue(copy.PlanTraceEnabled("m", AgeBand.Mucit));
+            Assert.IsTrue(copy.PlanTraceEnabled("b", AgeBand.Minik));
+        }
+
+        [Test]
+        public void Forget_AlsoDropsThePlanTraceChoice()
+        {
+            var book = new ScreenTimeBook();
+            book.SetPlanTrace("a", false);
+
+            book.Forget("a");
+
+            Assert.IsTrue(book.PlanTraceEnabled("a", AgeBand.Minik));
+        }
     }
 }

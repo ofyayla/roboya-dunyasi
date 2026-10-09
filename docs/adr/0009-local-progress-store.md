@@ -24,7 +24,7 @@
 3. **Premium hakkı `IEntitlementSource`'tan okunur.**
    - Sunucu hak servisi (F1-17) gelene kadar tek uygulama `FreeTierEntitlements`: her zaman ücretsiz katman.
    - Ücretsiz bölüm sayısı `ProgressRules`'tan gelir (varsayılan 3); ileride sunucu yapılandırmasından okunacak.
-4. **Geliştirici anahtarı:** `DevEntitlements` yalnız Unity Editor'da derlenir (`#if UNITY_EDITOR`) ve `ROBOYA_DEV_PREMIUM=1` ile tüm bölümleri açar. Oyuncu derlemelerine girmez; "10 bölüm" PlayMode testi bunu kullanır.
+4. **Geliştirici anahtarı:** `DevEntitlements` yalnız Unity Editor'da ve geliştirici derlemelerinde (`#if UNITY_EDITOR || DEVELOPMENT_BUILD`, `make android-apk DEV=1`) derlenir. Editor'da `ROBOYA_DEV_PREMIUM=1` ile, geliştirici APK'sında her zaman tüm bölümleri açar. Yayın (release) derlemelerine girmez; "10 bölüm" PlayMode testi bunu kullanır.
 
 ## Sonuçlar
 

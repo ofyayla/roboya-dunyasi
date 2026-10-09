@@ -140,10 +140,12 @@ namespace Roboya.Games.Common
             var support = SupportPlanner.For(_services.Catalog, _entry, _services.Progress.Book);
             _guided = support.Guided;
             bool ghost = support.GhostPath;
+            _planTrace = _services.ScreenTime.PlanTraceEnabled;
             _alternativeOffered = false;
             _alternative = null;
             _easier.AddToClassList("hidden");
             _board.Show(_entry.Level, ghost, _entry.Dto);
+            RefreshTrace();
             _badge.Show(_entry.Level);
             _tray.BoxCards = _entry.Dto.StarterProgram != null ? new List<Roboya.CodingEngine.Commands.CardType>(CardsOf(_entry)) : null;
             _tray.Bind(_session.Plan, _entry.Level.AvailableCards);
@@ -168,6 +170,7 @@ namespace Roboya.Games.Common
         private readonly VisualElement _paletteElement;
         private readonly GoalBadge _badge;
         private bool _bee;
+        private bool _planTrace;
         private int _lastPlanCount;
         private bool _clearedSinceRun = true;
         private bool _keptOldCommands;
@@ -328,6 +331,7 @@ namespace Roboya.Games.Common
             try
             {
                 _tray.SetLocked(true);
+                _board.ClearPlanTrace();
                 _tray.ClearMarks();
                 _board.ResetRobot(entry.Level.Start);
                 _badge.Set(0);
@@ -372,6 +376,7 @@ namespace Roboya.Games.Common
 
             var token = _lifetime.Token;
             _tray.SetLocked(true);
+            _board.ClearPlanTrace();
             _tray.ClearMarks();
             _tray.Guide(null);
             _keptOldCommands = _bee && _session.Attempts > 0 && !_clearedSinceRun;
@@ -435,6 +440,7 @@ namespace Roboya.Games.Common
             }
 
             _tray.SetLocked(false);
+            RefreshTrace();
             UpdateGuide();
             UpdateButtons();
             await OfferAlternativeIfNeeded(token);
@@ -480,17 +486,30 @@ namespace Roboya.Games.Common
             RenderProgress();
         }
 
+        /// <summary>
+        /// The whole plan drawn on the board as shadowy footprints, computed by the engine so it is what a run would do. Hidden
+        /// while running, while the bee's memory is hidden (it would give the memory away) and when the parent has switched it off.
+        /// </summary>
+        private void RefreshTrace()
+        {
+            bool memoryHidden = _bee && _entry.Dto.Options?.BeeMemoryVisible != true;
+            if (!_planTrace || memoryHidden || _session.State != SessionState.Planning || _session.Plan.IsEmpty)
+            {
+                _board.ClearPlanTrace();
+                return;
+            }
+
+            _board.ShowPlanTrace(new Interpreter(_entry.Level, _session.Plan.ToProgram()).Run(_session.Robot));
+        }
+
         private void OnPlanChanged()
         {
             if (_session.Plan.Count > _lastPlanCount)
             {
                 _services.Sfx.Play(SfxKind.Place);
-                if (_session.State == SessionState.Planning)
-                {
-                    // What the card just placed will do, shown on the board (no text).
-                    _ = _board.PreviewCard(_session.Plan.Cards[_session.Plan.Count - 1], _lifetime.Token);
-                }
             }
+
+            RefreshTrace();
 
             _lastPlanCount = _session.Plan.Count;
             _tray.ClearHint();

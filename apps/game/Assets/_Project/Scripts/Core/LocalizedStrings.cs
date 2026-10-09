@@ -83,6 +83,10 @@ namespace Roboya.Core
         public const string TimeUnlimited = "time.unlimited";
         public const string TimeToday = "time.today";
         public const string TimeNote = "time.note";
+        public const string TraceTitle = "trace.title";
+        public const string TraceOn = "trace.on";
+        public const string TraceOff = "trace.off";
+        public const string TraceNote = "trace.note";
         public const string RestParent = "rest.parent";
         public const string AccountTitle = "account.title";
         public const string AccountHint = "account.hint";
@@ -159,7 +163,7 @@ namespace Roboya.Core
             OnboardingNoticeTitle, OnboardingAccept, OnboardingDecline, ProfileTitle, ProfileNickname, ProfileAvatar,
             ProfileAge, ProfileAgeMinik, ProfileAgeKasif, ProfileAgeMucit, ProfileSave, ProfileCancel,
             ProfileDefaultNickname, ProfileListTitle, ProfileAdd, ProfileRemove, ProfileRemoveConfirm, ProfileLimit,
-            ProfileActive, TimeTitle, TimeMinutes, TimeUnlimited, TimeToday, TimeNote, RestParent,
+            ProfileActive, TimeTitle, TimeMinutes, TimeUnlimited, TimeToday, TimeNote, TraceTitle, TraceOn, TraceOff, TraceNote, RestParent,
             ReportTitle, ReportSummary, ReportNote, ReportEmpty, ReportConcept, ReportNotStarted, ReportExploring, ReportGrowing, ReportConfident, ReportConceptLine,
             AccountTitle, AccountHint, AccountEmail, AccountSendCode, AccountCode, AccountSignIn, AccountSignOut, AccountSignedIn, AccountCodeSent, AccountErrorCode, AccountErrorMany, AccountErrorDevice, AccountErrorNetwork, AccountErrorGeneric,
             AccountSync, SyncDone, SyncOffline, SyncConsent, SyncOutdated, SyncPartly, SyncFailed,
