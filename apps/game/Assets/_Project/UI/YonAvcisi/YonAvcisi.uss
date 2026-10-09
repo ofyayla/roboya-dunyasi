@@ -253,3 +253,32 @@
 .plan--memory .card > * {
     opacity: 0;
 }
+
+/* Goal badge (what to collect), shown as pictures over the top of the board. */
+.goal-badge {
+    position: absolute;
+    top: 4px;
+    left: 0;
+    right: 0;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.goal-badge__item {
+    width: 72px;
+    height: 72px;
+    margin: 0 6px;
+    padding: 6px;
+    border-radius: 36px;
+    background-color: rgba(255, 244, 226, 0.9);
+    border-width: 4px;
+    border-color: rgba(58, 42, 29, 0.35);
+    opacity: 0.55;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.goal-badge__item--done {
+    opacity: 1;
+    border-color: rgb(94, 148, 67);
+    background-color: rgb(235, 250, 220);
+}

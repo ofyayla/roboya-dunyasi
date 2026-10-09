@@ -480,6 +480,47 @@ namespace Roboya.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator BalPesinde_FirstLevel_ShowsAriTheFlowerTheGoalBadgeAndTheFacingArrow()
+        {
+            var files = Directory.GetFiles(Roboya.Core.FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories);
+            var catalog = Roboya.Core.LevelCatalog.Parse(files.Select(File.ReadAllText));
+            var store = TestProfiles.Seed(_progressDir);
+            foreach (var entry in catalog.All.Where(e => e.Dto.Order < 5))
+            {
+                store.Book.Record(entry.Id, 3);
+            }
+
+            store.Save();
+            Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, "1");
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            yield return OpenForest(map);
+            map.Q("path").Q<ScrollView>().ScrollTo(map.Q("stone-5"));
+            yield return null;
+            yield return null;
+            Tap(map.Q("stone-5"));
+
+            VisualElement game = null;
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
+            yield return PassStory(game);
+            yield return new WaitForSeconds(0.3f);
+
+            var badge = game.Q("goal-badge");
+            Assert.AreEqual(DisplayStyle.Flex, badge.resolvedStyle.display, "the child sees what to collect");
+            Assert.AreEqual(1, badge.childCount);
+            Assert.IsTrue(game.Q<Roboya.Games.Common.FacingArrow>("facing-arrow").IsVisible, "the robot's facing is drawn on the ground");
+            yield return Capture(game, "20-bee-level");
+
+            // Collecting the flower lights the badge up.
+            var forward = game.Q("palette").Children().OfType<CardElement>().First(c => c.Card == Roboya.CodingEngine.Commands.CardType.Forward);
+            Tap(forward);
+            Tap(forward);
+            Tap(game.Q("play"));
+            yield return WaitUntil(() => !game.Q("result").ClassListContains("hidden"), 20f);
+            Assert.IsTrue(badge.Q(className: "goal-badge__item--done") != null, "the collected flower is marked");
+        }
+
+        [UnityTest]
         public IEnumerator DailyLimitUsedUp_MapShowsRest_StoneStaysClosed_ParentCanRaiseTheLimit()
         {
             Seed(1);
