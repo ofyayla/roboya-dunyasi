@@ -54,8 +54,13 @@ namespace Roboya.CodingEngine.Progress
         /// <paramref name="startIndex"/> is where the child's age puts them. The free tier is the first
         /// <paramref name="freeLevelCount"/> levels from there, so an older child's free levels are the ones meant for them.
         /// </summary>
-        public static NodeState[] StatesOf(IReadOnlyList<string> path, ProgressBook book, int freeLevelCount, bool hasPremium, int startIndex = 0)
+        public static NodeState[] StatesOf(IReadOnlyList<string> path, ProgressBook book, int freeLevelCount, bool hasPremium, int startIndex = 0, bool unlockAll = false)
         {
+            if (unlockAll)
+            {
+                return AllOpen(path, book);
+            }
+
             var states = new NodeState[path.Count];
             bool previousDone = true;
             bool currentGiven = false;
@@ -90,6 +95,30 @@ namespace Roboya.CodingEngine.Progress
                 }
 
                 previousDone = i < startIndex || done;
+            }
+
+            return states;
+        }
+
+        private static NodeState[] AllOpen(IReadOnlyList<string> path, ProgressBook book)
+        {
+            var states = new NodeState[path.Count];
+            bool currentGiven = false;
+            for (int i = 0; i < path.Count; i++)
+            {
+                if (book.IsCompleted(path[i]))
+                {
+                    states[i] = NodeState.Completed;
+                }
+                else if (!currentGiven)
+                {
+                    states[i] = NodeState.Current;
+                    currentGiven = true;
+                }
+                else
+                {
+                    states[i] = NodeState.Open;
+                }
             }
 
             return states;

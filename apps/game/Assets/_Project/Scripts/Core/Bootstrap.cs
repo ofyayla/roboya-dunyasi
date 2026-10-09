@@ -124,7 +124,7 @@ namespace Roboya.Core
                 catalog,
                 await ComposeVoiceAsync(),
                 SessionRules.Default,
-                ProgressRules.Default,
+                Rules(),
                 profiles,
                 entitlements,
                 parts,
@@ -155,6 +155,19 @@ namespace Roboya.Core
             return url == null
                 ? null
                 : new Roboya.Services.ApiClient(url, TransportOverride ?? new Roboya.Services.UnityHttpTransport());
+        }
+
+        private static ProgressRules Rules()
+        {
+#if !UNITY_EDITOR
+            if (Debug.isDebugBuild)
+            {
+                // Development player builds open every level for testing on a device; release builds never do (ADR 0009).
+                var d = ProgressRules.Default;
+                return new ProgressRules(d.FreeLevelCount, d.LevelsPerPart, d.FreeProfiles, d.PremiumProfiles, unlockAll: true);
+            }
+#endif
+            return ProgressRules.Default;
         }
 
         private static string PlatformWord => Application.platform == RuntimePlatform.IPhonePlayer ? "ios" : "android";
