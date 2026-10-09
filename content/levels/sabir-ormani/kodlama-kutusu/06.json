@@ -93,5 +93,17 @@
   },
   "solution": {
     "shortestLength": 6
-  }
+  },
+  "scenery": [
+    {
+      "x": -1,
+      "y": 2,
+      "look": "bush"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "look": "tree"
+    }
+  ]
 }

@@ -24,6 +24,13 @@
       "..#..",
       ".....",
       "....."
+    ],
+    "looks": [
+      {
+        "x": 2,
+        "y": 2,
+        "look": "rock"
+      }
     ]
   },
   "robot": {
@@ -112,5 +119,17 @@
   "alternativeLevelId": "sabir-ormani.kodlama-kutusu.08",
   "solution": {
     "shortestLength": 8
-  }
+  },
+  "scenery": [
+    {
+      "x": -1,
+      "y": 2,
+      "look": "bush"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "look": "tree"
+    }
+  ]
 }

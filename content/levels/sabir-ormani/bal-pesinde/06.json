@@ -24,6 +24,28 @@
       ".....",
       ".#.#.",
       "....."
+    ],
+    "looks": [
+      {
+        "x": 1,
+        "y": 1,
+        "look": "bush"
+      },
+      {
+        "x": 3,
+        "y": 1,
+        "look": "bush"
+      },
+      {
+        "x": 1,
+        "y": 3,
+        "look": "bush"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "look": "bush"
+      }
     ]
   },
   "robot": {
@@ -63,7 +85,6 @@
   "cards": {
     "palette": [
       "forward",
-      "backward",
       "turn_left",
       "turn_right"
     ],
@@ -100,5 +121,17 @@
   "alternativeLevelId": "sabir-ormani.bal-pesinde.05",
   "solution": {
     "shortestLength": 7
-  }
+  },
+  "scenery": [
+    {
+      "x": -1,
+      "y": 3,
+      "look": "rock"
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "look": "tree"
+    }
+  ]
 }

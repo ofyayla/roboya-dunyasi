@@ -25,6 +25,43 @@
       ".#..#.",
       ".#....",
       "......"
+    ],
+    "looks": [
+      {
+        "x": 1,
+        "y": 1,
+        "look": "rock"
+      },
+      {
+        "x": 2,
+        "y": 1,
+        "look": "rock"
+      },
+      {
+        "x": 3,
+        "y": 1,
+        "look": "rock"
+      },
+      {
+        "x": 4,
+        "y": 1,
+        "look": "rock"
+      },
+      {
+        "x": 1,
+        "y": 3,
+        "look": "rock"
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "look": "rock"
+      },
+      {
+        "x": 1,
+        "y": 4,
+        "look": "rock"
+      }
     ]
   },
   "robot": {
@@ -74,5 +111,17 @@
   "alternativeLevelId": "sabir-ormani.kodlama-kutusu.09",
   "solution": {
     "shortestLength": 11
-  }
+  },
+  "scenery": [
+    {
+      "x": -1,
+      "y": 1,
+      "look": "rock"
+    },
+    {
+      "x": 6,
+      "y": 4,
+      "look": "bush"
+    }
+  ]
 }

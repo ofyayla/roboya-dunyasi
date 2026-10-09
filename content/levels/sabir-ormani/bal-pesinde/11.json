@@ -121,5 +121,17 @@
   "alternativeLevelId": "sabir-ormani.bal-pesinde.10",
   "solution": {
     "shortestLength": 11
-  }
+  },
+  "scenery": [
+    {
+      "x": -1,
+      "y": 1,
+      "look": "tree"
+    },
+    {
+      "x": 6,
+      "y": 4,
+      "look": "bush"
+    }
+  ]
 }

@@ -25,6 +25,43 @@
       ".#..#.",
       ".#....",
       "......"
+    ],
+    "looks": [
+      {
+        "x": 1,
+        "y": 1,
+        "look": "bush"
+      },
+      {
+        "x": 2,
+        "y": 1,
+        "look": "bush"
+      },
+      {
+        "x": 3,
+        "y": 1,
+        "look": "bush"
+      },
+      {
+        "x": 4,
+        "y": 1,
+        "look": "bush"
+      },
+      {
+        "x": 1,
+        "y": 3,
+        "look": "bush"
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "look": "bush"
+      },
+      {
+        "x": 1,
+        "y": 4,
+        "look": "bush"
+      }
     ]
   },
   "robot": {
@@ -105,5 +142,17 @@
   "alternativeLevelId": "sabir-ormani.bal-pesinde.11",
   "solution": {
     "shortestLength": 12
-  }
+  },
+  "scenery": [
+    {
+      "x": -1,
+      "y": 3,
+      "look": "rock"
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "look": "tree"
+    }
+  ]
 }

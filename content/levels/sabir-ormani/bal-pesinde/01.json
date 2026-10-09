@@ -46,10 +46,7 @@
   },
   "cards": {
     "palette": [
-      "forward",
-      "backward",
-      "turn_left",
-      "turn_right"
+      "forward"
     ],
     "maxProgramLength": 3
   },
@@ -82,5 +79,20 @@
   },
   "solution": {
     "shortestLength": 2
-  }
+  },
+  "options": {
+    "guided": true
+  },
+  "scenery": [
+    {
+      "x": -1,
+      "y": 3,
+      "look": "rock"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "look": "tree"
+    }
+  ]
 }
