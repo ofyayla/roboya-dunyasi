@@ -118,6 +118,7 @@ namespace Roboya.Games.Common
             // Bal Peşinde: the bee keeps its place and its memory between runs (BAL-02).
             _bee = _entry.Dto.Game == GameId.BalPesinde;
             _clearedSinceRun = true;
+            _lastPlanCount = 0;
             _session = new LevelSession(_entry.Level, _entry.ShortestLength, _services.Rules, keepsState: _bee);
             // The memory is invisible for the youngest (BAL, Minik): the strip shows blank cards, so only the count is seen.
             _planElement.EnableInClassList("plan--memory", _bee && _entry.Dto.Options?.BeeMemoryVisible != true);
@@ -155,6 +156,7 @@ namespace Roboya.Games.Common
         private readonly VisualElement _planElement;
         private readonly GoalBadge _badge;
         private bool _bee;
+        private int _lastPlanCount;
         private bool _clearedSinceRun = true;
         private bool _keptOldCommands;
         private float _startedAt;
@@ -269,13 +271,16 @@ namespace Roboya.Games.Common
                         _tray.HighlightSlot(e.CommandPath[0]);
                         break;
                     case ExecutionEventKind.Moved:
+                        _services.Sfx.Play(SfxKind.Step);
                         await _board.AnimateMove(e.Before.Position, e.After.Position, token);
                         break;
                     case ExecutionEventKind.Turned:
+                        _services.Sfx.Play(SfxKind.Turn);
                         await _board.AnimateTurn(e.Before.Facing, e.After.Facing, token);
                         break;
                     case ExecutionEventKind.Bumped:
                         _services.Voice.Play(BumpVoice);
+                        _services.Sfx.Play(SfxKind.Bump);
                         var bump = _board.AnimateBump(e.Before.Facing, token);
                         var shake = _tray.ShakeSlot(e.CommandPath[0], token);
                         await bump;
@@ -289,6 +294,7 @@ namespace Roboya.Games.Common
                             _services.Voice.Play("count." + _badge.CollectedCount.ToString("D2"));
                         }
 
+                        _services.Sfx.Play(SfxKind.Collect);
                         await _board.AnimateCollect(e.ItemIndex, token);
                         break;
                     case ExecutionEventKind.Finished:
@@ -447,6 +453,7 @@ namespace Roboya.Games.Common
                 reward = layers.Count > 0 ? _partArt.Find(layers[0].Sprite) : null;
             }
 
+            _services.Sfx.Play(SfxKind.Success);
             await _board.Celebrate(token);
             await _story.PlayOutroAsync(LevelStory.Outro(_entry.Dto), token, reward, PartUnlockedVoice);
             _stars.Clear();
@@ -463,6 +470,12 @@ namespace Roboya.Games.Common
 
         private void OnPlanChanged()
         {
+            if (_session.Plan.Count > _lastPlanCount)
+            {
+                _services.Sfx.Play(SfxKind.Place);
+            }
+
+            _lastPlanCount = _session.Plan.Count;
             _tray.ClearHint();
             UpdateGuide();
             UpdateButtons();
