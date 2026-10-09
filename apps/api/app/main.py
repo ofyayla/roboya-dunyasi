@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from app.core.config import DEFAULT_SECRET, Settings, get_settings
+from app.core.error_tracking import init_error_tracking
 from app.core.logging import configure_logging
 from app.routers import auth, events, health, me, privacy, profiles, store
 from app.services import legal
@@ -31,6 +32,7 @@ def create_app() -> FastAPI:
     settings = get_settings()
     check_settings(settings)
     configure_logging(settings.log_level)
+    init_error_tracking(settings)
     app = FastAPI(
         title="Roboya Dünyası API",
         version=API_VERSION,
