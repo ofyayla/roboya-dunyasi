@@ -53,6 +53,7 @@ namespace Roboya.Map
             _reader = new NoticeReader(services, () => Show(_parent));
             _parent.AddSection(new ReportSection(services));
             _parent.AddSection(new ScreenTimeSection(services));
+            _parent.AddSection(new PlanTraceSection(services));
             _parent.AddSection(new PrivacySection(services, () => Show(_reader), ShowWelcome));
             _grownup = new IconButton(IconKind.Grownup, () => _gate.Open(ShowParent)) { name = "to-parent" };
             _grownup.AddToClassList("map__grownup");

@@ -145,6 +145,31 @@ namespace Roboya.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator MinikLevel_PlanTraceFollowsThePlanAndDisappearsWhenItRuns()
+        {
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            yield return OpenForest(map);
+            Tap(map.Q("stone-1"));
+
+            VisualElement game = null;
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
+            yield return PassStory(game);
+            Assert.AreEqual(0, game.Query(className: "trace-mark").ToList().Count, "an empty plan draws nothing");
+
+            var forward = game.Q("palette").Children().OfType<CardElement>().First();
+            Tap(forward);
+            Tap(forward);
+            yield return null;
+            Assert.AreEqual(2, game.Query(className: "trace-step").ToList().Count, "one footprint per step of the plan");
+                        yield return Capture(game, "22-plan-trace");
+
+            Tap(game.Q("play"));
+            yield return null;
+            Assert.AreEqual(0, game.Query(className: "trace-mark").ToList().Count, "the trace is gone while the robot runs");
+        }
+
+        [UnityTest]
         public IEnumerator ParentGate_WrongThenRightAnswer_OpensParentArea_AndLocksAfterThreeMisses()
         {
             VisualElement map = null;
@@ -486,7 +511,7 @@ namespace Roboya.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator BalPesinde_FirstLevel_ShowsAriTheFlowerTheGoalBadgeAndTheFacingArrow()
+        public IEnumerator BalPesinde_FirstLevel_ShowsAriTheFlowerAndTheGoalBadge()
         {
             var files = Directory.GetFiles(Roboya.Core.FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories);
             var catalog = Roboya.Core.LevelCatalog.Parse(files.Select(File.ReadAllText));
@@ -514,14 +539,12 @@ namespace Roboya.Tests.PlayMode
             var badge = game.Q("goal-badge");
             Assert.AreEqual(DisplayStyle.Flex, badge.resolvedStyle.display, "the child sees what to collect");
             Assert.AreEqual(1, badge.childCount);
-            Assert.IsTrue(game.Q<Roboya.Games.Common.FacingArrow>("facing-arrow").IsVisible, "the robot's facing is drawn on the ground");
             yield return Capture(game, "20-bee-level");
 
             // Collecting the flower lights the badge up.
             var forward = game.Q("palette").Children().OfType<CardElement>().First(c => c.Card == Roboya.CodingEngine.Commands.CardType.Forward);
             Tap(forward);
-            yield return new WaitForSeconds(0.3f);
-            yield return Capture(game, "22-card-preview"); // the arrow shows what the card does
+            Assert.AreEqual(0, game.Query(className: "trace-mark").ToList().Count, "the bee's memory is hidden, so the plan is not drawn");
             Tap(forward);
             Tap(game.Q("play"));
             yield return WaitUntil(() => !game.Q("result").ClassListContains("hidden"), 20f);
@@ -564,6 +587,17 @@ namespace Roboya.Tests.PlayMode
             Tap(map.Q("time-0"));
             yield return null;
             Assert.IsTrue(map.Q("time-0").ClassListContains("is-selected"));
+
+            // The plan shadow is a parent choice per child, switchable either way.
+            map.Q<ScrollView>("parent-sections").ScrollTo(map.Q("trace-on"));
+            yield return null;
+            yield return null;
+            Tap(map.Q("trace-on"));
+            yield return null;
+            Assert.IsTrue(map.Q("trace-on").ClassListContains("is-selected"));
+            Tap(map.Q("trace-off"));
+            yield return null;
+            Assert.IsTrue(map.Q("trace-off").ClassListContains("is-selected"));
 
             Tap(map.Q("parent-back"));
             yield return null;

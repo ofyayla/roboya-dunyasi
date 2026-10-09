@@ -24,8 +24,8 @@ namespace Roboya.Games.Common
         public const float BumpSeconds = 0.5f;
 
         // Sprite sizes in front-cell units. Characters are a little taller than a cell so they read as standing.
-        private const float RobotHeight = 1.12f;
-        private const float GoalHeight = 0.95f;
+        private const float RobotHeight = 0.95f;
+        private const float GoalHeight = 0.82f;
         private const float ItemHeight = 0.55f;
         private const float ObstacleWidth = 0.98f;
         private const float DecorWidth = 0.9f;
@@ -75,12 +75,7 @@ namespace Roboya.Games.Common
         private int _robotDepthBucket = int.MinValue;
         private bool _hasNorthScenery;
         private ActorSprites _actor;
-        private readonly FacingArrow _arrow = new FacingArrow();
-        private readonly Vector2[] _arrowCells = new Vector2[FacingArrow.PointCount];
-        private int _previewId;
-        private bool _previewing;
-        private CardType _previewCard;
-        private float _previewT;
+        private readonly List<VisualElement> _traceMarks = new List<VisualElement>();
 
         public BoardView(RegionArt art = null)
         {
@@ -94,7 +89,6 @@ namespace Roboya.Games.Common
             Add(_decals);
             Add(_layer);
             // Above the pieces: the robot is taller than a cell and would hide an arrow lying behind it.
-            Add(_arrow);
             RegisterCallback<GeometryChangedEvent>(_ => Layout());
         }
 
@@ -112,6 +106,7 @@ namespace Roboya.Games.Common
             _pieces.Clear();
             _items.Clear();
             _trail.Clear();
+            _traceMarks.Clear();
             _goal = null;
             _robotDepthBucket = int.MinValue;
 
@@ -534,6 +529,11 @@ namespace Roboya.Games.Common
                 PlaceDot(dot);
             }
 
+            foreach (var mark in _traceMarks)
+            {
+                PlaceMark(mark);
+            }
+
             PlaceRobot();
             SortByDepth();
         }
@@ -561,7 +561,6 @@ namespace Roboya.Games.Common
             }
 
             Place(_robot);
-            UpdateArrow();
 
             // Re-sort only when the robot crosses a quarter row, not every frame.
             int bucket = Mathf.FloorToInt(_robot.Anchor.y * 4f);
@@ -605,103 +604,61 @@ namespace Roboya.Games.Common
             piece.Shadow.style.translate = new Translate(foot.x - (sw * 0.5f), foot.y - (sh * 0.5f));
         }
 
-        /// <summary>Lays the facing arrow on the ground one step ahead of the robot; hidden off the board and at celebrations.</summary>
-        private void UpdateArrow()
-        {
-            if (!_proj.IsValid || _level == null)
-            {
-                return;
-            }
-
-            float dx = _facing == Direction.East ? 1f : _facing == Direction.West ? -1f : 0f;
-            float dy = _facing == Direction.South ? 1f : _facing == Direction.North ? -1f : 0f;
-            // Facing north the robot's back and head cover the ground ahead, so the arrow sits a little further out.
-            float ahead = _facing == Direction.North ? 1.5f : 1.0f;
-            var centre = new Vector2(_robotPos.x + 0.5f + (dx * ahead), _robotPos.y + 0.5f + (dy * ahead));
-            if (_previewing)
-            {
-                ApplyPreview(ref dx, ref dy, ref centre, ahead);
-            }
-
-            bool onBoard = _previewing || (centre.x > 0.15f && centre.y > 0.15f && centre.x < _level.Grid.Width - 0.15f && centre.y < _level.Grid.Height - 0.15f);
-            if (!onBoard || _mood != Mood.Normal)
-            {
-                _arrow.Set(false);
-                return;
-            }
-
-            FacingArrow.Outline(centre, dx, dy, _arrowCells);
-            for (int i = 0; i < FacingArrow.PointCount; i++)
-            {
-                _arrow.Points[i] = _proj.Project(_arrowCells[i].x, _arrowCells[i].y);
-            }
-
-            _arrow.Set(true);
-        }
-
         /// <summary>
-        /// A card's effect shown on the arrow: forward slides one step ahead, backward slides behind, a turn swings a quarter circle.
+        /// The plan drawn on the board before it runs (Minik): a soft shadow on every cell the robot would step on. The engine runs the
+        /// plan, so the trace is always what a run would do. Only footprints: no second robot, no extra symbols.
         /// </summary>
-        private void ApplyPreview(ref float dx, ref float dy, ref Vector2 centre, float ahead)
+        public void ShowPlanTrace(IEnumerable<Roboya.CodingEngine.Execution.ExecutionEvent> events)
         {
-            var origin = new Vector2(_robotPos.x + 0.5f, _robotPos.y + 0.5f);
-            float t = _previewT;
-            switch (_previewCard)
-            {
-                case CardType.Forward:
-                    centre = origin + (new Vector2(dx, dy) * (ahead + t));
-                    break;
-                case CardType.Backward:
-                    dx = -dx;
-                    dy = -dy;
-                    centre = origin + (new Vector2(dx, dy) * (0.9f + t));
-                    break;
-                default:
-                    // Turn left or right: the arrow swings around the robot (screen clockwise = right).
-                    float turn = (_previewCard == CardType.TurnRight ? 1f : -1f) * 90f * t * Mathf.Deg2Rad;
-                    float cos = Mathf.Cos(turn);
-                    float sin = Mathf.Sin(turn);
-                    float rx = (dx * cos) - (dy * sin);
-                    float ry = (dx * sin) + (dy * cos);
-                    dx = rx;
-                    dy = ry;
-                    centre = origin + (new Vector2(dx, dy) * ahead);
-                    break;
-            }
-        }
-
-        /// <summary>Shows what a card does, on the arrow in front of the robot (no text; a short, repeatable demonstration).</summary>
-        public async Awaitable PreviewCard(CardType card, CancellationToken token)
-        {
-            int id = ++_previewId;
-            if (_level == null || (card != CardType.Forward && card != CardType.Backward && card != CardType.TurnLeft && card != CardType.TurnRight))
+            ClearPlanTrace();
+            if (_level == null)
             {
                 return;
             }
 
-            _previewCard = card;
-            _previewing = true;
-            try
+            foreach (var e in events)
             {
-                await Tween.Run(0.6f, t =>
+                if (e.Kind == Roboya.CodingEngine.Execution.ExecutionEventKind.Moved)
                 {
-                    if (id != _previewId)
-                    {
-                        return;
-                    }
-
-                    _previewT = t;
-                    UpdateArrow();
-                }, token);
-            }
-            finally
-            {
-                if (id == _previewId)
-                {
-                    _previewing = false;
-                    UpdateArrow();
+                    AddTraceMark("trace-step", CellAnchor(e.After.Position.X, e.After.Position.Y), 0.62f);
                 }
             }
+        }
+
+        public void ClearPlanTrace()
+        {
+            foreach (var mark in _traceMarks)
+            {
+                mark.RemoveFromHierarchy();
+            }
+
+            _traceMarks.Clear();
+        }
+
+        private void AddTraceMark(string cls, Vector2 anchor, float cells)
+        {
+            var mark = new VisualElement { pickingMode = PickingMode.Ignore };
+            mark.AddToClassList("trace-mark");
+            mark.AddToClassList(cls);
+            mark.userData = new Vector3(anchor.x, anchor.y, cells);
+            _traceMarks.Add(mark);
+            _decals.Add(mark);
+            PlaceMark(mark);
+        }
+
+        private void PlaceMark(VisualElement mark)
+        {
+            if (!_proj.IsValid)
+            {
+                return;
+            }
+
+            var d = (Vector3)mark.userData;
+            float size = _proj.Cell * _proj.ScaleAt(d.y) * d.z;
+            var at = _proj.Project(d.x, d.y);
+            mark.style.width = size;
+            mark.style.height = size * 0.7f;
+            mark.style.translate = new Translate(at.x - (size * 0.5f), at.y - (size * 0.35f));
         }
 
         private void PlaceDot(VisualElement dot)

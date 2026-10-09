@@ -15,16 +15,20 @@ namespace Roboya.Core
         public bool HasPremium => false;
     }
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     /// <summary>
-    /// Editor-only switch for testing paid levels (ROBOYA_DEV_PREMIUM=1). Compiled out of every player build,
-    /// so it can never grant premium on a device (ADR 0009).
+    /// Developer switch for testing paid levels: ROBOYA_DEV_PREMIUM=1 in the editor, always on in development builds (make android-apk DEV=1).
+    /// Compiled out of release builds, so it can never grant premium to a player (ADR 0009).
     /// </summary>
     public sealed class DevEntitlements : IEntitlementSource
     {
         public const string Variable = "ROBOYA_DEV_PREMIUM";
 
+#if UNITY_EDITOR
         public static bool Requested => System.Environment.GetEnvironmentVariable(Variable) == "1";
+#else
+        public static bool Requested => true;
+#endif
 
         public bool HasPremium => true;
     }

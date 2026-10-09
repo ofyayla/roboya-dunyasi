@@ -314,3 +314,15 @@
     margin-right: 16px;
     background-color: rgb(205, 84, 84);
 }
+
+/* Plan trace (Minik): the cells the plan would step on, drawn like soft shadows on the ground. */
+.trace-mark {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.trace-step {
+    border-radius: 999px;
+    background-color: rgba(40, 60, 30, 0.38);
+}

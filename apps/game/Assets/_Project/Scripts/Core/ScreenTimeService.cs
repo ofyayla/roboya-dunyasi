@@ -43,6 +43,20 @@ namespace Roboya.Core
 
         public int UsedMinutesToday => _profiles.HasActive ? (int)(Book.UsedSeconds(_profiles.Active.Id, _now().Date) / 60.0) : 0;
 
+        /// <summary>The plan shadow on the board (a parent setting, per child).</summary>
+        public bool PlanTraceEnabled => _profiles.HasActive && Book.PlanTraceEnabled(_profiles.Active.Id, _profiles.Active.AgeBand);
+
+        public void SetPlanTrace(bool enabled)
+        {
+            if (!_profiles.HasActive)
+            {
+                return;
+            }
+
+            Book.SetPlanTrace(_profiles.Active.Id, enabled);
+            Flush();
+        }
+
         public void SetLimit(int minutes)
         {
             if (!_profiles.HasActive)
