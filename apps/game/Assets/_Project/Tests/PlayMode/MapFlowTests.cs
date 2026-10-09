@@ -643,10 +643,7 @@ namespace Roboya.Tests.PlayMode
 
         private static IEnumerator WaitForVoice(string key)
         {
-            AudioSource voice = null;
-            yield return WaitUntil(
-                () => (voice = UnityEngine.Object.FindAnyObjectByType<AudioSource>()) != null && voice.clip != null && voice.clip.name == key,
-                5f);
+            yield return WaitUntil(() => VoiceSourcePlaying(key) != null, 5f);
         }
     }
 }
