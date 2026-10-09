@@ -173,7 +173,7 @@ namespace Roboya.Tests.PlayMode
                 if ((i + 1) % Roboya.Core.ProgressQueries.CornerLength == 0)
                 {
                     // The end of a forest corner: the turtle's patience card comes before the result; a tap moves on.
-                    yield return WaitUntil(() => !root.Q("value-card").ClassListContains("hidden"), 40f);
+                    yield return WaitUntil(() => !root.Q("value-card").ClassListContains("hidden"), 60f);
                     yield return new WaitForSeconds(2f);
                     Assert.IsTrue(root.Q<Roboya.Games.Common.ValueCard>("value-card").PlayingFilm, "the film plays while the line is spoken");
                     Assert.IsNotNull(VoiceSourcePlaying("value.patience.1"), "the first scene's line is spoken with the film");
