@@ -2,6 +2,69 @@
   "version": 1,
   "language": "tr",
   "entries": {
+    "bal_pesinde.forgot_clear": {
+      "file": "audio/tr/bal_pesinde.forgot_clear.mp3",
+      "source": "tts",
+      "textHash": "65b7d07919f1c59c",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l01.intro": {
+      "file": "audio/tr/bal_pesinde.l01.intro.mp3",
+      "source": "tts",
+      "textHash": "be2e81f3408c1aff",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l01.success": {
+      "file": "audio/tr/bal_pesinde.l01.success.mp3",
+      "source": "tts",
+      "textHash": "9dd661f89579c8a1",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l02.intro": {
+      "file": "audio/tr/bal_pesinde.l02.intro.mp3",
+      "source": "tts",
+      "textHash": "9eb1c97e1a0c38b5",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l02.success": {
+      "file": "audio/tr/bal_pesinde.l02.success.mp3",
+      "source": "tts",
+      "textHash": "2063127c72ff7185",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l03.intro": {
+      "file": "audio/tr/bal_pesinde.l03.intro.mp3",
+      "source": "tts",
+      "textHash": "42ebb05b2cf33982",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l03.success": {
+      "file": "audio/tr/bal_pesinde.l03.success.mp3",
+      "source": "tts",
+      "textHash": "a9226ca8eaa33677",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l04.intro": {
+      "file": "audio/tr/bal_pesinde.l04.intro.mp3",
+      "source": "tts",
+      "textHash": "7327734677e92f07",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
+    "bal_pesinde.l04.success": {
+      "file": "audio/tr/bal_pesinde.l04.success.mp3",
+      "source": "tts",
+      "textHash": "d5742fb029b3d6d3",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "model": "eleven_multilingual_v2"
+    },
     "card.forward.intro": {
       "file": "audio/tr/card.forward.intro.mp3",
       "source": "tts",

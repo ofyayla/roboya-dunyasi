@@ -1,0 +1,86 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.bal-pesinde.03",
+  "region": "sabir-ormani",
+  "game": "bal-pesinde",
+  "order": 17,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 3,
+    "ageLevels": [
+      "minik",
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "Renk eşleştirme: yalnız mor çiçeği topla, sarıya dokunma. Temizle düğmesi ilk kez gerekir."
+  },
+  "grid": {
+    "rows": [
+      "....",
+      "....",
+      "....",
+      "...."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 3,
+    "facing": "north"
+  },
+  "items": [
+    {
+      "id": "mor",
+      "kind": "flower",
+      "x": 2,
+      "y": 1,
+      "color": "purple"
+    },
+    {
+      "id": "sari",
+      "kind": "flower",
+      "x": 0,
+      "y": 0,
+      "color": "yellow"
+    }
+  ],
+  "goal": {
+    "collect": [
+      "mor"
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "backward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 6
+  },
+  "voice": {
+    "intro": "bal_pesinde.l03.intro",
+    "success": "bal_pesinde.l03.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "thanks"
+    }
+  },
+  "solution": {
+    "shortestLength": 5
+  }
+}

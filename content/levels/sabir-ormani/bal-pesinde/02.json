@@ -1,0 +1,95 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.bal-pesinde.02",
+  "region": "sabir-ormani",
+  "game": "bal-pesinde",
+  "order": 16,
+  "meta": {
+    "concepts": [
+      "counting",
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 2,
+    "ageLevels": [
+      "minik"
+    ],
+    "mebOutcomes": [],
+    "notes": "Sayma: üç çiçek topla. Düz sıra: hepsi aynı yolda."
+  },
+  "grid": {
+    "rows": [
+      "....",
+      "....",
+      "....",
+      "...."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 3,
+    "facing": "north"
+  },
+  "items": [
+    {
+      "id": "cicek-1",
+      "kind": "flower",
+      "x": 0,
+      "y": 2,
+      "color": "yellow"
+    },
+    {
+      "id": "cicek-2",
+      "kind": "flower",
+      "x": 0,
+      "y": 1,
+      "color": "yellow"
+    },
+    {
+      "id": "cicek-3",
+      "kind": "flower",
+      "x": 0,
+      "y": 0,
+      "color": "yellow"
+    }
+  ],
+  "goal": {
+    "collect": [
+      "cicek-1",
+      "cicek-2",
+      "cicek-3"
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "backward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 4
+  },
+  "voice": {
+    "intro": "bal_pesinde.l02.intro",
+    "success": "bal_pesinde.l02.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "happy"
+    }
+  },
+  "solution": {
+    "shortestLength": 3
+  }
+}

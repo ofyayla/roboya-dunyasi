@@ -242,3 +242,14 @@
 .screen--art .bottom-bar {
     background-color: rgba(252, 226, 190, 0.94);
 }
+
+/* Bal Peşinde, young level: the bee's memory is invisible. The strip shows blank round dots, so only the count shows. */
+.plan--memory .card {
+    background-color: rgb(240, 200, 90);
+    border-radius: 44px;
+    -unity-background-image-tint-color: transparent;
+}
+
+.plan--memory .card > * {
+    opacity: 0;
+}

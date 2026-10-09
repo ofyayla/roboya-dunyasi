@@ -1,0 +1,79 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.bal-pesinde.01",
+  "region": "sabir-ormani",
+  "game": "bal-pesinde",
+  "order": 15,
+  "meta": {
+    "concepts": [
+      "sequencing",
+      "counting"
+    ],
+    "value": "patience",
+    "difficulty": 1,
+    "ageLevels": [
+      "minik"
+    ],
+    "mebOutcomes": [],
+    "notes": "İlk Bal Peşinde: arı tek çiçeğe gider; kod arının belleğinde, ekranda boş yuvarlaklar görünür."
+  },
+  "grid": {
+    "rows": [
+      "....",
+      "....",
+      "....",
+      "...."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 3,
+    "facing": "north"
+  },
+  "items": [
+    {
+      "id": "cicek-1",
+      "kind": "flower",
+      "x": 0,
+      "y": 1,
+      "color": "yellow"
+    }
+  ],
+  "goal": {
+    "collect": [
+      "cicek-1"
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "backward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 3
+  },
+  "voice": {
+    "intro": "bal_pesinde.l01.intro",
+    "success": "bal_pesinde.l01.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "happy"
+    }
+  },
+  "solution": {
+    "shortestLength": 2
+  }
+}

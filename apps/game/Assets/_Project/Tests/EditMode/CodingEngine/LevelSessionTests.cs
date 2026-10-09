@@ -191,5 +191,73 @@ namespace Roboya.Tests.CodingEngine
             Assert.AreEqual(3, StarRating.Best(3, 1));
             Assert.AreEqual(2, StarRating.Best(1, 2));
         }
+
+        private static LevelSession Bee(int max = 8) => new LevelSession(Build(Corner, maxLength: max), 5, keepsState: true);
+
+        [Test]
+        public void KeepsState_AfterAFailedRun_BeeStaysWhereItStopped_AndMemoryIsKept()
+        {
+            var s = Bee();
+            s.Plan.Load(new[] { F, F });
+
+            var result = PlayAll(s);
+
+            Assert.IsFalse(result.IsSuccess);
+            Assert.AreEqual(0, s.Robot.Position.Y, "the bee is at the top edge, not back at the start");
+            Assert.AreEqual(2, s.Plan.Count, "BAL-02: the memory is not cleared by running");
+        }
+
+        [Test]
+        public void KeepsState_AddingWithoutClear_RunsTheOldCommandsAgain()
+        {
+            var s = Bee();
+            s.Plan.Load(new[] { F });
+            PlayAll(s); // bee now one step up
+            s.Plan.Insert(1, Rt);
+            s.Plan.Insert(2, F);
+
+            var result = PlayAll(s); // memory is F, Rt, F from one step up: the old F runs again
+
+            Assert.AreEqual(0, result.FinalState.Position.Y);
+            Assert.AreEqual(1, result.FinalState.Position.X);
+        }
+
+        [Test]
+        public void KeepsState_ClearThenNewProgram_ReachesTheGoalFromWhereTheBeeStood()
+        {
+            var s = Bee();
+            s.Plan.Load(new[] { F, F });
+            PlayAll(s);
+            s.Plan.Clear();
+            s.Plan.Load(new[] { Rt, F, F });
+
+            var result = PlayAll(s);
+
+            Assert.IsTrue(result.IsSuccess);
+            Assert.AreEqual(SessionState.Completed, s.State);
+        }
+
+        [Test]
+        public void KeepsState_Hint_OnlyTalks_NeverPointsAtACard()
+        {
+            var s = Bee();
+            s.Plan.Load(new[] { F });
+            PlayAll(s);
+
+            var hint = s.RequestHint();
+
+            Assert.AreEqual(HintTier.Voice, hint.Tier);
+            Assert.AreEqual(-1, hint.SlotIndex);
+        }
+
+        [Test]
+        public void NormalMode_FailedRun_StillStartsFromTheLevelStart()
+        {
+            var s = Session();
+            s.Plan.Load(new[] { F, F });
+            PlayAll(s);
+
+            Assert.AreEqual(s.Level.Start.Position, s.Robot.Position);
+        }
     }
 }

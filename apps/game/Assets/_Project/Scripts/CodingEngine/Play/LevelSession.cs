@@ -16,15 +16,26 @@ namespace Roboya.CodingEngine.Play
     {
         private readonly SessionRules _rules;
 
-        public LevelSession(Level level, int shortestLength, SessionRules rules = null)
+        /// <param name="keepsState">
+        /// Bal Peşinde (BAL-02): the bee stays where it stopped and its memory (the plan) is kept after a run, so a program
+        /// started without clearing runs the old commands again. Collected items stay collected.
+        /// </param>
+        public LevelSession(Level level, int shortestLength, SessionRules rules = null, bool keepsState = false)
         {
+            KeepsState = keepsState;
             Level = level ?? throw new ArgumentNullException(nameof(level));
+            Robot = level.Start;
             ShortestLength = shortestLength;
             _rules = rules ?? SessionRules.Default;
             Plan = new PlanStrip(level.MaxProgramLength, level.AvailableCards);
         }
 
         public Level Level { get; }
+
+        public bool KeepsState { get; }
+
+        /// <summary>Where the robot is now: the level start, or in <see cref="KeepsState"/> mode where the last run ended.</summary>
+        public RobotState Robot { get; private set; }
 
         public int ShortestLength { get; }
 
@@ -45,7 +56,7 @@ namespace Roboya.CodingEngine.Play
         /// <summary>YON-02: the whole plan runs at once, so there must be something to run.</summary>
         public bool CanPlay => State == SessionState.Planning && !Plan.IsEmpty;
 
-        public bool ShouldOfferHint => State == SessionState.Planning && FailuresInARow >= _rules.HintAfterFailures && HintTier < HintTier.ShowCorrectCard;
+        public bool ShouldOfferHint => State == SessionState.Planning && FailuresInARow >= _rules.HintAfterFailures && HintTier < (KeepsState ? HintTier.HighlightWrongCard : HintTier.ShowCorrectCard);
 
         public bool ShouldOfferAlternative => State == SessionState.Planning && FailuresInARow >= _rules.AlternativeAfterFailures;
 
@@ -58,7 +69,7 @@ namespace Roboya.CodingEngine.Play
             }
 
             State = SessionState.Running;
-            return Track(new Interpreter(Level, Plan.ToProgram()).Run());
+            return Track(new Interpreter(Level, Plan.ToProgram()).Run(Robot));
         }
 
         /// <summary>Escalates one hint tier and returns what to show (YZ-01).</summary>
@@ -67,6 +78,13 @@ namespace Roboya.CodingEngine.Play
             if (State != SessionState.Planning)
             {
                 return new HintResult(HintTier.None, -1, null);
+            }
+
+            if (KeepsState)
+            {
+                // The memory is partly old by design, so there is no "wrong card" to point at: Roboya only talks.
+                HintTier = HintTier.Voice;
+                return new HintResult(HintTier.Voice, -1, null);
             }
 
             if (HintTier < HintTier.ShowCorrectCard)
@@ -116,6 +134,11 @@ namespace Roboya.CodingEngine.Play
         {
             Attempts++;
             LastResult = result;
+            if (KeepsState)
+            {
+                Robot = result.FinalState;
+            }
+
             if (result.IsSuccess)
             {
                 State = SessionState.Completed;

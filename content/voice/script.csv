@@ -47,3 +47,12 @@ kodlama_kutusu.l03.intro,"Kutuda yeni bir yol var. Engelin etrafından dolaşmay
 kodlama_kutusu.l03.success,"Engele çarpmadan vardım! Sabırlı planlamak işe yaradı.",Bölüm sonu,sabir-ormani.kodlama-kutusu.03
 kodlama_kutusu.l04.intro,"Bu kodda iki hata var! Dikkatli bak, hangi kartlar yanlış?",Bölüm girişi; iki hatalı kart,sabir-ormani.kodlama-kutusu.04
 kodlama_kutusu.l04.success,"İki hatayı da yakaladın! Çok iyi bir hata avcısısın.",Bölüm sonu,sabir-ormani.kodlama-kutusu.04
+bal_pesinde.l01.intro,"Bu benim arkadaşım, arı! Sırtındaki tuşlarla ona yolu öğretiriz. Çiçeğe gidelim, bal alalım!",Bölüm girişi; arı ve bellek tanıtımı,sabir-ormani.bal-pesinde.01
+bal_pesinde.l01.success,"Çiçeğe vardı! Arı yolu hatırladı bile.",Bölüm sonu,sabir-ormani.bal-pesinde.01
+bal_pesinde.l02.intro,"Bu sefer yolda üç çiçek var. Hepsini toplayalım, sayalım!",Bölüm girişi; sayma,sabir-ormani.bal-pesinde.02
+bal_pesinde.l02.success,"Bir, iki, üç! Üç çiçek topladık.",Bölüm sonu,sabir-ormani.bal-pesinde.02
+bal_pesinde.l03.intro,"Mor çiçeği istiyorum, sarıya dokunmayalım. Arı eski komutları unutmaz, gerekirse temizle tuşuna basarız.",Bölüm girişi; renk ve temizle tuşu,sabir-ormani.bal-pesinde.03
+bal_pesinde.l03.success,"Mor çiçek tamam! Doğru rengi buldun.",Bölüm sonu,sabir-ormani.bal-pesinde.03
+bal_pesinde.l04.intro,"Artık arının belleğini görebiliyoruz. İki ödülü toplamak için dikkatli planlayalım.",Bölüm girişi; görünür bellek,sabir-ormani.bal-pesinde.04
+bal_pesinde.l04.success,"İkisini de topladık! Sabırlı planın işe yaradı.",Bölüm sonu,sabir-ormani.bal-pesinde.04
+bal_pesinde.forgot_clear,"Arı eski komutları da hatırlıyor! Yeni bir yol için önce temizle tuşuna basalım.",BAL-02: temizlemeyi unutunca öğretici uyarı; ipucu da bunu söyler,

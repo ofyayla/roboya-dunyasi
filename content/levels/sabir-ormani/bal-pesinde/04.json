@@ -1,0 +1,91 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.bal-pesinde.04",
+  "region": "sabir-ormani",
+  "game": "bal-pesinde",
+  "order": 18,
+  "meta": {
+    "concepts": [
+      "counting",
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 4,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "Kaşif: arının belleği görünür; iki çiçek, engel arası."
+  },
+  "grid": {
+    "rows": [
+      ".....",
+      ".#...",
+      "...#.",
+      ".....",
+      "....."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 4,
+    "facing": "north"
+  },
+  "items": [
+    {
+      "id": "cicek-1",
+      "kind": "flower",
+      "x": 0,
+      "y": 3,
+      "color": "red"
+    },
+    {
+      "id": "cicek-2",
+      "kind": "honey",
+      "x": 4,
+      "y": 2,
+      "color": "orange"
+    }
+  ],
+  "goal": {
+    "collect": [
+      "cicek-1",
+      "cicek-2"
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "backward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 9
+  },
+  "options": {
+    "beeMemoryVisible": true
+  },
+  "voice": {
+    "intro": "bal_pesinde.l04.intro",
+    "success": "bal_pesinde.l04.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "surprised",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "happy"
+    }
+  },
+  "solution": {
+    "shortestLength": 8
+  }
+}
