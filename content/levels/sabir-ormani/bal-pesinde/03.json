@@ -54,8 +54,6 @@
   "cards": {
     "palette": [
       "forward",
-      "backward",
-      "turn_left",
       "turn_right"
     ],
     "maxProgramLength": 6
@@ -90,5 +88,17 @@
   "alternativeLevelId": "sabir-ormani.bal-pesinde.02",
   "solution": {
     "shortestLength": 5
-  }
+  },
+  "scenery": [
+    {
+      "x": -1,
+      "y": 3,
+      "look": "rock"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "look": "tree"
+    }
+  ]
 }
