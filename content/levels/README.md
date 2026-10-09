@@ -107,3 +107,12 @@ Doğrulayıcı şunları kontrol eder: şemaya uygunluk, bölümün tanımlı ka
 - **Sıralama bölümü:** diğer oyunlarla aynı. Hayalet yol (`options.ghostPath`) planlanan rotayı, koşarken çizilen ayak izi gerçekleşeni gösterir (KUT-02).
 - **Hata avcısı bölümü:** `starterProgram` yanlış kartlı hazır kodu şeride koyar. Palette hem yanlış hem doğru kart bulunmalıdır. `solution.shortestLength` en kısa doğru çözümdür; hazır kodun yanlış kart sayısı Minik'te 1, Kaşif'te 1–2 olmalıdır. İpucu en kısa çözümle karşılaştırıp yanlış kartı gösterir.
 - Ses anahtarları `kodlama_kutusu.lNN.intro` / `.success`.
+
+## Bal Peşinde
+
+`game: "bal-pesinde"`; nesneler `flower` veya `honey` (renk şekille birlikte okunur). Arı çalışmadan sonra durduğu yerde kalır ve belleği silinmez; çocuk `Temizle` düğmesine basmazsa eski komutlar yeniden çalışır (BAL-02). Bu yüzden `solution.shortestLength` boş bellekle başlangıçtan hesaplanır ve `maxProgramLength` en kısa çözümden 1–2 fazla olmalıdır.
+
+- Minik: bellek görünmez (varsayılan). Kaşif: `options.beeMemoryVisible: true`.
+- Renk eşleştirme: yalnız istenen rengin kimliği `goal.collect` içinde olur, diğer renkler çeldiricidir.
+- Sayma: `goal.collect` içinde üç çiçek; çiçekler yol üzerinde olabilir.
+- Ses anahtarları `bal_pesinde.lNN.intro` / `.success`.

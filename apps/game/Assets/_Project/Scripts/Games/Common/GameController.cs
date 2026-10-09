@@ -26,6 +26,7 @@ namespace Roboya.Games.Common
         private const string AskGrownUpVoice = "roboya.ask_grownup";
         private const string AlternativeVoice = "roboya.alternative_offer";
         private const string PartUnlockedVoice = "reward.part_unlocked";
+        private const string ForgotClearVoice = "bal_pesinde.forgot_clear";
 
         private readonly GameServices _services;
         private readonly IReadOnlyList<LevelEntry> _levels;
@@ -65,7 +66,8 @@ namespace Roboya.Games.Common
                 screen.style.backgroundImage = new StyleBackground(art.Background);
                 screen.AddToClassList("screen--art");
             }
-            _tray = new CardTray(root.Q("palette"), root.Q("plan"), root.Q("drag-layer"));
+            _planElement = root.Q("plan");
+            _tray = new CardTray(root.Q("palette"), _planElement, root.Q("drag-layer"));
             _tray.Changed += OnPlanChanged;
 
             _play = new IconButton(IconKind.Play, () => _ = PlayAsync()) { name = "play" };
@@ -109,7 +111,12 @@ namespace Roboya.Games.Common
             ReportAbandon();
             _index = Mathf.Clamp(index, 0, _levels.Count - 1);
             _entry = _levels[_index];
-            _session = new LevelSession(_entry.Level, _entry.ShortestLength, _services.Rules);
+            // Bal Peşinde: the bee keeps its place and its memory between runs (BAL-02).
+            _bee = _entry.Dto.Game == GameId.BalPesinde;
+            _clearedSinceRun = true;
+            _session = new LevelSession(_entry.Level, _entry.ShortestLength, _services.Rules, keepsState: _bee);
+            // The memory is invisible for the youngest (BAL, Minik): the strip shows blank cards, so only the count is seen.
+            _planElement.EnableInClassList("plan--memory", _bee && _entry.Dto.Options?.BeeMemoryVisible != true);
             if (_entry.Dto.StarterProgram != null)
             {
                 _session.Plan.Load(CardsOf(_entry));
@@ -138,6 +145,10 @@ namespace Roboya.Games.Common
         }
 
         private const int ProgressDots = 9;
+        private readonly VisualElement _planElement;
+        private bool _bee;
+        private bool _clearedSinceRun = true;
+        private bool _keptOldCommands;
         private float _startedAt;
         private int _hintsUsed;
         private bool _open;
@@ -226,7 +237,13 @@ namespace Roboya.Games.Common
             _tray.SetLocked(true);
             _tray.ClearMarks();
             _tray.Guide(null);
-            _board.ResetRobot(_entry.Level.Start);
+            _keptOldCommands = _bee && _session.Attempts > 0 && !_clearedSinceRun;
+            _clearedSinceRun = false;
+            if (!_bee)
+            {
+                _board.ResetRobot(_entry.Level.Start);
+            }
+
             var events = _session.Play();
             UpdateButtons(); // after Play(): the session is now Running, so play is disabled.
 
@@ -285,14 +302,23 @@ namespace Roboya.Games.Common
             }
 
             // A bump already had its own line; otherwise explain gently what is missing.
-            if (result != null && result.Outcome != ExecutionOutcome.Bumped)
+            if (_keptOldCommands)
+            {
+                // BAL-02: the bee also ran what it still remembered; a gentle, teaching line rather than a scolding.
+                _services.Voice.Play(ForgotClearVoice);
+            }
+            else if (result != null && result.Outcome != ExecutionOutcome.Bumped)
             {
                 _services.Voice.Play(result.Outcome == ExecutionOutcome.MissingItems ? MissingItemsVoice : NotThereVoice);
             }
 
             // Kodlama Kutusu (KUT-02): the footprints stay a little longer so the child can compare the planned and the real path.
             await Tween.Delay(_entry.Dto.Game == GameId.KodlamaKutusu ? 2.5f : 0.8f, token);
-            _board.ResetRobot(_entry.Level.Start);
+            if (!_bee)
+            {
+                _board.ResetRobot(_entry.Level.Start);
+            }
+
             _tray.SetLocked(false);
             UpdateGuide();
             UpdateButtons();
@@ -358,7 +384,11 @@ namespace Roboya.Games.Common
             _services.Analytics.Track("hint_used", _entry.Id, LevelProps(("hint_tier", Mathf.Clamp((int)hint.Tier, 0, 3))));
             var keys = _entry.Dto.Voice.Hints;
             int tier = (int)hint.Tier - 1;
-            if (keys != null && tier >= 0 && tier < keys.Count)
+            if (_bee && _session.Attempts > 0 && !_clearedSinceRun && !_session.Plan.IsEmpty)
+            {
+                _services.Voice.Play(ForgotClearVoice);
+            }
+            else if (keys != null && tier >= 0 && tier < keys.Count)
             {
                 _services.Voice.Play(keys[tier]);
             }
@@ -378,6 +408,7 @@ namespace Roboya.Games.Common
                 return;
             }
 
+            _clearedSinceRun = true;
             _session.Plan.Clear();
             _tray.Refresh();
             UpdateGuide();

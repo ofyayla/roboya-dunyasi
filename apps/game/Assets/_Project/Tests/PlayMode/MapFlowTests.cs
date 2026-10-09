@@ -34,6 +34,11 @@ namespace Roboya.Tests.PlayMode
         public IEnumerator TearDown()
         {
             Bootstrap.ProgressFolderOverride = null;
+            // A failed wait skips a test's own finally block, so global switches are reset here too.
+            Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, null);
+            Environment.SetEnvironmentVariable(Roboya.Services.ApiConfig.Variable, null);
+            Bootstrap.TransportOverride = null;
+            Bootstrap.StoreBridgeOverride = null;
             foreach (var boot in UnityEngine.Object.FindObjectsByType<Bootstrap>(FindObjectsSortMode.None))
             {
                 UnityEngine.Object.Destroy(boot.gameObject);
@@ -417,6 +422,60 @@ namespace Roboya.Tests.PlayMode
                 Bootstrap.StoreBridgeOverride = null;
                 Bootstrap.TransportOverride = null;
                 Environment.SetEnvironmentVariable(Roboya.Services.ApiConfig.Variable, null);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator BalPesinde_RunningAgainWithoutClear_TheBeeRemembersAndRoboyaExplains()
+        {
+            // Everything before the third Bal Peşinde level is finished; premium stands in for the server (ADR 0009).
+            var files = Directory.GetFiles(Roboya.Core.FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories);
+            var catalog = Roboya.Core.LevelCatalog.Parse(files.Select(File.ReadAllText));
+            var store = TestProfiles.Seed(_progressDir);
+            foreach (var entry in catalog.All.Where(e => e.Dto.Order < 17))
+            {
+                store.Book.Record(entry.Id, 3);
+            }
+
+            store.Save();
+            Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, "1");
+            try
+            {
+                VisualElement map = null;
+                yield return OpenMap(r => map = r);
+                yield return OpenForest(map);
+                // The path scrolls sideways once it holds more stones than the screen is wide.
+                map.Q("path").Q<ScrollView>().ScrollTo(map.Q("stone-17"));
+                yield return null;
+                yield return null;
+                Tap(map.Q("stone-17"));
+
+                VisualElement game = null;
+                yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
+                yield return PassStory(game);
+                Assert.IsTrue(game.Q("plan").ClassListContains("plan--memory"), "the youngest cannot see the bee's memory");
+
+                var forward = game.Q("palette").Children().OfType<CardElement>().First(c => c.Card == Roboya.CodingEngine.Commands.CardType.Forward);
+                Tap(forward);
+                Tap(game.Q("play"));
+                yield return new WaitForSeconds(0.2f);
+                yield return WaitUntil(() => game.Q("play").enabledSelf, 15f);
+                Assert.AreEqual(1, game.Q("plan").Query(className: "card").ToList().Count, "BAL-02: running does not clear the memory");
+
+                // Without pressing clear, add more: the old command runs again and Roboya explains gently.
+                Tap(forward);
+                Tap(game.Q("play"));
+                yield return new WaitForSeconds(0.2f);
+                yield return WaitUntil(() => game.Q("play").enabledSelf, 15f);
+                yield return WaitForVoice("bal_pesinde.forgot_clear");
+
+                Tap(game.Q("clear"));
+                yield return null;
+                Assert.AreEqual(0, game.Q("plan").Query(className: "card").ToList().Count);
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, null);
             }
         }
 
