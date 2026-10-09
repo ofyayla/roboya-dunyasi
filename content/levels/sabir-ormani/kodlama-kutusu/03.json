@@ -4,46 +4,47 @@
   "id": "sabir-ormani.kodlama-kutusu.03",
   "region": "sabir-ormani",
   "game": "kodlama-kutusu",
-  "order": 13,
+  "order": 10,
   "meta": {
     "concepts": [
       "sequencing"
     ],
     "value": "patience",
-    "difficulty": 3,
+    "difficulty": 2,
     "ageLevels": [
       "kasif"
     ],
     "mebOutcomes": [],
-    "notes": "Kutu bölümü, Kaşif: engelin etrafından dolaşan yedi kartlık yol."
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Sıralama: bir dönüş ve üç ileri."
   },
   "grid": {
     "rows": [
-      ".....",
-      "..#..",
-      ".....",
-      ".#...",
-      "....."
+      "....",
+      "....",
+      "....",
+      "...."
     ]
   },
   "robot": {
     "x": 0,
-    "y": 4,
+    "y": 3,
     "facing": "north"
   },
   "goal": {
     "reach": {
       "x": 3,
-      "y": 1
+      "y": 2
     }
   },
   "cards": {
     "palette": [
       "forward",
-      "turn_left",
       "turn_right"
     ],
-    "maxProgramLength": 9
+    "maxProgramLength": 6
+  },
+  "options": {
+    "ghostPath": true
   },
   "voice": {
     "intro": "kodlama_kutusu.l03.intro",
@@ -64,7 +65,8 @@
       "friend": "happy"
     }
   },
+  "alternativeLevelId": "sabir-ormani.kodlama-kutusu.02",
   "solution": {
-    "shortestLength": 8
+    "shortestLength": 5
   }
 }

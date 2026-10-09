@@ -1,0 +1,97 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.kodlama-kutusu.11",
+  "region": "sabir-ormani",
+  "game": "kodlama-kutusu",
+  "order": 32,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 3,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Hata avcısı: sekiz kartlık kodda iki yanlış kart."
+  },
+  "grid": {
+    "rows": [
+      ".....",
+      ".....",
+      ".....",
+      ".....",
+      ".....",
+      "....."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 5,
+    "facing": "north"
+  },
+  "goal": {
+    "reach": {
+      "x": 3,
+      "y": 1
+    }
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 10
+  },
+  "starterProgram": [
+    {
+      "op": "forward"
+    },
+    {
+      "op": "forward"
+    },
+    {
+      "op": "turn_right"
+    },
+    {
+      "op": "forward"
+    },
+    {
+      "op": "turn_right"
+    },
+    {
+      "op": "forward"
+    },
+    {
+      "op": "turn_left"
+    },
+    {
+      "op": "forward"
+    }
+  ],
+  "voice": {
+    "intro": "kodlama_kutusu.l11.intro",
+    "success": "kodlama_kutusu.l11.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "surprised",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "thanks"
+    }
+  },
+  "solution": {
+    "shortestLength": 8
+  }
+}

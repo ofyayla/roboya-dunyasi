@@ -4,54 +4,59 @@
   "id": "sabir-ormani.bal-pesinde.04",
   "region": "sabir-ormani",
   "game": "bal-pesinde",
-  "order": 18,
+  "order": 14,
   "meta": {
     "concepts": [
-      "counting",
       "sequencing"
     ],
     "value": "patience",
-    "difficulty": 4,
+    "difficulty": 2,
     "ageLevels": [
       "kasif"
     ],
     "mebOutcomes": [],
-    "notes": "Kaşif: arının belleği görünür; iki çiçek, engel arası."
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Renk eşleştirme: iki kırmızı, mavi çeldirici."
   },
   "grid": {
     "rows": [
-      ".....",
-      ".#...",
-      "...#.",
-      ".....",
-      "....."
+      "....",
+      "....",
+      "....",
+      "...."
     ]
   },
   "robot": {
     "x": 0,
-    "y": 4,
+    "y": 3,
     "facing": "north"
   },
   "items": [
     {
-      "id": "cicek-1",
+      "id": "kirmizi-1",
       "kind": "flower",
       "x": 0,
-      "y": 3,
+      "y": 1,
       "color": "red"
     },
     {
-      "id": "cicek-2",
-      "kind": "honey",
-      "x": 4,
+      "id": "kirmizi-2",
+      "kind": "flower",
+      "x": 2,
+      "y": 1,
+      "color": "red"
+    },
+    {
+      "id": "mavi",
+      "kind": "flower",
+      "x": 1,
       "y": 2,
-      "color": "orange"
+      "color": "blue"
     }
   ],
   "goal": {
     "collect": [
-      "cicek-1",
-      "cicek-2"
+      "kirmizi-1",
+      "kirmizi-2"
     ]
   },
   "cards": {
@@ -61,10 +66,7 @@
       "turn_left",
       "turn_right"
     ],
-    "maxProgramLength": 9
-  },
-  "options": {
-    "beeMemoryVisible": true
+    "maxProgramLength": 6
   },
   "voice": {
     "intro": "bal_pesinde.l04.intro",
@@ -77,7 +79,7 @@
   },
   "story": {
     "intro": {
-      "roboya": "surprised",
+      "roboya": "curious",
       "friend": "explaining"
     },
     "outro": {
@@ -85,7 +87,8 @@
       "friend": "happy"
     }
   },
+  "alternativeLevelId": "sabir-ormani.bal-pesinde.03",
   "solution": {
-    "shortestLength": 8
+    "shortestLength": 5
   }
 }

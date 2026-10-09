@@ -1,0 +1,100 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 2,
+  "id": "sabir-ormani.bal-pesinde.12",
+  "region": "sabir-ormani",
+  "game": "bal-pesinde",
+  "order": 35,
+  "meta": {
+    "concepts": [
+      "sequencing"
+    ],
+    "value": "patience",
+    "difficulty": 5,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Bal Peşinde finali: labirent ve üç bal."
+  },
+  "grid": {
+    "rows": [
+      "......",
+      ".####.",
+      "......",
+      ".#..#.",
+      ".#....",
+      "......"
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 5,
+    "facing": "north"
+  },
+  "items": [
+    {
+      "id": "bal-1",
+      "kind": "honey",
+      "x": 0,
+      "y": 2,
+      "color": "orange"
+    },
+    {
+      "id": "bal-2",
+      "kind": "honey",
+      "x": 5,
+      "y": 2,
+      "color": "orange"
+    },
+    {
+      "id": "bal-3",
+      "kind": "honey",
+      "x": 5,
+      "y": 0,
+      "color": "orange"
+    }
+  ],
+  "goal": {
+    "collect": [
+      "bal-1",
+      "bal-2",
+      "bal-3"
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "backward",
+      "turn_left",
+      "turn_right"
+    ],
+    "maxProgramLength": 14
+  },
+  "options": {
+    "beeMemoryVisible": true
+  },
+  "voice": {
+    "intro": "bal_pesinde.l12.intro",
+    "success": "bal_pesinde.l12.success",
+    "hints": [
+      "roboya.hint.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining"
+    },
+    "outro": {
+      "roboya": "proud",
+      "friend": "thanks"
+    }
+  },
+  "alternativeLevelId": "sabir-ormani.bal-pesinde.11",
+  "solution": {
+    "shortestLength": 12
+  }
+}

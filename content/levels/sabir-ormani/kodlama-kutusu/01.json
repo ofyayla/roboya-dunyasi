@@ -4,18 +4,18 @@
   "id": "sabir-ormani.kodlama-kutusu.01",
   "region": "sabir-ormani",
   "game": "kodlama-kutusu",
-  "order": 11,
+  "order": 4,
   "meta": {
     "concepts": [
       "sequencing"
     ],
     "value": "patience",
-    "difficulty": 1,
+    "difficulty": 2,
     "ageLevels": [
       "minik"
     ],
     "mebOutcomes": [],
-    "notes": "Kutu bölümü: kartlar karışık, doğru sıraya konur; yol iz bırakır."
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Kutu: kartlar doğru sıraya konur; yol iz bırakır."
   },
   "grid": {
     "rows": [
