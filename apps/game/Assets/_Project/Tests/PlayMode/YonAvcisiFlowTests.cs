@@ -95,7 +95,7 @@ namespace Roboya.Tests.PlayMode
             yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Map" && (map = FindRoot())?.Q("path") != null, 10f);
             yield return null;
             Assert.AreEqual(DisplayStyle.Flex, map.Q("path").resolvedStyle.display, "next returns to the path, not the next level");
-            Assert.AreEqual(DisplayStyle.Flex, map.Q("path-ahead").resolvedStyle.display, "an arrow shows there is more ahead");
+            Assert.AreEqual(DisplayStyle.Flex, map.Q("path-play").resolvedStyle.display, "the play button leads on to the next level");
         }
 
         [UnityTest]

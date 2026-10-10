@@ -67,50 +67,88 @@
     position: relative;
 }
 
+/* Path stones: one shape for every level, the state shows in colour, size and stars (never colour alone). */
 .stone {
     position: absolute;
-    width: 104px;
-    align-items: center;
+    width: 126px;
+    height: 84px;
+    transform-origin: 50% 37%;
 }
 
 .stone__face {
-    flex-shrink: 0;
-    width: 104px;
-    height: 104px;
-    padding: 26px;
-    border-radius: 52px;
-    border-width: 6px;
-    border-color: rgb(58, 42, 29);
-    background-color: rgb(139, 194, 107);
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    -unity-background-scale-mode: scale-to-fit;
 }
 
-.stone--current .stone__face {
-    background-color: var(--c-brand);
-    border-color: rgb(255, 255, 255);
-    border-width: 8px;
+.stone__shape {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
 }
 
-.stone--locked .stone__face {
-    background-color: rgb(196, 186, 170);
-    opacity: 0.7;
+.stone__number {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 8px;
+    height: 46px;
+    margin: 0;
+    padding: 0;
+    font-size: 32px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(99, 56, 6);
 }
 
-.stone--grownup .stone__face {
-    background-color: rgb(214, 204, 190);
-    padding: 22px;
+.stone--current .stone__number {
+    color: rgb(120, 60, 0);
 }
 
+.stone--locked .stone__number,
+.stone--open .stone__number,
+.stone--grownup .stone__number {
+    color: rgb(136, 135, 128);
+}
+
+.stone__lock {
+    position: absolute;
+    right: -4px;
+    bottom: 6px;
+    width: 40px;
+    height: 40px;
+    padding: 6px;
+    border-radius: 20px;
+    background-color: rgb(241, 239, 232);
+}
+
+/* Stars stand above a walked stone in a small arc. */
 .stone__stars {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -38px;
     flex-direction: row;
-    margin-top: 4px;
-    padding: 2px 8px;
-    border-radius: 16px;
-    background-color: rgba(255, 244, 226, 0.92);
+    justify-content: center;
+    align-items: flex-end;
 }
 
 .stone__star {
-    width: 26px;
-    height: 26px;
+    width: 32px;
+    height: 32px;
+    margin: 0 -1px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.stone__star--middle {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 8px;
 }
 
 /* Ship workshop (ILR-03) */
@@ -562,41 +600,51 @@
     white-space: normal;
 }
 
-/* Stones show the game: compass (round), box (rounded square), bee (round with a honey ring). */
-.stone--kutu .stone__face {
-    border-radius: 22px;
-}
-
-.stone--bal .stone__face {
-    border-color: rgb(214, 160, 40);
-}
-
-.stone--current.stone--bal .stone__face {
-    border-color: rgb(255, 255, 255);
-}
-
-.stone__part {
+/* Ship parts on the trail (ILR-03): faint until earned, like the workshop. */
+.path__part {
     position: absolute;
-    top: -10px;
-    right: -6px;
-    width: 38px;
-    height: 38px;
+    width: 64px;
+    height: 64px;
+    -unity-background-scale-mode: scale-to-fit;
+    opacity: 0.35;
+    -unity-background-image-tint-color: rgb(90, 70, 60);
 }
 
-/* Forest corner: the turtle waits at the end of each stretch; faded until the child has walked it. */
+.path__part--earned {
+    opacity: 1;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+/* Forest corner: a stump beside the trail with the wise turtle on it; faded until the stretch is walked. */
 .path__corner {
     position: absolute;
-    width: 90px;
+    width: 132px;
     height: 90px;
-    opacity: 0.45;
+    opacity: 0.5;
 }
 
 .path__corner--reached {
     opacity: 1;
 }
 
-.path__ahead {
+.path__turtle {
     position: absolute;
-    width: 56px;
-    height: 56px;
+    left: 34px;
+    top: -40px;
+    width: 64px;
+    height: 64px;
+}
+
+/* The big play button: the next level without hunting for its stone (child target ≥ 64 dp). */
+.path__play {
+    position: absolute;
+    left: 50%;
+    bottom: 28px;
+    width: 168px;
+    height: 104px;
+    margin: 0 0 0 -84px;
+    padding: 22px 52px;
+    border-radius: 52px;
+    border-width: 6px;
+    border-color: rgb(255, 244, 226);
 }
