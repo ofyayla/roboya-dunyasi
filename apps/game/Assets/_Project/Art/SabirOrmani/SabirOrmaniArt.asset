@@ -50,6 +50,12 @@ MonoBehaviour:
   flowerGreen: {fileID: 21300000, guid: 7f002a6d910d44940832f89bbb2f1675, type: 3}
   honeyDrop: {fileID: 21300000, guid: 43bb6732461fa4d4aa097a890bf583e9, type: 3}
   honeycomb: {fileID: 21300000, guid: d71e0f91ac6f443dea94d38665fc9922, type: 3}
+  stoneDone: {fileID: 21300000, guid: 2004e425ce9854ff2baabaa06942f862, type: 3}
+  stoneCurrent: {fileID: 21300000, guid: 39b1defa3311145d990e351c5d9afa07, type: 3}
+  stoneAhead: {fileID: 21300000, guid: cb89d476690a34eba926d48c88a0c4d2, type: 3}
+  stoneCorner: {fileID: 21300000, guid: ba87754af325a496cac96ecb55c50125, type: 3}
+  starFull: {fileID: 21300000, guid: 2ba4afc6ab64a4c65b6bd43a8fdb3434, type: 3}
+  starEmpty: {fileID: 21300000, guid: 4dcbb964d977a48579dcf07a9ffc3b73, type: 3}
   propTree: {fileID: 21300000, guid: ede7f0f8eae004f95866fbe34ac1fce1, type: 3}
   propRock: {fileID: 21300000, guid: ea27f1fafc8c2473ea28b351e9dc2ec9, type: 3}
   propBush: {fileID: 21300000, guid: 571206f3653d74e6789e5edd4cbc6cad, type: 3}

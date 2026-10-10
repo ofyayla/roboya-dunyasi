@@ -104,3 +104,20 @@ Higgsfield, GPT Image 2.5 Sunburst; High kalite, 2K, saydam arka plan. Ana Roboy
 ## Arı, çiçek ve bal (2026-10-09)
 
 Higgsfield ile üretilmiş geçici setler (kaynak sayfalar `docs/art/sources/bee-sheet.png`, `flower-sheet.png`; `tools/art/slice_sheet.py` ile kesilir). Her çiçek rengi ayrı yaprak biçimine sahiptir; renk tek başına anlam taşımaz. Kalıcı sanat (F1-23) aynı dosya adlarıyla değişir.
+
+## Patika haritası (F1-05, 2026-10-10)
+
+Patika sade tutulur; her taşın şekli aynıdır ve durum renk, boyut ve yıldızlarla birlikte gösterilir (renk tek başına anlam taşımaz).
+
+- **Taşlar:** Her bölüm, üstten hafif eğik bakılan aynı yuvarlak basamak taşıdır. Üzerinde bölümün sayısı yazar.
+  - **Geçilen taş:** Krem renklidir, üstünde kazanılan yıldızlar küçük bir yay halinde durur.
+  - **Sıradaki taş:** Altın sarısıdır, daha büyüktür ve hafifçe nabız atar. Roboya bu taşın üstünde durur.
+  - **Henüz gelinmemiş taş:** Küçük ve gridir. Ücretsiz katmanın ötesindeki taşlarda küçük bir asma kilit rozeti bulunur.
+- **Patika:** Geçilen yol altın rengindedir, önümüzdeki yol soluktur. Ortasından noktalı bir çizgi geçer. Oyun türünü gösteren simgeler (pusula, kutu, arı) taşlarda yer almaz.
+- **Gemi parçaları:** Parçayı kazandıran taştan sonra patikanın üzerinde durur. Kazanılmadıysa soluk siluettir; kazanılmışsa renklidir ve dokununca atölye açılır. Parça hep önceden bellidir, sürpriz kutu yoktur.
+- **Orman köşesi:** Her 9 bölümde bir, patikanın yanında bilge kaplumbağanın oturduğu geniş bir kütük bulunur.
+- **"Oyna" düğmesi:** Alt ortada büyük bir düğmedir ve sıradaki bölümü açar. En küçükler taşı aramadan oyuna başlayabilir.
+- **Görseller:**
+  - `Art/SabirOrmani/map_stone_done`, `map_stone_current`, `map_stone_ahead` ve `map_stone_corner` dosyalarıdır.
+  - Kaynak `sources/map-stones-sheet.png`'dir; 3×2 ızgara şeklinde `tools/art/slice_sheet.py` ile kesilir.
+  - `SceneBuilder` bu dosyaları `RegionArt` içine bağlar. Bir dosya yoksa taş kodla çizilir (`Roboya.Map.StoneShape`).

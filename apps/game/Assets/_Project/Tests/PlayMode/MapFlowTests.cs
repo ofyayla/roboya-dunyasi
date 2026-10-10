@@ -63,6 +63,10 @@ namespace Roboya.Tests.PlayMode
             Assert.IsFalse(map.Q("corner-1").ClassListContains("path__corner--reached"), "faded until the stretch is walked");
             Assert.IsTrue(map.Q("stone-4").ClassListContains("stone--grownup"), "GLR-01: past the free tier");
             Assert.AreEqual(DisplayStyle.Flex, map.Q("stone-1").Q("stone-stars").resolvedStyle.display, "finished stones show stars");
+            Assert.AreEqual("1", map.Q("stone-1").Q<Label>("stone-number").text, "every stone carries its number");
+            Assert.AreEqual(DisplayStyle.Flex, map.Q("stone-4").Q("stone-lock").resolvedStyle.display, "a padlock marks the grown-up stone");
+            Assert.AreEqual(DisplayStyle.None, map.Q("path-play").resolvedStyle.display, "no next level to play here");
+            Assert.IsFalse(map.Q("path-part-1").ClassListContains("path__part--earned"), "the first part still waits on the trail");
 
             Tap(map.Q("stone-4"));
             yield return WaitForVoice("roboya.ask_grownup");
@@ -95,10 +99,15 @@ namespace Roboya.Tests.PlayMode
             Assert.IsTrue(current.ClassListContains("stone--current"));
             Assert.Greater(map.Q("path").Q<ScrollView>().scrollOffset.x, 0f, "scrolled past the start");
             Assert.IsTrue(view.Contains(current.worldBound.center), "Roboya's stone is on screen");
+            // A stone not played yet must never look like a walked one (both were the same green before).
+            Assert.IsFalse(map.Q("stone-22").ClassListContains("stone--done"));
+            Assert.IsTrue(map.Q("stone-22").Q("stone-face").ClassListContains("stone__face--ahead"));
+            Assert.IsTrue(map.Q("stone-20").Q("stone-face").ClassListContains("stone__face--done"));
+            Assert.IsTrue(current.Q("stone-face").ClassListContains("stone__face--current"));
             yield return Capture(map, "08b-path-scrolled");
 
-            // Back from a level the Map scene opens straight on the path: same stretch of the trail.
-            Tap(current);
+            // The play button starts Roboya's level; back from it the Map opens straight on the path, same stretch.
+            Tap(map.Q("path-play"));
             VisualElement game = null;
             yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
             yield return PassStory(game);
@@ -129,6 +138,7 @@ namespace Roboya.Tests.PlayMode
             yield return WaitUntil(() => map.Q("workshop").resolvedStyle.display == DisplayStyle.Flex, 5f);
             yield return new WaitForSeconds(0.3f);
 
+            Assert.IsTrue(map.Q("path-part-1").ClassListContains("path__part--earned"), "the earned part shines on the trail");
             Assert.IsTrue(map.Q("part-tile-propeller").ClassListContains("workshop__tile--earned"));
             Assert.IsFalse(map.Q("part-tile-lights").ClassListContains("workshop__tile--earned"));
             Assert.IsNotNull(map.Q("workshop-ship").Q("ship-propeller"), "first part on the ship");
