@@ -115,7 +115,16 @@ namespace Roboya.Tests.PlayMode
             Assert.AreEqual(1, root.Q("plan").Query(className: "card").ToList().Count, "plan is kept so the child can fix it");
         }
 
-        // The whole 36-level region path is played through the UI, which takes minutes.
+        /// <summary>Environment switch for the full end-to-end run (make unity-e2e); otherwise a short development run.</summary>
+        internal const string EndToEndVariable = "ROBOYA_E2E";
+
+        /// <summary>Levels a play-through test walks: every level end to end, the first <see cref="DevLevelCount"/> during development.</summary>
+        internal const int DevLevelCount = 3;
+
+        internal static int LevelsToPlay(int total) =>
+            Environment.GetEnvironmentVariable(EndToEndVariable) == "1" ? total : Math.Min(DevLevelCount, total);
+
+        // End to end the whole 36-level region path is played through the UI, which takes minutes.
         [Timeout(900000)]
         [UnityTest]
         public IEnumerator AllPrototypeLevels_SolverSolutionTappedThroughUi_EachCompletes()
@@ -125,6 +134,8 @@ namespace Roboya.Tests.PlayMode
             var catalog = Roboya.Core.LevelCatalog.Parse(files.Select(File.ReadAllText));
             // The whole region path, all games mixed in order: next goes from one game straight into the next.
             var levels = catalog.All.Where(l => l.Dto.Region == Roboya.CodingEngine.Levels.Generated.RegionId.SabirOrmani).ToList();
+            // During development only the first levels are played; the whole path runs end to end with ROBOYA_E2E=1.
+            levels = levels.Take(LevelsToPlay(levels.Count)).ToList();
 
             // Levels past the free tier need premium; the editor-only switch stands in for the server (ADR 0009).
             Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, "1");

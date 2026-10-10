@@ -60,7 +60,8 @@ Komutlar kök dizindeki `Makefile` üzerinden çalışır. Bir komut değişirse
 | `make validate-content` | Tüm bölümleri şema ve çözücüyle doğrular, ses manifestini kontrol eder |
 | `make tts` | Eksik veya metni değişmiş seslendirme satırlarını ElevenLabs ile üretir (`.env` gerekir) |
 | `make unity-test` | Unity EditMode testlerini batch modda çalıştırır |
-| `make unity-playmode` | Unity PlayMode kritik akış testleri; ekran görüntüleri `apps/game/TestResults/screens` |
+| `make unity-playmode` | Unity PlayMode kritik akış testleri, bölüm oynatan testlerde yalnız ilk 3 bölüm; ekran görüntüleri `apps/game/TestResults/screens` |
+| `make unity-e2e` | Unity PlayMode testleri uçtan uca: patikadaki bütün bölümler oynanır (`ROBOYA_E2E=1`) |
 
 Bir görevi bitirdiğini söylemeden önce ilgili testleri ve lint'i çalıştır ve neyi çalıştırdığını raporla.
 
@@ -137,6 +138,7 @@ Ek kurallar:
 - Kodlama motoru ve çözücü için EditMode test kapsamı ≥ %90.
 - Test adı biçimi: `Method_Condition_ExpectedResult`.
 - Kritik akışlar (bölüm aç–oyna–bitir, süre sınırı, okul girişi) PlayMode testiyle korunur.
+- **Geliştirme sırasında kısa koşu:** Bölüm oynatan PlayMode testleri yalnız ilk 3 bölümü oynar (`make unity-playmode`). Mümkünse yalnız değişen akışın testi `-testFilter` ile çalıştırılır. Bütün bölümler, iş bitip PR birleşmeye hazır olduğunda veya içerik değiştiğinde bir kez uçtan uca oynatılır (`make unity-e2e`).
 
 ## 8. API / Python kuralları
 
