@@ -32,6 +32,9 @@ namespace Roboya.Map
         private readonly List<VisualElement> _corners = new List<VisualElement>();
         private float _time;
         private bool _needsCentering = true;
+        // Scroll target waiting for the widened trail to be laid out; negative when nothing is pending.
+        private float _centerTarget = -1f;
+        private int _centerTries;
 
         public PathView(GameServices services, RegionArt art, PartArt partArt, Action onIsland, Action onWorkshop, Action onRest)
         {
@@ -50,6 +53,7 @@ namespace Roboya.Map
             _scroll.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
             _scroll.contentContainer.AddToClassList("path__content");
             _scroll.Add(_track);
+            _scroll.contentContainer.RegisterCallback<GeometryChangedEvent>(_ => ApplyCentering());
             Add(_scroll);
 
             for (int i = 0; i < _path.Count; i++)
@@ -216,7 +220,8 @@ namespace Roboya.Map
         {
             var r = contentRect;
             int n = _stones.Count;
-            if (r.width <= 0f || r.height <= 0f || n == 0)
+            // Before the first layout pass the rect is NaN, which slips past a "<= 0" test and would spend the centering.
+            if (!(r.width > 0f) || !(r.height > 0f) || n == 0)
             {
                 return;
             }
@@ -276,9 +281,37 @@ namespace Roboya.Map
             {
                 // Roboya always sits on the next stone; bring that stretch of the trail into view.
                 _needsCentering = false;
-                float target = Mathf.Max(0f, points[current].x - (r.width * 0.5f));
-                _scroll.schedule.Execute(() => _scroll.scrollOffset = new Vector2(target, 0f)).ExecuteLater(1);
+                _centerTarget = Mathf.Max(0f, points[current].x - (r.width * 0.5f));
+                _centerTries = 0;
+                ApplyCentering();
             }
+        }
+
+        /// <summary>
+        /// The scroller clamps its offset to the range it last laid out. Right after the trail widens that range is
+        /// still the old one, so an early offset snaps back to the first stone; wait until the new width is in place.
+        /// </summary>
+        private void ApplyCentering()
+        {
+            if (_centerTarget < 0f)
+            {
+                return;
+            }
+
+            float range = _scroll.contentContainer.layout.width - _scroll.contentViewport.layout.width;
+            if ((float.IsNaN(range) || range + 0.5f < _centerTarget) && _centerTries++ < 30)
+            {
+                _scroll.schedule.Execute(ApplyCentering);
+                return;
+            }
+
+            if (float.IsNaN(range))
+            {
+                range = 0f;
+            }
+
+            _scroll.scrollOffset = new Vector2(Mathf.Clamp(_centerTarget, 0f, Mathf.Max(0f, range)), 0f);
+            _centerTarget = -1f;
         }
 
         private void Pulse()

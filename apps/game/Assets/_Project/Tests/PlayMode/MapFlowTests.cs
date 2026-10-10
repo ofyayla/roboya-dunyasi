@@ -70,6 +70,50 @@ namespace Roboya.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Path_TwentyLevelsDone_OpensScrolledToRoboyasStone()
+        {
+            var catalog = LevelCatalog.Parse(Directory.GetFiles(FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories).Select(File.ReadAllText));
+            var store = TestProfiles.Seed(_progressDir);
+            foreach (var entry in catalog.All.Where(e => e.Dto.Order <= 20))
+            {
+                store.Book.Record(entry.Id, 3);
+            }
+
+            // Every earned part already fitted, so the map does not open on the island for a part drop.
+            store.Book.MarkShipPartsSeen(99);
+            store.Save();
+            Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, "1");
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            yield return OpenForest(map);
+            yield return null;
+            yield return null;
+
+            // The trail is wider than the screen; the view must not snap back to the first stone.
+            var view = map.Q("path").worldBound;
+            var current = map.Q("stone-21");
+            Assert.IsTrue(current.ClassListContains("stone--current"));
+            Assert.Greater(map.Q("path").Q<ScrollView>().scrollOffset.x, 0f, "scrolled past the start");
+            Assert.IsTrue(view.Contains(current.worldBound.center), "Roboya's stone is on screen");
+            yield return Capture(map, "08b-path-scrolled");
+
+            // Back from a level the Map scene opens straight on the path: same stretch of the trail.
+            Tap(current);
+            VisualElement game = null;
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
+            yield return PassStory(game);
+            Tap(game.Q("home"));
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Map" && (map = FindRoot())?.Q("path") != null, 10f);
+            for (int i = 0; i < 5; i++)
+            {
+                yield return null;
+            }
+
+            Assert.AreEqual(DisplayStyle.Flex, map.Q("path").resolvedStyle.display);
+            Assert.IsTrue(map.Q("path").worldBound.Contains(map.Q("stone-21").worldBound.center), "still on Roboya's stone after the level");
+        }
+
+        [UnityTest]
         public IEnumerator Ship_FiveLevelsDone_FirstPartDropsOntoShipOnceAndWorkshopShowsIt()
         {
             Seed(5);
