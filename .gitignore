@@ -65,6 +65,8 @@ apps/game/crashlytics-build.properties
 apps/game/Assets/AddressableAssetsData/*/*.bin*
 apps/game/Assets/StreamingAssets/aa*
 apps/game/ServerData/
+# Scenes the Unity test runner leaves behind after a batch PlayMode run
+apps/game/Assets/InitTestScene*
 
 # Generated audio from TTS is regenerated from content/voice/script.csv
 content/voice/generated/
