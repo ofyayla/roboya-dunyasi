@@ -45,6 +45,8 @@ namespace Roboya.Map
         // Scroll target waiting for the widened trail to be laid out; negative when nothing is pending.
         private float _centerTarget = -1f;
         private int _centerTries;
+        // The view size Roboya was last centred for; a new size (the screen settling at start-up) centres again.
+        private Vector2 _centeredFor;
 
         public PathView(GameServices services, RegionArt art, PartArt partArt, Action onIsland, Action onWorkshop, Action onRest)
         {
@@ -324,6 +326,11 @@ namespace Roboya.Map
                 return;
             }
 
+            if (Vector2.Distance(r.size, _centeredFor) > 1f)
+            {
+                _needsCentering = true;
+            }
+
             // An S-shaped trail from lower left to the right; scrolls sideways once the region grows past the screen.
             float margin = 160f;
             float spacing = n > 1 ? Mathf.Max(MinSpacing, (r.width - (2f * margin)) / (n - 1)) : 0f;
@@ -376,6 +383,7 @@ namespace Roboya.Map
             {
                 // Roboya always sits on the next stone; bring that stretch of the trail into view.
                 _needsCentering = false;
+                _centeredFor = r.size;
                 _centerTarget = Mathf.Max(0f, points[robotAt].x - (r.width * 0.5f));
                 _centerTries = 0;
                 ApplyCentering();
