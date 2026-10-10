@@ -65,6 +65,11 @@ apps/game/crashlytics-build.properties
 apps/game/Assets/AddressableAssetsData/*/*.bin*
 apps/game/Assets/StreamingAssets/aa*
 apps/game/ServerData/
+# Scenes the Unity test runner leaves behind after a batch PlayMode run
+apps/game/Assets/InitTestScene*
+# An empty top-level Resources folder Unity creates during builds/test runs; project resources live in Assets/_Project/Resources
+apps/game/Assets/Resources/
+apps/game/Assets/Resources.meta
 
 # Generated audio from TTS is regenerated from content/voice/script.csv
 content/voice/generated/
