@@ -181,7 +181,7 @@ namespace Roboya.Core
             {
                 // Development player builds open every level for testing on a device; release builds never do (ADR 0009).
                 var d = ProgressRules.Default;
-                return new ProgressRules(d.FreeLevelCount, d.LevelsPerPart, d.FreeProfiles, d.PremiumProfiles, unlockAll: true);
+                return new ProgressRules(d.FreeLevelCount, d.FreeProfiles, d.PremiumProfiles, unlockAll: true);
             }
 #endif
             return ProgressRules.Default;

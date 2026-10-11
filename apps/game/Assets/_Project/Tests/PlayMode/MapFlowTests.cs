@@ -123,9 +123,10 @@ namespace Roboya.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Ship_FiveLevelsDone_FirstPartDropsOntoShipOnceAndWorkshopShowsIt()
+        public IEnumerator Ship_FirstCornerDone_FirstPartDropsOntoShipOnceAndWorkshopShowsIt()
         {
-            Seed(5);
+            // A4: the end of the first forest corner (level 9 on the path) earns the first ship part.
+            SeedPath(9);
             VisualElement map = null;
             yield return OpenMap(r => map = r);
 
@@ -178,41 +179,42 @@ namespace Roboya.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator FifthLevelDone_TapEarnedPart_OpensWorkshopWithPartDroppingOntoShip()
+        public IEnumerator FirstCornerEnd_TapEarnedPart_OpensWorkshopWithPartDroppingOntoShip()
         {
-            // The fifth stone on the path (a Bal Peşinde level) earns the first ship part; the four before it are finished.
+            // The ninth stone (a Kodlama Kutusu bug hunt) closes the first forest corner and earns the first ship part (A4).
             var catalog = LevelCatalog.Parse(Directory.GetFiles(FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories).Select(File.ReadAllText));
-            var store = TestProfiles.Seed(_progressDir);
-            foreach (var entry in catalog.All.Where(e => e.Dto.Order < 5))
-            {
-                store.Book.Record(entry.Id, 3);
-            }
-
-            store.Save();
+            SeedPath(8);
             // Stones past the free tier need a grant; the dev entitlement stands in for the server's (reset in TearDown).
             Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, "1");
             VisualElement map = null;
             yield return OpenMap(r => map = r);
             yield return OpenForest(map);
-            map.Q("path").Q<ScrollView>().ScrollTo(map.Q("stone-5"));
+            map.Q("path").Q<ScrollView>().ScrollTo(map.Q("stone-9"));
             yield return null;
             yield return null;
-            Tap(map.Q("stone-5"));
+            Tap(map.Q("stone-9"));
 
             VisualElement game = null;
             yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
             yield return PassStory(game);
-            var fifth = catalog.All.First(e => e.Dto.Order == 5);
-            foreach (var card in Roboya.CodingEngine.Solving.Solver.Solve(fifth.Level).Solution)
+            var ninth = catalog.All.First(e => e.Dto.Order == 9);
+            if (ninth.Dto.StarterProgram != null)
+            {
+                // Bug hunt: the ready-made code runs once on its own before the child may edit it; clear it and build the right one.
+                yield return WaitUntil(() => !game.Q("plan").ClassListContains("plan--locked") && game.Q("plan").Q(className: "slot--box") != null, 60f);
+                Tap(game.Q("clear"));
+                yield return null;
+            }
+
+            foreach (var card in Roboya.CodingEngine.Solving.Solver.Solve(ninth.Level).Solution)
             {
                 Tap(game.Q("palette").Children().OfType<CardElement>().First(c => c.Card == card));
             }
 
             Tap(game.Q("play"));
-            yield return WaitUntil(() => game.Q("story-reward") != null && !game.Q("result").ClassListContains("hidden"), 30f);
+            // The part is revealed in the outro, before the corner's value film; tapping it goes straight to the workshop.
+            yield return WaitUntil(() => game.Q("story-reward") != null, 30f);
             yield return new WaitForSeconds(0.8f);
-
-            // The result overlay lies above the part but lets the tap through.
             Tap(game.Q("story-reward").parent);
 
             yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Map" && (map = FindRoot())?.Q("workshop") != null, 10f);
@@ -824,6 +826,19 @@ namespace Roboya.Tests.PlayMode
             yield return PassStory(game);
             var dots = game.Q("progress").Children().ToList();
             Assert.IsTrue(dots[0].ClassListContains("progress__dot--current"), "the easier level is level 1");
+        }
+
+        /// <summary>Finishes every level up to <paramref name="lastOrder"/> on the forest path, in path order (all games).</summary>
+        private void SeedPath(int lastOrder)
+        {
+            var catalog = LevelCatalog.Parse(Directory.GetFiles(FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories).Select(File.ReadAllText));
+            var store = TestProfiles.Seed(_progressDir);
+            foreach (var entry in catalog.All.Where(e => e.Dto.Order <= lastOrder))
+            {
+                store.Book.Record(entry.Id, 3);
+            }
+
+            store.Save();
         }
 
         private void Seed(int completed)

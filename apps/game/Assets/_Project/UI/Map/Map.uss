@@ -610,6 +610,12 @@
     -unity-background-image-tint-color: rgb(90, 70, 60);
 }
 
+/* The region finale's big part (A4): larger than the corner parts before it. */
+.path__part--big {
+    width: 88px;
+    height: 88px;
+}
+
 .path__part--earned {
     opacity: 1;
     -unity-background-image-tint-color: rgb(255, 255, 255);

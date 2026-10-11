@@ -9,9 +9,6 @@ namespace Roboya.Core
     public static class ProgressQueries
     {
         /// <summary>The ordered level ids on a region's path (all games of the region, by order).</summary>
-        /// <summary>Levels per "forest corner": the path map marks the end of each stretch and the game closes it with a value moment.</summary>
-        public const int CornerLength = 9;
-
         public static List<string> PathOf(LevelCatalog catalog, RegionId region)
         {
             var ids = new List<string>();
@@ -26,30 +23,90 @@ namespace Roboya.Core
             return ids;
         }
 
-        /// <summary>Regions whose every level has at least one star.</summary>
-        public static int CompletedRegions(LevelCatalog catalog, ProgressBook book)
+        /// <summary>Wire id of a region, as used in content files and content/map/island.json.</summary>
+        public static string WireId(RegionId region)
         {
-            var seen = new Dictionary<RegionId, bool>();
-            foreach (var e in catalog.All)
+            switch (region)
             {
-                bool done = book.IsCompleted(e.Id);
-                seen[e.Dto.Region] = seen.TryGetValue(e.Dto.Region, out var all) ? all && done : done;
+                case RegionId.SabirOrmani: return "sabir-ormani";
+                case RegionId.PaylasimKoyu: return "paylasim-koyu";
+                case RegionId.YardimlasmaLimani: return "yardimlasma-limani";
+                case RegionId.NezaketBahcesi: return "nezaket-bahcesi";
+                case RegionId.SorumlulukKulesi: return "sorumluluk-kulesi";
+                default: return "mucit-atolyesi";
+            }
+        }
+
+        /// <summary>The region with this wire id, or null for an unknown id.</summary>
+        public static RegionId? RegionOf(string wireId)
+        {
+            foreach (RegionId region in System.Enum.GetValues(typeof(RegionId)))
+            {
+                if (WireId(region) == wireId)
+                {
+                    return region;
+                }
             }
 
-            int count = 0;
-            foreach (var done in seen.Values)
+            return null;
+        }
+
+        /// <summary>
+        /// Each region's path in island order (content/map/island.json), empty for a region without levels. The island
+        /// order is the order regions open in and the order their ship parts are earned in.
+        /// </summary>
+        public static List<IReadOnlyList<string>> PathsInIslandOrder(GameServices s)
+        {
+            var paths = new List<IReadOnlyList<string>>(s.Island.Regions.Count);
+            foreach (var region in s.Island.Regions)
             {
-                if (done)
-                {
-                    count++;
-                }
+                var id = RegionOf(region.Id);
+                paths.Add(id.HasValue ? PathOf(s.Catalog, id.Value) : new List<string>());
+            }
+
+            return paths;
+        }
+
+        /// <summary>
+        /// Ship parts that belong to the regions before <paramref name="region"/> in island order: the catalog order of
+        /// this region's first part is one more (RewardRules).
+        /// </summary>
+        public static int PartsBefore(GameServices s, RegionId region)
+        {
+            string wire = WireId(region);
+            var regions = s.Island.Regions;
+            var paths = PathsInIslandOrder(s);
+            int count = 0;
+            for (int i = 0; i < regions.Count && regions[i].Id != wire; i++)
+            {
+                count += CornerRules.CornerCount(paths[i].Count);
             }
 
             return count;
         }
 
-        public static int EarnedParts(GameServices s) =>
-            RewardRules.EarnedCount(s.Progress.Book.CompletedCount, CompletedRegions(s.Catalog, s.Progress.Book), s.ProgressRules);
+        /// <summary>
+        /// Wire ids of the regions the child can enter. The unlock order is the order of content/map/island.json,
+        /// so the order lives in content, not code; the rule itself is <see cref="RegionRules"/>.
+        /// </summary>
+        public static HashSet<string> OpenRegions(GameServices s)
+        {
+            var regions = s.Island.Regions;
+            var paths = PathsInIslandOrder(s);
+            var open = RegionRules.OpenRegions(paths, s.Progress.Book, s.ProgressRules.UnlockAll);
+            var ids = new HashSet<string>();
+            for (int i = 0; i < regions.Count; i++)
+            {
+                if (open[i])
+                {
+                    ids.Add(regions[i].Id);
+                }
+            }
+
+            return ids;
+        }
+
+        public static int EarnedParts(GameServices s) => RewardRules.EarnedCount(PathsInIslandOrder(s), s.Progress.Book);
 
         public static NodeState[] PathStates(GameServices s, IReadOnlyList<string> path) =>
             PathRules.StatesOf(path, s.Progress.Book, s.ProgressRules.FreeLevelCount, s.Entitlements.HasPremium, StartIndex(s, path), s.ProgressRules.UnlockAll, IntroLevels(s.Catalog, path));
