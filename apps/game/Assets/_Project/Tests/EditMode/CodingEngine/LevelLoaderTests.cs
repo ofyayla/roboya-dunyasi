@@ -124,39 +124,99 @@ namespace Roboya.Tests.CodingEngine
             Assert.AreEqual("sabir-ormani.yon-avcisi.99", level.Id);
         }
 
+        private const string Village = @"{
+  ""schemaVersion"": 3,
+  ""id"": ""paylasim-koyu.bal-pesinde.99"",
+  ""region"": ""paylasim-koyu"",
+  ""game"": ""bal-pesinde"",
+  ""order"": 99,
+  ""meta"": { ""concepts"": [""counting""], ""value"": ""sharing"", ""difficulty"": 3, ""ageLevels"": [""kasif""] },
+  ""grid"": { ""rows"": [""....."", "".....""] },
+  ""robot"": { ""x"": 0, ""y"": 0, ""facing"": ""east"", ""carrying"": 1 },
+  ""items"": [ { ""id"": ""bal-1"", ""kind"": ""honey"", ""x"": 1, ""y"": 0, ""amount"": 4 } ],
+  ""drops"": [
+    { ""id"": ""petek-1"", ""kind"": ""hive"", ""x"": 2, ""y"": 0, ""need"": 2 },
+    { ""id"": ""petek-2"", ""kind"": ""hive"", ""x"": 3, ""y"": 0, ""need"": 2 },
+    { ""id"": ""sofra"", ""kind"": ""table"", ""x"": 4, ""y"": 0 }
+  ],
+  ""goal"": { ""collect"": [""bal-1""], ""share"": { ""among"": [""petek-1"", ""petek-2""], ""leftoverTo"": ""sofra"" } },
+  ""cards"": { ""palette"": [""forward"", ""drop""], ""maxProgramLength"": 10 },
+  ""starterProgram"": [ { ""op"": ""forward"" }, { ""op"": ""forward"" }, { ""op"": ""drop"" }, { ""op"": ""drop"" }, { ""op"": ""forward"" }, { ""op"": ""drop"" }, { ""op"": ""drop"" }, { ""op"": ""forward"" }, { ""op"": ""drop"" } ],
+  ""voice"": { ""intro"": ""paylasim_koyu.l99.intro"" }
+}";
+
         [Test]
-        public void Load_DropCardInPalette_ThrowsUntilEngineSupport()
+        public void Load_VillageLevel_BuildsDropsBasketAndGoal()
         {
-            var json = Valid.Replace("\"repeat\"], \"maxProgramLength\"", "\"drop\"], \"maxProgramLength\"");
+            var level = LevelLoader.Load(Village);
+
+            Assert.AreEqual(3, level.Drops.Count);
+            Assert.AreEqual(DropPointKind.Hive, level.Drops[0].Kind);
+            Assert.AreEqual(2, level.Drops[0].Need);
+            Assert.AreEqual(DropPointKind.Table, level.Drops[2].Kind);
+            Assert.AreEqual(1, level.Start.Basket);
+            Assert.AreEqual(4, level.Items[0].Amount);
+            Assert.AreEqual(2, level.Goal.Share.Among.Count);
+            Assert.AreEqual(2, level.Goal.Share.LeftoverTo);
+            Assert.IsTrue(level.AvailableCards.Contains(CardType.Drop));
+            Assert.IsFalse(level.AutoDrop);
+        }
+
+        [Test]
+        public void Load_VillageStarterProgram_PlaysThroughTheEngine()
+        {
+            var dto = LevelLoader.Parse(Village);
+            var level = LevelLoader.ToLevel(dto);
+
+            var result = Interpreter.Execute(level, LevelLoader.ToProgram(dto.StarterProgram));
+
+            Assert.AreEqual(ExecutionOutcome.Success, result.Outcome);
+            Assert.AreEqual(2, result.FinalState.DeliveredAt(0));
+            Assert.AreEqual(1, result.FinalState.DeliveredAt(2));
+        }
+
+        [Test]
+        public void Load_AutoDropOption_SetsTheLevelFlag()
+        {
+            var json = Village.Replace("\"voice\":", "\"options\": { \"autoDrop\": true }, \"voice\":");
+
+            Assert.IsTrue(LevelLoader.Load(json).AutoDrop);
+        }
+
+        [Test]
+        public void Load_DeliverToAnUnknownDropPoint_Throws()
+        {
+            var json = Village.Replace("\"share\": { \"among\": [\"petek-1\", \"petek-2\"], \"leftoverTo\": \"sofra\" }", "\"deliver\": [{ \"to\": \"yok\", \"count\": 1 }]");
 
             Assert.Throws<LevelValidationException>(() => LevelLoader.Load(json));
         }
 
         [Test]
-        public void Load_DropCommandInStarterProgram_ThrowsUntilEngineSupport()
+        public void Load_ShareToAnUnknownTable_Throws()
         {
-            var json = Valid.Replace("{ \"op\": \"turn_right\" },", "{ \"op\": \"drop\" },");
-            var dto = LevelLoader.Parse(json);
-
-            Assert.Throws<LevelValidationException>(() => LevelLoader.ToProgram(dto.StarterProgram));
-        }
-
-        [Test]
-        public void Load_ShareGoalWithDrops_ThrowsUntilEngineSupport()
-        {
-            var json = Valid.Replace("\"goal\": {", "\"drops\": [{ \"id\": \"a\", \"kind\": \"hive\", \"x\": 1, \"y\": 0, \"need\": 1 }], \"goal\": { \"deliver\": [{ \"to\": \"a\", \"count\": 1 }],");
+            var json = Village.Replace("\"leftoverTo\": \"sofra\"", "\"leftoverTo\": \"yok\"");
 
             Assert.Throws<LevelValidationException>(() => LevelLoader.Load(json));
         }
 
         [Test]
-        public void Load_CarryingAndAutoDrop_ThrowUntilEngineSupport()
+        public void Load_ShareThatLeavesHoneyUnrequired_Throws()
         {
-            var carrying = Valid.Replace("\"facing\": \"north\"", "\"facing\": \"north\", \"carrying\": 2");
-            var auto = Valid.Replace("\"voice\":", "\"options\": { \"autoDrop\": true }, \"voice\":");
+            var json = Village.Replace("\"collect\": [\"bal-1\"], ", string.Empty);
 
-            Assert.Throws<LevelValidationException>(() => LevelLoader.Load(carrying));
-            Assert.Throws<LevelValidationException>(() => LevelLoader.Load(auto));
+            Assert.Throws<LevelValidationException>(() => LevelLoader.Load(json));
+        }
+
+        [Test]
+        public void Load_DeliverGoal_BuildsTheDelivery()
+        {
+            var json = Village.Replace("\"share\": { \"among\": [\"petek-1\", \"petek-2\"], \"leftoverTo\": \"sofra\" }", "\"deliver\": [{ \"to\": \"petek-2\", \"count\": 2 }], \"carryAtEnd\": 1");
+
+            var goal = LevelLoader.Load(json).Goal;
+
+            Assert.AreEqual(1, goal.Deliver[0].DropIndex);
+            Assert.AreEqual(2, goal.Deliver[0].Count);
+            Assert.AreEqual(1, goal.CarryAtEnd);
         }
 
         [Test]

@@ -44,5 +44,15 @@ namespace Roboya.Tests.CodingEngine
             Assert.IsTrue(step.NeedsFix);
             Assert.AreEqual(Rt, step.NextCard);
         }
+
+        [Test]
+        public void Next_StandingOnTheHiveWithHoney_PointsAtTheDropCard()
+        {
+            var level = HoneyLevels.Build(new[] { "R1A" }, deliver: new[] { ('A', 1) });
+
+            var step = GuidedPlan.Next(level, new[] { F, F });
+
+            Assert.AreEqual(Roboya.CodingEngine.Commands.CardType.Drop, step.NextCard);
+        }
     }
 }

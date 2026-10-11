@@ -119,7 +119,7 @@ Doğrulayıcı şunları kontrol eder: şemaya uygunluk, bölümün tanımlı ka
 
 ## Bal taşıma ve paylaşma (şema v3, Paylaşım Köyü)
 
-Şema v3 yalnız yeni isteğe bağlı alanlar ekler; v2 bölümler `node packages/level-schema/scripts/migrate-v3.mjs content/levels` ile yalnız sürüm numarasını artırır. Mekanik ADR 0030'da, pedagoji kuralları `docs/pedagoji/kararlar/PK-0001`–`PK-0005` kayıtlarındadır. **Motor desteği (plan B2) gelene kadar bu alanları kullanan bölümleri oyun yükleyicisi reddeder;** şema yalnız sözleşmeyi tanımlar.
+Şema v3 yalnız yeni isteğe bağlı alanlar ekler; v2 bölümler `node packages/level-schema/scripts/migrate-v3.mjs content/levels` ile yalnız sürüm numarasını artırır. Mekanik ADR 0030'da, pedagoji kuralları `docs/pedagoji/kararlar/PK-0001`–`PK-0005` kayıtlarındadır. Motor bu alanları çalıştırır (plan B2); tahtadaki görünüm (petek, sepet, "Bırak" tuşu) plan D akışındadır. `goal.share` kullanan bölümde bütün bal öğeleri `goal.collect` içinde olmalıdır, yoksa yükleyici bölümü reddeder.
 
 | Alan | Anlam |
 | --- | --- |

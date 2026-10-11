@@ -20,9 +20,14 @@ namespace Roboya.CodingEngine.Play
         /// Bal Peşinde (BAL-02): the bee stays where it stopped and its memory (the plan) is kept after a run, so a program
         /// started without clearing runs the old commands again. Collected items stay collected.
         /// </param>
-        public LevelSession(Level level, int shortestLength, SessionRules rules = null, bool keepsState = false)
+        /// <param name="clearsMemoryAfterRun">
+        /// Paylaşım Köyü, Minik (PK-0005): the memory clears itself after a run that did not finish the level. Nothing happens
+        /// on its own: the view calls <see cref="ClearMemoryAfterRun"/> once the run has been shown, because the failing card is still marked until then.
+        /// </param>
+        public LevelSession(Level level, int shortestLength, SessionRules rules = null, bool keepsState = false, bool clearsMemoryAfterRun = false)
         {
             KeepsState = keepsState;
+            ClearsMemoryAfterRun = clearsMemoryAfterRun;
             Level = level ?? throw new ArgumentNullException(nameof(level));
             Robot = level.Start;
             ShortestLength = shortestLength;
@@ -33,6 +38,8 @@ namespace Roboya.CodingEngine.Play
         public Level Level { get; }
 
         public bool KeepsState { get; }
+
+        public bool ClearsMemoryAfterRun { get; }
 
         /// <summary>Where the robot is now: the level start, or in <see cref="KeepsState"/> mode where the last run ended.</summary>
         public RobotState Robot { get; private set; }
@@ -120,6 +127,15 @@ namespace Roboya.CodingEngine.Play
             return HintTier == HintTier.HighlightWrongCard
                 ? new HintResult(HintTier.HighlightWrongCard, hint.WrongIndex, null)
                 : new HintResult(HintTier.ShowCorrectCard, hint.WrongIndex, hint.SuggestedCard);
+        }
+
+        /// <summary>Empties the plan after a failed run when this level clears its memory by itself; a finished level keeps its plan.</summary>
+        public void ClearMemoryAfterRun()
+        {
+            if (ClearsMemoryAfterRun && State == SessionState.Planning)
+            {
+                Plan.Clear();
+            }
         }
 
         /// <summary>Back to planning after a run (the plan stays so the child can fix it).</summary>

@@ -6,7 +6,7 @@ using Roboya.CodingEngine.World;
 namespace Roboya.CodingEngine.Solving
 {
     /// <summary>
-    /// Breadth-first search over (position, facing, collected items) using the level's primitive move cards.
+    /// Breadth-first search over (position, facing, collected items, honey) using the level's primitive move cards and "Bırak".
     /// Gives solvability and the shortest solution length used for the 3rd star (OYN-04), validation
     /// and hints. Loop-aware "shortest code" (counting repeat cards) is a later extension (Döngü Dansı).
     /// </summary>
@@ -16,7 +16,7 @@ namespace Roboya.CodingEngine.Solving
 
         private static readonly CardType[] SearchOrder =
         {
-            CardType.Forward, CardType.TurnLeft, CardType.TurnRight, CardType.Backward,
+            CardType.Forward, CardType.TurnLeft, CardType.TurnRight, CardType.Backward, CardType.Drop,
         };
 
         public static SolveResult Solve(Level level, int stateBudget = DefaultStateBudget) =>
@@ -30,7 +30,7 @@ namespace Roboya.CodingEngine.Solving
                 throw new ArgumentNullException(nameof(level));
             }
 
-            var cards = new List<CardType>(4);
+            var cards = new List<CardType>(SearchOrder.Length);
             foreach (var card in SearchOrder)
             {
                 if (level.AvailableCards.Contains(card))
@@ -86,7 +86,7 @@ namespace Roboya.CodingEngine.Solving
             return new SolveResult(SolveStatus.Unsolvable, Array.Empty<CardType>(), parent.Count);
         }
 
-        /// <summary>Applies one primitive card. Returns false when the robot would bump.</summary>
+        /// <summary>Applies one primitive card. Returns false when the robot would bump, has nothing to drop or would overflow a hive.</summary>
         public static bool TryApply(Level level, RobotState state, CardType card, out RobotState next)
         {
             switch (card)
@@ -97,6 +97,14 @@ namespace Roboya.CodingEngine.Solving
                 case CardType.TurnRight:
                     next = state.With(state.Facing.TurnRight());
                     return true;
+                case CardType.Drop:
+                    if (HoneyRules.TryDrop(level, state, out next) == DropOutcome.Dropped)
+                    {
+                        return true;
+                    }
+
+                    next = state;
+                    return false;
                 case CardType.Forward:
                 case CardType.Backward:
                     var dir = card == CardType.Forward ? state.Facing : state.Facing.Opposite();
@@ -109,9 +117,15 @@ namespace Roboya.CodingEngine.Solving
 
                     next = state.With(target);
                     int item = level.ItemIndexAt(target);
-                    if (item >= 0)
+                    if (item >= 0 && !next.HasCollected(item))
                     {
-                        next = next.WithCollected(item);
+                        next = HoneyRules.Collect(level, next.WithCollected(item), item);
+                    }
+
+                    int hive = level.DropIndexAt(target);
+                    if (hive >= 0)
+                    {
+                        next = HoneyRules.AutoDrop(level, next, hive);
                     }
 
                     return true;
