@@ -28,6 +28,8 @@ namespace Roboya.Core
             _ = PlayAsync(key, ++_request);
         }
 
+        public bool Has(string key) => _library != null && _library.Has(key);
+
         public bool IsPlaying => _loading || (_source != null && _source.isPlaying);
 
         public void Stop()

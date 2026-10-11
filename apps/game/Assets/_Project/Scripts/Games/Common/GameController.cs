@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Threading;
 using Roboya.CodingEngine.Execution;
 using Roboya.CodingEngine.Levels;
+using FriendPose = Roboya.CodingEngine.Levels.Generated.FriendPose;
 using GameId = Roboya.CodingEngine.Levels.Generated.GameId;
 using Roboya.CodingEngine.Play;
 using Roboya.CodingEngine.Progress;
 using Roboya.Core;
 using Roboya.UI;
+using RegionId = Roboya.CodingEngine.Levels.Generated.RegionId;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -47,6 +49,7 @@ namespace Roboya.Games.Common
         private readonly CancellationTokenSource _lifetime = new CancellationTokenSource();
 
         private int _index;
+        private readonly RegionArt _art;
         private LevelEntry _entry;
         private LevelSession _session;
         private readonly IconButton _easier;
@@ -60,6 +63,7 @@ namespace Roboya.Games.Common
             _services = services;
             _levels = levels;
             _partArt = partArt;
+            _art = art;
             _path = levels.Count > 0 ? ProgressQueries.PathOf(services.Catalog, levels[0].Dto.Region) : new List<string>();
 
             _board = new BoardView(art);
@@ -387,7 +391,6 @@ namespace Roboya.Games.Common
         private const string PredictAskVoice = "predict.ask";
         private const string PredictSameVoice = "predict.same";
         private const string PredictDifferVoice = "predict.differ";
-        private const string PatienceVoice = "value.patience";
 
         private bool _predicting;
         private Roboya.CodingEngine.World.GridPosition? _prediction;
@@ -565,7 +568,7 @@ namespace Roboya.Games.Common
                 // The turtle's value moment closes each forest corner (the map marks the same stones). Roboya finishes his own
                 // success line first; starting the film would cut it off.
                 await WaitForQuietVoiceAsync(token);
-                await _valueCard.ShowAsync(PatienceVoice, token);
+                await _valueCard.ShowAsync(ValueMoments.Of(_entry.Dto.Meta.Value, _services.Voice.Has), FriendCardSprite(), token);
             }
 
             _stars.Clear();
@@ -579,6 +582,10 @@ namespace Roboya.Games.Common
             _result.RemoveFromClassList("hidden");
             RenderProgress();
         }
+
+        /// <summary>The region's friend for the calm value card: a picture for regions after the forest, whose turtle is code-drawn.</summary>
+        private Sprite FriendCardSprite() =>
+            _art != null && _entry.Dto.Region != RegionId.SabirOrmani ? _art.FriendPoseSprite(FriendPose.Thanks) : null;
 
         /// <summary>Waits until no narration has played for a short moment (the success line, the part reward), at most 25 s.</summary>
         private async Awaitable WaitForQuietVoiceAsync(CancellationToken token)

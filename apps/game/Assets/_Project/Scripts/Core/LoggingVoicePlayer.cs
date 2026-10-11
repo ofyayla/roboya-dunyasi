@@ -18,6 +18,9 @@ namespace Roboya.Core
         {
         }
 
+        // It only logs, so no line has audio: callers fall back to their single-line version.
+        public bool Has(string key) => false;
+
         public bool IsPlaying => false;
 
         public async Awaitable PreloadAsync(IEnumerable<string> keys)

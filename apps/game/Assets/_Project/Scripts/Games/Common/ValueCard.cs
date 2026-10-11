@@ -9,19 +9,19 @@ using UnityEngine.Video;
 namespace Roboya.Games.Common
 {
     /// <summary>
-    /// The patience value moment (F1-24): at the end of each forest corner a short silent film (Roboya rushes, falls, the wise turtle
-    /// helps him plan, he walks the plan) plays while the spoken line runs. Without the video file the turtle alone stays on a calm
-    /// card. Tapping moves on after a moment; nothing is scored. The film is AI-generated art (docs/art/sabir-deger-karti-storyboard.md).
+    /// The value moment (F1-24, plan C4): at the end of each corner a short silent film plays while its spoken lines run; patience
+    /// closes the forest's corners (Roboya rushes, falls, the wise turtle helps him plan, he walks the plan), sharing the village's.
+    /// Without the film file the region's friend alone stays on a calm card with the one-line version (nothing is spoken when
+    /// even that line is not written yet). Tapping moves on after a moment; nothing is scored. The forest film is AI-generated art
+    /// (docs/art/sabir-deger-karti-storyboard.md).
     /// </summary>
     public sealed class ValueCard : VisualElement
     {
-        public const string VideoFile = "video/value_patience.mp4";
         private const float FallbackSeconds = 8f;
         private const float MaxSeconds = 40f;
         private const float TapGraceSeconds = 1.5f;
 
         // One spoken line per scene of the film; each starts when its clip begins (clips are 6 s with 0.4 s cross-fades).
-        private static readonly string[] SceneVoices = { "value.patience.1", "value.patience.2", "value.patience.3", "value.patience.4", "value.patience.5" };
         private const float SceneSeconds = 5.6f;
 
         private readonly IVoicePlayer _voice;
@@ -50,8 +50,17 @@ namespace Roboya.Games.Common
         /// <summary>True while the film (not the fallback card) is what the child sees.</summary>
         public bool PlayingFilm { get; private set; }
 
-        public async Awaitable ShowAsync(string voiceKey, CancellationToken token)
+        /// <param name="moment">The film, its scene lines and the fallback line of the level's value.</param>
+        /// <param name="friend">The region's friend as a picture for the calm card; null keeps the code-drawn turtle (the forest).</param>
+        public async Awaitable ShowAsync(ValueMoment moment, Sprite friend, CancellationToken token)
         {
+            _turtle.EnableInClassList("value-card__friend", friend != null);
+            if (friend != null)
+            {
+                _turtle.Clear();
+                _turtle.style.backgroundImage = new StyleBackground(friend);
+            }
+
             RemoveFromClassList("hidden");
             using (var cts = CancellationTokenSource.CreateLinkedTokenSource(token))
             {
@@ -66,12 +75,12 @@ namespace Roboya.Games.Common
                 RegisterCallback(tap);
                 try
                 {
-                    PlayingFilm = await TryStartFilmAsync(cts.Token);
+                    PlayingFilm = await TryStartFilmAsync(moment.FilmFile, cts.Token);
                     int nextScene = 0;
                     if (!PlayingFilm)
                     {
                         // No film: the one-line version over the calm turtle card.
-                        _voice.Play(voiceKey);
+                        _voice.Play(moment.FallbackKey);
                     }
                     _turtle.EnableInClassList("hidden", PlayingFilm);
                     _film.EnableInClassList("hidden", !PlayingFilm);
@@ -83,9 +92,9 @@ namespace Roboya.Games.Common
                         if (PlayingFilm)
                         {
                             // Narration follows the film's own clock, so it stays with the pictures if a frame is dropped.
-                            while (nextScene < SceneVoices.Length && _player.time >= nextScene * SceneSeconds)
+                            while (nextScene < moment.SceneKeys.Count && _player.time >= nextScene * SceneSeconds)
                             {
-                                _voice.Play(SceneVoices[nextScene]);
+                                _voice.Play(moment.SceneKeys[nextScene]);
                                 nextScene++;
                             }
 
@@ -116,9 +125,9 @@ namespace Roboya.Games.Common
             }
         }
 
-        private async Awaitable<bool> TryStartFilmAsync(CancellationToken token)
+        private async Awaitable<bool> TryStartFilmAsync(string filmFile, CancellationToken token)
         {
-            string url = ContentFiles.UrlOf(VideoFile);
+            string url = ContentFiles.UrlOf(filmFile);
             if (url == null)
             {
                 return false;

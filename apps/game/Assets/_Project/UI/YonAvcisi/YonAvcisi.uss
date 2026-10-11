@@ -369,6 +369,11 @@
     height: 100%;
 }
 
+/* The calm card of a region whose friend is a picture (the village's old bee) rather than the code-drawn turtle. */
+.value-card__friend {
+    -unity-background-scale-mode: scale-to-fit;
+}
+
 .value-card__film {
     position: absolute;
     left: 0;
