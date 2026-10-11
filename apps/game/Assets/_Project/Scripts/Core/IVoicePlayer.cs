@@ -11,6 +11,9 @@ namespace Roboya.Core
 
         void Stop();
 
+        /// <summary>True when the key has audio (or, for a logger, always); lets a caller ask which numbered lines exist before using them.</summary>
+        bool Has(string key);
+
         /// <summary>True while a line is loading or playing; story scenes wait on it before moving on.</summary>
         bool IsPlaying { get; }
 
