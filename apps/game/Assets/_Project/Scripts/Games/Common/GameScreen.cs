@@ -15,6 +15,8 @@ namespace Roboya.Games.Common
         [SerializeField] private PartArt partArt;
 
         private GameController _controller;
+
+        public string CurrentLevelId => _controller?.CurrentLevelId;
         private GameServices _services;
         private bool _limitReported;
 

@@ -40,7 +40,6 @@ namespace Roboya.Games.Common
         private readonly VisualElement _result;
         private readonly ValueCard _valueCard;
         private readonly VisualElement _stars;
-        private readonly VisualElement _progress;
         private readonly StoryStage _story;
         private readonly PartArt _partArt;
         private readonly List<string> _path;
@@ -49,6 +48,9 @@ namespace Roboya.Games.Common
         private const float WideAspect = 1.9f;
 
         private int _index;
+
+        /// <summary>Id of the level on the board; lets tests tell which level is loaded.</summary>
+        public string CurrentLevelId => _entry?.Id;
         private LevelEntry _entry;
         private LevelSession _session;
         private readonly IconButton _easier;
@@ -108,7 +110,6 @@ namespace Roboya.Games.Common
             root.Q("play-host").Insert(0, _clearBig);
             _paletteElement = root.Q("palette");
 
-            _progress = root.Q("progress");
             _result = root.Q("result");
 
             // The result overlay is see-through to taps except its buttons, so the earned ship part in the story scene below
@@ -173,7 +174,6 @@ namespace Roboya.Games.Common
             _tray.SetLocked(withStory && _entry.Dto.StarterProgram != null);
             _result.AddToClassList("hidden");
             _story.Hide();
-            RenderProgress();
             UpdateGuide();
             UpdateButtons();
             _ = IntroAsync(_entry, withStory);
@@ -183,7 +183,6 @@ namespace Roboya.Games.Common
             _services.Analytics.Track("level_start", _entry.Id, LevelProps());
         }
 
-        private const int ProgressDots = 9;
         private readonly VisualElement _planElement;
         private readonly IconButton _clear;
         private readonly IconButton _clearBig;
@@ -580,7 +579,6 @@ namespace Roboya.Games.Common
             }
 
             _result.RemoveFromClassList("hidden");
-            RenderProgress();
         }
 
         /// <summary>Waits until no narration has played for a short moment (the success line, the part reward), at most 25 s.</summary>
@@ -801,22 +799,6 @@ namespace Roboya.Games.Common
             _play.EnableInClassList("icon-button--pulse", _session.CanPlay && (_session.Plan.IsFull || _guideDone));
             _hint.EnableInClassList("hidden", !_session.ShouldOfferHint && _session.HintTier == HintTier.None);
             _hint.EnableInClassList("icon-button--pulse", _session.ShouldOfferHint);
-        }
-
-        private void RenderProgress()
-        {
-            _progress.Clear();
-            // A region path can hold 36 levels: show a window of dots around the current one.
-            int first = Mathf.Clamp(_index - (ProgressDots / 2), 0, Mathf.Max(0, _levels.Count - ProgressDots));
-            int last = Mathf.Min(_levels.Count, first + ProgressDots);
-            for (int i = first; i < last; i++)
-            {
-                var dot = new VisualElement();
-                dot.AddToClassList("progress__dot");
-                dot.EnableInClassList("progress__dot--current", i == _index);
-                dot.EnableInClassList("progress__dot--done", i < _index || (i == _index && _session.State == SessionState.Completed));
-                _progress.Add(dot);
-            }
         }
 
         private static IEnumerable<Roboya.CodingEngine.Commands.CardType> CardsOf(LevelEntry entry)

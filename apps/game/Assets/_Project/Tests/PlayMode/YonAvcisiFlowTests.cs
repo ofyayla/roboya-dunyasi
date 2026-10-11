@@ -41,6 +41,8 @@ namespace Roboya.Tests.PlayMode
         }
 
         /// <summary>Boot → island → Patience Forest → first stone → Game scene.</summary>
+        internal static string CurrentLevelId() => UnityEngine.Object.FindFirstObjectByType<Roboya.Games.Common.GameScreen>()?.CurrentLevelId;
+
         internal static IEnumerator StartGame(Action<VisualElement> found)
         {
             yield return SceneManager.LoadSceneAsync("Boot");
@@ -253,12 +255,13 @@ namespace Roboya.Tests.PlayMode
             yield return WaitUntil(() => !root.Q("result").ClassListContains("hidden"), 15f);
             yield return null;
 
+            var levelBeforeRetry = CurrentLevelId();
             Tap(root.Q("retry"));
             yield return new WaitForSeconds(0.5f);
 
             Assert.IsFalse(Story(root).IsOpen, "retry goes straight to the board");
             Assert.IsTrue(root.Q("result").ClassListContains("hidden"));
-            Assert.IsTrue(root.Q("progress").Children().First().ClassListContains("progress__dot--current"), "same level");
+            Assert.AreEqual(levelBeforeRetry, CurrentLevelId(), "same level");
         }
 
         private static StoryStage Story(VisualElement root) => root.Q<StoryStage>("story");
