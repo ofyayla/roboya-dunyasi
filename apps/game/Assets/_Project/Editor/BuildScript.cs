@@ -40,6 +40,63 @@ namespace Roboya.EditorTools
             EditorApplication.Exit(summary.result == BuildResult.Succeeded ? 0 : 1);
         }
 
+        /// <summary>
+        /// Xcode project for the iOS Simulator (make ios-simulator): a development build against the simulator SDK, so the game can be
+        /// run on a simulated iPhone without a device or signing. Content and voice are copied by the preprocess steps.
+        /// </summary>
+        public static void BuildIosSimulator()
+        {
+            string output = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Builds", "iOS-simulator"));
+            Directory.CreateDirectory(output);
+
+            ProjectSetup.Run();
+            PlayerSettings.bundleVersion = Version;
+            PlayerSettings.iOS.sdkVersion = iOSSdkVersion.SimulatorSDK;
+
+            var options = new BuildPlayerOptions
+            {
+                scenes = Array.ConvertAll(EditorBuildSettings.scenes, s => s.path),
+                locationPathName = output,
+                target = BuildTarget.iOS,
+                options = BuildOptions.Development,
+            };
+
+            var report = BuildPipeline.BuildPlayer(options);
+            var summary = report.summary;
+            Debug.Log("[Build] " + summary.result + " " + output + " in " + summary.totalTime);
+            EditorApplication.Exit(summary.result == BuildResult.Succeeded ? 0 : 1);
+        }
+
+        /// <summary>
+        /// Xcode project for a physical iOS device (make ios-device): a build against the device SDK,
+        /// ready to be compiled and installed to a connected iPhone via xcodebuild and devicectl.
+        /// Add -devBuild for a development build (ScriptDebugging, Profiler, etc.).
+        /// </summary>
+        public static void BuildIosDevice()
+        {
+            bool development = Array.IndexOf(Environment.GetCommandLineArgs(), "-devBuild") >= 0;
+            string output = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Builds", "iOS"));
+            Directory.CreateDirectory(output);
+
+            ProjectSetup.Run();
+            PlayerSettings.bundleVersion = Version;
+            PlayerSettings.iOS.buildNumber = VersionCode().ToString();
+            PlayerSettings.iOS.sdkVersion = iOSSdkVersion.DeviceSDK;
+
+            var options = new BuildPlayerOptions
+            {
+                scenes = Array.ConvertAll(EditorBuildSettings.scenes, s => s.path),
+                locationPathName = output,
+                target = BuildTarget.iOS,
+                options = development ? BuildOptions.Development : BuildOptions.None,
+            };
+
+            var report = BuildPipeline.BuildPlayer(options);
+            var summary = report.summary;
+            Debug.Log("[Build] " + summary.result + " " + output + " in " + summary.totalTime);
+            EditorApplication.Exit(summary.result == BuildResult.Succeeded ? 0 : 1);
+        }
+
         /// <summary>CI passes its run number; local builds use minutes since 2026-01-01 so codes always increase.</summary>
         private static int VersionCode()
         {
