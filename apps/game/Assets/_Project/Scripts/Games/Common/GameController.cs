@@ -46,6 +46,8 @@ namespace Roboya.Games.Common
         private readonly List<string> _path;
         private readonly CancellationTokenSource _lifetime = new CancellationTokenSource();
 
+        private const float WideAspect = 1.9f;
+
         private int _index;
         private LevelEntry _entry;
         private LevelSession _session;
@@ -66,6 +68,10 @@ namespace Roboya.Games.Common
             root.Q("board-host").Add(_board);
             _badge = new GoalBadge(art);
             root.Q("board-host").Add(_badge);
+            // Phones in landscape are short: with the corner buttons floating over the board the board gets the whole height.
+            var screenRoot = root.Q("screen");
+            screenRoot.RegisterCallback<GeometryChangedEvent>(e =>
+                screenRoot.EnableInClassList("screen--wide", e.newRect.height > 0f && e.newRect.width / e.newRect.height >= WideAspect));
             if (art != null && art.Background != null)
             {
                 var screen = root.Q("screen");

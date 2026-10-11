@@ -55,6 +55,18 @@
     margin: 8px 0;
 }
 
+/* Short, wide screens (phones): the top bar floats over the board's empty corners instead of taking a row. */
+.screen--wide .top-bar {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: 12px;
+}
+
+.screen--wide .board-host {
+    margin-top: 0;
+}
+
 .board {
     flex-grow: 1;
 }

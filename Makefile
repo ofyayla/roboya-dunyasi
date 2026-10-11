@@ -92,6 +92,10 @@ android-apk: ## Build an internal-test Android APK into apps/game/Builds/Android
 	"$(UNITY)" -batchmode -nographics -quit -projectPath apps/game -executeMethod Roboya.EditorTools.BuildScript.BuildAndroidApk \
 		$(if $(DEV),-devBuild,) -logFile -
 
+ios-project: ## Generate the Xcode project into apps/game/Builds/iOS (Simulator SDK; add DEVICE=1 for a physical iPhone, DEV=1 for development)
+	"$(UNITY)" -batchmode -nographics -quit -projectPath apps/game -executeMethod Roboya.EditorTools.BuildScript.BuildIos \
+		$(if $(DEV),-devBuild,) $(if $(DEVICE),-iosDevice,) -logFile -
+
 unity-test: ## Run Unity EditMode tests in batch mode
 	"$(UNITY)" -batchmode -nographics -projectPath apps/game -runTests -testPlatform EditMode \
 		-testResults "$(CURDIR)/apps/game/TestResults/editmode.xml" -logFile -
