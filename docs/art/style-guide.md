@@ -121,3 +121,20 @@ Patika sade tutulur; her taşın şekli aynıdır ve durum renk, boyut ve yıld�
   - `Art/SabirOrmani/map_stone_done`, `map_stone_current`, `map_stone_ahead` ve `map_stone_corner` dosyalarıdır.
   - Kaynak `sources/map-stones-sheet.png`'dir; 3×2 ızgara şeklinde `tools/art/slice_sheet.py` ile kesilir.
   - `SceneBuilder` bu dosyaları `RegionArt` içine bağlar. Bir dosya yoksa taş kodla çizilir (`Roboya.Map.StoneShape`).
+
+## Paylaşım Köyü — geçici set (2026-10-11, plan E3)
+
+Higgsfield, **Nano Banana 2.1** (2K), düz beyaz arka planla üretildi. Hesap ücretsiz planda olduğu için GPT Image 2.5 kullanılamadı. Beyaz arka plan `tools/art/white_to_alpha.py` ile saydam yapıldı, sonra `tools/art/slice_sheet.py` ile 4×2 ızgaradan kesildi. Referanslar: `bg_sabir_ormani`, `sources/bee-sheet.png`, `sources/master-2.png`, `sources/ship-sheet.png`. Toplam 8 kredi (4 görsel × 2).
+
+| Klasör | Dosyalar | Kaynak |
+| --- | --- | --- |
+| `PaylasimKoyu` | `bg_paylasim_koyu` (yanlarda petek evler, çitler, ayçiçekleri; orta-alt boş çayır) | — |
+| `PaylasimKoyu` | `item_hive_empty`, `item_hive_full`, `item_hive_overflow` (3 yuvalı petek tahtası: boş yuva krem altıgen, dolu yuva parlak bal, taşan bal üstten damlar; durum şekille de ayrışır), `item_honey_basket` (Ari'nin sepeti), `prop_village_table` (ortak köy sofrası), `prop_ari_home` (Ari'nin kovanı), `prop_festival_flags` (şenlik bayrakları) | `sources/village-items-sheet.png` |
+| `Characters/KoyArilari` | `elder_bee_front`, `elder_bee_happy`, `elder_bee_explaining`, `elder_bee_thanks` (bölge karakteri: hasırşapkalı, çiçekli bastonlu yaşlı köy arısı; Bilge Kaplumbağa'nın pozlarıyla aynı set) | `sources/villagers-sheet.png` |
+| `Characters/KoyArilari` | `villager_bee_happy`, `villager_bee_sad` (yumuşak, ağlamıyor), `villager_bee_thanks` (bal damlasını göğsüne tutuyor), `villager_bee_child` | `sources/villagers-sheet.png` |
+| `Ship` | `ship_engine_core` (köy finalinin büyük parçası adayı: altıgen pencereli motor çekirdeği) | `sources/ship-part-engine.png` |
+
+- Köylü arılar doğal arılardır: yuvarlak yüz, ekran yok. Böylece robot arı Ari'den hemen ayrılırlar.
+- Petek durumları şekille de ayrışır (krem boş altıgen / dolu bal / taşan damla); renk tek başına anlam taşımaz.
+- **Henüz bağlanmadı:** Köyün `RegionArt` seti (`PaylasimKoyuArt.asset`) ve `SceneBuilder` bağlantısı plan C3'te, petek ve sepet çizimi D1'de yapılacak. `ship_engine_core` gemi kataloğuna (`content/rewards/ship-parts.json`) gövde üzerindeki yeri belirlenince eklenecek.
+- **Lisans:** Higgsfield ücretsiz planında üretildi. Ticari kullanım koşulları, mağaza sürümünden önce ücretli planla doğrulanmalı; gerekirse aynı istemlerle yeniden üretilir. Kalıcı sanat (F1-23 benzeri) aynı dosya adlarıyla değişir.
