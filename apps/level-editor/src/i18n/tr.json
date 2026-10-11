@@ -1,6 +1,6 @@
 {
   "app": { "title": "Roboya Bölüm Editörü", "subtitle": "İç araç · yalnız yerel geliştirme sunucusunda çalışır" },
-  "levels": { "heading": "Bölümler", "new": "Yeni bölüm", "empty": "Bölüm bulunamadı" },
+  "levels": { "heading": "Bölümler", "new": "Yeni bölüm", "newVillage": "Yeni köy bölümü", "empty": "Bölüm bulunamadı" },
   "tools": {
     "heading": "Araç",
     "wall": "Engel",
@@ -9,13 +9,17 @@
     "goal": "Hedef (kaplumbağa)",
     "item": "Nesne",
     "erase": "Sil",
+    "hive": "Petek",
+    "table": "Sofra",
+    "need": "Petek ihtiyacı (1–5)",
+    "amount": "Bal miktarı (1–7)",
     "kind": "Nesne türü",
     "color": "Renk",
     "noColor": "Renksiz"
   },
-  "grid": { "heading": "Izgara", "width": "Genişlik", "height": "Yükseklik", "cell": "Hücre {{x}},{{y}}", "robot": "robot ({{facing}})", "goal": "hedef", "wall": "engel", "item": "nesne {{id}}", "step": "çözüm adımı {{n}}" },
+  "grid": { "heading": "Izgara", "width": "Genişlik", "height": "Yükseklik", "cell": "Hücre {{x}},{{y}}", "robot": "robot ({{facing}})", "goal": "hedef", "wall": "engel", "item": "nesne {{id}}", "step": "çözüm adımı {{n}}", "amount": "{{n}} bal", "hive": "petek {{id}}, ihtiyaç {{need}}", "table": "köy sofrası", "drops": "bırakılan bal {{n}}" },
   "cards": { "heading": "Kartlar", "maxLength": "Plan şeridi uzunluğu", "introduces": "Tanıtılan kart", "none": "Yok" },
-  "meta": { "heading": "Bilgiler", "id": "Kimlik", "order": "Sıra", "difficulty": "Zorluk (1–5)", "value": "Değer", "concepts": "Kavramlar", "ageLevels": "Yaş seviyeleri", "notes": "İç notlar (çocuğa gösterilmez)", "ghostPath": "Hayalet yol (YON-03)", "guided": "Destekli bölüm" },
+  "meta": { "heading": "Bilgiler", "id": "Kimlik", "order": "Sıra", "difficulty": "Zorluk (1–5)", "value": "Değer", "concepts": "Kavramlar", "ageLevels": "Yaş seviyeleri", "notes": "İç notlar (çocuğa gösterilmez)", "ghostPath": "Hayalet yol (YON-03)", "guided": "Destekli bölüm", "options": "Seçenekler" },
   "voice": { "heading": "Ses anahtarları", "intro": "Giriş", "success": "Başarı", "missing": "senaryoda yok" },
   "status": {
     "heading": "Doğrulama",
@@ -29,11 +33,38 @@
     "saved": "Kaydedildi: {{path}}",
     "saveBlocked": "Kaydetmeden önce hataları düzeltin"
   },
-  "card": { "forward": "İleri", "backward": "Geri", "turn_left": "Sola dön", "turn_right": "Sağa dön", "repeat": "Tekrarla", "if": "Eğer", "call": "Fonksiyon", "action": "Eylem" },
+  "card": { "forward": "İleri", "backward": "Geri", "turn_left": "Sola dön", "turn_right": "Sağa dön", "repeat": "Tekrarla", "if": "Eğer", "call": "Fonksiyon", "action": "Eylem", "drop": "Bırak" },
   "facing": { "north": "kuzey", "east": "doğu", "south": "güney", "west": "batı" },
   "value": { "patience": "Sabır", "sharing": "Paylaşma", "helping": "Yardımlaşma", "kindness": "Nezaket", "responsibility": "Sorumluluk", "creativity": "Üretkenlik" },
   "concept": { "direction": "Yön", "sequencing": "Sıralama", "debugging": "Hata ayıklama", "loops": "Döngü", "conditionals": "Koşul", "functions": "Fonksiyon", "events": "Olaylar", "counting": "Sayma" },
   "age": { "minik": "Minik (3.5–5)", "kasif": "Kaşif (5–7)", "mucit": "Mucit (7–10)" },
   "kind": { "flower": "Çiçek", "honey": "Bal", "gear": "Çark", "star": "Yıldız", "fruit": "Meyve", "ship-part": "Gemi parçası" },
-  "color": { "red": "Kırmızı", "yellow": "Sarı", "blue": "Mavi", "green": "Yeşil", "purple": "Mor", "orange": "Turuncu" }
+  "color": { "red": "Kırmızı", "yellow": "Sarı", "blue": "Mavi", "green": "Yeşil", "purple": "Mor", "orange": "Turuncu" },
+  "option": {
+    "ghostPath": "Hayalet yol (YON-03)",
+    "guided": "Destekli bölüm",
+    "beeMemoryVisible": "Arının belleği görünür (Kaşif)",
+    "intro": "Tanıtım bölümü (geç başlayan da oynar)",
+    "autoDrop": "Otomatik bırakma (Minik)",
+    "resetEachRun": "Dünya her çalıştırmada başa döner",
+    "clearMemoryEachRun": "Bellek her çalıştırmadan sonra temizlenir (Minik)",
+    "askRemaining": "\"Kaç kaldı?\" adımı (Kaşif)"
+  },
+  "honey": {
+    "heading": "Bal",
+    "carrying": "Başlangıçta sepetteki bal (0–7)",
+    "goal": "Bal hedefi",
+    "kind": { "none": "Yok", "deliver": "Petekler tam şu kadar alsın", "share": "Eşit paylaşsın, artan sofraya" },
+    "deliverTo": "{{id}} için bal sayısı",
+    "shareNeedsHives": "Eşit paylaşma için 2–3 petek gerekir",
+    "noGoalHint": "Petek var ama bal hedefi yok: bir hedef seçin.",
+    "carryAtEnd": "Sonda sepette kalacak bal",
+    "carryAtEndNone": "yok"
+  },
+  "village": {
+    "heading": "Köy şablonu",
+    "hint": "Kavram, değer, kartlar ve seçenekleri köy kararlarına (PK-0004, PK-0005) göre ayarlar; ızgaraya ve hedefe dokunmaz.",
+    "minik": "Minik köy",
+    "kasif": "Kaşif köy"
+  }
 }

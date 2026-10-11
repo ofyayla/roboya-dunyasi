@@ -4,10 +4,10 @@ import { useTranslation } from "react-i18next";
 import { api, type LevelListItem } from "./api";
 import { GridView } from "./components/GridView";
 import { LevelList } from "./components/LevelList";
-import { CardsPanel, MetaPanel, SizePanel, VoicePanel } from "./components/SettingsPanels";
+import { CardsPanel, HoneyPanel, MetaPanel, SizePanel, VillagePresetPanel, VoicePanel } from "./components/SettingsPanels";
 import { StatusPanel } from "./components/StatusPanel";
 import { ToolBar } from "./components/ToolBar";
-import { applyTool, levelPath, newLevel, tracePath, type ItemBrush, type Tool } from "./model/levelOps";
+import { applyTool, dropMarks, levelPath, newLevel, newVillageLevel, tracePath, type ItemBrush, type Tool } from "./model/levelOps";
 import { useSolver } from "./useSolver";
 import "./App.css";
 
@@ -56,11 +56,21 @@ export function App() {
     setSaveMessage(null);
   };
 
+  const createNewVillage = () => {
+    const sameVillage = levels.filter((l) => l.id.startsWith("paylasim-koyu.bal-pesinde."));
+    const order = Math.max(0, ...sameVillage.map((l) => l.order)) + 1;
+    const fresh = newVillageLevel(order);
+    setLevel(fresh);
+    setPath(levelPath(fresh));
+    setSaveMessage(null);
+  };
+
   const shortest = solver.status === "done" ? solver.result.shortestLength : null;
   const toSave = useMemo<LevelDto>(() => (shortest !== null ? { ...level, solution: { shortestLength: shortest } } : level), [level, shortest]);
   const schema = validateLevel(toSave);
   const schemaErrors = schema.valid ? [] : schema.errors;
   const solverOk = solver.status === "done" && solver.result.valid && shortest !== null;
+  const showHoney = level.region === "paylasim-koyu" || (level.drops?.length ?? 0) > 0;
   const routeCards = solver.status === "done" ? (solver.result.solution ?? []) : [];
 
   const save = () => {
@@ -81,15 +91,17 @@ export function App() {
         <h1>{t("app.title")}</h1>
         <p className="muted">{t("app.subtitle")}</p>
       </header>
-      <LevelList levels={levels} selected={path} onOpen={open} onNew={createNew} />
+      <LevelList levels={levels} selected={path} onOpen={open} onNew={createNew} onNewVillage={createNewVillage} />
       <main className="workspace">
         <ToolBar tool={tool} brush={brush} onTool={setTool} onBrush={setBrush} />
-        <GridView level={level} path={tracePath(level, routeCards)} onCell={(x, y) => edit(applyTool(level, x, y, tool, brush))} />
+        <GridView level={level} path={tracePath(level, routeCards)} drops={dropMarks(level, routeCards)} onCell={(x, y) => edit(applyTool(level, x, y, tool, brush))} />
         <SizePanel level={level} onChange={edit} />
       </main>
       <aside className="side">
         <StatusPanel solver={solver} schemaErrors={schemaErrors} canSave={solverOk && schemaErrors.length === 0} saveMessage={saveMessage} onSave={save} />
         <CardsPanel level={level} onChange={edit} />
+        {showHoney && <HoneyPanel level={level} onChange={edit} />}
+        {showHoney && <VillagePresetPanel level={level} onChange={edit} />}
         <MetaPanel level={level} onChange={edit} />
         <VoicePanel level={level} voiceKeys={voiceKeys} />
       </aside>
