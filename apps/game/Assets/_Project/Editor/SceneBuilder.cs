@@ -126,6 +126,17 @@ namespace Roboya.EditorTools
             EditorSceneManager.SaveScene(scene);
         }
 
+        /// <summary>
+        /// Refreshes the sprite lookups (region art, ship and island parts) from the files in Art/ without touching scenes or
+        /// project settings: run it after adding or replacing art. Batch: <c>make refresh-art</c>.
+        /// </summary>
+        public static void RefreshArt()
+        {
+            EnsureSabirOrmaniArt();
+            EnsurePartArt();
+            AssetDatabase.SaveAssets();
+        }
+
         /// <summary>Ship body and repair parts, clouds and the island illustration, looked up by file name.</summary>
         private static PartArt EnsurePartArt()
         {

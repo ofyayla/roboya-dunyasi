@@ -11,6 +11,9 @@ namespace Roboya.EditorTools
     {
         private const string ArtRoot = "Assets/_Project/Art/";
 
+        // Bump when the settings below change so Unity reimports art that was already imported with the old ones.
+        public override uint GetVersion() => 2;
+
         private void OnPreprocessTexture()
         {
             if (!assetPath.StartsWith(ArtRoot) || !assetPath.EndsWith(".png"))
@@ -21,6 +24,8 @@ namespace Roboya.EditorTools
             var importer = (TextureImporter)assetImporter;
             bool background = System.IO.Path.GetFileName(assetPath).StartsWith("bg_");
             importer.textureType = TextureImporterType.Sprite;
+            // A fresh import can guess "cube" for some pictures, and a cube texture makes no sprite at all (ship_engine_core had none).
+            importer.textureShape = TextureImporterShape.Texture2D;
             importer.spriteImportMode = SpriteImportMode.Single;
             importer.alphaIsTransparency = !background;
             importer.mipmapEnabled = false;

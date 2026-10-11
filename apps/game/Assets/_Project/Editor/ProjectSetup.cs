@@ -39,6 +39,19 @@ namespace Roboya.EditorTools
             EditorApplication.Exit(0);
         }
 
+        [MenuItem("Roboya/Refresh Art")]
+        public static void RefreshArt()
+        {
+            SceneBuilder.RefreshArt();
+            Debug.Log("[ProjectSetup] art refreshed");
+        }
+
+        public static void RefreshArtBatch()
+        {
+            RefreshArt();
+            EditorApplication.Exit(0);
+        }
+
         private static void ApplyPlayerSettings()
         {
             PlayerSettings.companyName = "Roboya Kids";

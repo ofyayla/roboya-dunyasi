@@ -147,7 +147,7 @@ internal sealed class ContentValidator(TextWriter output)
 
     /// <summary>
     /// YZ-03: the easier level offered after repeated failures must be in the same game and region,
-    /// no harder than the level it replaces, and free whenever the level it replaces is free.
+    /// no harder than the level it replaces, and free whenever the level it replaces is free (free levels exist in the first region only).
     /// </summary>
     private static IEnumerable<string> AlternativeErrors(
         Roboya.CodingEngine.Levels.Generated.LevelDto level, Roboya.CodingEngine.Levels.Generated.LevelDto alt, int freeLevelCount)
@@ -162,7 +162,8 @@ internal sealed class ContentValidator(TextWriter output)
             yield return $"'{level.Id}': alternative '{alt.Id}' is harder (difficulty {alt.Meta.Difficulty} > {level.Meta.Difficulty})";
         }
 
-        if (level.Order <= freeLevelCount && alt.Order > freeLevelCount)
+        // The free tier belongs to the first region only (Sabır Ormanı); the others are premium and have no free levels.
+        if (level.Region == Roboya.CodingEngine.Levels.Generated.RegionId.SabirOrmani && level.Order <= freeLevelCount && alt.Order > freeLevelCount)
         {
             yield return $"'{level.Id}' is free but its alternative '{alt.Id}' is not (free levels stay free)";
         }

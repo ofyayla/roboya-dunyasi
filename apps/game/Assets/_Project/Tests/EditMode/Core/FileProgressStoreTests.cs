@@ -385,5 +385,16 @@ namespace Roboya.Tests.Core
             Assert.IsNotEmpty(notice.Version);
             StringAssert.Contains("yurt dışına aktarılır", notice.Text);
         }
+
+        [Test]
+        public void ShipPartCatalog_ShippedFile_HasAPartForEveryCornerOfTheForestAndTheVillage()
+        {
+            var catalog = ShipPartCatalog.Parse(File.ReadAllText(Path.Combine(ContentFiles.RepositoryContentPath, ShipPartCatalog.File)));
+            int corners = Roboya.CodingEngine.Progress.CornerRules.CornerCount(36) + Roboya.CodingEngine.Progress.CornerRules.CornerCount(24);
+
+            Assert.GreaterOrEqual(catalog.Parts.Count, corners, "the village's last corner would earn nothing");
+            var earned = Roboya.CodingEngine.Progress.RewardRules.Earned(catalog.Parts, corners);
+            Assert.AreEqual(corners, earned.Count);
+        }
     }
 }

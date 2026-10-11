@@ -54,7 +54,9 @@ namespace Roboya.CodingEngine.Progress
         /// <paramref name="startIndex"/> is where the child's age puts them. The free tier is the first
         /// <paramref name="freeLevelCount"/> levels from there, so an older child's free levels are the ones meant for them.
         /// <paramref name="intro"/> marks introduction levels (a game's first level, a level that introduces a card): when the
-        /// child starts after them they are still played first, free of charge, so no child meets a mechanic untaught.
+        /// child starts after them they are still played first, free of charge, so no child meets a mechanic untaught. A path
+        /// without a free tier (<paramref name="freeLevelCount"/> 0: every region after the first, see <see cref="RegionRules.FreeLevelCountFor"/>)
+        /// has no free tutorials either: they are played first once premium is there, and ask a grown-up until then.
         /// </summary>
         public static NodeState[] StatesOf(
             IReadOnlyList<string> path,
@@ -85,8 +87,8 @@ namespace Roboya.CodingEngine.Progress
                 bool earlyIntro = i < startIndex && IsIntro(intro, i);
                 // Beyond the free tier the grown-up gate applies even to finished levels (e.g. premium lapsed);
                 // the stars stay in the book and return with premium.
-                bool paid = ((i < startIndex && !earlyIntro) || i >= startIndex + freeLevelCount) && !hasPremium;
-                if (earlyIntro && !done)
+                bool paid = ((i < startIndex && !(earlyIntro && freeLevelCount > 0)) || i >= startIndex + freeLevelCount) && !hasPremium;
+                if (earlyIntro && !done && !paid)
                 {
                     // Tutorials before the age start come first: the earliest unfinished one is "the next".
                     states[i] = !currentGiven ? NodeState.Current : NodeState.Open;

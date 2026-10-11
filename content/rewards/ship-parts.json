@@ -11,6 +11,7 @@
     { "id": "nozzle", "order": 6, "layers": [ { "sprite": "ship_nozzle", "x": 0.5, "y": 1.0, "width": 0.38, "behind": true } ] },
     { "id": "legs", "order": 7, "layers": [
       { "sprite": "ship_leg_left", "x": 0.27, "y": 1.05, "width": 0.2, "behind": true },
-      { "sprite": "ship_leg_right", "x": 0.73, "y": 1.05, "width": 0.2, "behind": true } ] }
+      { "sprite": "ship_leg_right", "x": 0.73, "y": 1.05, "width": 0.2, "behind": true } ] },
+    { "id": "engine", "order": 8, "layers": [ { "sprite": "ship_engine_core", "x": 0.06, "y": 0.3, "width": 0.3, "behind": true } ] }
   ]
 }

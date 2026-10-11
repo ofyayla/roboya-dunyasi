@@ -196,5 +196,42 @@ namespace Roboya.Tests.CodingEngine
 
             CollectionAssert.AreEqual(plain, withIntro);
         }
+
+        [Test]
+        public void StatesOf_NoFreeTier_EveryLevelAsksAGrownUpWithoutPremium()
+        {
+            var s = PathRules.StatesOf(Path, new ProgressBook(), 0, false);
+
+            CollectionAssert.AreEqual(
+                new[] { NodeState.NeedsGrownUp, NodeState.NeedsGrownUp, NodeState.NeedsGrownUp, NodeState.NeedsGrownUp, NodeState.NeedsGrownUp }, s);
+        }
+
+        [Test]
+        public void StatesOf_NoFreeTier_WithPremium_PlaysInOrder()
+        {
+            var s = PathRules.StatesOf(Path, new ProgressBook(), 0, true);
+
+            CollectionAssert.AreEqual(
+                new[] { NodeState.Current, NodeState.Locked, NodeState.Locked, NodeState.Locked, NodeState.Locked }, s);
+        }
+
+        [Test]
+        public void StatesOf_NoFreeTier_LateStartIntro_IsNotFreeWithoutPremium()
+        {
+            // Every region after the first is premium content: its tutorials are no exception.
+            var s = PathRules.StatesOf(Path, new ProgressBook(), 0, false, 3, false, IntroAt1);
+
+            Assert.AreEqual(NodeState.NeedsGrownUp, s[1]);
+            Assert.AreEqual(NodeState.NeedsGrownUp, s[3]);
+        }
+
+        [Test]
+        public void StatesOf_NoFreeTier_LateStartIntroWithPremium_IsStillPlayedFirst()
+        {
+            var s = PathRules.StatesOf(Path, new ProgressBook(), 0, true, 3, false, IntroAt1);
+
+            CollectionAssert.AreEqual(
+                new[] { NodeState.Open, NodeState.Current, NodeState.Open, NodeState.Locked, NodeState.Locked }, s);
+        }
     }
 }
