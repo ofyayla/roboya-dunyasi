@@ -6,7 +6,10 @@ internal static class Fixtures
 {
     public const string Voice =
         "key,text,context,level_ids\n" +
-        "yon_avcisi.l99.intro,\"Merhaba, \"\"Roboya\"\" burada!\",giriş,sabir-ormani.yon-avcisi.99\n";
+        "yon_avcisi.l99.intro,\"Merhaba, \"\"Roboya\"\" burada!\",giriş,sabir-ormani.yon-avcisi.99\n" +
+        "bal_pesinde.kac_kaldi.ask,Sepette kaç bal kaldı?,soru,\n" +
+        "bal_pesinde.kac_kaldi.right,Doğru!,doğru,\n" +
+        "bal_pesinde.kac_kaldi.wrong,Birlikte sayalım!,yanlış,\n";
 
     public static JObject Level() => JObject.Parse("""
         {
