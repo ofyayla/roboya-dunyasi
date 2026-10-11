@@ -206,6 +206,7 @@ namespace Roboya.Tests.PlayMode
             Assert.IsNotNull(game.Q("hive-petek-1"), "the hive stands on the board");
             Assert.AreEqual(2, game.Q("hive-petek-1").Query(className: "hive__slot").ToList().Count, "one slot per honey it asks for");
             Assert.AreEqual(0, game.Q("hive-petek-1").Query(className: "hive__slot--filled").ToList().Count);
+            Assert.AreEqual(2, game.Q("item-amount-bal-1").Query(className: "hive__slot--filled").ToList().Count, "a spot worth two honey shows two discs, so the amount can be counted");
             Assert.AreEqual(DisplayStyle.Flex, game.Q("basket-view").resolvedStyle.display);
             Assert.AreEqual(0, game.Q("basket-view").Query(className: "basket-view__dot--filled").ToList().Count, "an empty basket");
             yield return Capture(game, "20a-village-hive-before");
