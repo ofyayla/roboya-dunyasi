@@ -63,8 +63,8 @@ Bugün `PathView` Sabır Ormanı'na sabit, adaya dokununca hangi bölge seçilir
 
 | ID | İş | Boyut | Bağımlılık | Not |
 | --- | --- | --- | --- | --- |
-| E1 | **24 bölüm:** editörle yazım, çözücüyle doğrulama, `alternativeLevelId`, tanıtım bölümleri, MEB kazanım eşleştirmesi (`meta.mebOutcomes`) | L | A1, B5 | Pedagoji taslağı gerçek kart sayılarıyla güncellenir |
-| E2 | **Seslendirme:** ~48 bölüm satırı + sayma (1–7), Bırak kartı tanıtımı, "Kaç kaldı?" soru ve cevapları, taşan/unutulan petek, artan bal, bölge karşılaması ve kilit sesi; önce TTS, sonra profesyonel kayıt (F2-14) | M | E1 | Yalnız senaryo metni TTS'e gider |
+| E1 | **24 bölüm:** editörle yazım, çözücüyle doğrulama, `alternativeLevelId`, tanıtım bölümleri, MEB kazanım eşleştirmesi (`meta.mebOutcomes`) | L | A1, B5 | Pedagoji taslağı gerçek kart sayılarıyla güncellenir. **Yapıldı (E1, PR #102–#105, #106–#107):** 24 bölüm `content/levels/paylasim-koyu/bal-pesinde/` altında, doğrulayıcı (bölge bileşimi dahil) 0 hata; en kısa çözümler 3–10 kart; iki pedagoji ön incelemesi `docs/pedagoji/incelemeler/` (açık sorular raporlarda). `meta.mebOutcomes` boş (G1). Taslak tabloları dosyalardan yeniden üretildi. Köy uçtan uca testi: `VillageContentFlowTests` |
+| E2 | **Seslendirme:** ~48 bölüm satırı + sayma (1–7), Bırak kartı tanıtımı, "Kaç kaldı?" soru ve cevapları, taşan/unutulan petek, artan bal, bölge karşılaması ve kilit sesi; önce TTS, sonra profesyonel kayıt (F2-14) | M | E1 | Yalnız senaryo metni TTS'e gider. **Yapıldı (E2, TTS):** bölüm, ipucu, `card.drop.intro`, köy geri bildirimleri, `kac_kaldi.*`, karşılama, `value.sharing` satırları ve ses dosyaları; `make validate-content` (manifest dahil) yeşil. `value.sharing.1–5` film sahneleri E4'te. Profesyonel kayıt F2-14 |
 | E3 | **Sanat:** köy arka planı, köylü arı ailesi (mutlu/üzgün/teşekkür), yaşlı köy arısı (bölge karakteri), petek durumları, sepet, sofra, şenlik alanı, ada haritasında köyün açılmış hâli; önce geçici set | L | — | F1-23 gibi dış kaynak; stil `docs/art/style-guide.md` |
 | E4 | **Paylaşma değer filmi** (30–60 sn) ve köşe sonu anları | M | E3 | Sabır filmiyle aynı üretim yolu (F1-24) |
 

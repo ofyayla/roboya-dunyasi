@@ -78,7 +78,7 @@ namespace Roboya.Tests.PlayMode
         {
             var catalog = LevelCatalog.Parse(Directory.GetFiles(FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories).Select(File.ReadAllText));
             var store = TestProfiles.Seed(_progressDir);
-            foreach (var entry in catalog.All.Where(e => e.Dto.Order <= 20))
+            foreach (var entry in catalog.All.Where(e => e.Dto.Region == Roboya.CodingEngine.Levels.Generated.RegionId.SabirOrmani && e.Dto.Order <= 20))
             {
                 store.Book.Record(entry.Id, 3);
             }
@@ -197,7 +197,7 @@ namespace Roboya.Tests.PlayMode
             VisualElement game = null;
             yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
             yield return PassStory(game);
-            var ninth = catalog.All.First(e => e.Dto.Order == 9);
+            var ninth = catalog.All.First(e => e.Dto.Region == Roboya.CodingEngine.Levels.Generated.RegionId.SabirOrmani && e.Dto.Order == 9);
             if (ninth.Dto.StarterProgram != null)
             {
                 // Bug hunt: the ready-made code runs once on its own before the child may edit it; clear it and build the right one.
@@ -562,7 +562,7 @@ namespace Roboya.Tests.PlayMode
             var files = Directory.GetFiles(Roboya.Core.FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories);
             var catalog = Roboya.Core.LevelCatalog.Parse(files.Select(File.ReadAllText));
             var store = TestProfiles.Seed(_progressDir);
-            foreach (var entry in catalog.All.Where(e => e.Dto.Order < 17))
+            foreach (var entry in catalog.All.Where(e => e.Dto.Region == Roboya.CodingEngine.Levels.Generated.RegionId.SabirOrmani && e.Dto.Order < 17))
             {
                 store.Book.Record(entry.Id, 3);
             }
@@ -617,7 +617,7 @@ namespace Roboya.Tests.PlayMode
             var files = Directory.GetFiles(Roboya.Core.FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories);
             var catalog = Roboya.Core.LevelCatalog.Parse(files.Select(File.ReadAllText));
             var store = TestProfiles.Seed(_progressDir);
-            foreach (var entry in catalog.All.Where(e => e.Dto.Order < 5))
+            foreach (var entry in catalog.All.Where(e => e.Dto.Region == Roboya.CodingEngine.Levels.Generated.RegionId.SabirOrmani && e.Dto.Order < 5))
             {
                 store.Book.Record(entry.Id, 3);
             }
@@ -661,7 +661,7 @@ namespace Roboya.Tests.PlayMode
             // SetUp already seeded a profile; the age band is what this test is about.
             var manager = ProfileManager.Load(_progressDir);
             manager.Update(manager.Active.Id, manager.Active.Nickname, manager.Active.AvatarId, band);
-            foreach (var entry in catalog.All.Where(e => e.Dto.Order < 16))
+            foreach (var entry in catalog.All.Where(e => e.Dto.Region == Roboya.CodingEngine.Levels.Generated.RegionId.SabirOrmani && e.Dto.Order < 16))
             {
                 store.Book.Record(entry.Id, 3);
             }
@@ -833,7 +833,7 @@ namespace Roboya.Tests.PlayMode
         {
             var catalog = LevelCatalog.Parse(Directory.GetFiles(FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories).Select(File.ReadAllText));
             var store = TestProfiles.Seed(_progressDir);
-            foreach (var entry in catalog.All.Where(e => e.Dto.Order <= lastOrder))
+            foreach (var entry in catalog.All.Where(e => e.Dto.Region == Roboya.CodingEngine.Levels.Generated.RegionId.SabirOrmani && e.Dto.Order <= lastOrder))
             {
                 store.Book.Record(entry.Id, 3);
             }
