@@ -23,6 +23,7 @@ namespace Roboya.Map
         private const float StoneHeight = 84f;
         private const float MinSpacing = 200f;
         private const float PartSize = 64f;
+        private const float BigPartSize = 88f;
         private const float CornerWidth = 132f;
         private const float CornerHeight = 90f;
 
@@ -146,7 +147,7 @@ namespace Roboya.Map
                 _scroll.Add(corner);
             }
 
-            BuildParts(_partArt, ProgressQueries.LevelsBefore(_services, region));
+            BuildParts(_partArt, ProgressQueries.PartsBefore(_services, region));
             for (int i = 0; i < _path.Count; i++)
             {
                 var stone = BuildStone(i);
@@ -283,19 +284,22 @@ namespace Roboya.Map
         }
 
         /// <summary>
-        /// Every few levels the ship gets a part (ILR-03): that part waits on the trail after the stone that earns it.
-        /// Parts count levels across regions, so <paramref name="levelsBefore"/> shifts them onto this region's stretch.
+        /// Each corner earns the ship a part (ILR-03, RewardRules): it waits on the trail after the corner's last stone, and
+        /// the region finale's big part waits past the last stone. <paramref name="partsBefore"/> is how many parts the
+        /// earlier regions give, so this region's parts follow on in the catalog order.
         /// </summary>
-        private void BuildParts(PartArt partArt, int levelsBefore)
+        private void BuildParts(PartArt partArt, int partsBefore)
         {
-            int every = Math.Max(1, _services.ProgressRules.LevelsPerPart);
+            int corners = CornerRules.CornerCount(_path.Count);
             foreach (var part in _services.Parts.Parts)
             {
-                int after = (part.Order * every) - 1 - levelsBefore;
-                if (after < 0 || after >= _path.Count - 1)
+                int corner = part.Order - partsBefore;
+                if (corner < 1 || corner > corners)
                 {
                     continue;
                 }
+
+                int after = CornerRules.CornerEnd(corner, _path.Count);
 
                 var layers = _services.Parts.LayersOf(part.Id);
                 var sprite = layers.Count > 0 && partArt != null ? partArt.Find(layers[0].Sprite) : null;
@@ -313,6 +317,7 @@ namespace Roboya.Map
 
                 element.name = "path-part-" + part.Order;
                 element.AddToClassList("path__part");
+                element.EnableInClassList("path__part--big", corner == CornerRules.CornersPerRegion);
                 element.RegisterCallback<ClickEvent>(_ =>
                 {
                     if (element.ClassListContains("path__part--earned"))
@@ -398,14 +403,16 @@ namespace Roboya.Map
 
             foreach (var (element, _, after) in _parts)
             {
-                var mid = _track.Between(after);
-                element.style.left = mid.x - (PartSize * 0.5f);
-                element.style.top = mid.y - (PartSize * 0.5f);
+                // Between the corner's last stone and the next; the finale's part waits on the trail past the last stone.
+                var mid = after + 1 < n ? _track.Between(after) : points[n - 1] + new Vector2(100f, 0f);
+                float size = element.ClassListContains("path__part--big") ? BigPartSize : PartSize;
+                element.style.left = mid.x - (size * 0.5f);
+                element.style.top = mid.y - (size * 0.5f);
             }
 
             for (int c = 0; c < _corners.Count; c++)
             {
-                int last = ((c + 1) * CornerRules.CornerLength(n)) - 1;
+                int last = CornerRules.CornerEnd(c + 1, n);
                 var at = last + 1 < n ? _track.Between(last) : points[last] + new Vector2(100f, 0f);
                 // Above the trail where it dips, below where it climbs, so the stump never covers a stone.
                 bool above = at.y > r.height * 0.55f;

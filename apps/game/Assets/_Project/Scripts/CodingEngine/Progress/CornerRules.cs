@@ -15,11 +15,25 @@ namespace Roboya.CodingEngine.Progress
         /// <summary>Corners drawn on a path of <paramref name="pathCount"/> levels.</summary>
         public static int CornerCount(int pathCount) => CornerLength(pathCount) > 0 ? CornersPerRegion : 0;
 
+        /// <summary>
+        /// Index (0-based) of the last level of corner <paramref name="corner"/> (1-based). The last corner always ends on
+        /// the region finale, so a path that does not split evenly gives its spare levels to the last stretch.
+        /// </summary>
+        public static int CornerEnd(int corner, int pathCount) =>
+            corner >= CornersPerRegion ? pathCount - 1 : (corner * CornerLength(pathCount)) - 1;
+
         /// <summary>True when the level at <paramref name="index"/> (0-based) is the last one of a corner.</summary>
         public static bool IsCornerEnd(int index, int pathCount)
         {
-            int length = CornerLength(pathCount);
-            return length > 0 && index >= 0 && (index + 1) % length == 0 && (index + 1) / length <= CornersPerRegion;
+            for (int c = 1; c <= CornerCount(pathCount); c++)
+            {
+                if (CornerEnd(c, pathCount) == index)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
