@@ -1,3 +1,4 @@
+using RegionId = Roboya.CodingEngine.Levels.Generated.RegionId;
 using System.IO;
 using Roboya.Core;
 using Roboya.Games.Common;
@@ -24,10 +25,14 @@ namespace Roboya.EditorTools
         private const string PartArtPath = "Assets/_Project/Art/Island/PartArt.asset";
         private const string ArtDir = "Assets/_Project/Art";
         private const string SabirOrmaniArtPath = ArtDir + "/SabirOrmani/SabirOrmaniArt.asset";
+        private const string PaylasimKoyuArtPath = ArtDir + "/PaylasimKoyu/PaylasimKoyuArt.asset";
+        private const string ArtLibraryDir = "Assets/_Project/Resources/Art";
+        private const string ArtLibraryPath = ArtLibraryDir + "/RegionArtLibrary.asset";
 
         public static void Build(string scenesDir)
         {
             EnsurePanelSettings();
+            EnsureArtLibrary();
             AssetDatabase.SaveAssets();
             BuildBoot(scenesDir + "/Boot.unity");
             BuildGame(scenesDir + "/Game.unity");
@@ -132,9 +137,70 @@ namespace Roboya.EditorTools
         /// </summary>
         public static void RefreshArt()
         {
-            EnsureSabirOrmaniArt();
             EnsurePartArt();
+            EnsureArtLibrary();
             AssetDatabase.SaveAssets();
+        }
+
+        /// <summary>
+        /// The library the thin scene entries read by name (Resources/Art): the forest's art and the village's. Rebuilt from the art
+        /// folders each time, so replacing a picture and running <c>make refresh-art</c> is all it takes.
+        /// </summary>
+        private static void EnsureArtLibrary()
+        {
+            var forest = EnsureSabirOrmaniArt();
+            var village = EnsurePaylasimKoyuArt(forest);
+            var library = AssetDatabase.LoadAssetAtPath<RegionArtLibrary>(ArtLibraryPath);
+            if (library == null)
+            {
+                if (!AssetDatabase.IsValidFolder("Assets/_Project/Resources"))
+                {
+                    AssetDatabase.CreateFolder("Assets/_Project", "Resources");
+                }
+
+                if (!AssetDatabase.IsValidFolder(ArtLibraryDir))
+                {
+                    AssetDatabase.CreateFolder("Assets/_Project/Resources", "Art");
+                }
+
+                library = ScriptableObject.CreateInstance<RegionArtLibrary>();
+                AssetDatabase.CreateAsset(library, ArtLibraryPath);
+            }
+
+            library.Set(RegionId.SabirOrmani, forest);
+            library.Set(RegionId.PaylasimKoyu, village);
+            EditorUtility.SetDirty(library);
+        }
+
+        /// <summary>
+        /// Paylaşım Köyü's sprite set (temporary art from docs/art/style-guide.md): everything the village has no picture for comes
+        /// from the forest's set, so a missing slot never shows up as a hole. Permanent art only replaces sprites here.
+        /// </summary>
+        private static RegionArt EnsurePaylasimKoyuArt(RegionArt forest)
+        {
+            var art = AssetDatabase.LoadAssetAtPath<RegionArt>(PaylasimKoyuArtPath);
+            if (art == null)
+            {
+                art = ScriptableObject.CreateInstance<RegionArt>();
+                AssetDatabase.CreateAsset(art, PaylasimKoyuArtPath);
+            }
+
+            EditorUtility.CopySerialized(forest, art);
+            Sprite S(string rel) => AssetDatabase.LoadAssetAtPath<Sprite>(ArtDir + "/" + rel + ".png");
+            var so = new SerializedObject(art);
+            so.FindProperty("background").objectReferenceValue = S("PaylasimKoyu/bg_paylasim_koyu");
+            // The region friend: the old village bee who brings the problem and says thank you.
+            so.FindProperty("goalIdle").objectReferenceValue = S("Characters/KoyArilari/elder_bee_front");
+            so.FindProperty("goalHappy").objectReferenceValue = S("Characters/KoyArilari/elder_bee_happy");
+            so.FindProperty("goalExplaining").objectReferenceValue = S("Characters/KoyArilari/elder_bee_explaining");
+            so.FindProperty("goalThanks").objectReferenceValue = S("Characters/KoyArilari/elder_bee_thanks");
+            so.FindProperty("propVillagerBee").objectReferenceValue = S("Characters/KoyArilari/villager_bee_happy");
+            so.FindProperty("propHoneycomb").objectReferenceValue = S("PaylasimKoyu/item_hive_full");
+            so.FindProperty("propVillageTable").objectReferenceValue = S("PaylasimKoyu/prop_village_table");
+            SetSprites(so.FindProperty("decor"), S, "PaylasimKoyu/prop_festival_flags", "PaylasimKoyu/prop_village_table", "PaylasimKoyu/prop_festival_flags");
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(art);
+            return art;
         }
 
         /// <summary>Ship body and repair parts, clouds and the island illustration, looked up by file name.</summary>

@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e1fe4132b19d42d883ea28ee3a2f67d, type: 3}
+  m_Name: SabirOrmaniArt
+  m_EditorClassIdentifier: Roboya.UI::Roboya.UI.RegionArt
+  robotFront: {fileID: 21300000, guid: 66a1502abfa974980b489c145f6c7094, type: 3}
+  robotBack: {fileID: 21300000, guid: 681ac39c9eb8b4d4dac611fb446abc90, type: 3}
+  robotSide: {fileID: 21300000, guid: 774b27811ab8e4c729b445696fb9b3cb, type: 3}
+  robotHappy: {fileID: 21300000, guid: d6685a778ead2498ea1e1f8c9430f9bf, type: 3}
+  robotLaughing: {fileID: 21300000, guid: 233a50734c62e40fbba7f7da1733e1e4, type: 3}
+  robotCurious: {fileID: 21300000, guid: d3c547fde93744026a00913c548e7397, type: 3}
+  robotSurprised: {fileID: 21300000, guid: 121de9a1e88dc4ff2ac11c719df5640a, type: 3}
+  robotProud: {fileID: 21300000, guid: 30cfd8f647bed49fdad6ab5c7be738c4, type: 3}
+  ariFront: {fileID: 21300000, guid: dd45b6c2a6caf4e208f9102bc2ff8dd3, type: 3}
+  ariBack: {fileID: 21300000, guid: 98a81b73ccc9b43ad9a474e2b6a596ce, type: 3}
+  ariSide: {fileID: 21300000, guid: 3bea55f4665b241788991dbbd2707941, type: 3}
+  ariHappy: {fileID: 21300000, guid: 063d8a37abac740f39670da6512e9cce, type: 3}
+  goalIdle: {fileID: 21300000, guid: d024ea0696d043adadeffed7c5e903ca, type: 3}
+  goalHappy: {fileID: 21300000, guid: 92a147a38e7645bca4e7a9f1379b15d9, type: 3}
+  goalExplaining: {fileID: 21300000, guid: 7a72822f2ffb4d4383d048deba56bc8d, type: 3}
+  goalThanks: {fileID: 21300000, guid: 0afad8f44c9648b9b9941567628dc1a8, type: 3}
+  tileFloor: {fileID: 21300000, guid: 35085070a4a1240e9a79ec7d1193ee1b, type: 3}
+  tilePath: {fileID: 21300000, guid: 94934bebb3b3c431ba53812552f5fce2, type: 3}
+  obstacles:
+  - {fileID: 21300000, guid: ede7f0f8eae004f95866fbe34ac1fce1, type: 3}
+  - {fileID: 21300000, guid: ea27f1fafc8c2473ea28b351e9dc2ec9, type: 3}
+  - {fileID: 21300000, guid: 571206f3653d74e6789e5edd4cbc6cad, type: 3}
+  background: {fileID: 21300000, guid: f8472ea8e2db4fc884aa2028d4ea139d, type: 3}
+  decor:
+  - {fileID: 21300000, guid: 707e43ff25f149be8e9aacf635d461c7, type: 3}
+  - {fileID: 21300000, guid: efb4960d2708408a93c31e6e298529be, type: 3}
+  - {fileID: 21300000, guid: 707e43ff25f149be8e9aacf635d461c7, type: 3}
+  fruitRed: {fileID: 21300000, guid: 3dd18bc28e45c45e1acf3cbc2346198f, type: 3}
+  fruitYellow: {fileID: 21300000, guid: 828cc3380528f4d57a91b6909d9fd24c, type: 3}
+  shipPart: {fileID: 21300000, guid: 7e50167cb578f4ebabd72babc93bf2ac, type: 3}
+  flowerYellow: {fileID: 21300000, guid: f0394ea392f764a93817a2cd223cd84d, type: 3}
+  flowerRed: {fileID: 21300000, guid: fb7b5bd645628466088a9562a824ea5d, type: 3}
+  flowerBlue: {fileID: 21300000, guid: 35d7b94187e6d46e095a7c7e2a634e7d, type: 3}
+  flowerPurple: {fileID: 21300000, guid: df1fbb5ae6a7443389d0fcaa5d1d162e, type: 3}
+  flowerOrange: {fileID: 21300000, guid: 39f5071b8ec4849d6845fc1c1f7b8a62, type: 3}
+  flowerGreen: {fileID: 21300000, guid: 7f002a6d910d44940832f89bbb2f1675, type: 3}
+  honeyDrop: {fileID: 21300000, guid: 43bb6732461fa4d4aa097a890bf583e9, type: 3}
+  honeycomb: {fileID: 21300000, guid: d71e0f91ac6f443dea94d38665fc9922, type: 3}
+  stoneDone: {fileID: 21300000, guid: 2004e425ce9854ff2baabaa06942f862, type: 3}
+  stoneCurrent: {fileID: 21300000, guid: 39b1defa3311145d990e351c5d9afa07, type: 3}
+  stoneAhead: {fileID: 21300000, guid: cb89d476690a34eba926d48c88a0c4d2, type: 3}
+  stoneCorner: {fileID: 21300000, guid: ba87754af325a496cac96ecb55c50125, type: 3}
+  starFull: {fileID: 21300000, guid: 2ba4afc6ab64a4c65b6bd43a8fdb3434, type: 3}
+  starEmpty: {fileID: 21300000, guid: 4dcbb964d977a48579dcf07a9ffc3b73, type: 3}
+  propTree: {fileID: 21300000, guid: ede7f0f8eae004f95866fbe34ac1fce1, type: 3}
+  propRock: {fileID: 21300000, guid: ea27f1fafc8c2473ea28b351e9dc2ec9, type: 3}
+  propBush: {fileID: 21300000, guid: 571206f3653d74e6789e5edd4cbc6cad, type: 3}
+  propBox: {fileID: 21300000, guid: 74d8348f704e5421abc907bdce1e8417, type: 3}
+  propMagnifier: {fileID: 21300000, guid: cc217bd32d1114045bd46eba3dd7112e, type: 3}
+  propBeehive: {fileID: 21300000, guid: 50599eae583b046e3b7a44c2ca481abe, type: 3}
+  propHoneyJar: {fileID: 21300000, guid: a7444ea2a89124ead8f6fce91dc32ff9, type: 3}
+  propVillagerBee: {fileID: 21300000, guid: 61a5d43acd784514a8509e61f6775e8b, type: 3}
+  propHoneycomb: {fileID: 21300000, guid: f0dbb09ca96b46389cdcab1b559c4261, type: 3}
+  propVillageTable: {fileID: 21300000, guid: efb4960d2708408a93c31e6e298529be, type: 3}

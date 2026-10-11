@@ -112,7 +112,13 @@ namespace Roboya.Core
 #else
             levels = new StreamingAssetsLevelSource();
 #endif
-            var catalog = LevelCatalog.Parse(await levels.LoadAllAsync());
+            var allLevels = new System.Collections.Generic.List<string>(await levels.LoadAllAsync());
+            if (ExtraLevelsOverride != null)
+            {
+                allLevels.AddRange(ExtraLevelsOverride);
+            }
+
+            var catalog = LevelCatalog.Parse(allLevels);
             var parts = ShipPartCatalog.Parse(await ContentFiles.ReadAsync(ShipPartCatalog.File));
             var strings = LocalizedStrings.Parse(await ContentFiles.ReadAsync(LocalizedStrings.File));
             var island = IslandLayout.Parse(await ContentFiles.ReadAsync(IslandLayout.File));
@@ -159,6 +165,9 @@ namespace Roboya.Core
 
         /// <summary>Tests point this at a temporary folder so each run starts with fresh progress.</summary>
         public static string ProgressFolderOverride { get; set; }
+
+        /// <summary>Tests: level JSON added to the catalog, e.g. village levels while the repository has none yet.</summary>
+        public static System.Collections.Generic.IReadOnlyList<string> ExtraLevelsOverride { get; set; }
 
         /// <summary>Tests replace the network with a fake and give a placeholder server address.</summary>
         public static Roboya.Services.IHttpTransport TransportOverride { get; set; }

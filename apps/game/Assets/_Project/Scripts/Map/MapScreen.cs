@@ -16,7 +16,7 @@ namespace Roboya.Map
 
         public void Enter(GameServices services)
         {
-            _controller = new MapController(document.rootVisualElement, services, art, partArt);
+            _controller = new MapController(document.rootVisualElement, services, art, partArt, RegionArtLibrary.Load());
             _controller.Open();
         }
 

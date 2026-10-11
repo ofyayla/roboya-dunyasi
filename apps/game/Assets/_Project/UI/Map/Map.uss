@@ -641,6 +641,11 @@
     height: 64px;
 }
 
+/* A region friend that is a picture (the village's old bee) instead of the code-drawn turtle. */
+.path__friend {
+    -unity-background-scale-mode: scale-to-fit;
+}
+
 /* The big play button: the next level without hunting for its stone (child target ≥ 64 dp). */
 .path__play {
     position: absolute;

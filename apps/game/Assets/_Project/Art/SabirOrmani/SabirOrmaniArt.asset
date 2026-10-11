@@ -63,3 +63,6 @@ MonoBehaviour:
   propMagnifier: {fileID: 21300000, guid: cc217bd32d1114045bd46eba3dd7112e, type: 3}
   propBeehive: {fileID: 21300000, guid: 50599eae583b046e3b7a44c2ca481abe, type: 3}
   propHoneyJar: {fileID: 21300000, guid: a7444ea2a89124ead8f6fce91dc32ff9, type: 3}
+  propVillagerBee: {fileID: 0}
+  propHoneycomb: {fileID: 0}
+  propVillageTable: {fileID: 0}
