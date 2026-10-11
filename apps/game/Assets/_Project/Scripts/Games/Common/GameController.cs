@@ -638,7 +638,9 @@ namespace Roboya.Games.Common
             _services.Analytics.Track("hint_used", _entry.Id, LevelProps(("hint_tier", Mathf.Clamp((int)hint.Tier, 0, 3))));
             var keys = _entry.Dto.Voice.Hints;
             int tier = (int)hint.Tier - 1;
-            if (_bee && _session.Attempts > 0 && !_clearedSinceRun && !_session.Plan.IsEmpty)
+            // The bee's kept world makes old commands part of the puzzle, so it only talks. In the village the world starts over
+            // on every run (PK-0005), so the plan can be checked card by card and the hint ladder stays whole.
+            if (_worldPersists && _session.Attempts > 0 && !_clearedSinceRun && !_session.Plan.IsEmpty)
             {
                 _services.Voice.Play(ForgotClearVoice);
             }

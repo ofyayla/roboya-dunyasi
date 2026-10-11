@@ -325,5 +325,41 @@ namespace Roboya.Tests.CodingEngine
             Assert.AreEqual(Build(Corner).Start.Position, s.Robot.Position, "without keepsState the bee is not carried over");
             Assert.AreEqual(new Roboya.CodingEngine.World.GridPosition(0, 0), second.FinalState.Position);
         }
+
+        private static LevelSession VillageSession(bool keepsState)
+        {
+            var level = HoneyLevels.Build(new[] { "R1A" }, deliver: new[] { ('A', 1) });
+            var s = new LevelSession(level, 3, keepsState: keepsState);
+            s.Plan.Load(new[] { F, Roboya.CodingEngine.Commands.CardType.Drop });
+            return s;
+        }
+
+        [Test]
+        public void RequestHint_VillageSession_ClimbsAllThreeTiersWithCards()
+        {
+            var s = VillageSession(keepsState: false);
+
+            var voice = s.RequestHint();
+            var wrong = s.RequestHint();
+            var correct = s.RequestHint();
+
+            Assert.AreEqual(Roboya.CodingEngine.Play.HintTier.Voice, voice.Tier);
+            Assert.AreEqual(Roboya.CodingEngine.Play.HintTier.HighlightWrongCard, wrong.Tier);
+            Assert.AreEqual(1, wrong.SlotIndex);
+            Assert.AreEqual(Roboya.CodingEngine.Play.HintTier.ShowCorrectCard, correct.Tier);
+            Assert.AreEqual(F, correct.Card);
+        }
+
+        [Test]
+        public void RequestHint_KeptStateSession_StaysWithTheVoice()
+        {
+            var s = VillageSession(keepsState: true);
+
+            s.RequestHint();
+            var second = s.RequestHint();
+
+            Assert.AreEqual(Roboya.CodingEngine.Play.HintTier.Voice, second.Tier);
+            Assert.AreEqual(-1, second.SlotIndex);
+        }
     }
 }
