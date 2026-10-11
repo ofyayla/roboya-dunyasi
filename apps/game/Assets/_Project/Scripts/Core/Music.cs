@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Roboya.CodingEngine.Levels.Generated;
 using UnityEngine;
 
 namespace Roboya.Core
@@ -10,6 +11,9 @@ namespace Roboya.Core
         bool Enabled { get; }
 
         void SetEnabled(bool enabled);
+
+        /// <summary>Plays the region's own loop when the build has one, the forest's otherwise (plan C3). A no-op for the region already playing.</summary>
+        void SetRegion(RegionId region);
     }
 
     public sealed class NullMusic : IMusicPlayer
@@ -17,6 +21,10 @@ namespace Roboya.Core
         public bool Enabled => false;
 
         public void SetEnabled(bool enabled)
+        {
+        }
+
+        public void SetRegion(RegionId region)
         {
         }
     }
@@ -36,6 +44,8 @@ namespace Roboya.Core
 
         private readonly AudioSource _source;
         private readonly string _folder;
+        private AudioClip _forestClip;
+        private RegionId _region = RegionId.SabirOrmani;
 
         public ProceduralMusic(AudioSource source, string folder, float volume = 0.25f)
         {
@@ -53,8 +63,34 @@ namespace Roboya.Core
                 clip.SetData(samples, 0);
             }
 
+            _forestClip = clip;
             _source.clip = clip;
             Enabled = !File.Exists(Path.Combine(folder, OffMarker));
+            Apply();
+        }
+
+        /// <summary>Resources path of a region's loop: the forest keeps <see cref="ClipPath"/>, the others use Music/&lt;region_id&gt;.</summary>
+        public static string ClipPathOf(RegionId region) =>
+            region == RegionId.SabirOrmani ? ClipPath : "Music/" + ProgressQueries.WireId(region).Replace('-', '_');
+
+        public void SetRegion(RegionId region)
+        {
+            if (region == _region)
+            {
+                return;
+            }
+
+            _region = region;
+            var own = Resources.Load<AudioClip>(ClipPathOf(region));
+            var clip = own != null ? own : _forestClip;
+            if (_source.clip == clip)
+            {
+                return;
+            }
+
+            // A new loop starts from its beginning; a silenced player only remembers which clip it will play.
+            _source.Stop();
+            _source.clip = clip;
             Apply();
         }
 

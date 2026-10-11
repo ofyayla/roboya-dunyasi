@@ -71,6 +71,11 @@ namespace Roboya.UI
         [SerializeField] private Sprite propBeehive;
         [SerializeField] private Sprite propHoneyJar;
 
+        [Header("Paylaşım Köyü story props")]
+        [SerializeField] private Sprite propVillagerBee;
+        [SerializeField] private Sprite propHoneycomb;
+        [SerializeField] private Sprite propVillageTable;
+
         /// <summary>
         /// The character the child is programming in a game: Ari the bee in Bal Peşinde, Roboya elsewhere. Ari's happy
         /// pose also stands in for "laughing". Falls back to Roboya when Ari's sprites are missing.
@@ -156,6 +161,9 @@ namespace Roboya.UI
                 case StoryProp.Beehive: return propBeehive;
                 case StoryProp.Box: return propBox;
                 case StoryProp.Magnifier: return propMagnifier;
+                case StoryProp.VillagerBee: return propVillagerBee;
+                case StoryProp.Honeycomb: return propHoneycomb;
+                case StoryProp.VillageTable: return propVillageTable;
                 default: return null;
             }
         }

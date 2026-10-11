@@ -32,7 +32,9 @@ namespace Roboya.Games.Common
             }
 
             int start = levels.FindIndex(l => l.Id == services.Navigator.SelectedLevelId);
-            _controller = new GameController(document.rootVisualElement, services, levels, art, partArt);
+            // The region's own pictures when the library has them, the scene's (forest) art otherwise.
+            _controller = new GameController(document.rootVisualElement, services, levels, RegionArtLibrary.Pick(RegionArtLibrary.Load(), region, art), partArt);
+            services.Music.SetRegion(region);
             _controller.Start(start < 0 ? 0 : start);
         }
 

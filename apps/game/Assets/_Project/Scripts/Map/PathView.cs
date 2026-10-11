@@ -28,7 +28,9 @@ namespace Roboya.Map
         private const float CornerHeight = 90f;
 
         private readonly GameServices _services;
-        private readonly RegionArt _art;
+        private readonly RegionArt _defaultArt;
+        private readonly RegionArtLibrary _library;
+        private RegionArt _art;
         private readonly PartArt _partArt;
         private readonly Action _onWorkshop;
         private readonly Action _onRest;
@@ -51,9 +53,11 @@ namespace Roboya.Map
         // The view size Roboya was last centred for; a new size (the screen settling at start-up) centres again.
         private Vector2 _centeredFor;
 
-        public PathView(GameServices services, RegionArt art, PartArt partArt, Action onIsland, Action onWorkshop, Action onRest)
+        public PathView(GameServices services, RegionArt art, PartArt partArt, Action onIsland, Action onWorkshop, Action onRest, RegionArtLibrary library = null)
         {
             _services = services;
+            _defaultArt = art;
+            _library = library;
             _art = art;
             _partArt = partArt;
             _onWorkshop = onWorkshop;
@@ -111,6 +115,13 @@ namespace Roboya.Map
             }
 
             _region = region;
+            // Each region paints its own trail background and stones (plan C3); a region without art keeps the forest's.
+            _art = RegionArtLibrary.Pick(_library, region, _defaultArt);
+            if (_art != null && _art.Background != null)
+            {
+                style.backgroundImage = new StyleBackground(_art.Background);
+            }
+
             foreach (var stone in _stones)
             {
                 stone.RemoveFromHierarchy();
@@ -140,9 +151,21 @@ namespace Roboya.Map
                 var corner = new VisualElement { name = "corner-" + c, pickingMode = PickingMode.Ignore };
                 corner.AddToClassList("path__corner");
                 corner.Add(Face(StoneLook.Corner, _art != null ? _art.StoneCorner : null));
-                var turtle = new Icon(IconKind.Turtle) { Color = new Color(0.36f, 0.62f, 0.3f), Accent = Color.white };
-                turtle.AddToClassList("path__turtle");
-                corner.Add(turtle);
+                // The forest's wise turtle is code-drawn; another region's friend (the old village bee) is its own picture.
+                if (region != RegionId.SabirOrmani && _art != null && _art.GoalIdle != null)
+                {
+                    var friend = new VisualElement { pickingMode = PickingMode.Ignore };
+                    friend.AddToClassList("path__turtle");
+                    friend.AddToClassList("path__friend");
+                    friend.style.backgroundImage = new StyleBackground(_art.GoalIdle);
+                    corner.Add(friend);
+                }
+                else
+                {
+                    var turtle = new Icon(IconKind.Turtle) { Color = new Color(0.36f, 0.62f, 0.3f), Accent = Color.white };
+                    turtle.AddToClassList("path__turtle");
+                    corner.Add(turtle);
+                }
                 _corners.Add(corner);
                 _scroll.Add(corner);
             }

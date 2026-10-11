@@ -2,6 +2,7 @@
     "name": "Roboya.Editor",
     "rootNamespace": "Roboya.EditorTools",
     "references": [
+        "Roboya.CodingEngine",
         "Roboya.Core",
         "Roboya.UI",
         "Roboya.Games.Common",

@@ -36,12 +36,12 @@ namespace Roboya.Map
         // The region whose path the child is on: the one tapped on the island, or the one of the level just played.
         private RegionId _region = RegionId.SabirOrmani;
 
-        public MapController(VisualElement root, GameServices services, RegionArt art, PartArt partArt)
+        public MapController(VisualElement root, GameServices services, RegionArt art, PartArt partArt, RegionArtLibrary library = null)
         {
             _services = services;
             var host = root.Q("map-root") ?? root;
             _island = new IslandView(services, art, partArt, OnRegion, () => services.Voice.Play(RegionLockedVoice));
-            _path = new PathView(services, art, partArt, ShowIsland, ShowWorkshop, ShowRest);
+            _path = new PathView(services, art, partArt, ShowIsland, ShowWorkshop, ShowRest, library);
             _workshop = new WorkshopView(services, art, partArt, ShowPath);
             _parent = new ParentView(services.Strings, ShowHome);
             _gate = new ParentGateView(services.Strings);
@@ -141,6 +141,7 @@ namespace Roboya.Map
             }
 
             _region = region.Value;
+            _services.Music.SetRegion(_region);
             ShowPath();
             _services.Voice.Play(WelcomeVoiceOf(_region));
         }
