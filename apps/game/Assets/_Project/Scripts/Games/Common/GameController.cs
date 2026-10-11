@@ -23,6 +23,9 @@ namespace Roboya.Games.Common
     {
         private const string BumpVoice = "roboya.bump.01";
         private const string NotThereVoice = "roboya.not_there.01";
+        // Paylaşım Köyü: spoken the moment "Bırak" cannot do its job; the lines come with the village voice work (E2) and are silent until then.
+        private const string NothingToDropVoice = "bal_pesinde.nothing_to_drop";
+        private const string HiveOverflowVoice = "bal_pesinde.hive_overflow";
         private const string MissingItemsVoice = "roboya.missing_items.01";
         private const string PlayPromptVoice = "roboya.play_prompt";
         private const string AskGrownUpVoice = "roboya.ask_grownup";
@@ -337,6 +340,22 @@ namespace Roboya.Games.Common
                         _services.Sfx.Play(SfxKind.Place);
                         await _board.AnimateDrop(e.DropIndex, e.After, token);
                         break;
+                    case ExecutionEventKind.NothingToDrop:
+                        // Nothing is lost: Ari shows the basket and the card shakes, so the child sees what to change.
+                        _services.Voice.Play(NothingToDropVoice);
+                        var nudge = _basket.Nudge(token);
+                        var shakeEmpty = _tray.ShakeSlot(e.CommandPath[0], token);
+                        await nudge;
+                        await shakeEmpty;
+                        break;
+                    case ExecutionEventKind.HiveOverflow:
+                        _basket.Set(e.After.Basket);
+                        _services.Voice.Play(HiveOverflowVoice);
+                        var spill = _board.AnimateOverflow(e.DropIndex, e.After, token);
+                        var shakeSpill = _tray.ShakeSlot(e.CommandPath[0], token);
+                        await spill;
+                        await shakeSpill;
+                        break;
                     case ExecutionEventKind.Collected:
                         _basket.Set(e.After.Basket);
                         _badge.MarkCollected(e.ItemIndex);
@@ -512,7 +531,8 @@ namespace Roboya.Games.Common
                 // BAL-02: the bee also ran what it still remembered; a gentle, teaching line rather than a scolding.
                 _services.Voice.Play(ForgotClearVoice);
             }
-            else if (result != null && result.Outcome != ExecutionOutcome.Bumped && !_prediction.HasValue)
+            else if (result != null && result.Outcome != ExecutionOutcome.Bumped && result.Outcome != ExecutionOutcome.NothingToDrop
+                && result.Outcome != ExecutionOutcome.HiveOverflow && !_prediction.HasValue)
             {
                 _services.Voice.Play(result.Outcome == ExecutionOutcome.MissingItems ? MissingItemsVoice : NotThereVoice);
             }

@@ -309,6 +309,23 @@ namespace Roboya.Games.Common
             slot.style.scale = new Scale(Vector3.one);
         }
 
+        /// <summary>
+        /// A hive got more honey than it asks for (a spilling hive, no penalty): its picture changes and it wobbles, gently, as if
+        /// saying "this one is full"; the extra honey still counts on its slot row.
+        /// </summary>
+        public async Awaitable AnimateOverflow(int dropIndex, RobotState after, CancellationToken token)
+        {
+            ApplyHoney(after);
+            if (dropIndex < 0 || dropIndex >= _drops.Count)
+            {
+                return;
+            }
+
+            var view = _drops[dropIndex].Piece.View;
+            await Tween.Run(0.55f, t => view.style.rotate = new Rotate(new UnityEngine.UIElements.Angle(7f * Mathf.Sin(t * Mathf.PI * 4f) * (1f - t), AngleUnit.Degree)), token);
+            view.style.rotate = new Rotate(new UnityEngine.UIElements.Angle(0f, AngleUnit.Degree));
+        }
+
         public async Awaitable AnimateMove(GridPosition from, GridPosition to, CancellationToken token)
         {
             var a = new Vector2(from.X, from.Y);

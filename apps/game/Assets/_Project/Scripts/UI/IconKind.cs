@@ -30,5 +30,8 @@ namespace Roboya.UI
         Compass,
         Box,
         Bee,
+
+        /// <summary>"Bırak" card (Paylaşım Köyü): a honey drop with an arrow down.</summary>
+        Drop,
     }
 }

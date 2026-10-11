@@ -470,3 +470,11 @@
 .basket-view__dot--filled {
     background-color: rgb(247, 178, 26);
 }
+
+/* "Bırak": bigger than the direction cards and set apart in the bee's honey panel (child target well above 64 dp). */
+.palette--bee .card--drop {
+    width: 104px;
+    height: 104px;
+    margin-left: 20px;
+    padding: 18px;
+}

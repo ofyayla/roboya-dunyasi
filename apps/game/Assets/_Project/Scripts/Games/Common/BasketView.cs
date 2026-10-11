@@ -78,6 +78,13 @@ namespace Roboya.Games.Common
             Set(level.Start.Basket);
         }
 
+        /// <summary>A short pulse that shows the basket: "Bırak" with nothing to drop points the child at what Ari is carrying.</summary>
+        public async Awaitable Nudge(System.Threading.CancellationToken token)
+        {
+            await Tween.Run(0.5f, t => style.scale = new Scale(Vector3.one * (1f + (0.25f * Mathf.Sin(t * Mathf.PI)))), token);
+            style.scale = new Scale(Vector3.one);
+        }
+
         /// <summary>Shows <paramref name="count"/> dots solid and the rest hollow.</summary>
         public void Set(int count)
         {

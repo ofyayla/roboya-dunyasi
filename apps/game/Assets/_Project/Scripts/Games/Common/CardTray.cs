@@ -331,7 +331,7 @@ namespace Roboya.Games.Common
         private static IEnumerable<CardType> Ordered(IEnumerable<CardType> palette)
         {
             // Stable, child-friendly order regardless of JSON order.
-            var order = new[] { CardType.Forward, CardType.TurnLeft, CardType.TurnRight, CardType.Backward };
+            var order = new[] { CardType.Forward, CardType.TurnLeft, CardType.TurnRight, CardType.Backward, CardType.Drop };
             foreach (var c in order)
             {
                 foreach (var p in palette)

@@ -45,15 +45,22 @@ namespace Roboya.Tests.PlayMode
             yield return null;
         }
 
-        /// <summary>Minik levels 1–6 give a hive its honey by themselves (auto-drop); Kaşif levels 7–8 only collect.</summary>
+        /// <summary>
+        /// Minik levels 1–6 collect two honey and the hive takes them by itself (auto-drop); Kaşif levels 7–8 start with three honey in
+        /// the basket (the hive asks for two) and need the "Bırak" card (F F Bırak Bırak).
+        /// </summary>
         private static string Level(int order)
         {
             bool minik = order <= 6;
             string age = minik ? "minik" : "kasif";
-            string honey = minik ? @"""amount"": 2, " : string.Empty;
-            string drops = minik ? @"""drops"": [ { ""id"": ""petek-1"", ""kind"": ""hive"", ""x"": 3, ""y"": 0, ""need"": 2 } ]," : string.Empty;
-            string goal = minik ? @"{ ""collect"": [""bal-1""], ""deliver"": [ { ""to"": ""petek-1"", ""count"": 2 } ] }" : @"{ ""collect"": [""bal-1""] }";
-            string options = minik ? @"""options"": { ""autoDrop"": true, ""resetEachRun"": true, ""clearMemoryEachRun"": true }," : string.Empty;
+            string robot = minik ? @"{ ""x"": 0, ""y"": 0, ""facing"": ""east"" }" : @"{ ""x"": 0, ""y"": 0, ""facing"": ""east"", ""carrying"": 3 }";
+            string items = minik ? @"""items"": [ { ""id"": ""bal-1"", ""amount"": 2, ""kind"": ""honey"", ""x"": 2, ""y"": 0 } ]," : string.Empty;
+            string hive = minik ? @"{ ""id"": ""petek-1"", ""kind"": ""hive"", ""x"": 3, ""y"": 0, ""need"": 2 }" : @"{ ""id"": ""petek-1"", ""kind"": ""hive"", ""x"": 2, ""y"": 0, ""need"": 2 }";
+            string goal = minik ? @"{ ""collect"": [""bal-1""], ""deliver"": [ { ""to"": ""petek-1"", ""count"": 2 } ] }" : @"{ ""deliver"": [ { ""to"": ""petek-1"", ""count"": 2 } ] }";
+            string palette = minik ? @"[""forward"", ""turn_right""]" : @"[""forward"", ""drop""]";
+            string options = minik
+                ? @"{ ""autoDrop"": true, ""resetEachRun"": true, ""clearMemoryEachRun"": true }"
+                : @"{ ""resetEachRun"": true, ""beeMemoryVisible"": true }";
             return @"{
   ""schemaVersion"": 3,
   ""id"": ""paylasim-koyu.bal-pesinde." + order.ToString("00") + @""",
@@ -62,24 +69,29 @@ namespace Roboya.Tests.PlayMode
   ""order"": " + order + @",
   ""meta"": { ""concepts"": [""counting""], ""value"": ""sharing"", ""difficulty"": 1, ""ageLevels"": [""" + age + @"""] },
   ""grid"": { ""rows"": [""....."", "".....""] },
-  ""robot"": { ""x"": 0, ""y"": 0, ""facing"": ""east"" },
-  ""items"": [ { ""id"": ""bal-1"", " + honey + @"""kind"": ""honey"", ""x"": 2, ""y"": 0 } ],
-  " + drops + @"
+  ""robot"": " + robot + @",
+  " + items + @"
+  ""drops"": [ " + hive + @" ],
   ""goal"": " + goal + @",
-  ""cards"": { ""palette"": [""forward"", ""turn_right""], ""maxProgramLength"": 4 },
-  " + options + @"
+  ""cards"": { ""palette"": " + palette + @", ""maxProgramLength"": 5 },
+  ""options"": " + options + @",
   ""voice"": { ""intro"": ""bal_pesinde.l01.intro"" }
 }";
         }
 
         /// <summary>Finishes the whole forest, so the village opens (the region before it must be finished).</summary>
-        private void FinishForest()
+        private void FinishForest(Roboya.CodingEngine.Profiles.AgeBand band = Roboya.CodingEngine.Profiles.AgeBand.Minik, int villageDone = 0)
         {
             var catalog = LevelCatalog.Parse(Directory.GetFiles(FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories).Select(File.ReadAllText));
-            var store = TestProfiles.Seed(_progressDir);
+            var store = TestProfiles.Seed(_progressDir, band);
             foreach (var entry in catalog.All)
             {
                 store.Book.Record(entry.Id, 3);
+            }
+
+            for (int order = 1; order <= villageDone; order++)
+            {
+                store.Book.Record("paylasim-koyu.bal-pesinde." + order.ToString("00"), 3);
             }
 
             store.Book.MarkShipPartsSeen(99);
@@ -187,6 +199,98 @@ namespace Roboya.Tests.PlayMode
 
             Assert.AreEqual(0, game.Q("basket-view").Query(className: "basket-view__dot--filled").ToList().Count, "the basket is empty again");
             yield return WaitUntil(() => !game.Q("result").ClassListContains("hidden"), 15f);
+        }
+
+        /// <summary>A Kaşif child who finished the Minik part of the village: level 7 is next, in the game scene with the basket full.</summary>
+        private IEnumerator OpenKasifLevel(Action<VisualElement> found)
+        {
+            FinishForest(Roboya.CodingEngine.Profiles.AgeBand.Kasif, villageDone: 6);
+            Environment.SetEnvironmentVariable(DevEntitlements.Variable, "1");
+            VisualElement map = null;
+            yield return OpenVillagePath(r => map = r);
+            Tap(map.Q("path-play"));
+            VisualElement game = null;
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
+            yield return PassStory(game);
+            found(game);
+        }
+
+        private static void PlanAndPlay(VisualElement game, params Roboya.CodingEngine.Commands.CardType[] cards)
+        {
+            foreach (var card in cards)
+            {
+                Tap(game.Q("palette").Children().OfType<CardElement>().First(c => c.Card == card));
+            }
+
+            Tap(game.Q("play"));
+        }
+
+        [UnityTest]
+        public IEnumerator KasifLevel_DropCardIsInThePaletteAndBigEnough_AndTheRightPlanWins()
+        {
+            VisualElement game = null;
+            yield return OpenKasifLevel(r => game = r);
+
+            var drop = game.Q("palette").Children().OfType<CardElement>().FirstOrDefault(c => c.Card == Roboya.CodingEngine.Commands.CardType.Drop);
+            Assert.IsNotNull(drop, "the Bırak card is offered");
+            Assert.GreaterOrEqual(drop.resolvedStyle.width, 64f, "child target at least 64 dp");
+            Assert.GreaterOrEqual(drop.resolvedStyle.height, 64f);
+            Assert.AreEqual(3, game.Q("basket-view").Query(className: "basket-view__dot--filled").ToList().Count, "Ari starts with three honey");
+            yield return Capture(game, "21a-village-drop-card");
+
+            var C = Roboya.CodingEngine.Commands.CardType.Forward;
+            var D = Roboya.CodingEngine.Commands.CardType.Drop;
+            PlanAndPlay(game, C, C, D, D);
+            yield return WaitUntil(() => !game.Q("result").ClassListContains("hidden"), 20f);
+            Assert.AreEqual(2, game.Q("hive-petek-1").Query(className: "hive__slot--filled").ToList().Count, "the hive got what it asked for");
+            Assert.AreEqual(1, game.Q("basket-view").Query(className: "basket-view__dot--filled").ToList().Count, "one honey stays in the basket");
+        }
+
+        [UnityTest]
+        public IEnumerator KasifLevel_OneDropTooMany_StopsOnThatCardAndTheHiveSpills()
+        {
+            VisualElement game = null;
+            yield return OpenKasifLevel(r => game = r);
+
+            var C = Roboya.CodingEngine.Commands.CardType.Forward;
+            var D = Roboya.CodingEngine.Commands.CardType.Drop;
+            PlanAndPlay(game, C, C, D, D, D);
+            yield return WaitUntil(() => game.Q("hive-petek-1").ClassListContains("piece--hive-spill"), 15f);
+            yield return new WaitForSeconds(0.8f);
+            yield return Capture(game, "21b-village-spill");
+
+            yield return WaitUntil(() => game.Q("play").enabledSelf, 10f);
+            Assert.IsTrue(game.Q("result").ClassListContains("hidden"), "an overflowing run is not a win, and nothing is taken away");
+        }
+
+        [UnityTest]
+        public IEnumerator KasifLevel_DropWithNothingToDrop_StopsGentlyAndTheChildCanTryAgain()
+        {
+            VisualElement game = null;
+            yield return OpenKasifLevel(r => game = r);
+
+            var C = Roboya.CodingEngine.Commands.CardType.Forward;
+            var D = Roboya.CodingEngine.Commands.CardType.Drop;
+            // Dropping while still away from the hive: nothing lands anywhere.
+            PlanAndPlay(game, D, C, C, D, D);
+            yield return WaitUntil(() => game.Q("play").enabledSelf, 15f);
+            Assert.IsTrue(game.Q("result").ClassListContains("hidden"));
+            Assert.AreEqual(0, game.Q("hive-petek-1").Query(className: "hive__slot--filled").ToList().Count, "the world started over and the hive is empty");
+            Assert.AreEqual(3, game.Q("basket-view").Query(className: "basket-view__dot--filled").ToList().Count, "so is the basket");
+        }
+
+        [UnityTest]
+        public IEnumerator MinikLevel_PaletteHasNoDropCard()
+        {
+            FinishForest();
+            Environment.SetEnvironmentVariable(DevEntitlements.Variable, "1");
+            VisualElement map = null;
+            yield return OpenVillagePath(r => map = r);
+            Tap(map.Q("path-play"));
+            VisualElement game = null;
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
+
+            Assert.IsFalse(game.Q("palette").Children().OfType<CardElement>().Any(c => c.Card == Roboya.CodingEngine.Commands.CardType.Drop), "the hive takes the honey itself");
         }
     }
 }
