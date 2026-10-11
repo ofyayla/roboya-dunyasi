@@ -40,10 +40,7 @@ namespace Roboya.Map
                 _aspect = bg.rect.width / bg.rect.height;
             }
 
-            foreach (var e in services.Catalog.All)
-            {
-                _open.Add(MapController.WireId(e.Dto.Region));
-            }
+            _open.UnionWith(ProgressQueries.OpenRegions(services));
 
             int cloud = 0;
             foreach (var region in services.Island.Regions)
