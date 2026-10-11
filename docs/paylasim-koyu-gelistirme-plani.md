@@ -19,14 +19,14 @@ Kabaca 3 sprint geliştirme + paralel sanat; çocuk testi ve düzeltme için 1 s
 
 ## A. Önce verilmesi gereken kararlar
 
-Bu kararlar olmadan B ve E başlamaz; C'nin çoğu karardan bağımsızdır ve hemen başlayabilir.
+A2–A4 ürün sahibince kabul edildi (2026-10-11); A1 pedagoji onayı bekliyor. A1 olmadan B ve E başlamaz; C'nin çoğu karardan bağımsızdır ve hemen başlayabilir.
 
 | # | Karar | Kimde | Etkisi | Önerim |
 | --- | --- | --- | --- | --- |
 | A1 | Pedagoji taslağının onayı (7 soru) | Pedagoji ekibi | E1, D3, D4 | Sabır Ormanı onayıyla aynı toplantıda |
-| A2 | Bölge ne zaman açılır? Bugün içeriği olan her bölge açık (PRD: "bölgeler sırayla açılır") | Ürün | C1 | Sabır Ormanı'nın son bölümü (bölge finali) bitince |
-| A3 | Kaşif çocuk Sabır Ormanı'nı bitirmeden köye geçebilir mi? | Ürün + pedagoji | C1 | Hayır; ama Kaşif başlangıcı sayesinde ormanda Minik bölümleri zaten atlanıyor |
-| A4 | Gemi parçası sayısı: bugün 7 parça var; Sabır Ormanı 36 bölümle 7 + 1 bölge = 8 parça kazandırıyor, köyle 4 + 1 daha eklenir. PRD hem "her 5 bölümde bir" hem "beş parça tamamlandığında gemi onarılır" diyor | Ürün | C5, E4 | Bölüm başına parça yerine bölge başına 1 büyük + köşe başına 1 küçük parça; gemi 5 bölgede tamamlanır |
+| A2 | Bölge ne zaman açılır? Bugün içeriği olan her bölge açık (PRD: "bölgeler sırayla açılır") | Ürün | C1 | **Kabul (2026-10-11):** Sabır Ormanı'nın son bölümü (bölge finali) bitince |
+| A3 | Kaşif çocuk Sabır Ormanı'nı bitirmeden köye geçebilir mi? | Ürün + pedagoji | C1 | **Kabul (2026-10-11):** Hayır; ama Kaşif başlangıcı sayesinde ormanda Minik bölümleri zaten atlanıyor |
+| A4 | Gemi parçası sayısı: bugün 7 parça var; Sabır Ormanı 36 bölümle 7 + 1 bölge = 8 parça kazandırıyor, köyle 4 + 1 daha eklenir. PRD hem "her 5 bölümde bir" hem "beş parça tamamlandığında gemi onarılır" diyor | Ürün | C5, E4 | **Kabul (2026-10-11):** Bölüm başına parça yerine bölge başına 1 büyük + köşe başına 1 küçük parça; gemi 5 bölgede tamamlanır |
 
 ## B. Motor ve içerik araçları
 
