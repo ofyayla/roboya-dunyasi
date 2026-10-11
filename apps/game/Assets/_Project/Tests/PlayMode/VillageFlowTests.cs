@@ -36,6 +36,7 @@ namespace Roboya.Tests.PlayMode
         {
             Bootstrap.ProgressFolderOverride = null;
             Bootstrap.ExtraLevelsOverride = null;
+            Bootstrap.AskRemainingOverride = false;
             Environment.SetEnvironmentVariable(DevEntitlements.Variable, null);
             foreach (var boot in UnityEngine.Object.FindObjectsByType<Bootstrap>(FindObjectsSortMode.None))
             {
@@ -65,7 +66,7 @@ namespace Roboya.Tests.PlayMode
             string palette = minik ? @"[""forward"", ""turn_right""]" : @"[""forward"", ""drop""]";
             string options = minik
                 ? @"{ ""autoDrop"": true, ""resetEachRun"": true, ""clearMemoryEachRun"": true }"
-                : @"{ ""resetEachRun"": true, ""beeMemoryVisible"": true }";
+                : @"{ ""resetEachRun"": true, ""beeMemoryVisible"": true, ""askRemaining"": true }";
             return @"{
   ""schemaVersion"": 3,
   ""id"": ""paylasim-koyu.bal-pesinde." + order.ToString("00") + @""",
@@ -385,6 +386,76 @@ namespace Roboya.Tests.PlayMode
             Assert.AreEqual(0, Count(game, "hive-compare__villager--sad"));
             Assert.IsNotNull(game.Q("family-table"), "the left-over honey lies on the table for everyone");
             yield return WaitUntil(() => !game.Q("result").ClassListContains("hidden"), 30f);
+        }
+
+        private static int Stars(VisualElement game) => game.Q("stars").Children().OfType<Icon>().Count(i => i.Kind == IconKind.Star);
+
+        /// <summary>Level 7 with the right plan (F F Bırak Bırak): 3 honey, 2 given, 1 left.</summary>
+        private IEnumerator WinLevelSevenAndWaitForTheQuestion(Action<VisualElement> found)
+        {
+            Bootstrap.AskRemainingOverride = true;
+            VisualElement game = null;
+            yield return OpenKasifLevel(r => game = r);
+            var F = Roboya.CodingEngine.Commands.CardType.Forward;
+            var D = Roboya.CodingEngine.Commands.CardType.Drop;
+            PlanAndPlay(game, F, F, D, D);
+            yield return WaitUntil(() => game.Q("remaining-view").resolvedStyle.display == DisplayStyle.Flex, 30f);
+            yield return new WaitForSeconds(0.3f);
+            found(game);
+        }
+
+        [UnityTest]
+        public IEnumerator Remaining_SwitchedOff_TheLevelEndsWithoutTheQuestion()
+        {
+            VisualElement game = null;
+            yield return OpenKasifLevel(r => game = r);
+            var F = Roboya.CodingEngine.Commands.CardType.Forward;
+            var D = Roboya.CodingEngine.Commands.CardType.Drop;
+            PlanAndPlay(game, F, F, D, D);
+
+            yield return WaitUntil(() => !game.Q("result").ClassListContains("hidden"), 30f);
+            Assert.AreEqual(DisplayStyle.None, game.Q("remaining-view").resolvedStyle.display, "the level asks but the switch is off until the child test");
+        }
+
+        [UnityTest]
+        public IEnumerator Remaining_RightCard_ShowsThreeDotCardsAndGoesOnWithAllStars()
+        {
+            VisualElement game = null;
+            yield return WinLevelSevenAndWaitForTheQuestion(r => game = r);
+            yield return Capture(game, "23a-village-remaining");
+
+            Assert.AreEqual(3, Count(game, "remaining__card"));
+            Assert.AreEqual(3, game.Q("remaining-before").Query(className: "remaining__dot").ToList().Count);
+            Assert.AreEqual(2, game.Q("remaining-given").Query(className: "remaining__dot").ToList().Count);
+            Assert.AreEqual(1, game.Q("remaining-left").Query(className: "remaining__dot").ToList().Count);
+
+            Tap(game.Q("remaining-left"));
+            yield return WaitUntil(() => !game.Q("result").ClassListContains("hidden"), 20f);
+            Assert.AreEqual(3, Stars(game), "the question does not touch the stars");
+        }
+
+        [UnityTest]
+        public IEnumerator Remaining_WrongCard_AriCountsTheRightOneAndTheStarsStay()
+        {
+            VisualElement game = null;
+            yield return WinLevelSevenAndWaitForTheQuestion(r => game = r);
+
+            Tap(game.Q("remaining-before"));
+            yield return WaitUntil(() => Count(game, "remaining__dot--counted") >= 1, 10f);
+            Assert.AreEqual(1, game.Q("remaining-left").Query(className: "remaining__dot--counted").ToList().Count, "the basket's honey is counted together");
+            yield return WaitUntil(() => !game.Q("result").ClassListContains("hidden"), 20f);
+            Assert.AreEqual(3, Stars(game), "a wrong card costs nothing");
+        }
+
+        [UnityTest]
+        public IEnumerator Remaining_Arrow_LetsTheChildGoOnWithoutAnswering()
+        {
+            VisualElement game = null;
+            yield return WinLevelSevenAndWaitForTheQuestion(r => game = r);
+
+            Tap(game.Q("remaining-skip"));
+            yield return WaitUntil(() => !game.Q("result").ClassListContains("hidden"), 20f);
+            Assert.AreEqual(3, Stars(game));
         }
     }
 }

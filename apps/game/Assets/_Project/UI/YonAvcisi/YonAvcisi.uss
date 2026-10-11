@@ -584,3 +584,90 @@
     border-radius: 4px;
     background-color: rgb(120, 72, 20);
 }
+
+/* "Kaç kaldı?" (plan D4): three dot cards over the board; a wrong tap is never red, Ari counts the right one. */
+.remaining {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(244, 236, 214, 0.9);
+}
+
+.remaining__basket {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 16px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.remaining__basket--fallback {
+    border-radius: 75px;
+    border-width: 6px;
+    border-color: rgb(120, 72, 20);
+    background-color: rgb(210, 160, 90);
+}
+
+.remaining__cards {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.remaining__card {
+    width: 190px;
+    height: 220px;
+    margin: 0 16px;
+    padding: 12px;
+    align-items: center;
+    border-radius: 28px;
+    border-width: 5px;
+    border-color: rgba(58, 42, 29, 0.35);
+    background-color: rgb(255, 250, 236);
+}
+
+.remaining__face {
+    width: 150px;
+    height: 150px;
+}
+
+.remaining__dot {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    margin-left: -15px;
+    margin-top: -15px;
+    border-radius: 999px;
+    background-color: rgb(247, 178, 26);
+    border-width: 3px;
+    border-color: rgb(120, 72, 20);
+}
+
+.remaining__dot--counted {
+    scale: 1.4 1.4;
+}
+
+.remaining__numeral {
+    margin-top: 4px;
+    font-size: 22px;
+    color: rgba(58, 42, 29, 0.6);
+    -unity-font-style: bold;
+}
+
+.remaining__card--tried {
+    opacity: 0.6;
+}
+
+.remaining__card--right {
+    border-color: rgb(94, 148, 67);
+    background-color: rgb(235, 250, 220);
+    scale: 1.08 1.08;
+}
+
+.remaining__skip {
+    position: absolute;
+    right: 28px;
+    bottom: 24px;
+}
