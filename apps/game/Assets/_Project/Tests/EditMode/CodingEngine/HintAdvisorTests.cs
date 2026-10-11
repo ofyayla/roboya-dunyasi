@@ -87,5 +87,37 @@ namespace Roboya.Tests.CodingEngine
             Assert.AreEqual(1, hint.WrongIndex);
             Assert.AreEqual(F, hint.SuggestedCard);
         }
+
+        [Test]
+        public void Analyze_OneDropTooMany_PointsAtTheSpillingCard()
+        {
+            var level = HoneyLevels.Build(new[] { "R2A" }, needs: new[] { 2 }, deliver: new[] { ('A', 2) });
+
+            var hint = HintAdvisor.Analyze(level, new[] { F, F, CardType.Drop, CardType.Drop, CardType.Drop });
+
+            Assert.AreEqual(4, hint.WrongIndex);
+        }
+
+        [Test]
+        public void Analyze_OneDropMissing_PointsAtTheNextEmptySlot()
+        {
+            var level = HoneyLevels.Build(new[] { "R2A" }, needs: new[] { 2 }, deliver: new[] { ('A', 2) });
+
+            var hint = HintAdvisor.Analyze(level, new[] { F, F, CardType.Drop });
+
+            Assert.AreEqual(3, hint.WrongIndex);
+            Assert.AreEqual(CardType.Drop, hint.SuggestedCard);
+        }
+
+        [Test]
+        public void Analyze_AutoDropLevel_NeedsNoDropCardAndSuggestsTheMissingMove()
+        {
+            var level = HoneyLevels.Build(new[] { "R2A" }, needs: new[] { 2 }, autoDrop: true, deliver: new[] { ('A', 2) }, cards: new[] { F });
+
+            var hint = HintAdvisor.Analyze(level, new[] { F });
+
+            Assert.AreEqual(1, hint.WrongIndex);
+            Assert.AreEqual(F, hint.SuggestedCard);
+        }
     }
 }

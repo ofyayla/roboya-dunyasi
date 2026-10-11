@@ -39,4 +39,6 @@ Bal Peşinde'nin ortak motoru genişletilir; motor çatallanmaz (CLAUDE.md §7).
 - Arı tuş paneline "Bırak" tuşu eklenir (UI Toolkit); dokunma hedefi ≥ 64 dp.
 - Sabır Ormanı bölümleri etkilenmez (yalnız şema sürümü).
 - Gizlilik, ödeme ve hak etkisi yok; bölge premium içeriktir ve kilidi mevcut kurallarla açılır.
+- **Çözücü maliyeti ölçüldü (B3):** PK-0003'e uyan en ağır köy şekillerinde (12, 17, 23, 24. bölüm, 3–4 petek, 6–7 bal) `Solve` en çok 954 durum arıyor; 10 kartlık doğru bir plan için `HintAdvisor.Analyze` en çok 6 ms (masaüstü). 8×8 açık, 7 baldan ve 3 petek + sofradan oluşan abartılı bir tahtada 4 473 durum, 19 ms. Eşik (20 000 durum ya da 30 ms) aşılmadı, bu yüzden erişilebilir-durum önbelleği yazılmadı; `PerformanceBudgetTests` üst sınırları koruyor. Eşik aşılırsa önbellek bu karara eklenir.
+- "Kaç kaldı?" seçenekleri `RemainingQuestion` ile motordan türetilir (`Before = Given + Left`); üç seçeneğin farklı olması için bir şey verilmiş, bir şey kalmış ve ikisi eşit olmamalıdır.
 - Pedagoji kararları: PK-0001 (bırakma, paylaşma, artan), PK-0002 ("Kaç kaldı?"), PK-0003 (sınırlar), PK-0004 (kavram), PK-0005 (erişim ve çalıştırma durumu). Uzman onayı yayından önce alınır.

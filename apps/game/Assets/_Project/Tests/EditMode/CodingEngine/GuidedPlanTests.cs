@@ -54,5 +54,29 @@ namespace Roboya.Tests.CodingEngine
 
             Assert.AreEqual(Roboya.CodingEngine.Commands.CardType.Drop, step.NextCard);
         }
+
+        [Test]
+        public void Next_FollowedCardByCard_BuildsTheShortestVillagePlanAndSolvesIt()
+        {
+            // Level 23 shape: pick up, give two hives their share, the rest goes to the table.
+            var level = HoneyLevels.Build(new[] { "R2ABT." , "......" }, needs: new[] { 2, 2 }, carrying: 3, maxLength: 11, shareAmong: "AB", leftover: 'T');
+            var plan = new System.Collections.Generic.List<Roboya.CodingEngine.Commands.CardType>();
+
+            for (int guard = 0; guard < 20; guard++)
+            {
+                var step = GuidedPlan.Next(level, plan);
+                if (step.IsComplete)
+                {
+                    break;
+                }
+
+                Assert.IsTrue(step.NextCard.HasValue);
+                plan.Add(step.NextCard.Value);
+            }
+
+            Assert.AreEqual(9, plan.Count);
+            var result = Roboya.CodingEngine.Execution.Interpreter.Execute(level, HoneyLevels.Prog(plan.ToArray()));
+            Assert.AreEqual(Roboya.CodingEngine.Execution.ExecutionOutcome.Success, result.Outcome);
+        }
     }
 }
