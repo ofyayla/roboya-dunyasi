@@ -1,5 +1,4 @@
 using System;
-using Roboya.CodingEngine.Levels.Generated;
 using Roboya.CodingEngine.Profiles;
 using Roboya.Core;
 using Roboya.UI;
@@ -122,20 +121,6 @@ namespace Roboya.Map
         public void Dispose()
         {
             _services.Voice.Stop();
-        }
-
-        /// <summary>Wire id of a region, as used in content files.</summary>
-        public static string WireId(RegionId region)
-        {
-            switch (region)
-            {
-                case RegionId.SabirOrmani: return "sabir-ormani";
-                case RegionId.PaylasimKoyu: return "paylasim-koyu";
-                case RegionId.YardimlasmaLimani: return "yardimlasma-limani";
-                case RegionId.NezaketBahcesi: return "nezaket-bahcesi";
-                case RegionId.SorumlulukKulesi: return "sorumluluk-kulesi";
-                default: return "mucit-atolyesi";
-            }
         }
 
         private void OnRegion(string regionId)

@@ -20,6 +20,8 @@
    - `ProgressBook`: yıldızlar yalnız artar.
    - `PathRules`: patikadaki taşın durumu (bitti, sıradaki, kilitli, büyüklerine sor).
    - `RewardRules`: her 5 bölümde ve her bölge sonunda bir gemi parçası, sabit sırayla.
+   - `RegionRules` (2026-10-11, F2-13 kararları A2/A3): bölgeler `content/map/island.json` sırasıyla açılır; bir bölge, önceki bölgenin son bölümü (bölge finali) yıldız alınca açılır. Yaşa göre geç başlayan çocuk önceki bölümleri oynamak zorunda kalmaz. İçeriği olmayan bölge açılmaz ama sonrakini engellemez. Premium bölge içinde patika kurallarıyla denetlenir.
+   - `RegionRules` (2026-10-11, F2-13 kararları A2/A3): bölgeler `content/map/island.json` sırasıyla açılır; bir bölge, önceki bölgenin son bölümü (bölge finali) yıldız alınca açılır. Yaşa göre geç başlayan çocuk önceki bölümleri oynamak zorunda kalmaz. İçeriği olmayan bölge açılmaz ama sonrakini engellemez. Premium bölge içinde patika kurallarıyla denetlenir.
    - **Kazanılan parçalar saklanmaz;** her seferinde ilerlemeden hesaplanır.
 3. **Premium hakkı `IEntitlementSource`'tan okunur.**
    - Sunucu hak servisi (F1-17) gelene kadar tek uygulama `FreeTierEntitlements`: her zaman ücretsiz katman.
