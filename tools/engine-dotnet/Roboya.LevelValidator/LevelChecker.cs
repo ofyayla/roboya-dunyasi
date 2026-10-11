@@ -138,6 +138,14 @@ internal static class LevelChecker
         return obj.ToString(Newtonsoft.Json.Formatting.Indented) + "\n";
     }
 
+    /// <summary>The spoken lines of the "how many are left?" step (PK-0002); mirrors <c>RemainingView</c>'s keys in the game.</summary>
+    public static readonly string[] RemainingVoiceKeys =
+    [
+        "bal_pesinde.kac_kaldi.ask",
+        "bal_pesinde.kac_kaldi.right",
+        "bal_pesinde.kac_kaldi.wrong",
+    ];
+
     public static IEnumerable<string> VoiceKeys(LevelDto dto)
     {
         yield return dto.Voice.Intro;
@@ -154,6 +162,14 @@ internal static class LevelChecker
         foreach (var hint in dto.Voice.Hints ?? [])
         {
             yield return hint;
+        }
+
+        if (dto.Options?.AskRemaining == true)
+        {
+            foreach (var key in RemainingVoiceKeys)
+            {
+                yield return key;
+            }
         }
     }
 

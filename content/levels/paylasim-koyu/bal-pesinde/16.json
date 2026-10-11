@@ -69,7 +69,7 @@
     "intro": "bal_pesinde.koy.l16.intro",
     "success": "bal_pesinde.koy.l16.success",
     "hints": [
-      "roboya.hint.koy.listen",
+      "roboya.hint.koy.share",
       "roboya.hint.check_card",
       "roboya.hint.show_card"
     ]
@@ -92,7 +92,7 @@
       ]
     }
   },
-  "alternativeLevelId": "paylasim-koyu.bal-pesinde.15",
+  "alternativeLevelId": "paylasim-koyu.bal-pesinde.14",
   "solution": {
     "shortestLength": 8
   },

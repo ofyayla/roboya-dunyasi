@@ -120,6 +120,19 @@ public class VillageChecksTests
     }
 
     [Test]
+    public void CheckJson_AskRemainingWithoutItsSpokenLines_Reports()
+    {
+        var level = Fixtures.KasifDeliver();
+        level["options"]!["askRemaining"] = true;
+
+        // A script that has the level's own line but none of the three step lines.
+        var script = VoiceScript.Parse("key,text,context,level_ids\nyon_avcisi.l99.intro,Merhaba,giriş,\n");
+        var report = LevelChecker.CheckJson(level.ToString(), Fixtures.KasifPath, script);
+
+        Assert.That(report.Errors, Is.EquivalentTo(LevelChecker.RemainingVoiceKeys.Select(k => $"voice key '{k}' is not in content/voice/script.csv")));
+    }
+
+    [Test]
     public void CheckJson_AskRemainingWithTwoEqualAnswers_Reports()
     {
         HasError(Kasif(l =>
