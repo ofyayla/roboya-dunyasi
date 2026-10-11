@@ -32,6 +32,12 @@ namespace Roboya.CodingEngine.Progress
             return open;
         }
 
+        /// <summary>
+        /// The free tier belongs to the first region of the island only (product decision 2026-10-11, plan C1): the other regions
+        /// are premium content, so they have no free levels. The island order is content (content/map/island.json).
+        /// </summary>
+        public static int FreeLevelCountFor(int islandIndex, int freeLevelCount) => islandIndex == 0 ? freeLevelCount : 0;
+
         /// <summary>A region is finished when its finale, the last level on its path, has at least one star.</summary>
         public static bool IsFinished(IReadOnlyList<string> path, ProgressBook book) =>
             path != null && path.Count > 0 && book.IsCompleted(path[path.Count - 1]);

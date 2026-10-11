@@ -10,7 +10,7 @@ UNITY ?= $(firstword $(wildcard $(UNITY_HUB_EDITORS)/$(UNITY_VERSION)-arm64/Unit
 ENGINE_SLN := tools/engine-dotnet/Roboya.Engine.slnx
 
 .PHONY: help setup api-dev web-dev editor-dev test lint gen validate-content fix-content unity-test \
-        test-api test-web test-engine test-content lint-api lint-web check-gen unity-playmode tts test-tools android-apk unity-e2e
+        test-api test-web test-engine test-content lint-api lint-web check-gen unity-playmode tts test-tools android-apk unity-e2e refresh-art
 
 help: ## List commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-18s\033[0m %s\n",$$1,$$2}'
@@ -91,6 +91,9 @@ unity-e2e: ## Run Unity PlayMode tests end to end: every level of the path is pl
 android-apk: ## Build an internal-test Android APK into apps/game/Builds/Android (add DEV=1 for a development build)
 	"$(UNITY)" -batchmode -nographics -quit -projectPath apps/game -executeMethod Roboya.EditorTools.BuildScript.BuildAndroidApk \
 		$(if $(DEV),-devBuild,) -logFile -
+
+refresh-art: ## Rebuild the Unity sprite lookups (region art, ship parts) after adding or replacing art
+	"$(UNITY)" -batchmode -nographics -quit -projectPath apps/game -executeMethod Roboya.EditorTools.ProjectSetup.RefreshArtBatch -logFile -
 
 unity-test: ## Run Unity EditMode tests in batch mode
 	"$(UNITY)" -batchmode -nographics -projectPath apps/game -runTests -testPlatform EditMode \

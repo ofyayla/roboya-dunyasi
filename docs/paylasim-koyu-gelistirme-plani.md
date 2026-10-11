@@ -44,11 +44,11 @@ Bugün `PathView` Sabır Ormanı'na sabit, adaya dokununca hangi bölge seçilir
 
 | ID | İş | Boyut | Bağımlılık | Not |
 | --- | --- | --- | --- | --- |
-| C1 | **Bölge kilidi:** sıralı açılma kuralı (`CodingEngine/Progress`, saf C#, testli); kilitli bölgede Roboya'nın sesli açıklaması; premium yoksa ebeveyn kapısı (hak sunucudan, mevcut kural) | M | A2, A3 | Ücretsiz katman değişmez (Sabır Ormanı'nın ilk 3 bölümü) |
+| C1 | **Bölge kilidi:** sıralı açılma kuralı (`CodingEngine/Progress`, saf C#, testli); kilitli bölgede Roboya'nın sesli açıklaması; premium yoksa ebeveyn kapısı (hak sunucudan, mevcut kural) | M | A2, A3 | Ücretsiz katman değişmez (Sabır Ormanı'nın ilk 3 bölümü) **Yapıldı** (#80 sıralı açılma); C-a: ücretsiz katman yalnız ilk bölgede, ücretsiz sayılan tanıtım bölümü muafiyeti de. |
 | C2 | **Patika bölgeye göre:** `PathView` seçilen bölgenin bölümlerini çizer; köşe sayısı ve köşe işaretleri bölge verisinden; "sonraki bölüm" bölge içinde, bölge bitince adaya dönüş | M | — | `MapController.OnRegion` bölge kimliğini kullanır |
 | C3 | **Bölge sanatı ve müziği:** `RegionArt` köy seti (bölge karakteri, zemin, süsler); müzik bölgeye göre (kayıt yoksa kodla üretilen yedek) | S | E3 (geçici sanat yeterli) | Lisans: Suno ücretli planı veya özgün (docs/art/music.md) |
 | C4 | **Değer anı bölgeye göre:** `ValueCard` bölgenin değer filmini oynatır (paylaşma); köşe sonu anları | S | E4 | |
-| C5 | **Gemi parçaları:** parça kataloğu ve kazanma kuralı A4'e göre; mevcut ilerlemesi olan çocukların parçaları geri alınmaz | S | A4 | Sunucu eşitlemesi yıldızdan türer, değişiklik gerekmez |
+| C5 | **Gemi parçaları:** parça kataloğu ve kazanma kuralı A4'e göre; mevcut ilerlemesi olan çocukların parçaları geri alınmaz | S | A4 | Sunucu eşitlemesi yıldızdan türer, değişiklik gerekmez **Yapıldı** (#82 kural); C-a: 8. parça `engine` kataloğa eklendi (köy finali). |
 
 ## D. Oyun ekranı (Bal Peşinde genişletmesi)
 

@@ -109,7 +109,30 @@ namespace Roboya.Core
         public static int EarnedParts(GameServices s) => RewardRules.EarnedCount(PathsInIslandOrder(s), s.Progress.Book);
 
         public static NodeState[] PathStates(GameServices s, IReadOnlyList<string> path) =>
-            PathRules.StatesOf(path, s.Progress.Book, s.ProgressRules.FreeLevelCount, s.Entitlements.HasPremium, StartIndex(s, path), s.ProgressRules.UnlockAll, IntroLevels(s.Catalog, path));
+            PathRules.StatesOf(path, s.Progress.Book, FreeLevelCountOf(s, path), s.Entitlements.HasPremium, StartIndex(s, path), s.ProgressRules.UnlockAll, IntroLevels(s.Catalog, path));
+
+        /// <summary>Free levels on this path: the configured count on the island's first region, none on the others.</summary>
+        public static int FreeLevelCountOf(GameServices s, IReadOnlyList<string> path)
+        {
+            var first = path.Count > 0 ? s.Catalog.Find(path[0]) : null;
+            if (first == null)
+            {
+                return s.ProgressRules.FreeLevelCount;
+            }
+
+            string wire = WireId(first.Dto.Region);
+            var regions = s.Island.Regions;
+            for (int i = 0; i < regions.Count; i++)
+            {
+                if (regions[i].Id == wire)
+                {
+                    return RegionRules.FreeLevelCountFor(i, s.ProgressRules.FreeLevelCount);
+                }
+            }
+
+            // A region missing from the island layout cannot be reached from the map: no free levels.
+            return 0;
+        }
 
         /// <summary>A game's first level, every level that introduces a card and every level marked <c>options.intro</c>: the tutorials a late starter must not skip.</summary>
         public static List<bool> IntroLevels(LevelCatalog catalog, IReadOnlyList<string> path)

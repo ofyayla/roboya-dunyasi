@@ -60,6 +60,7 @@ Komutlar kök dizindeki `Makefile` üzerinden çalışır. Bir komut değişirse
 | `make validate-content` | Tüm bölümleri şema ve çözücüyle doğrular, ses manifestini kontrol eder |
 | `make tts` | Eksik veya metni değişmiş seslendirme satırlarını ElevenLabs ile üretir (`.env` gerekir) |
 | `make unity-test` | Unity EditMode testlerini batch modda çalıştırır |
+| `make refresh-art` | Sanat eklenince ya da değişince Unity sprite arama varlıklarını (bölge sanatı, gemi parçaları) yeniler; sahnelere ve proje ayarlarına dokunmaz |
 | `make unity-playmode` | Unity PlayMode kritik akış testleri, bölüm oynatan testlerde yalnız ilk 3 bölüm; ekran görüntüleri `apps/game/TestResults/screens` |
 | `make unity-e2e` | Unity PlayMode testleri uçtan uca: patikadaki bütün bölümler oynanır (`ROBOYA_E2E=1`) |
 

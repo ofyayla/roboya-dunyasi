@@ -201,4 +201,20 @@ public class ContentValidatorTests
 
         Assert.That(code, Is.EqualTo(0), output);
     }
+
+    [Test]
+    public void Run_VillageLevelsHaveNoFreeTier_SoTheFreeAlternativeRuleDoesNotApply()
+    {
+        // Order 3 would be free in the forest; in the village nothing is free, so pointing at a later level is fine.
+        var third = Level(3, 2, alternative: "paylasim-koyu.yon-avcisi.04");
+        third["region"] = "paylasim-koyu";
+        third["id"] = "paylasim-koyu.yon-avcisi.03";
+        var fourth = Level(4, 1);
+        fourth["region"] = "paylasim-koyu";
+        fourth["id"] = "paylasim-koyu.yon-avcisi.04";
+        Write(third);
+        Write(fourth);
+
+        Assert.That(Run().Output, Does.Not.Contain("free levels stay free"));
+    }
 }

@@ -87,5 +87,13 @@ namespace Roboya.Tests.CodingEngine
         {
             Assert.IsFalse(RegionRules.IsFinished(Empty, new ProgressBook()));
         }
+
+        [Test]
+        public void FreeLevelCountFor_OnlyTheFirstRegionHasAFreeTier()
+        {
+            Assert.AreEqual(3, RegionRules.FreeLevelCountFor(0, 3));
+            Assert.AreEqual(0, RegionRules.FreeLevelCountFor(1, 3));
+            Assert.AreEqual(0, RegionRules.FreeLevelCountFor(5, 3));
+        }
     }
 }
