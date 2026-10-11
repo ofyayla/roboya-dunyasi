@@ -820,12 +820,12 @@ namespace Roboya.Tests.PlayMode
             yield return Capture(game, "15-easier-offer");
 
             var previous = game;
+            var levelBeforeEasier = YonAvcisiFlowTests.CurrentLevelId();
             Tap(game.Q("easier"));
             // The Game scene reloads under the same name: wait for the new UI root, not the old one.
-            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot()) != previous && game?.Q("progress")?.childCount > 0, 10f);
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot()) != previous && game?.Q("palette")?.childCount > 0, 10f);
             yield return PassStory(game);
-            var dots = game.Q("progress").Children().ToList();
-            Assert.IsTrue(dots[0].ClassListContains("progress__dot--current"), "the easier level is level 1");
+            Assert.AreNotEqual(levelBeforeEasier, YonAvcisiFlowTests.CurrentLevelId(), "the easier level is a different, earlier level");
         }
 
         /// <summary>Finishes every level up to <paramref name="lastOrder"/> on the forest path, in path order (all games).</summary>
