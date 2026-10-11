@@ -40,6 +40,37 @@ namespace Roboya.EditorTools
             EditorApplication.Exit(summary.result == BuildResult.Succeeded ? 0 : 1);
         }
 
+        /// <summary>
+        /// Generates an Xcode project into Builds/iOS. Builds against the Simulator SDK by default so no Apple
+        /// signing is needed; pass -iosDevice to target a physical iPhone (the team id is set in Xcode).
+        /// </summary>
+        public static void BuildIos()
+        {
+            var args = Environment.GetCommandLineArgs();
+            bool development = Array.IndexOf(args, "-devBuild") >= 0;
+            bool device = Array.IndexOf(args, "-iosDevice") >= 0;
+            string output = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Builds", "iOS"));
+            Directory.CreateDirectory(output);
+
+            ProjectSetup.Run();
+            PlayerSettings.bundleVersion = Version;
+            PlayerSettings.iOS.buildNumber = VersionCode().ToString();
+            PlayerSettings.iOS.sdkVersion = device ? iOSSdkVersion.DeviceSDK : iOSSdkVersion.SimulatorSDK;
+
+            var options = new BuildPlayerOptions
+            {
+                scenes = Array.ConvertAll(EditorBuildSettings.scenes, s => s.path),
+                locationPathName = output,
+                target = BuildTarget.iOS,
+                options = development ? BuildOptions.Development : BuildOptions.None,
+            };
+
+            var report = BuildPipeline.BuildPlayer(options);
+            var summary = report.summary;
+            Debug.Log("[Build] " + summary.result + " " + output + " in " + summary.totalTime);
+            EditorApplication.Exit(summary.result == BuildResult.Succeeded ? 0 : 1);
+        }
+
         /// <summary>CI passes its run number; local builds use minutes since 2026-01-01 so codes always increase.</summary>
         private static int VersionCode()
         {

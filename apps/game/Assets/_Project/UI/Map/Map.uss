@@ -258,10 +258,17 @@
 }
 
 .gate__card {
-    width: 560px;
-    padding: 28px 36px;
+    flex-direction: row;
+    align-items: center;
+    max-width: 96%;
+    padding: 24px 32px;
     border-radius: 32px;
     background-color: var(--c-bg);
+}
+
+.gate__info {
+    width: 400px;
+    margin-right: 24px;
     align-items: center;
 }
 
@@ -300,8 +307,7 @@
 }
 
 .gate__pad {
-    width: 360px;
-    margin-top: 8px;
+    width: 384px;
     flex-direction: row;
     flex-wrap: wrap;
 }

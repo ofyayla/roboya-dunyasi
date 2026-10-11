@@ -38,10 +38,13 @@ namespace Roboya.UI
             _digits.AddToClassList("gate__digits");
             _entered.AddToClassList("gate__entered");
             _message.AddToClassList("gate__message");
-            card.Add(question);
-            card.Add(_digits);
-            card.Add(_entered);
-            card.Add(_message);
+            // Two columns (info left, keypad right): a single column is taller than short phone landscape screens.
+            var info = new VisualElement();
+            info.AddToClassList("gate__info");
+            info.Add(question);
+            info.Add(_digits);
+            info.Add(_entered);
+            info.Add(_message);
 
             _pad.AddToClassList("gate__pad");
             for (int d = 1; d <= 9; d++)
@@ -52,11 +55,12 @@ namespace Roboya.UI
             _pad.Add(Key("⌫", -1, "gate-back"));
             _pad.Add(Key("0", 0));
             _pad.Add(Key(strings.Get(StringKeys.GateConfirm), -2, "gate-confirm"));
-            card.Add(_pad);
 
             var cancel = new Button(Close) { name = "gate-cancel", text = strings.Get(StringKeys.GateCancel) };
             cancel.AddToClassList("gate__cancel");
-            card.Add(cancel);
+            info.Add(cancel);
+            card.Add(info);
+            card.Add(_pad);
             Add(card);
             schedule.Execute(Tick).Every(250);
         }
