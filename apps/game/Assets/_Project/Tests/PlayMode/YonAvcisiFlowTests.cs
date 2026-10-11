@@ -135,6 +135,8 @@ namespace Roboya.Tests.PlayMode
             // The whole region path, all games mixed in order: next goes from one game straight into the next.
             var levels = catalog.All.Where(l => l.Dto.Region == Roboya.CodingEngine.Levels.Generated.RegionId.SabirOrmani).ToList();
             // During development only the first levels are played; the whole path runs end to end with ROBOYA_E2E=1.
+            // Corners follow the whole region path, not the levels this run plays.
+            int pathCount = levels.Count;
             levels = levels.Take(LevelsToPlay(levels.Count)).ToList();
 
             // Levels past the free tier need premium; the editor-only switch stands in for the server (ADR 0009).
@@ -181,7 +183,7 @@ namespace Roboya.Tests.PlayMode
                 }
 
                 Tap(root.Q("play"));
-                if ((i + 1) % Roboya.Core.ProgressQueries.CornerLength == 0)
+                if (Roboya.CodingEngine.Progress.CornerRules.IsCornerEnd(i, pathCount))
                 {
                     // The end of a forest corner: the turtle's patience card comes before the result; a tap moves on.
                     yield return WaitUntil(() => !root.Q("value-card").ClassListContains("hidden"), 60f);

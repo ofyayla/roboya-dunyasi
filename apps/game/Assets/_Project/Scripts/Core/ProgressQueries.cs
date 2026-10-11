@@ -9,9 +9,6 @@ namespace Roboya.Core
     public static class ProgressQueries
     {
         /// <summary>The ordered level ids on a region's path (all games of the region, by order).</summary>
-        /// <summary>Levels per "forest corner": the path map marks the end of each stretch and the game closes it with a value moment.</summary>
-        public const int CornerLength = 9;
-
         public static List<string> PathOf(LevelCatalog catalog, RegionId region)
         {
             var ids = new List<string>();
@@ -60,6 +57,45 @@ namespace Roboya.Core
                 case RegionId.SorumlulukKulesi: return "sorumluluk-kulesi";
                 default: return "mucit-atolyesi";
             }
+        }
+
+        /// <summary>The region with this wire id, or null for an unknown id.</summary>
+        public static RegionId? RegionOf(string wireId)
+        {
+            foreach (RegionId region in System.Enum.GetValues(typeof(RegionId)))
+            {
+                if (WireId(region) == wireId)
+                {
+                    return region;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Levels on the paths of the regions before <paramref name="region"/> in island order. Ship parts are earned
+        /// by levels completed anywhere (RewardRules), so a region's path shows the parts that fall on its own stretch.
+        /// </summary>
+        public static int LevelsBefore(GameServices s, RegionId region)
+        {
+            string wire = WireId(region);
+            int count = 0;
+            foreach (var r in s.Island.Regions)
+            {
+                if (r.Id == wire)
+                {
+                    return count;
+                }
+
+                var id = RegionOf(r.Id);
+                if (id.HasValue)
+                {
+                    count += PathOf(s.Catalog, id.Value).Count;
+                }
+            }
+
+            return count;
         }
 
         /// <summary>
