@@ -153,3 +153,15 @@ bal_pesinde.koy.l17.intro,"Çalıların arasından geçelim! İki petek var, bal
 bal_pesinde.koy.l17.success,"Yolu buldun, iki petek eşit doldu!",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.17
 bal_pesinde.koy.l18.intro,"Beş balımız, iki peteğimiz var. Eşit verince bir bal artıyor. Ne yapalım?",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.18
 bal_pesinde.koy.l18.success,"Artan bal sofraya, herkes birlikte yesin!",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.18
+bal_pesinde.koy.l19.intro,Sepetimde dört bal var. Bu peteğe bir bal bırakalım.,Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.19
+bal_pesinde.koy.l19.success,Petek doldu! Sepetteki balı başka komşulara götüreceğiz.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.19
+bal_pesinde.koy.l20.intro,"Sepetimde beş bal var, petek iki bal istiyor. Kalan bal sepette kalsın.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.20
+bal_pesinde.koy.l20.success,Petek doldu! Kalan balı başka komşulara götüreceğiz.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.20
+bal_pesinde.koy.l21.intro,"İki komşumuz var: biri iki, biri bir bal istiyor. Sepetteki balı paylaştıralım.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.21
+bal_pesinde.koy.l21.success,İki komşu da doldu! Sepette biraz bal kaldı.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.21
+bal_pesinde.koy.l22.intro,"Önce iki yerden bal toplayalım, sonra peteğe dört bal verelim.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.22
+bal_pesinde.koy.l22.success,"Topladık, verdik! Peteğin dört yuvası doldu.",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.22
+bal_pesinde.koy.l23.intro,"Sepetimde üç bal var, yolda iki bal daha var. İki petek eşit olsun, artan bal sofraya!",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.23
+bal_pesinde.koy.l23.success,"Eşit verdik, artan bal sofraya. Herkes birlikte yesin!",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.23
+bal_pesinde.koy.l24.intro,"Hasat şenliği zamanı! Üç peteğe birer bal verelim, artanı sofraya koyup şenliğe gidelim.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.24
+bal_pesinde.koy.l24.success,"Şenlik başlasın! Herkesin balı var, herkes birlikte.",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.24
