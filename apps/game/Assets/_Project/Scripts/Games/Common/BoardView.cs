@@ -200,6 +200,11 @@ namespace Roboya.Games.Common
                         anchor,
                         height: 0.5f);
                 piece.View.AddToClassList("piece--item");
+                if (item.Kind == "honey" && item.Amount > 1)
+                {
+                    AddAmountDots(piece, item);
+                }
+
                 _items.Add(piece);
             }
 
@@ -717,6 +722,36 @@ namespace Roboya.Games.Common
             piece.Shadow.style.height = sh;
             piece.Shadow.style.translate = new Translate(foot.x - (sw * 0.5f), foot.y - (sh * 0.5f));
             piece.Placed?.Invoke(w, h);
+        }
+
+        /// <summary>
+        /// A honey spot worth more than one honey (Paylaşım Köyü): the drop alone would read as "one", so as many solid discs as honey
+        /// sit under it. The count is told by shape, not colour, and there is no text.
+        /// </summary>
+        private static void AddAmountDots(Piece piece, Roboya.CodingEngine.World.Item item)
+        {
+            var row = new VisualElement { name = "item-amount-" + item.Id, pickingMode = PickingMode.Ignore };
+            row.AddToClassList("item__amount");
+            var dots = new List<VisualElement>(item.Amount);
+            for (int i = 0; i < item.Amount; i++)
+            {
+                var dot = new VisualElement { pickingMode = PickingMode.Ignore };
+                dot.AddToClassList("hive__slot");
+                dot.AddToClassList("hive__slot--filled");
+                row.Add(dot);
+                dots.Add(dot);
+            }
+
+            piece.View.Add(row);
+            piece.Placed = (w, h) =>
+            {
+                float size = Mathf.Max(8f, Mathf.Min(w * 0.9f / dots.Count, w * 0.4f));
+                foreach (var dot in dots)
+                {
+                    dot.style.width = size;
+                    dot.style.height = size;
+                }
+            };
         }
 
         /// <summary>Hives and the table (Paylaşım Köyü): a picture standing on its cell and, above it, the slots honey fills.</summary>

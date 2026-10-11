@@ -363,6 +363,16 @@
     justify-content: center;
 }
 
+/* The honey in a spot of several (below the drop), so "three honey" can be counted on the board. */
+.item__amount {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -42%;
+    flex-direction: row;
+    justify-content: center;
+}
+
 .hive__slot {
     margin: 0 1px;
     border-radius: 999px;
