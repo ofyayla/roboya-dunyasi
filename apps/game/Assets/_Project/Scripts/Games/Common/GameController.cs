@@ -83,6 +83,8 @@ namespace Roboya.Games.Common
             root.Q("board-host").Add(_basket);
             _compare = new HiveCompareView(art);
             root.Q("board-host").Add(_compare);
+            _remaining = new RemainingView(art, services.Voice);
+            root.Q("board-host").Add(_remaining);
             if (art != null && art.Background != null)
             {
                 var screen = root.Q("screen");
@@ -203,6 +205,7 @@ namespace Roboya.Games.Common
         private readonly GoalBadge _badge;
         private readonly BasketView _basket;
         private readonly HiveCompareView _compare;
+        private readonly RemainingView _remaining;
         private bool _bee;
         private bool _worldPersists;
         private bool _planTrace;
@@ -623,6 +626,7 @@ namespace Roboya.Games.Common
             _services.Sfx.Play(SfxKind.Success);
             await _board.Celebrate(token);
             await ShowHivesGladAsync(token);
+            await AskRemainingAsync(token);
             await _story.PlayOutroAsync(
                 LevelStory.Outro(_entry.Dto),
                 token,
@@ -646,6 +650,28 @@ namespace Roboya.Games.Common
             }
 
             _result.RemoveFromClassList("hidden");
+        }
+
+        /// <summary>
+        /// "Kaç kaldı?" (PK-0002): after the win, when the level asks, the switch is on and the child is Kaşif or older. The stars are already
+        /// kept, a wrong card only starts a count together, and the arrow always lets the child go on.
+        /// </summary>
+        private async Awaitable AskRemainingAsync(CancellationToken token)
+        {
+            var final = _session.LastResult?.FinalState;
+            if (!final.HasValue)
+            {
+                return;
+            }
+
+            bool minik = _services.Profiles.HasActive && _services.Profiles.Active.AgeBand == Roboya.CodingEngine.Profiles.AgeBand.Minik;
+            var question = RemainingQuestion.From(_entry.Level, final.Value);
+            if (!RemainingChoices.ShouldAsk(_entry.Dto.Options?.AskRemaining == true, _services.ProgressRules.AskRemaining, minik, question))
+            {
+                return;
+            }
+
+            await _remaining.ShowAsync(RemainingChoices.For(_entry.Id, question), token);
         }
 
         /// <summary>A won honey level: every hive family is glad, and the left-over on the table is told as shared by all (PK-0001).</summary>
