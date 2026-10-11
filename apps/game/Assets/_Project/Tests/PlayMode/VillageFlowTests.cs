@@ -17,7 +17,7 @@ namespace Roboya.Tests.PlayMode
 {
     /// <summary>
     /// The second region on the map and in a level (plan C): Paylaşım Köyü draws its own backdrop and friend. The repository has no
-    /// village levels yet (E1), so small fixtures stand in; the board shows no hives until D1.
+    /// village levels here: small hand-made fixtures stand in for the real village (Bootstrap.ExtraLevelsOverride replaces its repository levels), so each test controls the numbers. VillageContentFlowTests plays the real levels.
     /// </summary>
     public class VillageFlowTests
     {
@@ -81,7 +81,8 @@ namespace Roboya.Tests.PlayMode
   ""goal"": " + goal + @",
   ""cards"": { ""palette"": " + palette + @", ""maxProgramLength"": 5 },
   ""options"": " + options + @",
-  ""voice"": { ""intro"": ""bal_pesinde.l01.intro"" }
+  ""voice"": { ""intro"": ""bal_pesinde.l01.intro"" },
+  ""solution"": { ""shortestLength"": " + (minik ? 3 : 4) + @" }
 }";
         }
 
@@ -111,7 +112,7 @@ namespace Roboya.Tests.PlayMode
         {
             var catalog = LevelCatalog.Parse(Directory.GetFiles(FileLevelSource.RepositoryLevelsPath, "*.json", SearchOption.AllDirectories).Select(File.ReadAllText));
             var store = TestProfiles.Seed(_progressDir, band);
-            foreach (var entry in catalog.All)
+            foreach (var entry in catalog.All.Where(e => e.Dto.Region == RegionId.SabirOrmani))
             {
                 store.Book.Record(entry.Id, 3);
             }
@@ -125,7 +126,7 @@ namespace Roboya.Tests.PlayMode
             store.Save();
         }
 
-        private static IEnumerator OpenVillagePath(Action<VisualElement> found)
+        internal static IEnumerator OpenVillagePath(Action<VisualElement> found)
         {
             yield return SceneManager.LoadSceneAsync("Boot");
             VisualElement map = null;

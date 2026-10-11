@@ -115,6 +115,18 @@ namespace Roboya.Core
             var allLevels = new System.Collections.Generic.List<string>(await levels.LoadAllAsync());
             if (ExtraLevelsOverride != null)
             {
+                // Fixtures stand in for their region: its repository levels are left out, so a test never plays real content by accident.
+                var fixtureRegions = new System.Collections.Generic.HashSet<Roboya.CodingEngine.Levels.Generated.RegionId>();
+                foreach (var entry in LevelCatalog.Parse(ExtraLevelsOverride).All)
+                {
+                    fixtureRegions.Add(entry.Dto.Region);
+                }
+
+                allLevels.RemoveAll(json =>
+                {
+                    var parsed = LevelCatalog.Parse(new[] { json }).All;
+                    return parsed.Count == 1 && fixtureRegions.Contains(parsed[0].Dto.Region);
+                });
                 allLevels.AddRange(ExtraLevelsOverride);
             }
 
@@ -166,7 +178,7 @@ namespace Roboya.Core
         /// <summary>Tests point this at a temporary folder so each run starts with fresh progress.</summary>
         public static string ProgressFolderOverride { get; set; }
 
-        /// <summary>Tests: level JSON added to the catalog, e.g. village levels while the repository has none yet.</summary>
+        /// <summary>Tests: level JSON added to the catalog. It replaces the repository levels of the regions it covers (hand-made village fixtures stand in for the real village).</summary>
         public static System.Collections.Generic.IReadOnlyList<string> ExtraLevelsOverride { get; set; }
 
         /// <summary>Tests replace the network with a fake and give a placeholder server address.</summary>

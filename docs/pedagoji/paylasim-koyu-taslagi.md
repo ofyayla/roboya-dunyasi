@@ -1,6 +1,6 @@
 # Paylaşım Köyü — 24 bölüm taslağı (pedagoji incelemesi için)
 
-Durum: **onaylandı (2026-10-11), uygulama bekliyor**. Ürün sahibi pedagoji danışmanının önerilerini kabul etti: PK-0001–PK-0005. Aşağıdaki tablolar bu kararlara göre güncellendi. Uzman onayı (G2) yayından önce alınır. Henüz bölüm dosyası ve kod yok; mekanik (ADR 0030) yapılır, bölümler editörle yazılıp çözücüyle doğrulanır. Aşağıdaki kart sayıları **tahminidir**; kesin en kısa çözüm, mekanik yapıldıktan sonra çözücüyle hesaplanır.
+Durum: **onaylandı (2026-10-11); 24 bölüm yazıldı** (plan E1, `content/levels/paylasim-koyu/`). Ürün sahibi pedagoji danışmanının önerilerini kabul etti: PK-0001–PK-0005. Aşağıdaki tablolar bu kararlara göre güncellendi. Uzman onayı (G2) yayından önce alınır. Mekanik (ADR 0030) yapıldı; bölüm tabloları artık dosyalardan üretilmiş **gerçek en kısa çözüm** sayılarıyla yazılı.
 
 İlgili: F2-13, BAL-01, BAL-03; PRD "Ürün konsepti" (Paylaşım Köyü satırı); ADR 0026 (bellekli arı), ADR 0030 (taşıma ve dağıtma).
 
@@ -39,51 +39,53 @@ Bellek ve dünya (PK-0005): her çalıştırmada dünya başa döner (arı başl
 
 ## Bölüm listesi
 
-Gösterim: ● = bir bal; "petek ●●" = 2 bal isteyen petek. Kart sayıları tahminidir.
+Gösterim: ● = bir bal. **Bu tablolar `content/levels/paylasim-koyu/bal-pesinde/NN.json` dosyalarından üretildi** (plan E1); kart sayıları çözücünün en kısa çözümüdür. Köşe başları 1, 7, 13, 19.
 
 ### Köşe 1 — Herkese bir (Minik, otomatik bırakma)
 
-| Sıra | Ne öğrenir | Kurgu | Kart (tahmini) | Not |
-| --- | --- | --- | --- | --- |
-| 1 | Taşı ve ver | 1 bal, 1 petek ●. Köy arısı "Peteğimiz boş" der. | 2–3 | Tanıtım, rehberli. Sepet ve petek yuvası ilk kez. |
-| 2 | Birebir eşleme | 2 bal, 2 petek ● ●. Hepsi aynı yol üstünde. | 3 | |
-| 3 | 3'e kadar sayma | 3 bal tek çiçekte, 3 petek ● ● ● yan yana. | 3–4 | Her peteğe varışta sesli sayma. |
-| 4 | Kimse unutulmasın | 2 petek; biri yolun kenarında, dönüş gerekir. Arı yukarı bakarak başlar, petek sağda; yalnız "sağa dön". | 4 | Unutulan petek üzgün görünür, Roboya "Bu arının hiç balı yok" der. Hayalet yol açık. |
-| 5 | Toplama: 1 + 1 | İki ayrı çiçekte birer bal, tek petek ●●. | 4 | Rozet: ● + ● = ●●. |
-| 6 | Köşe finali | 3 bal, 2 petek ● ve ●●. | 4 | Köşe sonu değer anı: ilk mutlu arı ailesi. |
+| Sıra | Ne öğrenir | Kurgu | Arı bakışı | En kısa | Not |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Taşı ve ver | yerde 1 bal; petek ● | doğu | 3 | tanıtım, rehberli |
+| 2 | Birebir eşleme | yerde 1 bal; yerde 1 bal; petek ●, ● | doğu | 4 | kolay alternatif: 1 |
+| 3 | 3'e kadar sayma | yerde 3 bal; petek ●, ●, ● | doğu | 4 | kolay alternatif: 2 |
+| 4 | Kimse unutulmasın | yerde 2 bal; petek ●, ● | kuzey | 4 | hayalet yol, kolay alternatif: 3 |
+| 5 | Toplama: 1 + 1 | yerde 1 bal; yerde 1 bal; petek ●● | doğu | 3 | kolay alternatif: 3 |
+| 6 | Köşe finali: ● ve ●● | yerde 3 bal; petek ●, ●● | kuzey | 4 | kolay alternatif: 4 |
 
 ### Köşe 2 — Ne kadar, nereye? (Kaşif başlangıcı, "Bırak" kartı)
 
-| Sıra | Ne öğrenir | Kurgu | Kart (tahmini) | Not |
-| --- | --- | --- | --- | --- |
-| 7 | "Bırak" kartı | Sepette 2 bal, petek ●●. İki kez "Bırak". | 5 | Tanıtım, rehberli; kart tanıtım anı. Kaşif başlangıcı. |
-| 8 | Toplama: 2 + 1 | Bir çiçekte 2, diğerinde 1 bal; petek ●●●. | 7 | |
-| 9 | Toplama, farklı yollar | Üç çiçekte 1, 2, 3 bal; petek ●●●●. 1 + 3 de olur, 2 + 3 alıp 4'ünü bırakmak da. | 8 | Birden çok doğru yol var; en kısa yol 3. yıldız. |
-| 10 | Fazlası nereye? | Sepette 3 bal, petek ●●; artan 1 köy sofrasına. | 7 | Çıkarmaya hazırlık. Petek taşarsa nazik uyarı. |
-| 11 | İki farklı ihtiyaç | Petekler ● ve ●●●, 4 bal. | 8 | |
-| 12 | Köşe finali | Petekler ●, ●● ve ●●● yan yana; 6 bal sepette başlar. Çözücü 10'u aşarsa petekler ●● ve ●●● (5 bal). | ≤ 10 | Köşe sonu değer anı. |
+| Sıra | Ne öğrenir | Kurgu | Arı bakışı | En kısa | Not |
+| --- | --- | --- | --- | --- | --- |
+| 7 | "Bırak" kartı | sepette 2 bal; petek ●● | doğu | 5 | tanıtım, rehberli, kart tanıtımı |
+| 8 | Toplama: 2 + 1 | yerde 2 bal; yerde 1 bal; petek ●●● | doğu | 7 | kolay alternatif: 7 |
+| 9 | Sepette kalan bal sepette kalır | yerde 1 bal; yerde 2 bal; yerde 3 bal; petek ●●●● | doğu | 8 | kolay alternatif: 8 |
+| 10 | Fazlası sofraya | sepette 3 bal; petek ●●; sofra | doğu | 7 | kolay alternatif: 8 |
+| 11 | İki farklı ihtiyaç | sepette 4 bal; petek ●, ●●● | doğu | 9 | kolay alternatif: 10 |
+| 12 | Köşe finali: topla, üç petek | yerde 6 bal; petek ●, ●●, ●●● | doğu | 10 | kolay alternatif: 11 |
 
 ### Köşe 3 — Eşit paylaş (Kaşif)
 
-| Sıra | Ne öğrenir | Kurgu | Kart (tahmini) | Not |
-| --- | --- | --- | --- | --- |
-| 13 | "Eşit" ne demek | 2 bal, 2 petek (birer); petekler sayı göstermez, yan yana durur. | 5 | Tanıtım, rehberli. Yuvalar çalışırken canlı dolar; bitişte petekler yan yana karşılaştırılır. |
-| 14 | 4'ü ikiye böl | 4 bal, 2 petek → 2'şer. | 7 | İpucu: "Bir ona, bir ona." |
-| 15 | 6'yı üçe böl | 6 bal, 3 petek → 2'şer. | 9 | |
-| 16 | 6'yı ikiye böl | 6 bal, 2 petek → 3'er. | 8 | 15 ile aynı bal, farklı pay. "Kaç kişi paylaşırsa o kadar az düşer" yalnız Roboya'nın kısa gözlemi; çocuğa sorulmaz. |
-| 17 | Engelli paylaşma | 4 bal, 2 petek, çalı ve kayalar arasında. | ≤ 10 | Engel varken "Bırak" ≤ 4 (PK-0003). |
-| 18 | Köşe finali: artan | 5 bal, 2 petek → 2'şer, 1 sofraya. | 10 | "Bir tane arttı, ne yapalım?" Değer anı: ortak sofra. |
+| Sıra | Ne öğrenir | Kurgu | Arı bakışı | En kısa | Not |
+| --- | --- | --- | --- | --- | --- |
+| 13 | "Eşit" ne demek | sepette 2 bal; 2 petek eşit paylaşır (sayı yok) | doğu | 5 | tanıtım, rehberli |
+| 14 | 4'ü ikiye böl | sepette 4 bal; 2 petek eşit paylaşır (sayı yok) | doğu | 7 | kolay alternatif: 13 |
+| 15 | 6'yı üçe böl | sepette 6 bal; 3 petek eşit paylaşır (sayı yok) | doğu | 9 | kolay alternatif: 14 |
+| 16 | 6'yı ikiye böl | sepette 6 bal; 2 petek eşit paylaşır (sayı yok) | doğu | 8 | kolay alternatif: 14 |
+| 17 | Engelli paylaşma | sepette 4 bal; 2 petek eşit paylaşır (sayı yok) | doğu | 8 | kolay alternatif: 16 |
+| 18 | Köşe finali: artan sofraya | yerde 5 bal; 2 petek eşit paylaşır (sayı yok); sofra | doğu | 9 | kolay alternatif: 16 |
 
 ### Köşe 4 — Ver ve say (Kaşif, çıkarma ve karışık)
 
-| Sıra | Ne öğrenir | Kurgu | Kart (tahmini) | Not |
-| --- | --- | --- | --- | --- |
-| 19 | Çıkarma: kaç kaldı? | Sepette 4 bal; petek ●. Sonra "Kaç kaldı?" adımı. | 5 + soru | Tanıtım, rehberli. |
-| 20 | 5 − 2 | Sepette 5 bal; petek ●●; kalan 3 sepette kalır. | 7 + soru | "Kalan bal sepette; başka komşulara götüreceğiz." Kovan yok (PK-0001). |
-| 21 | İki komşuya ver | Sepette 5 bal; petekler ●● ve ●. Kaç kaldı? | 9 + soru | |
-| 22 | Topla, sonra ver | 3 + 2 bal topla, petek ●●●● ister. Kaç kaldı? | 10 + soru | Toplama ve çıkarma bir arada. |
-| 23 | Topla, eşit ver, artanı sofraya | Sepette 3 bal, yoldaki çiçekte 2; 2 petek → 2'şer, 1 sofraya. | ≤ 10 | Yerleşim editörde çözücüyle denenir. |
-| 24 | Bölge finali: hasat şenliği | Sepette 4 bal; 3 petek birer, 1 sofraya; sonra şenlik alanına var. | ≤ 10 | Final bir kutlama, zorluk zirvesi değil. Gemi parçası ve "paylaşma" değer kartı. |
+| Sıra | Ne öğrenir | Kurgu | Arı bakışı | En kısa | Not |
+| --- | --- | --- | --- | --- | --- |
+| 19 | Çıkarma: 4 − 1 | sepette 4 bal; petek ●; 3 bal sepette kalır | doğu | 5 | tanıtım, rehberli, "Kaç kaldı?" |
+| 20 | Çıkarma: 5 − 2 | sepette 5 bal; petek ●●; 3 bal sepette kalır | kuzey | 7 | "Kaç kaldı?", kolay alternatif: 19 |
+| 21 | İki komşuya ver | sepette 5 bal; petek ●●, ●; 2 bal sepette kalır | kuzey | 9 | "Kaç kaldı?", kolay alternatif: 20 |
+| 22 | Topla, sonra ver | yerde 3 bal; yerde 2 bal; petek ●●●●; 1 bal sepette kalır | kuzey | 10 | "Kaç kaldı?", kolay alternatif: 21 |
+| 23 | Ver, topla, eşit ver, artanı sofraya | sepette 3 bal; yerde 2 bal; 2 petek eşit paylaşır (sayı yok); sofra | doğu | 9 | kolay alternatif: 18 |
+| 24 | Bölge finali: hasat şenliği | sepette 4 bal; 3 petek eşit paylaşır (sayı yok); sofra; sonra şenlik alanına var | doğu | 10 | kolay alternatif: 18 |
+
+Paylaşma bölümlerinde petek `need` değeri kapasitedir (aşılırsa petek taşar), eşit payın üstünde (4) seçildi; 24. bölüme kadar uzanan geçişler, 19–22'deki kalan bal ve 23'ün sırası için pedagoji ön incelemesi (`docs/pedagoji/incelemeler/2026-10-11-paylasim-koyu-kose-2-4-kasif.md`) açık sorular listeler.
 
 ## Ses ve görsel ihtiyacı (özet)
 
