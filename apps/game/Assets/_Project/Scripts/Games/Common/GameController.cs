@@ -26,6 +26,10 @@ namespace Roboya.Games.Common
         // Paylaşım Köyü: spoken the moment "Bırak" cannot do its job; the lines come with the village voice work (E2) and are silent until then.
         private const string NothingToDropVoice = "bal_pesinde.nothing_to_drop";
         private const string HiveOverflowVoice = "bal_pesinde.hive_overflow";
+        // The end-of-run answer of the hives (plan D3); like the lines above they are written with the village voice work (E2).
+        private const string HiveForgottenVoice = "bal_pesinde.hive_forgotten";
+        private const string NotEqualVoice = "bal_pesinde.not_equal";
+        private const string TableLeftoverVoice = "bal_pesinde.table_leftover";
         private const string MissingItemsVoice = "roboya.missing_items.01";
         private const string PlayPromptVoice = "roboya.play_prompt";
         private const string AskGrownUpVoice = "roboya.ask_grownup";
@@ -75,6 +79,8 @@ namespace Roboya.Games.Common
             root.Q("board-host").Add(_badge);
             _basket = new BasketView(art);
             root.Q("board-host").Add(_basket);
+            _compare = new HiveCompareView(art);
+            root.Q("board-host").Add(_compare);
             if (art != null && art.Background != null)
             {
                 var screen = root.Q("screen");
@@ -173,6 +179,7 @@ namespace Roboya.Games.Common
             RefreshTrace();
             _badge.Show(_entry.Level);
             _basket.Show(_entry.Level);
+            _badge.SetHoney(_entry.Level.Start);
             _tray.BoxCards = _entry.Dto.StarterProgram != null ? new List<Roboya.CodingEngine.Commands.CardType>(CardsOf(_entry)) : null;
             _tray.Bind(_session.Plan, _entry.Level.AvailableCards);
             // Hata avcısı: the child may edit only after the ready-made code has shown what goes wrong (DemoAsync unlocks).
@@ -196,6 +203,7 @@ namespace Roboya.Games.Common
         private readonly VisualElement _paletteElement;
         private readonly GoalBadge _badge;
         private readonly BasketView _basket;
+        private readonly HiveCompareView _compare;
         private bool _bee;
         private bool _worldPersists;
         private bool _planTrace;
@@ -338,6 +346,7 @@ namespace Roboya.Games.Common
                         }
 
                         _services.Sfx.Play(SfxKind.Place);
+                        _badge.SetHoney(e.After);
                         await _board.AnimateDrop(e.DropIndex, e.After, token);
                         break;
                     case ExecutionEventKind.NothingToDrop:
@@ -525,11 +534,23 @@ namespace Roboya.Games.Common
                 return;
             }
 
+            // Paylaşım Köyü: the hive families answer (plan D3): who was left out, who got too much. Never a penalty.
+            var hives = result != null ? HiveFeedback.Of(_entry.Level, result.FinalState, false) : null;
+            string hiveVoice = hives == null ? null
+                : hives.Verdict == HiveVerdict.Forgotten ? HiveForgottenVoice
+                : hives.Verdict == HiveVerdict.NotEqual ? NotEqualVoice
+                : null;
+            bool showHives = hives != null && (hives.Verdict == HiveVerdict.Forgotten || hives.Verdict == HiveVerdict.NotEqual || hives.Verdict == HiveVerdict.TooMuch);
+
             // A bump already had its own line; otherwise explain gently what is missing.
             if (_keptOldCommands)
             {
                 // BAL-02: the bee also ran what it still remembered; a gentle, teaching line rather than a scolding.
                 _services.Voice.Play(ForgotClearVoice);
+            }
+            else if (hiveVoice != null)
+            {
+                _services.Voice.Play(hiveVoice);
             }
             else if (result != null && result.Outcome != ExecutionOutcome.Bumped && result.Outcome != ExecutionOutcome.NothingToDrop
                 && result.Outcome != ExecutionOutcome.HiveOverflow && !_prediction.HasValue)
@@ -552,12 +573,19 @@ namespace Roboya.Games.Common
             _prediction = null;
 
             var pulse = _board.PulseMissing(result != null ? result.FinalState.CollectedMask : 0UL, token);
+            var compare = showHives ? _compare.ShowAsync(_entry.Level, result.FinalState, hives, false, token) : default;
             await Tween.Delay(_entry.Dto.Game == GameId.KodlamaKutusu ? 2.5f : 1.5f, token);
             await pulse;
+            if (showHives)
+            {
+                await compare;
+            }
+
             if (!_worldPersists)
             {
                 _board.ResetRobot(_entry.Level.Start);
                 _basket.Set(_entry.Level.Start.Basket);
+                _badge.SetHoney(_entry.Level.Start);
                 _badge.Set(0);
             }
 
@@ -595,6 +623,7 @@ namespace Roboya.Games.Common
 
             _services.Sfx.Play(SfxKind.Success);
             await _board.Celebrate(token);
+            await ShowHivesGladAsync(token);
             await _story.PlayOutroAsync(
                 LevelStory.Outro(_entry.Dto),
                 token,
@@ -619,6 +648,29 @@ namespace Roboya.Games.Common
 
             _result.RemoveFromClassList("hidden");
             RenderProgress();
+        }
+
+        /// <summary>A won honey level: every hive family is glad, and the left-over on the table is told as shared by all (PK-0001).</summary>
+        private async Awaitable ShowHivesGladAsync(CancellationToken token)
+        {
+            var final = _session.LastResult?.FinalState;
+            if (!final.HasValue || !_entry.Level.Goal.HasHoneyGoal)
+            {
+                return;
+            }
+
+            var glad = HiveFeedback.Of(_entry.Level, final.Value, true);
+            if (glad.Hives.Count == 0)
+            {
+                return;
+            }
+
+            if (glad.Verdict == HiveVerdict.SharedWithTable)
+            {
+                _services.Voice.Play(TableLeftoverVoice);
+            }
+
+            await _compare.ShowAsync(_entry.Level, final.Value, glad, true, token);
         }
 
         /// <summary>The region's friend for the calm value card: a picture for regions after the forest, whose turtle is code-drawn.</summary>

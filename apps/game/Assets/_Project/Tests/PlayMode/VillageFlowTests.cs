@@ -51,6 +51,11 @@ namespace Roboya.Tests.PlayMode
         /// </summary>
         private static string Level(int order)
         {
+            if (order == 8)
+            {
+                return ShareLevel();
+            }
+
             bool minik = order <= 6;
             string age = minik ? "minik" : "kasif";
             string robot = minik ? @"{ ""x"": 0, ""y"": 0, ""facing"": ""east"" }" : @"{ ""x"": 0, ""y"": 0, ""facing"": ""east"", ""carrying"": 3 }";
@@ -78,6 +83,27 @@ namespace Roboya.Tests.PlayMode
   ""voice"": { ""intro"": ""bal_pesinde.l01.intro"" }
 }";
         }
+
+        /// <summary>Level 8 shares five honey between two hives of two; the one left over goes on the table (F F D D F D D F D).</summary>
+        private static string ShareLevel() => @"{
+  ""schemaVersion"": 3,
+  ""id"": ""paylasim-koyu.bal-pesinde.08"",
+  ""region"": ""paylasim-koyu"",
+  ""game"": ""bal-pesinde"",
+  ""order"": 8,
+  ""meta"": { ""concepts"": [""counting""], ""value"": ""sharing"", ""difficulty"": 2, ""ageLevels"": [""kasif""] },
+  ""grid"": { ""rows"": [""....."", "".....""] },
+  ""robot"": { ""x"": 0, ""y"": 0, ""facing"": ""east"", ""carrying"": 5 },
+  ""drops"": [
+    { ""id"": ""petek-1"", ""kind"": ""hive"", ""x"": 2, ""y"": 0, ""need"": 2 },
+    { ""id"": ""petek-2"", ""kind"": ""hive"", ""x"": 3, ""y"": 0, ""need"": 2 },
+    { ""id"": ""sofra"", ""kind"": ""table"", ""x"": 4, ""y"": 0 }
+  ],
+  ""goal"": { ""share"": { ""among"": [""petek-1"", ""petek-2""], ""leftoverTo"": ""sofra"" } },
+  ""cards"": { ""palette"": [""forward"", ""drop""], ""maxProgramLength"": 10 },
+  ""options"": { ""resetEachRun"": true, ""beeMemoryVisible"": true },
+  ""voice"": { ""intro"": ""bal_pesinde.l01.intro"" }
+}";
 
         /// <summary>Finishes the whole forest, so the village opens (the region before it must be finished).</summary>
         private void FinishForest(Roboya.CodingEngine.Profiles.AgeBand band = Roboya.CodingEngine.Profiles.AgeBand.Minik, int villageDone = 0)
@@ -202,9 +228,9 @@ namespace Roboya.Tests.PlayMode
         }
 
         /// <summary>A Kaşif child who finished the Minik part of the village: level 7 is next, in the game scene with the basket full.</summary>
-        private IEnumerator OpenKasifLevel(Action<VisualElement> found)
+        private IEnumerator OpenKasifLevel(Action<VisualElement> found, int villageDone = 6)
         {
-            FinishForest(Roboya.CodingEngine.Profiles.AgeBand.Kasif, villageDone: 6);
+            FinishForest(Roboya.CodingEngine.Profiles.AgeBand.Kasif, villageDone);
             Environment.SetEnvironmentVariable(DevEntitlements.Variable, "1");
             VisualElement map = null;
             yield return OpenVillagePath(r => map = r);
@@ -291,6 +317,74 @@ namespace Roboya.Tests.PlayMode
             yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
 
             Assert.IsFalse(game.Q("palette").Children().OfType<CardElement>().Any(c => c.Card == Roboya.CodingEngine.Commands.CardType.Drop), "the hive takes the honey itself");
+        }
+
+        private static int Count(VisualElement root, string cls) => root.Query(className: cls).ToList().Count;
+
+        [UnityTest]
+        public IEnumerator ShareLevel_GoalBadgeShowsTheSharingHivesWithAnEqualSign()
+        {
+            VisualElement game = null;
+            yield return OpenKasifLevel(r => game = r, villageDone: 7);
+
+            Assert.IsNotNull(game.Q("goal-share-petek-1"));
+            Assert.IsNotNull(game.Q("goal-share-petek-2"));
+            Assert.IsNotNull(game.Q("goal-equal"), "an equal sign between them");
+            yield return Capture(game, "22a-village-share-goal");
+        }
+
+        [UnityTest]
+        public IEnumerator ShareLevel_ForgottenHive_ShowsTheSadBeeNextToTheGladOne()
+        {
+            VisualElement game = null;
+            yield return OpenKasifLevel(r => game = r, villageDone: 7);
+
+            var F = Roboya.CodingEngine.Commands.CardType.Forward;
+            var D = Roboya.CodingEngine.Commands.CardType.Drop;
+            PlanAndPlay(game, F, F, D, D);
+            yield return WaitUntil(() => game.Q("hive-compare").resolvedStyle.display == DisplayStyle.Flex, 20f);
+            yield return new WaitForSeconds(0.4f);
+            yield return Capture(game, "22b-village-forgotten");
+
+            Assert.AreEqual(1, Count(game, "hive-compare__villager--sad"), "the hive that got nothing");
+            Assert.AreEqual(1, Count(game, "hive-compare__villager--happy"), "the one that got its share");
+            Assert.IsNull(game.Q("family-table"), "nothing on the table");
+            yield return WaitUntil(() => game.Q("play").enabledSelf, 15f);
+            Assert.IsTrue(game.Q("result").ClassListContains("hidden"), "no penalty, the child just tries again");
+        }
+
+        [UnityTest]
+        public IEnumerator ShareLevel_UnequalHives_TheSmallerOneIsSad()
+        {
+            VisualElement game = null;
+            yield return OpenKasifLevel(r => game = r, villageDone: 7);
+
+            var F = Roboya.CodingEngine.Commands.CardType.Forward;
+            var D = Roboya.CodingEngine.Commands.CardType.Drop;
+            PlanAndPlay(game, F, F, D, D, F, D);
+            yield return WaitUntil(() => game.Q("hive-compare").resolvedStyle.display == DisplayStyle.Flex, 20f);
+
+            Assert.AreEqual(1, Count(game, "hive-compare__villager--sad"));
+            Assert.AreEqual(1, Count(game, "hive-compare__villager--happy"));
+        }
+
+        [UnityTest]
+        public IEnumerator ShareLevel_RightPlan_EveryBeeIsGladAndTheLeftoverIsOnTheTable()
+        {
+            VisualElement game = null;
+            yield return OpenKasifLevel(r => game = r, villageDone: 7);
+
+            var F = Roboya.CodingEngine.Commands.CardType.Forward;
+            var D = Roboya.CodingEngine.Commands.CardType.Drop;
+            PlanAndPlay(game, F, F, D, D, F, D, D, F, D);
+            yield return WaitUntil(() => game.Q("hive-compare").resolvedStyle.display == DisplayStyle.Flex, 30f);
+            yield return new WaitForSeconds(0.4f);
+            yield return Capture(game, "22c-village-shared");
+
+            Assert.AreEqual(2, Count(game, "hive-compare__villager--thanks"));
+            Assert.AreEqual(0, Count(game, "hive-compare__villager--sad"));
+            Assert.IsNotNull(game.Q("family-table"), "the left-over honey lies on the table for everyone");
+            yield return WaitUntil(() => !game.Q("result").ClassListContains("hidden"), 30f);
         }
     }
 }
