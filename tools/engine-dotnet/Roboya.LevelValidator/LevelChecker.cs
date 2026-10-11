@@ -54,6 +54,8 @@ internal static class LevelChecker
                 break;
         }
 
+        VillageChecks.CheckLevel(dto, level, solve, report);
+
         bool hasPrimitive = level.AvailableCards.Any(c => c.IsPrimitiveMove());
         if (!hasPrimitive)
         {

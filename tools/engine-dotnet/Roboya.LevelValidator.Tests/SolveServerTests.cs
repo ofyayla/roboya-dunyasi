@@ -33,6 +33,27 @@ public class SolveServerTests
     }
 
     [Test]
+    public void Handle_VillageLevel_ReturnsTheDropCardInTheSolution()
+    {
+        var response = JObject.Parse(SolveServer.Handle(Fixtures.KasifDeliver().ToString(), Fixtures.VoiceScript()));
+
+        Assert.That((bool)response["valid"]!, Is.True, response.ToString());
+        Assert.That(response["solution"]!.Select(t => t.ToString()), Is.EqualTo(new[] { "forward", "forward", "drop", "drop" }));
+    }
+
+    [Test]
+    public void Handle_VillageLevelBreakingADecision_IsNotValidAndNamesIt()
+    {
+        var level = Fixtures.KasifDeliver();
+        level["robot"]!["carrying"] = 8;
+
+        var response = JObject.Parse(SolveServer.Handle(level.ToString(), Fixtures.VoiceScript()));
+
+        Assert.That((bool)response["valid"]!, Is.False);
+        Assert.That(response["errors"]!.Select(t => t.ToString()), Has.Some.Contains("PK-0003"));
+    }
+
+    [Test]
     public async Task RunAsync_PostSolve_RespondsOverHttp()
     {
         using var cts = new CancellationTokenSource();
