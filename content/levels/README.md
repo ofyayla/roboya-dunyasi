@@ -156,3 +156,13 @@ Kural kodu `tools/engine-dotnet/Roboya.LevelValidator/VillageChecks.cs`; her hat
 | | 24 bölümlük köyde köşe başları (1, 7, 13, 19) `intro` + `guided`, başka bölümde `intro` yok; `need` 5 yalnız köşe finallerinde (6, 12, 18, 24) | PK-0005, PK-0003 |
 
 Bölge bileşimi kuralları köy 24 bölüme ulaşana kadar yalnız sabit olanları (Minik/Kaşif sırası, `resetEachRun`, bellek, 1 ve 4. bölüm) denetler; köşe başı ve köşe finali kuralları tam köyde açılır.
+
+### Köy bölümlerinin yazımı (plan E1)
+
+Bölümler `content/levels/paylasim-koyu/bal-pesinde/NN.json`, kimlik `paylasim-koyu.bal-pesinde.NN`, `order` 1–24. Ses anahtarları ormanınkilerle çakışmasın diye `bal_pesinde.koy.lNN.intro` / `.success`; ipucu olarak `roboya.hint.koy.listen` (ya da dönüşlü bölümlerde `roboya.hint.koy.direction`) ve ortak `check_card` / `show_card` kullanılır.
+
+- 4. bölüm `cards.introduces` almaz: sağa dön ormanda tanıtıldı ve kart tanıtan her bölüm "atlanamaz tanıtım" sayılır (`IntroLevels`); 4. bölümün desteği hayalet yoldur.
+- Kaşif'in önünde oynanabilir daha kolay bölüm olmayan köşe başlarında (7, 13, 19) `alternativeLevelId` yazılmaz.
+- Teslim hedefli bölümde son petekten sonra ızgarada bir boş kare bırakın: fazla bir "ileri" arıyı duvara çarptırıp çalıştırmayı başarısız saymasın (köşe 1 incelemesi, bulgu 7).
+- Ses metninde yalnız tahtada görünen nesne adı geçer: bal öğesi tahtada bal damlasıdır, "çiçek" denmez.
+- `meta.mebOutcomes` boş kalır; eşleştirmeyi pedagoji ekibi yapar (G1).
