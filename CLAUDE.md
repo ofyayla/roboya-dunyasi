@@ -170,6 +170,7 @@ Ek kurallar:
 - Her bölümün meta verisinde kodlama kavramı, değer, zorluk ve yaş seviyesi bulunur.
 - Seslendirme senaryosu `content/voice/script.csv` dosyasındadır (`key`, `text`, `context`, `level_ids`). Ses dosyaları anahtarla adlandırılır. TTS ile üretilen dosyalar sonradan profesyonel kayıtla aynı anahtarlarla değiştirilir; kodda değişiklik gerekmez.
 - TTS servisine yalnız senaryo metni gönderilir; hiçbir kullanıcı verisi gönderilmez.
+- **Pedagoji ön incelemesi:** Bölüm, ses metni veya çocuk akışı değişiklikleri `pedagoji-uzmani` ajanıyla incelenir (`/pedagoji-inceleme`, soru için `/pedagoji-danis`). Ajan karar vermez; çerçeve, rubrik ve ekip kararları `docs/pedagoji/` altındadır. Ekip kararı `docs/pedagoji/kararlar/` altına kaydedilmeden içerik o karara göre değiştirilmez.
 
 ## 11. Gizlilik ve güvenlik
 
