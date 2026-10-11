@@ -178,4 +178,27 @@ public class ContentValidatorTests
 
         Assert.That(new ContentValidator(output).Run(repoLevels, voice, fix: false), Is.EqualTo(0), output.ToString());
     }
+
+    [Test]
+    public void Run_VillageLevelBreakingARegionRule_FailsWithTheDecisionNamed()
+    {
+        var minik = Fixtures.MinikAutoDrop();
+        minik["options"]!["clearMemoryEachRun"] = false;
+        Write(minik);
+
+        var (code, output) = Run();
+
+        Assert.That(code, Is.EqualTo(1));
+        Assert.That(output, Does.Contain("Minik memory clears itself").And.Contain("PK-0005"));
+    }
+
+    [Test]
+    public void Run_ValidVillageLevel_ReturnsZero()
+    {
+        Write(Fixtures.MinikAutoDrop());
+
+        var (code, output) = Run();
+
+        Assert.That(code, Is.EqualTo(0), output);
+    }
 }

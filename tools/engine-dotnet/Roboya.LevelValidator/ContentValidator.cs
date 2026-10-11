@@ -124,6 +124,8 @@ internal sealed class ContentValidator(TextWriter output)
             }
         }
 
+        errors.AddRange(VillageChecks.RegionErrors(facts.Values));
+
         foreach (var (id, alt) in alternatives)
         {
             if (!ids.Contains(alt))

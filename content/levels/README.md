@@ -136,4 +136,23 @@ Doğrulayıcı şunları kontrol eder: şemaya uygunluk, bölümün tanımlı ka
 | `options.askRemaining` | Başarıdan sonra "Kaç kaldı?"; çocuk testine kadar kapalı tutulur |
 | `options.intro` | Tanıtım bölümü: geç başlayan çocuk da oynar |
 
-Sınırlar (PK-0003; doğrulayıcı kuralları B4'te): toplam bal ≤ 7, `need` ≤ 4 (köşe finalinde 5), bölümde "Bırak" ≤ 6, Kaşif'te en kısa çözüm ≤ 10 kart.
+### Köy bölümü kuralları (`make validate-content`)
+
+Kural kodu `tools/engine-dotnet/Roboya.LevelValidator/VillageChecks.cs`; her hata iletisi kaynak kararı anar. Üç katman:
+
+| Katman | Kural | Kaynak |
+| --- | --- | --- |
+| Bal yapısı (bal alanı kullanan her bölüm) | `autoDrop` yalnız `ageLevels: [minik]`, paletteye `drop` yok, toplam bal = petek `need` toplamı | PK-0001 |
+| | `drop` kartı varsa bırakma noktası var; bırakma noktası varsa `drop` kartı ya da `autoDrop` var | ADR 0030 |
+| | `deliver` toplamı ≤ toplam bal; `share` için bal sayısı ≥ petek sayısı | PK-0001 |
+| | `askRemaining` yalnız Kaşif, `deliver`/`carryAtEnd` hedefiyle ve en kısa çözümün sonunda "başta vardı / verdiğim / kalan" birbirinden farklı | PK-0002 |
+| | `meta.concepts` içinde `counting` | PK-0004 |
+| Sayı ve uzunluk (`paylasim-koyu`) | toplam bal ≤ 7; `need` ≤ 5; en kısa çözümde "Bırak" ≤ 6 | PK-0003 |
+| | engel (`#`) ya da dönüş varsa "Bırak" ≤ 4 | PK-0003 |
+| | Kaşif'te en kısa çözüm ≤ 10 kart ve `maxProgramLength` = en kısa + 1 ya da + 2 | PK-0003 |
+| | Minik'te yalnız `forward` ve `turn_right` | PK-0005 |
+| Bölge bileşimi (`paylasim-koyu`) | hepsinde `resetEachRun`; 1–6 yalnız Minik ve `clearMemoryEachRun`; 7+ yalnız Kaşif ve `beeMemoryVisible` | PK-0005 |
+| | 1. ve 4. bölümde `guided` ya da `ghostPath` | PK-0005 |
+| | 24 bölümlük köyde köşe başları (1, 7, 13, 19) `intro` + `guided`, başka bölümde `intro` yok; `need` 5 yalnız köşe finallerinde (6, 12, 18, 24) | PK-0005, PK-0003 |
+
+Bölge bileşimi kuralları köy 24 bölüme ulaşana kadar yalnız sabit olanları (Minik/Kaşif sırası, `resetEachRun`, bellek, 1 ve 4. bölüm) denetler; köşe başı ve köşe finali kuralları tam köyde açılır.
