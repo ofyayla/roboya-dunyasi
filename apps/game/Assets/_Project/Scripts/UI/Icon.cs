@@ -284,6 +284,18 @@ namespace Roboya.UI
                     p.Arc(P(0.64f, 0.28f), s * 0.12f, Angle.Degrees(0f), Angle.Degrees(360f));
                     p.Stroke();
                     break;
+                case IconKind.Drop:
+                    // "Bırak": a honey drop falling, so the card is told by its shape and not by its colour.
+                    p.BeginPath();
+                    p.MoveTo(P(0.5f, 0.06f));
+                    p.BezierCurveTo(P(0.5f, 0.06f), P(0.74f, 0.3f), P(0.74f, 0.46f));
+                    p.BezierCurveTo(P(0.74f, 0.6f), P(0.63f, 0.68f), P(0.5f, 0.68f));
+                    p.BezierCurveTo(P(0.37f, 0.68f), P(0.26f, 0.6f), P(0.26f, 0.46f));
+                    p.BezierCurveTo(P(0.26f, 0.3f), P(0.5f, 0.06f), P(0.5f, 0.06f));
+                    p.ClosePath();
+                    p.Fill();
+                    Arrow(p, P(0.5f, 0.74f), P(0.5f, 0.96f), s);
+                    break;
                 case IconKind.Magnifier:
                     // A magnifying glass: the bug hunter's tool (Kodlama Kutusu hata avcısı).
                     p.lineWidth = s * 0.1f;

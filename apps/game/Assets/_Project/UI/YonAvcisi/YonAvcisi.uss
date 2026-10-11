@@ -383,3 +383,204 @@
     -unity-background-scale-mode: scale-to-fit;
     background-color: rgb(244, 236, 214);
 }
+
+/* Paylaşım Köyü: hives and the table on the board, with slots that fill as honey arrives (ADR 0030). */
+.hive__slots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -6%;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.hive__slot {
+    margin: 0 1px;
+    border-radius: 999px;
+    border-width: 3px;
+    border-color: rgb(120, 72, 20);
+    background-color: rgba(255, 244, 226, 0.35);
+}
+
+/* Solid disc against a hollow ring: the count is told by shape, not colour alone. */
+.hive__slot--filled {
+    background-color: rgb(247, 178, 26);
+    border-color: rgb(120, 72, 20);
+}
+
+.piece--drop-fallback {
+    border-radius: 999px;
+    border-width: 5px;
+    border-color: rgb(120, 72, 20);
+    background-color: rgb(236, 190, 90);
+}
+
+.piece--hive-full.piece--drop-fallback {
+    background-color: rgb(247, 178, 26);
+}
+
+.piece--hive-spill.piece--drop-fallback {
+    border-color: rgb(190, 90, 40);
+}
+
+/* Ari's basket (top left of the board). */
+.basket-view {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    flex-direction: row;
+    align-items: center;
+    padding: 6px 12px 6px 6px;
+    border-radius: 40px;
+    background-color: rgba(255, 244, 226, 0.9);
+    border-width: 3px;
+    border-color: rgba(58, 42, 29, 0.35);
+}
+
+.basket-view__icon {
+    width: 56px;
+    height: 56px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.basket-view__icon--fallback {
+    border-radius: 28px;
+    border-width: 4px;
+    border-color: rgb(120, 72, 20);
+    background-color: rgb(210, 160, 90);
+}
+
+.basket-view__dots {
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 160px;
+    margin-left: 6px;
+}
+
+.basket-view__dot {
+    width: 18px;
+    height: 18px;
+    margin: 2px;
+    border-radius: 999px;
+    border-width: 3px;
+    border-color: rgb(120, 72, 20);
+    background-color: rgba(255, 244, 226, 0.2);
+}
+
+.basket-view__dot--filled {
+    background-color: rgb(247, 178, 26);
+}
+
+/* "Bırak": bigger than the direction cards and set apart in the bee's honey panel (child target well above 64 dp). */
+.palette--bee .card--drop {
+    width: 104px;
+    height: 104px;
+    margin-left: 20px;
+    padding: 18px;
+}
+
+/* End-of-run comparison of the hive families (plan D3): bee, hive and slots side by side, no digits. */
+.hive-compare {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 20%;
+    align-items: center;
+}
+
+.hive-compare__panel {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 10px 18px;
+    border-radius: 36px;
+    background-color: rgba(255, 244, 226, 0.92);
+    border-width: 4px;
+    border-color: rgba(58, 42, 29, 0.35);
+}
+
+.hive-compare__family {
+    align-items: center;
+    margin: 0 14px;
+}
+
+.hive-compare__villager {
+    width: 104px;
+    height: 104px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.hive-compare__villager--fallback {
+    border-radius: 52px;
+    border-width: 4px;
+    border-color: rgb(120, 72, 20);
+    background-color: rgb(247, 205, 90);
+}
+
+.hive-compare__villager--sad {
+    opacity: 0.85;
+}
+
+.hive-compare__hive {
+    width: 92px;
+    height: 92px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.hive-compare__hive--fallback {
+    border-radius: 46px;
+    border-width: 4px;
+    border-color: rgb(120, 72, 20);
+    background-color: rgb(236, 190, 90);
+}
+
+.hive-compare__slots {
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+.hive-compare__slot {
+    width: 18px;
+    height: 18px;
+}
+
+/* Honey goals in the goal badge: a hive with its slots, hives side by side with an equal sign, the basket to keep. */
+.goal-badge__hive {
+    align-items: center;
+    justify-content: flex-end;
+    width: 88px;
+    height: 88px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.goal-badge__hive--fallback {
+    border-radius: 44px;
+    background-color: rgb(236, 190, 90);
+    border-color: rgb(120, 72, 20);
+}
+
+.goal-badge__slots {
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: -6px;
+}
+
+.goal-badge__slot {
+    width: 14px;
+    height: 14px;
+    border-width: 2px;
+}
+
+.goal-badge__equal {
+    justify-content: center;
+    align-self: center;
+}
+
+.goal-badge__equal > * {
+    width: 30px;
+    height: 7px;
+    margin: 3px 0;
+    border-radius: 4px;
+    background-color: rgb(120, 72, 20);
+}

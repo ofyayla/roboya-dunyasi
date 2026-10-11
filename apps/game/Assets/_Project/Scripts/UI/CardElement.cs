@@ -27,6 +27,7 @@ namespace Roboya.UI
                 case CardType.Backward: return IconKind.Backward;
                 case CardType.TurnLeft: return IconKind.TurnLeft;
                 case CardType.TurnRight: return IconKind.TurnRight;
+                case CardType.Drop: return IconKind.Drop;
                 default: return IconKind.None;
             }
         }
@@ -39,6 +40,7 @@ namespace Roboya.UI
                 case CardType.Backward: return "backward";
                 case CardType.TurnLeft: return "turn-left";
                 case CardType.TurnRight: return "turn-right";
+                case CardType.Drop: return "drop";
                 default: return "other";
             }
         }
