@@ -183,6 +183,14 @@ namespace Roboya.Tests.PlayMode
                 }
 
                 Tap(root.Q("play"));
+                if (i == 8)
+                {
+                    // ILR-03, A4: the end of the first corner earns the first ship part, shown in the outro before the film.
+                    yield return WaitUntil(() => root.Q("story-reward") != null, 30f);
+                    yield return new WaitForSeconds(0.6f);
+                    yield return Capture(root, "05-level9-reward");
+                }
+
                 if (Roboya.CodingEngine.Progress.CornerRules.IsCornerEnd(i, pathCount))
                 {
                     // The end of a forest corner: the turtle's patience card comes before the result; a tap moves on.
@@ -202,14 +210,6 @@ namespace Roboya.Tests.PlayMode
                 yield return null; // the overlay is laid out one frame after it becomes visible
                 int stars = root.Q("stars").Children().OfType<Icon>().Count(x => x.Kind == IconKind.Star);
                 Assert.AreEqual(3, stars, levels[i].Id + " should earn 3 stars with the shortest plan on the first try");
-                if (i == 4)
-                {
-                    // ILR-03: the fifth level earns the first robot part, shown after the success line.
-                    yield return WaitUntil(() => root.Q("story-reward") != null, 20f);
-                    yield return new WaitForSeconds(0.6f);
-                    yield return Capture(root, "05-level5-reward");
-                }
-
                 if (i == levels.Count - 1)
                 {
                     yield return new WaitForSeconds(0.4f);

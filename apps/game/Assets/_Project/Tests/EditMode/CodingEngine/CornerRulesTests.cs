@@ -39,11 +39,22 @@ namespace Roboya.Tests.CodingEngine
         }
 
         [Test]
-        public void IsCornerEnd_UnevenPath_NoFifthCorner()
+        public void IsCornerEnd_UnevenPath_LastCornerEndsOnFinale()
         {
-            // 26 levels: corners of 6 end at 6, 12, 18 and 24; the last two levels belong to the fourth stretch.
-            Assert.IsTrue(CornerRules.IsCornerEnd(23, 26));
-            Assert.IsFalse(CornerRules.IsCornerEnd(25, 26));
+            // 26 levels: corners of 6 end at 6, 12 and 18; the fourth takes the spare levels and ends on the finale.
+            Assert.IsTrue(CornerRules.IsCornerEnd(17, 26));
+            Assert.IsFalse(CornerRules.IsCornerEnd(23, 26));
+            Assert.IsTrue(CornerRules.IsCornerEnd(25, 26));
+        }
+
+        [TestCase(1, 36, 8)]
+        [TestCase(3, 36, 26)]
+        [TestCase(4, 36, 35)]
+        [TestCase(4, 26, 25)]
+        [TestCase(2, 24, 11)]
+        public void CornerEnd_Corner_LastLevelOfThatStretch(int corner, int count, int expected)
+        {
+            Assert.AreEqual(expected, CornerRules.CornerEnd(corner, count));
         }
 
         [Test]
