@@ -10,12 +10,12 @@ using UnityEngine.UIElements;
 namespace Roboya.Map
 {
     /// <summary>
-    /// Patience Forest path (F1-05): one stepping stone per level along a winding dirt trail. Every stone has the same
+    /// A region's path (F1-05; one view for every region, rebuilt by <see cref="SetRegion"/>): one stepping stone per level along a winding dirt trail. Every stone has the same
     /// shape and carries its number; what changes is its state. Walked stones are cream with their stars above them and
     /// the trail behind Roboya turns golden. The next stone is golden, larger and gently pulsing with Roboya on it. Stones
     /// still ahead are small and grey; past the free tier they carry a padlock that asks the child to fetch a grown-up
     /// (GLR-01). Ship parts wait on the trail, faint until earned (ILR-03), and a tree stump with the wise turtle closes
-    /// each forest corner. A big play button starts the next level. Tapping never sells anything.
+    /// each corner (<see cref="CornerRules"/>). A big play button starts the next level. Tapping never sells anything.
     /// </summary>
     public sealed class PathView : VisualElement, IRefreshable
     {
@@ -28,9 +28,10 @@ namespace Roboya.Map
 
         private readonly GameServices _services;
         private readonly RegionArt _art;
+        private readonly PartArt _partArt;
         private readonly Action _onWorkshop;
         private readonly Action _onRest;
-        private readonly List<string> _path;
+        private readonly List<string> _path = new List<string>();
         private readonly ScrollView _scroll = new ScrollView(ScrollViewMode.Horizontal) { name = "path-scroll" };
         private readonly PathTrack _track = new PathTrack();
         private readonly List<VisualElement> _stones = new List<VisualElement>();
@@ -40,6 +41,7 @@ namespace Roboya.Map
         private readonly IconButton _play;
         private NodeState[] _states = new NodeState[0];
         private int _current = -1;
+        private RegionId? _region;
         private float _time;
         private bool _needsCentering = true;
         // Scroll target waiting for the widened trail to be laid out; negative when nothing is pending.
@@ -52,6 +54,7 @@ namespace Roboya.Map
         {
             _services = services;
             _art = art;
+            _partArt = partArt;
             _onWorkshop = onWorkshop;
             _onRest = onRest;
             name = "path";
@@ -62,34 +65,12 @@ namespace Roboya.Map
                 style.backgroundImage = new StyleBackground(art.Background);
             }
 
-            _path = ProgressQueries.PathOf(services.Catalog, RegionId.SabirOrmani);
             _scroll.AddToClassList("path__scroll");
             _scroll.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
             _scroll.contentContainer.AddToClassList("path__content");
             _scroll.Add(_track);
             _scroll.contentContainer.RegisterCallback<GeometryChangedEvent>(_ => ApplyCentering());
             Add(_scroll);
-
-            // Each forest corner (F1-24 value moment) is a stump beside the trail where the wise turtle waits.
-            for (int c = 1; c <= CornerCount(_path.Count); c++)
-            {
-                var corner = new VisualElement { name = "corner-" + c, pickingMode = PickingMode.Ignore };
-                corner.AddToClassList("path__corner");
-                corner.Add(Face(StoneLook.Corner, art != null ? art.StoneCorner : null));
-                var turtle = new Icon(IconKind.Turtle) { Color = new Color(0.36f, 0.62f, 0.3f), Accent = Color.white };
-                turtle.AddToClassList("path__turtle");
-                corner.Add(turtle);
-                _corners.Add(corner);
-                _scroll.Add(corner);
-            }
-
-            BuildParts(partArt);
-            for (int i = 0; i < _path.Count; i++)
-            {
-                var stone = BuildStone(i);
-                _stones.Add(stone);
-                _scroll.Add(stone);
-            }
 
             _robot.pickingMode = PickingMode.Ignore;
             _robot.AddToClassList("path__robot");
@@ -99,6 +80,7 @@ namespace Roboya.Map
             }
 
             _scroll.Add(_robot);
+            SetRegion(RegionId.SabirOrmani);
 
             var bar = new VisualElement();
             bar.AddToClassList("map-bar");
@@ -115,9 +97,67 @@ namespace Roboya.Map
             schedule.Execute(Pulse).Every(33);
         }
 
-        private static int CornerCount(int count) => count / ProgressQueries.CornerLength;
-
         public IReadOnlyList<string> Path => _path;
+
+        public RegionId? Region => _region;
+
+        /// <summary>Builds the stones, corners and ship parts of <paramref name="region"/>'s path; nothing to do when it is already shown.</summary>
+        public void SetRegion(RegionId region)
+        {
+            if (_region == region)
+            {
+                return;
+            }
+
+            _region = region;
+            foreach (var stone in _stones)
+            {
+                stone.RemoveFromHierarchy();
+            }
+
+            foreach (var corner in _corners)
+            {
+                corner.RemoveFromHierarchy();
+            }
+
+            foreach (var (element, _, _) in _parts)
+            {
+                element.RemoveFromHierarchy();
+            }
+
+            _stones.Clear();
+            _corners.Clear();
+            _parts.Clear();
+            _path.Clear();
+            _path.AddRange(ProgressQueries.PathOf(_services.Catalog, region));
+            _states = new NodeState[0];
+            _current = -1;
+
+            // Each corner (F1-24 value moment) is a stump beside the trail where the wise turtle waits.
+            for (int c = 1; c <= CornerRules.CornerCount(_path.Count); c++)
+            {
+                var corner = new VisualElement { name = "corner-" + c, pickingMode = PickingMode.Ignore };
+                corner.AddToClassList("path__corner");
+                corner.Add(Face(StoneLook.Corner, _art != null ? _art.StoneCorner : null));
+                var turtle = new Icon(IconKind.Turtle) { Color = new Color(0.36f, 0.62f, 0.3f), Accent = Color.white };
+                turtle.AddToClassList("path__turtle");
+                corner.Add(turtle);
+                _corners.Add(corner);
+                _scroll.Add(corner);
+            }
+
+            BuildParts(_partArt, ProgressQueries.LevelsBefore(_services, region));
+            for (int i = 0; i < _path.Count; i++)
+            {
+                var stone = BuildStone(i);
+                _stones.Add(stone);
+                _scroll.Add(stone);
+            }
+
+            // Roboya stands on the stones, so it stays above everything rebuilt here.
+            _robot.BringToFront();
+            _needsCentering = true;
+        }
 
         public void Refresh()
         {
@@ -242,14 +282,17 @@ namespace Roboya.Map
             shape.style.display = sprite != null ? DisplayStyle.None : DisplayStyle.Flex;
         }
 
-        /// <summary>Every few levels the ship gets a part (ILR-03): that part waits on the trail after the stone that earns it.</summary>
-        private void BuildParts(PartArt partArt)
+        /// <summary>
+        /// Every few levels the ship gets a part (ILR-03): that part waits on the trail after the stone that earns it.
+        /// Parts count levels across regions, so <paramref name="levelsBefore"/> shifts them onto this region's stretch.
+        /// </summary>
+        private void BuildParts(PartArt partArt, int levelsBefore)
         {
             int every = Math.Max(1, _services.ProgressRules.LevelsPerPart);
             foreach (var part in _services.Parts.Parts)
             {
-                int after = (part.Order * every) - 1;
-                if (after >= _path.Count - 1)
+                int after = (part.Order * every) - 1 - levelsBefore;
+                if (after < 0 || after >= _path.Count - 1)
                 {
                     continue;
                 }
@@ -362,7 +405,7 @@ namespace Roboya.Map
 
             for (int c = 0; c < _corners.Count; c++)
             {
-                int last = ((c + 1) * ProgressQueries.CornerLength) - 1;
+                int last = ((c + 1) * CornerRules.CornerLength(n)) - 1;
                 var at = last + 1 < n ? _track.Between(last) : points[last] + new Vector2(100f, 0f);
                 // Above the trail where it dips, below where it climbs, so the stump never covers a stone.
                 bool above = at.y > r.height * 0.55f;

@@ -557,7 +557,7 @@ namespace Roboya.Games.Common
                 reward,
                 PartUnlockedVoice,
                 reward != null ? (System.Action)(() => _services.Navigator.GoToWorkshop()) : null);
-            if ((_index + 1) % ProgressQueries.CornerLength == 0)
+            if (CornerRules.IsCornerEnd(_index, _levels.Count))
             {
                 // The turtle's value moment closes each forest corner (the map marks the same stones). Roboya finishes his own
                 // success line first; starting the film would cut it off.
