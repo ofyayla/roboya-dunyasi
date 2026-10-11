@@ -71,7 +71,7 @@
     "intro": "bal_pesinde.koy.l13.intro",
     "success": "bal_pesinde.koy.l13.success",
     "hints": [
-      "roboya.hint.koy.listen",
+      "roboya.hint.koy.share",
       "roboya.hint.check_card",
       "roboya.hint.show_card"
     ]
