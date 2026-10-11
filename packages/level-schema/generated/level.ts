@@ -46,18 +46,19 @@ export type ObstacleLook = "tree" | "rock" | "bush" | "log";
  * via the `definition` "direction".
  */
 export type Facing = "north" | "east" | "south" | "west";
+export type DropKind = "hive" | "table";
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
  * via the `definition` "card".
  */
-export type CardId = "forward" | "backward" | "turn_left" | "turn_right" | "repeat" | "if" | "call" | "action";
+export type CardId = "forward" | "backward" | "turn_left" | "turn_right" | "repeat" | "if" | "call" | "drop" | "action";
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
  * via the `definition` "command".
  */
 export type CommandDto =
   | {
-      op: "forward" | "backward" | "turn_left" | "turn_right";
+      op: "forward" | "backward" | "turn_left" | "turn_right" | "drop";
     }
   | {
       op: "repeat";
@@ -120,17 +121,20 @@ export type StoryProp =
   | "honey"
   | "beehive"
   | "box"
-  | "magnifier";
+  | "magnifier"
+  | "villager-bee"
+  | "honeycomb"
+  | "village-table";
 
 /**
- * Roboya Dünyası level, schema version 1. Single source of truth for the game, validator and editor.
+ * Roboya Dünyası level, schema version 3. Single source of truth for the game, validator and editor.
  */
 export interface LevelDto {
   $schema?: string;
   /**
-   * 2 adds the optional `story` block. Migrate with scripts/migrate-v2.mjs.
+   * 2 adds the optional `story` block (scripts/migrate-v2.mjs). 3 adds honey carrying, dropping and sharing for Paylaşım Köyü, ADR 0030 (scripts/migrate-v3.mjs).
    */
-  schemaVersion: 2;
+  schemaVersion: 3;
   /**
    * Stable id: <region>.<game>.<nn>. Used by progress records; never reuse a deleted id.
    */
@@ -148,6 +152,12 @@ export interface LevelDto {
    * @maxItems 64
    */
   items?: ItemDto[];
+  /**
+   * Places the bee can leave honey (v3, ADR 0030): a `hive` wants `need` honey, the `table` is the village's shared table for what is left over. Walkable cells; the bee may stand on them.
+   *
+   * @maxItems 4
+   */
+  drops?: DropPointDto[];
   goal: GoalDto;
   /**
    * Decoration just outside the playable cells (v2), e.g. the tree the narration mentions. x or y is -1 or the grid width/height; never on a walkable cell.
@@ -225,6 +235,10 @@ export interface RobotDto {
   x: number;
   y: number;
   facing: Facing;
+  /**
+   * Honey in the basket at the start (v3); 0 when omitted.
+   */
+  carrying?: number;
 }
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
@@ -239,6 +253,24 @@ export interface ItemDto {
   color?: "red" | "yellow" | "blue" | "green" | "purple" | "orange";
   x: number;
   y: number;
+  /**
+   * Honey the item gives when collected (v3, honey only); 1 when omitted.
+   */
+  amount?: number;
+}
+/**
+ * This interface was referenced by `LevelDto`'s JSON-Schema
+ * via the `definition` "drop".
+ */
+export interface DropPointDto {
+  id: string;
+  kind: DropKind;
+  x: number;
+  y: number;
+  /**
+   * Honey a hive asks for (hives only).
+   */
+  need?: number;
 }
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
@@ -252,6 +284,17 @@ export interface GoalDto {
    * @minItems 1
    */
   collect?: string[];
+  /**
+   * Exactly `count` honey must end up at each listed drop point (v3).
+   *
+   * @minItems 1
+   */
+  deliver?: DeliverDto[];
+  share?: ShareDto;
+  /**
+   * Honey that must still be in the basket when the goal is met (subtraction, v3). Only together with another goal.
+   */
+  carryAtEnd?: number;
 }
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
@@ -260,6 +303,21 @@ export interface GoalDto {
 export interface PositionDto {
   x: number;
   y: number;
+}
+export interface DeliverDto {
+  to: string;
+  count: number;
+}
+/**
+ * The listed hives hold the same honey and all honey is handed out; what is left, fewer than the hives, is on `leftoverTo` (a table) (v3, PK-0001).
+ */
+export interface ShareDto {
+  /**
+   * @minItems 2
+   * @maxItems 3
+   */
+  among: string[];
+  leftoverTo?: string;
 }
 export interface SceneryDto {
   x: number;
@@ -304,6 +362,26 @@ export interface LevelOptions {
    * Roboya builds the code together with the child (first level of a new concept).
    */
   guided?: boolean;
+  /**
+   * Minik: a hive takes the honey it needs as soon as the bee enters its cell (v3, PK-0001).
+   */
+  autoDrop?: boolean;
+  /**
+   * After success ask how much honey is left (v3, PK-0002). Behind a feature flag until the child test.
+   */
+  askRemaining?: boolean;
+  /**
+   * The world (bee, basket, hives) starts over on every run while the memory strip stays (v3, PK-0005).
+   */
+  resetEachRun?: boolean;
+  /**
+   * The memory strip clears itself after every run (Minik, v3, PK-0005).
+   */
+  clearMemoryEachRun?: boolean;
+  /**
+   * Introduction level: a child who starts later on the path still plays it (v3, ADR 0018, PK-0005).
+   */
+  intro?: boolean;
 }
 /**
  * Keys into content/voice/script.csv and the localization tables.

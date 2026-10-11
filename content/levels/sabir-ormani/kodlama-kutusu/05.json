@@ -1,6 +1,6 @@
 {
   "$schema": "../../../../packages/level-schema/level.schema.json",
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "id": "sabir-ormani.kodlama-kutusu.05",
   "region": "sabir-ormani",
   "game": "kodlama-kutusu",

@@ -11,7 +11,7 @@ namespace Roboya.Tests.CodingEngine
     public class LevelLoaderTests
     {
         private const string Valid = @"{
-  ""schemaVersion"": 2,
+  ""schemaVersion"": 3,
   ""id"": ""sabir-ormani.yon-avcisi.99"",
   ""region"": ""sabir-ormani"",
   ""game"": ""yon-avcisi"",
@@ -103,17 +103,71 @@ namespace Roboya.Tests.CodingEngine
         [Test]
         public void Parse_UnsupportedVersion_ThrowsValidation()
         {
-            Assert.Throws<LevelValidationException>(() => LevelLoader.Parse(Valid.Replace("\"schemaVersion\": 2", "\"schemaVersion\": 3")));
+            Assert.Throws<LevelValidationException>(() => LevelLoader.Parse(Valid.Replace("\"schemaVersion\": 3", "\"schemaVersion\": 4")));
         }
 
         [Test]
         public void Parse_Version1WithoutStory_StillLoads()
         {
-            var json = Valid.Replace("\"schemaVersion\": 2", "\"schemaVersion\": 1");
+            var json = Valid.Replace("\"schemaVersion\": 3", "\"schemaVersion\": 1");
 
             var dto = LevelLoader.Parse(json);
 
             Assert.AreEqual(1, dto.SchemaVersion);
+        }
+
+        [Test]
+        public void Load_Version2Level_StillLoads()
+        {
+            var level = LevelLoader.Load(Valid.Replace("\"schemaVersion\": 3", "\"schemaVersion\": 2"));
+
+            Assert.AreEqual("sabir-ormani.yon-avcisi.99", level.Id);
+        }
+
+        [Test]
+        public void Load_DropCardInPalette_ThrowsUntilEngineSupport()
+        {
+            var json = Valid.Replace("\"repeat\"], \"maxProgramLength\"", "\"drop\"], \"maxProgramLength\"");
+
+            Assert.Throws<LevelValidationException>(() => LevelLoader.Load(json));
+        }
+
+        [Test]
+        public void Load_DropCommandInStarterProgram_ThrowsUntilEngineSupport()
+        {
+            var json = Valid.Replace("{ \"op\": \"turn_right\" },", "{ \"op\": \"drop\" },");
+            var dto = LevelLoader.Parse(json);
+
+            Assert.Throws<LevelValidationException>(() => LevelLoader.ToProgram(dto.StarterProgram));
+        }
+
+        [Test]
+        public void Load_ShareGoalWithDrops_ThrowsUntilEngineSupport()
+        {
+            var json = Valid.Replace("\"goal\": {", "\"drops\": [{ \"id\": \"a\", \"kind\": \"hive\", \"x\": 1, \"y\": 0, \"need\": 1 }], \"goal\": { \"deliver\": [{ \"to\": \"a\", \"count\": 1 }],");
+
+            Assert.Throws<LevelValidationException>(() => LevelLoader.Load(json));
+        }
+
+        [Test]
+        public void Load_CarryingAndAutoDrop_ThrowUntilEngineSupport()
+        {
+            var carrying = Valid.Replace("\"facing\": \"north\"", "\"facing\": \"north\", \"carrying\": 2");
+            var auto = Valid.Replace("\"voice\":", "\"options\": { \"autoDrop\": true }, \"voice\":");
+
+            Assert.Throws<LevelValidationException>(() => LevelLoader.Load(carrying));
+            Assert.Throws<LevelValidationException>(() => LevelLoader.Load(auto));
+        }
+
+        [Test]
+        public void Parse_IntroOption_IsReadAndDoesNotNeedEngineSupport()
+        {
+            var json = Valid.Replace("\"voice\":", "\"options\": { \"intro\": true, \"askRemaining\": true }, \"voice\":");
+
+            var level = LevelLoader.Load(json);
+
+            Assert.AreEqual("sabir-ormani.yon-avcisi.99", level.Id);
+            Assert.IsTrue(LevelLoader.Parse(json).Options.Intro);
         }
 
         [Test]

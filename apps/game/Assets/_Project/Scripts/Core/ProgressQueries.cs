@@ -111,7 +111,7 @@ namespace Roboya.Core
         public static NodeState[] PathStates(GameServices s, IReadOnlyList<string> path) =>
             PathRules.StatesOf(path, s.Progress.Book, s.ProgressRules.FreeLevelCount, s.Entitlements.HasPremium, StartIndex(s, path), s.ProgressRules.UnlockAll, IntroLevels(s.Catalog, path));
 
-        /// <summary>A game's first level and every level that introduces a card: the tutorials a late starter must not skip.</summary>
+        /// <summary>A game's first level, every level that introduces a card and every level marked <c>options.intro</c>: the tutorials a late starter must not skip.</summary>
         public static List<bool> IntroLevels(LevelCatalog catalog, IReadOnlyList<string> path)
         {
             var seen = new HashSet<GameId>();
@@ -120,7 +120,7 @@ namespace Roboya.Core
             {
                 var dto = catalog.Find(id)?.Dto;
                 bool first = dto != null && seen.Add(dto.Game);
-                flags.Add(first || (dto?.Cards?.Introduces != null));
+                flags.Add(first || (dto?.Cards?.Introduces != null) || dto?.Options?.Intro == true);
             }
 
             return flags;

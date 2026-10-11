@@ -7,13 +7,13 @@ using Roboya.CodingEngine.World;
 
 namespace Roboya.CodingEngine.Levels
 {
-    /// <summary>Turns level JSON (schema v1–v2) into engine objects. Structural JSON-schema checks run separately in CI.</summary>
+    /// <summary>Turns level JSON (schema v1–v3) into engine objects. Structural JSON-schema checks run separately in CI.</summary>
     public static class LevelLoader
     {
-        /// <summary>Oldest version still read; v2 only added the optional story block.</summary>
+        /// <summary>Oldest version still read; v2 only added the optional story block, v3 the honey fields (ADR 0030).</summary>
         public const int MinSchemaVersion = 1;
 
-        public const int SupportedSchemaVersion = 2;
+        public const int SupportedSchemaVersion = 3;
 
         public static LevelDto Parse(string json)
         {
@@ -53,6 +53,8 @@ namespace Roboya.CodingEngine.Levels
             {
                 throw new LevelValidationException("Level '" + dto.Id + "' is missing grid, robot, goal or cards.");
             }
+
+            RejectUnsupportedHoneyFields(dto);
 
             Grid grid;
             try
@@ -110,10 +112,31 @@ namespace Roboya.CodingEngine.Levels
             return new Program(ToBlock(commands));
         }
 
+        // v3 (ADR 0030) is schema-only until the engine learns to carry and drop honey (plan B2). Loading such a level
+        // now would silently play it as a plain collect level, so refuse it loudly instead.
+        private static void RejectUnsupportedHoneyFields(LevelDto dto)
+        {
+            bool honey = (dto.Drops != null && dto.Drops.Count > 0)
+                || dto.Robot.Carrying.HasValue
+                || dto.Goal.Deliver != null
+                || dto.Goal.Share != null
+                || dto.Goal.CarryAtEnd.HasValue
+                || dto.Cards.Palette.Contains(CardId.Drop)
+                || (dto.Items != null && dto.Items.Exists(i => i.Amount.HasValue))
+                || (dto.Options != null
+                    && (dto.Options.AutoDrop == true || dto.Options.ResetEachRun == true || dto.Options.ClearMemoryEachRun == true));
+            if (honey)
+            {
+                throw new LevelValidationException("Level '" + dto.Id + "' uses honey carrying and dropping, which needs engine support (ADR 0030, plan B2).");
+            }
+        }
+
         public static CardType ToCard(CardId card)
         {
             switch (card)
             {
+                case CardId.Drop:
+                    throw new LevelValidationException("The drop card needs engine support (ADR 0030, plan B2).");
                 case CardId.Forward: return CardType.Forward;
                 case CardId.Backward: return CardType.Backward;
                 case CardId.TurnLeft: return CardType.TurnLeft;
@@ -167,6 +190,8 @@ namespace Roboya.CodingEngine.Levels
                     return new IfCommand(ToCondition(c.Condition), ToBlock(c.Then), ToBlock(c.Else));
                 case CardId.Call:
                     return new CallCommand(c.Name);
+                case CardId.Drop:
+                    throw new LevelValidationException("The drop command needs engine support (ADR 0030, plan B2).");
                 default:
                     return new ActionCommand(c.Id);
             }
