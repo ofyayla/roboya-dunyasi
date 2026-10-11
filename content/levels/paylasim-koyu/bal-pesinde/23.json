@@ -1,0 +1,130 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 3,
+  "id": "paylasim-koyu.bal-pesinde.23",
+  "region": "paylasim-koyu",
+  "game": "bal-pesinde",
+  "order": 23,
+  "meta": {
+    "concepts": [
+      "counting"
+    ],
+    "value": "sharing",
+    "difficulty": 5,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Köşe 4: sepetteki balı ver, yoldakini topla, eşit ver, artanı sofraya."
+  },
+  "grid": {
+    "rows": [
+      "......",
+      "......",
+      "......"
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 1,
+    "facing": "east",
+    "carrying": 3
+  },
+  "items": [
+    {
+      "id": "bal-1",
+      "kind": "honey",
+      "x": 2,
+      "y": 1,
+      "amount": 2
+    }
+  ],
+  "drops": [
+    {
+      "id": "petek-1",
+      "kind": "hive",
+      "x": 1,
+      "y": 1,
+      "need": 4
+    },
+    {
+      "id": "petek-2",
+      "kind": "hive",
+      "x": 3,
+      "y": 1,
+      "need": 4
+    },
+    {
+      "id": "sofra",
+      "kind": "table",
+      "x": 4,
+      "y": 1
+    }
+  ],
+  "goal": {
+    "collect": [
+      "bal-1"
+    ],
+    "share": {
+      "among": [
+        "petek-1",
+        "petek-2"
+      ],
+      "leftoverTo": "sofra"
+    }
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "drop"
+    ],
+    "maxProgramLength": 10
+  },
+  "options": {
+    "resetEachRun": true,
+    "beeMemoryVisible": true
+  },
+  "voice": {
+    "intro": "bal_pesinde.koy.l23.intro",
+    "success": "bal_pesinde.koy.l23.success",
+    "hints": [
+      "roboya.hint.koy.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining",
+      "props": [
+        "honey",
+        "village-table"
+      ]
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "thanks",
+      "props": [
+        "village-table",
+        "villager-bee"
+      ]
+    }
+  },
+  "alternativeLevelId": "paylasim-koyu.bal-pesinde.22",
+  "solution": {
+    "shortestLength": 9
+  },
+  "scenery": [
+    {
+      "x": -1,
+      "y": 2,
+      "look": "tree"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "look": "bush"
+    }
+  ]
+}
