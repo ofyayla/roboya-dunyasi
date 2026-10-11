@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://roboyakids.com.tr/schemas/level/v1.json",
   "title": "LevelDto",
-  "description": "Roboya Dünyası level, schema version 1. Single source of truth for the game, validator and editor.",
+  "description": "Roboya Dünyası level, schema version 3. Single source of truth for the game, validator and editor.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -23,8 +23,8 @@
       "type": "string"
     },
     "schemaVersion": {
-      "description": "2 adds the optional `story` block. Migrate with scripts/migrate-v2.mjs.",
-      "const": 2
+      "description": "2 adds the optional `story` block (scripts/migrate-v2.mjs). 3 adds honey carrying, dropping and sharing for Paylaşım Köyü, ADR 0030 (scripts/migrate-v3.mjs).",
+      "const": 3
     },
     "id": {
       "description": "Stable id: <region>.<game>.<nn>. Used by progress records; never reuse a deleted id.",
@@ -56,6 +56,14 @@
       "maxItems": 64,
       "items": {
         "$ref": "#/$defs/item"
+      }
+    },
+    "drops": {
+      "description": "Places the bee can leave honey (v3, ADR 0030): a `hive` wants `need` honey, the `table` is the village's shared table for what is left over. Walkable cells; the bee may stand on them.",
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "$ref": "#/$defs/drop"
       }
     },
     "goal": {
@@ -339,6 +347,12 @@
         },
         "facing": {
           "$ref": "#/$defs/direction"
+        },
+        "carrying": {
+          "description": "Honey in the basket at the start (v3); 0 when omitted.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
         }
       }
     },
@@ -389,6 +403,12 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 11
+        },
+        "amount": {
+          "description": "Honey the item gives when collected (v3, honey only); 1 when omitted.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
         }
       }
     },
@@ -406,6 +426,16 @@
           "required": [
             "collect"
           ]
+        },
+        {
+          "required": [
+            "deliver"
+          ]
+        },
+        {
+          "required": [
+            "share"
+          ]
         }
       ],
       "properties": {
@@ -420,6 +450,62 @@
           "items": {
             "type": "string"
           }
+        },
+        "deliver": {
+          "description": "Exactly `count` honey must end up at each listed drop point (v3).",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "title": "DeliverDto",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "to",
+              "count"
+            ],
+            "properties": {
+              "to": {
+                "type": "string",
+                "pattern": "^[a-z0-9-]+$"
+              },
+              "count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              }
+            }
+          }
+        },
+        "share": {
+          "title": "ShareDto",
+          "description": "The listed hives hold the same honey and all honey is handed out; what is left, fewer than the hives, is on `leftoverTo` (a table) (v3, PK-0001).",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "among"
+          ],
+          "properties": {
+            "among": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 3,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z0-9-]+$"
+              }
+            },
+            "leftoverTo": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
+            }
+          }
+        },
+        "carryAtEnd": {
+          "description": "Honey that must still be in the basket when the goal is met (subtraction, v3). Only together with another goal.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
         }
       }
     },
@@ -434,6 +520,7 @@
         "repeat",
         "if",
         "call",
+        "drop",
         "action"
       ]
     },
@@ -530,7 +617,8 @@
                 "forward",
                 "backward",
                 "turn_left",
-                "turn_right"
+                "turn_right",
+                "drop"
               ]
             }
           }
@@ -645,6 +733,26 @@
         "guided": {
           "description": "Roboya builds the code together with the child (first level of a new concept).",
           "type": "boolean"
+        },
+        "autoDrop": {
+          "description": "Minik: a hive takes the honey it needs as soon as the bee enters its cell (v3, PK-0001).",
+          "type": "boolean"
+        },
+        "askRemaining": {
+          "description": "After success ask how much honey is left (v3, PK-0002). Behind a feature flag until the child test.",
+          "type": "boolean"
+        },
+        "resetEachRun": {
+          "description": "The world (bee, basket, hives) starts over on every run while the memory strip stays (v3, PK-0005).",
+          "type": "boolean"
+        },
+        "clearMemoryEachRun": {
+          "description": "The memory strip clears itself after every run (Minik, v3, PK-0005).",
+          "type": "boolean"
+        },
+        "intro": {
+          "description": "Introduction level: a child who starts later on the path still plays it (v3, ADR 0018, PK-0005).",
+          "type": "boolean"
         }
       }
     },
@@ -740,7 +848,10 @@
               "honey",
               "beehive",
               "box",
-              "magnifier"
+              "magnifier",
+              "villager-bee",
+              "honeycomb",
+              "village-table"
             ]
           }
         }
@@ -756,6 +867,47 @@
         "bush",
         "log"
       ]
+    },
+    "drop": {
+      "title": "DropPointDto",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "x",
+        "y"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "kind": {
+          "title": "DropKind",
+          "type": "string",
+          "enum": [
+            "hive",
+            "table"
+          ]
+        },
+        "x": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 11
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 11
+        },
+        "need": {
+          "description": "Honey a hive asks for (hives only).",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        }
+      }
     }
   }
 }

@@ -10,7 +10,7 @@ namespace Roboya.CodingEngine.Levels.Generated
     using Newtonsoft.Json.Converters;
 
     /// <summary>
-    /// Roboya Dünyası level, schema version 1. Single source of truth for the game, validator
+    /// Roboya Dünyası level, schema version 3. Single source of truth for the game, validator
     /// and editor.
     /// </summary>
     public partial class LevelDto
@@ -26,6 +26,14 @@ namespace Roboya.CodingEngine.Levels.Generated
 
         [JsonProperty("cards")]
         public CardsDto Cards { get; set; }
+
+        /// <summary>
+        /// Places the bee can leave honey (v3, ADR 0030): a `hive` wants `need` honey, the `table`
+        /// is the village's shared table for what is left over. Walkable cells; the bee may stand on
+        /// them.
+        /// </summary>
+        [JsonProperty("drops", NullValueHandling = NullValueHandling.Ignore)]
+        public List<DropPointDto> Drops { get; set; }
 
         [JsonProperty("game")]
         public GameId Game { get; set; }
@@ -71,7 +79,8 @@ namespace Roboya.CodingEngine.Levels.Generated
         public List<SceneryDto> Scenery { get; set; }
 
         /// <summary>
-        /// 2 adds the optional `story` block. Migrate with scripts/migrate-v2.mjs.
+        /// 2 adds the optional `story` block (scripts/migrate-v2.mjs). 3 adds honey carrying,
+        /// dropping and sharing for Paylaşım Köyü, ADR 0030 (scripts/migrate-v3.mjs).
         /// </summary>
         [JsonProperty("schemaVersion")]
         public long SchemaVersion { get; set; }
@@ -114,16 +123,66 @@ namespace Roboya.CodingEngine.Levels.Generated
         public List<CardId> Palette { get; set; }
     }
 
+    public partial class DropPointDto
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
+        [JsonProperty("kind")]
+        public DropKind Kind { get; set; }
+
+        /// <summary>
+        /// Honey a hive asks for (hives only).
+        /// </summary>
+        [JsonProperty("need", NullValueHandling = NullValueHandling.Ignore)]
+        public long? Need { get; set; }
+
+        [JsonProperty("x")]
+        public long X { get; set; }
+
+        [JsonProperty("y")]
+        public long Y { get; set; }
+    }
+
     public partial class GoalDto
     {
+        /// <summary>
+        /// Honey that must still be in the basket when the goal is met (subtraction, v3). Only
+        /// together with another goal.
+        /// </summary>
+        [JsonProperty("carryAtEnd", NullValueHandling = NullValueHandling.Ignore)]
+        public long? CarryAtEnd { get; set; }
+
         /// <summary>
         /// Item ids that must all be collected.
         /// </summary>
         [JsonProperty("collect", NullValueHandling = NullValueHandling.Ignore)]
         public List<string> Collect { get; set; }
 
+        /// <summary>
+        /// Exactly `count` honey must end up at each listed drop point (v3).
+        /// </summary>
+        [JsonProperty("deliver", NullValueHandling = NullValueHandling.Ignore)]
+        public List<DeliverDto> Deliver { get; set; }
+
         [JsonProperty("reach", NullValueHandling = NullValueHandling.Ignore)]
         public PositionDto Reach { get; set; }
+
+        /// <summary>
+        /// The listed hives hold the same honey and all honey is handed out; what is left, fewer
+        /// than the hives, is on `leftoverTo` (a table) (v3, PK-0001).
+        /// </summary>
+        [JsonProperty("share", NullValueHandling = NullValueHandling.Ignore)]
+        public ShareDto Share { get; set; }
+    }
+
+    public partial class DeliverDto
+    {
+        [JsonProperty("count")]
+        public long Count { get; set; }
+
+        [JsonProperty("to")]
+        public string To { get; set; }
     }
 
     public partial class PositionDto
@@ -133,6 +192,19 @@ namespace Roboya.CodingEngine.Levels.Generated
 
         [JsonProperty("y")]
         public long Y { get; set; }
+    }
+
+    /// <summary>
+    /// The listed hives hold the same honey and all honey is handed out; what is left, fewer
+    /// than the hives, is on `leftoverTo` (a table) (v3, PK-0001).
+    /// </summary>
+    public partial class ShareDto
+    {
+        [JsonProperty("among")]
+        public List<string> Among { get; set; }
+
+        [JsonProperty("leftoverTo", NullValueHandling = NullValueHandling.Ignore)]
+        public string LeftoverTo { get; set; }
     }
 
     public partial class GridDto
@@ -164,6 +236,12 @@ namespace Roboya.CodingEngine.Levels.Generated
 
     public partial class ItemDto
     {
+        /// <summary>
+        /// Honey the item gives when collected (v3, honey only); 1 when omitted.
+        /// </summary>
+        [JsonProperty("amount", NullValueHandling = NullValueHandling.Ignore)]
+        public long? Amount { get; set; }
+
         /// <summary>
         /// Never the only signal: the view pairs every colour with a shape.
         /// </summary>
@@ -213,10 +291,29 @@ namespace Roboya.CodingEngine.Levels.Generated
     public partial class LevelOptions
     {
         /// <summary>
+        /// After success ask how much honey is left (v3, PK-0002). Behind a feature flag until the
+        /// child test.
+        /// </summary>
+        [JsonProperty("askRemaining", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? AskRemaining { get; set; }
+
+        /// <summary>
+        /// Minik: a hive takes the honey it needs as soon as the bee enters its cell (v3, PK-0001).
+        /// </summary>
+        [JsonProperty("autoDrop", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? AutoDrop { get; set; }
+
+        /// <summary>
         /// Bal Peşinde: show the bee's memory strip (Kaşif level).
         /// </summary>
         [JsonProperty("beeMemoryVisible", NullValueHandling = NullValueHandling.Ignore)]
         public bool? BeeMemoryVisible { get; set; }
+
+        /// <summary>
+        /// The memory strip clears itself after every run (Minik, v3, PK-0005).
+        /// </summary>
+        [JsonProperty("clearMemoryEachRun", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? ClearMemoryEachRun { get; set; }
 
         /// <summary>
         /// Show the correct route faintly (YON-03).
@@ -231,15 +328,35 @@ namespace Roboya.CodingEngine.Levels.Generated
         public bool? Guided { get; set; }
 
         /// <summary>
+        /// Introduction level: a child who starts later on the path still plays it (v3, ADR 0018,
+        /// PK-0005).
+        /// </summary>
+        [JsonProperty("intro", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Intro { get; set; }
+
+        /// <summary>
         /// Kodlama Kutusu (KUT-02): before the first run the child taps where the robot will end up;
         /// the run is then compared with the guess.
         /// </summary>
         [JsonProperty("predict", NullValueHandling = NullValueHandling.Ignore)]
         public bool? Predict { get; set; }
+
+        /// <summary>
+        /// The world (bee, basket, hives) starts over on every run while the memory strip stays (v3,
+        /// PK-0005).
+        /// </summary>
+        [JsonProperty("resetEachRun", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? ResetEachRun { get; set; }
     }
 
     public partial class RobotDto
     {
+        /// <summary>
+        /// Honey in the basket at the start (v3); 0 when omitted.
+        /// </summary>
+        [JsonProperty("carrying", NullValueHandling = NullValueHandling.Ignore)]
+        public long? Carrying { get; set; }
+
         [JsonProperty("facing")]
         public Facing Facing { get; set; }
 
@@ -361,7 +478,9 @@ namespace Roboya.CodingEngine.Levels.Generated
         public string Success { get; set; }
     }
 
-    public enum CardId { Action, Backward, Call, Forward, If, Repeat, TurnLeft, TurnRight };
+    public enum CardId { Action, Backward, Call, Drop, Forward, If, Repeat, TurnLeft, TurnRight };
+
+    public enum DropKind { Hive, Table };
 
     public enum GameId { BalPesinde, BirlikteBasaralim, DonguDansi, KodlamaKutusu, RobotAtolyesi, SerbestMucit, YonAvcisi };
 
@@ -394,7 +513,7 @@ namespace Roboya.CodingEngine.Levels.Generated
     /// </summary>
     public enum FriendPose { Explaining, Front, Happy, Thanks };
 
-    public enum StoryProp { Apple, Bee, Beehive, Box, Bush, Flower, Gear, Honey, Log, Magnifier, Pear, Rock, Tree };
+    public enum StoryProp { Apple, Bee, Beehive, Box, Bush, Flower, Gear, Honey, Honeycomb, Log, Magnifier, Pear, Rock, Tree, VillageTable, VillagerBee };
 
     /// <summary>
     /// Roboya's expression.
@@ -420,6 +539,7 @@ namespace Roboya.CodingEngine.Levels.Generated
             Converters =
             {
                 CardIdConverter.Singleton,
+                DropKindConverter.Singleton,
                 GameIdConverter.Singleton,
                 ObstacleLookConverter.Singleton,
                 ColorConverter.Singleton,
@@ -454,6 +574,8 @@ namespace Roboya.CodingEngine.Levels.Generated
                     return CardId.Backward;
                 case "call":
                     return CardId.Call;
+                case "drop":
+                    return CardId.Drop;
                 case "forward":
                     return CardId.Forward;
                 case "if":
@@ -487,6 +609,9 @@ namespace Roboya.CodingEngine.Levels.Generated
                 case CardId.Call:
                     serializer.Serialize(writer, "call");
                     return;
+                case CardId.Drop:
+                    serializer.Serialize(writer, "drop");
+                    return;
                 case CardId.Forward:
                     serializer.Serialize(writer, "forward");
                     return;
@@ -507,6 +632,47 @@ namespace Roboya.CodingEngine.Levels.Generated
         }
 
         public static readonly CardIdConverter Singleton = new CardIdConverter();
+    }
+
+    internal class DropKindConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(DropKind) || t == typeof(DropKind?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "hive":
+                    return DropKind.Hive;
+                case "table":
+                    return DropKind.Table;
+            }
+            throw new Exception("Cannot unmarshal type DropKind");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (DropKind)untypedValue;
+            switch (value)
+            {
+                case DropKind.Hive:
+                    serializer.Serialize(writer, "hive");
+                    return;
+                case DropKind.Table:
+                    serializer.Serialize(writer, "table");
+                    return;
+            }
+            throw new Exception("Cannot marshal type DropKind");
+        }
+
+        public static readonly DropKindConverter Singleton = new DropKindConverter();
     }
 
     internal class GameIdConverter : JsonConverter
@@ -1189,6 +1355,8 @@ namespace Roboya.CodingEngine.Levels.Generated
                     return StoryProp.Gear;
                 case "honey":
                     return StoryProp.Honey;
+                case "honeycomb":
+                    return StoryProp.Honeycomb;
                 case "log":
                     return StoryProp.Log;
                 case "magnifier":
@@ -1199,6 +1367,10 @@ namespace Roboya.CodingEngine.Levels.Generated
                     return StoryProp.Rock;
                 case "tree":
                     return StoryProp.Tree;
+                case "village-table":
+                    return StoryProp.VillageTable;
+                case "villager-bee":
+                    return StoryProp.VillagerBee;
             }
             throw new Exception("Cannot unmarshal type StoryProp");
         }
@@ -1237,6 +1409,9 @@ namespace Roboya.CodingEngine.Levels.Generated
                 case StoryProp.Honey:
                     serializer.Serialize(writer, "honey");
                     return;
+                case StoryProp.Honeycomb:
+                    serializer.Serialize(writer, "honeycomb");
+                    return;
                 case StoryProp.Log:
                     serializer.Serialize(writer, "log");
                     return;
@@ -1251,6 +1426,12 @@ namespace Roboya.CodingEngine.Levels.Generated
                     return;
                 case StoryProp.Tree:
                     serializer.Serialize(writer, "tree");
+                    return;
+                case StoryProp.VillageTable:
+                    serializer.Serialize(writer, "village-table");
+                    return;
+                case StoryProp.VillagerBee:
+                    serializer.Serialize(writer, "villager-bee");
                     return;
             }
             throw new Exception("Cannot marshal type StoryProp");

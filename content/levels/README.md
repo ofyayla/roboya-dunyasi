@@ -116,3 +116,24 @@ Doğrulayıcı şunları kontrol eder: şemaya uygunluk, bölümün tanımlı ka
 - Renk eşleştirme: yalnız istenen rengin kimliği `goal.collect` içinde olur, diğer renkler çeldiricidir.
 - Sayma: `goal.collect` içinde üç çiçek; çiçekler yol üzerinde olabilir.
 - Ses anahtarları `bal_pesinde.lNN.intro` / `.success`.
+
+## Bal taşıma ve paylaşma (şema v3, Paylaşım Köyü)
+
+Şema v3 yalnız yeni isteğe bağlı alanlar ekler; v2 bölümler `node packages/level-schema/scripts/migrate-v3.mjs content/levels` ile yalnız sürüm numarasını artırır. Mekanik ADR 0030'da, pedagoji kuralları `docs/pedagoji/kararlar/PK-0001`–`PK-0005` kayıtlarındadır. **Motor desteği (plan B2) gelene kadar bu alanları kullanan bölümleri oyun yükleyicisi reddeder;** şema yalnız sözleşmeyi tanımlar.
+
+| Alan | Anlam |
+| --- | --- |
+| `drops` | En çok 4 bırakma noktası: `hive` (petek, `need` 1–5 bal ister) ve `table` (ortak köy sofrası). Ari'nin kovanı (`home`) yoktur. |
+| `items[].amount` | Bal öğesinin verdiği bal (1–7, varsayılan 1) |
+| `robot.carrying` | Başlangıçta sepetteki bal (0–7) |
+| `goal.deliver` | `[{ to, count }]`: noktaya tam bu kadar bal |
+| `goal.share` | `{ among, leftoverTo? }`: petekler eşit, bal tamamen dağıtılmış, artan petek sayısından az ve sofrada |
+| `goal.carryAtEnd` | Hedef bittiğinde sepette kalması gereken bal; tek başına hedef olamaz |
+| `cards.palette` ve komut `drop` | "Bırak" kartı (Kaşif) |
+| `options.autoDrop` | Minik: peteğe girince ihtiyacı kadar bal otomatik bırakılır |
+| `options.resetEachRun` | Dünya her çalıştırmada başa döner, bellek kalır |
+| `options.clearMemoryEachRun` | Minik: bellek her çalıştırmadan sonra temizlenir |
+| `options.askRemaining` | Başarıdan sonra "Kaç kaldı?"; çocuk testine kadar kapalı tutulur |
+| `options.intro` | Tanıtım bölümü: geç başlayan çocuk da oynar |
+
+Sınırlar (PK-0003; doğrulayıcı kuralları B4'te): toplam bal ≤ 7, `need` ≤ 4 (köşe finalinde 5), bölümde "Bırak" ≤ 6, Kaşif'te en kısa çözüm ≤ 10 kart.

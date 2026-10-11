@@ -1,6 +1,6 @@
 {
   "$schema": "../../../../packages/level-schema/level.schema.json",
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "id": "sabir-ormani.yon-avcisi.01",
   "region": "sabir-ormani",
   "game": "yon-avcisi",
