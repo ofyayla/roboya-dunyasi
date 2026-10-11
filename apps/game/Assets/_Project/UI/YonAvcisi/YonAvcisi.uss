@@ -25,31 +25,6 @@
     background-color: rgb(250, 200, 50);
 }
 
-.progress {
-    flex-direction: row;
-    align-items: center;
-}
-
-.progress__dot {
-    width: 18px;
-    height: 18px;
-    margin: 0 6px;
-    border-radius: 9px;
-    background-color: var(--c-bg-deep);
-}
-
-.progress__dot--done {
-    background-color: var(--c-forest);
-}
-
-.progress__dot--current {
-    width: 28px;
-    height: 28px;
-    border-radius: 14px;
-    border-width: 4px;
-    border-color: var(--c-brand);
-}
-
 .board-host {
     flex-grow: 1;
     margin: 8px 0;
@@ -243,12 +218,6 @@
 
 .sprite {
     -unity-background-scale-mode: scale-to-fit;
-}
-
-.screen--art .progress {
-    padding: 6px 12px;
-    border-radius: 24px;
-    background-color: rgba(255, 244, 226, 0.85);
 }
 
 .screen--art .bottom-bar {
