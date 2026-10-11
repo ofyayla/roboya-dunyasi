@@ -105,7 +105,7 @@ ios-device: ## Export the Xcode project for a physical iOS device into apps/game
 ios-install: ios-device ## Build and install to the connected iOS device (add DEV=1 for a development build)
 	xcodebuild -project apps/game/Builds/iOS/Unity-iPhone.xcodeproj -scheme Unity-iPhone \
 		-configuration $(if $(DEV),Debug,Release) CODE_SIGN_STYLE=Automatic DEVELOPMENT_TEAM=9M8PK9FC7X \
-		-derivedDataPath apps/game/Builds/iOS/build -allowProvisioningUpdates build
+		-destination 'generic/platform=iOS' -derivedDataPath apps/game/Builds/iOS/build -allowProvisioningUpdates build
 	xcrun devicectl device install app --device $$(xcrun devicectl list devices | awk '/available \(paired\)/ {print $$3; exit}') \
 		apps/game/Builds/iOS/build/Build/Products/$(if $(DEV),Debug,Release)-iphoneos/RoboyaDnyas.app
 
