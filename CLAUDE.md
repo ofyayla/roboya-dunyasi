@@ -40,7 +40,7 @@ Bitirirken neyi çalıştırdığını, neyi çalıştırmadığını ve nedenin
 
 ## Sık kullanılan komutlar
 
-`make setup` · `make api-dev` · `make web-dev` · `make editor-dev` · `make test` · `make test-engine` · `make lint` · `make gen` (şema/OpenAPI değişince) · `make validate-content` (içerik değişince) · `make tts` · `make refresh-art` · `make unity-test` · `make unity-playmode` · `make unity-e2e`
+`make setup` · `make api-dev` · `make web-dev` · `make editor-dev` · `make test` · `make test-engine` · `make lint` · `make gen` (şema/OpenAPI değişince) · `make validate-content` (içerik değişince) · `make tts` · `make refresh-art` · `make ios-simulator` · `make unity-test` · `make unity-playmode` · `make unity-e2e`
 
 ## Alan uyarıları
 
