@@ -37,7 +37,7 @@ namespace Roboya.CodingEngine.Solving
                 var continuation = Solver.Solve(level, state, level.MaxProgramLength - i);
                 var suggested = continuation.Solution.Count > 0 ? continuation.Solution[0] : (CardType?)null;
 
-                if (!card.IsPrimitiveMove() || !Solver.TryApply(level, state, card, out var next))
+                if (!card.IsSolverStep() || !Solver.TryApply(level, state, card, out var next))
                 {
                     return new Hint(i, suggested);
                 }

@@ -86,5 +86,12 @@ namespace Roboya.Tests.CodingEngine
         {
             Assert.Throws<ArgumentNullException>(() => new Program(null));
         }
+
+        [Test]
+        public void DropCommand_IsOneCardOfTheDropType()
+        {
+            Assert.AreEqual(1, DropCommand.Instance.CardCount);
+            Assert.AreEqual(CardType.Drop, DropCommand.Instance.Card);
+        }
     }
 }

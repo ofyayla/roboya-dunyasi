@@ -12,6 +12,15 @@ namespace Roboya.CodingEngine.Execution
         Collected,
         ActionPerformed,
 
+        /// <summary>One honey left the basket for a drop point (<see cref="ExecutionEvent.DropIndex"/>), by the card or by a hive taking it.</summary>
+        Dropped,
+
+        /// <summary>"Bırak" with an empty basket or off a drop point; execution stops on that card.</summary>
+        NothingToDrop,
+
+        /// <summary>A hive got more than it needs; the honey is shown spilling and execution stops on that card.</summary>
+        HiveOverflow,
+
         /// <summary>A repeat body starts iteration <see cref="ExecutionEvent.Iteration"/> (1-based).</summary>
         LoopIteration,
 

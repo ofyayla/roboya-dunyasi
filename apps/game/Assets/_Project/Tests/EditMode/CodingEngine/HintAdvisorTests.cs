@@ -66,5 +66,26 @@ namespace Roboya.Tests.CodingEngine
             Assert.Throws<ArgumentNullException>(() => HintAdvisor.Analyze(null, new CardType[0]));
             Assert.Throws<ArgumentNullException>(() => HintAdvisor.Analyze(Build(Corner), null));
         }
+
+        [Test]
+        public void Analyze_DropCardOnTheWay_IsNotWrong()
+        {
+            var level = HoneyLevels.Build(new[] { "R1A" }, deliver: new[] { ('A', 1) });
+
+            var hint = HintAdvisor.Analyze(level, new[] { F, F, CardType.Drop });
+
+            Assert.IsFalse(hint.HasHint);
+        }
+
+        [Test]
+        public void Analyze_DropAwayFromTheHive_PointsAtThatCard()
+        {
+            var level = HoneyLevels.Build(new[] { "R1A" }, deliver: new[] { ('A', 1) });
+
+            var hint = HintAdvisor.Analyze(level, new[] { F, CardType.Drop });
+
+            Assert.AreEqual(1, hint.WrongIndex);
+            Assert.AreEqual(F, hint.SuggestedCard);
+        }
     }
 }

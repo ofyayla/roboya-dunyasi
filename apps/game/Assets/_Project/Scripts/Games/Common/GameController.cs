@@ -135,11 +135,13 @@ namespace Roboya.Games.Common
             _entry = _levels[_index];
             // Bal Peşinde: the bee keeps its place and its memory between runs (BAL-02).
             _bee = _entry.Dto.Game == GameId.BalPesinde;
+            // Paylaşım Köyü (PK-0005): the world starts over on every run while the memory stays, as in the other games.
+            _worldPersists = _bee && _entry.Dto.Options?.ResetEachRun != true;
             _clearedSinceRun = true;
             _predicting = false;
             _prediction = null;
             _lastPlanCount = 0;
-            _session = new LevelSession(_entry.Level, _entry.ShortestLength, _services.Rules, keepsState: _bee);
+            _session = new LevelSession(_entry.Level, _entry.ShortestLength, _services.Rules, keepsState: _worldPersists, clearsMemoryAfterRun: _entry.Dto.Options?.ClearMemoryEachRun == true);
             // The memory is invisible for the youngest (BAL, Minik): the strip shows blank cards, so only the count is seen.
             _paletteElement.EnableInClassList("palette--bee", _bee);
             _clearBig.EnableInClassList("hidden", !_bee);
@@ -184,6 +186,7 @@ namespace Roboya.Games.Common
         private readonly VisualElement _paletteElement;
         private readonly GoalBadge _badge;
         private bool _bee;
+        private bool _worldPersists;
         private bool _planTrace;
         private int _lastPlanCount;
         private bool _clearedSinceRun = true;
@@ -447,7 +450,7 @@ namespace Roboya.Games.Common
             _tray.Guide(null);
             _keptOldCommands = _bee && _session.Attempts > 0 && !_clearedSinceRun;
             _clearedSinceRun = false;
-            if (!_bee)
+            if (!_worldPersists)
             {
                 _board.ResetRobot(_entry.Level.Start);
                 _badge.Set(0);
@@ -511,7 +514,7 @@ namespace Roboya.Games.Common
             var pulse = _board.PulseMissing(result != null ? result.FinalState.CollectedMask : 0UL, token);
             await Tween.Delay(_entry.Dto.Game == GameId.KodlamaKutusu ? 2.5f : 1.5f, token);
             await pulse;
-            if (!_bee)
+            if (!_worldPersists)
             {
                 _board.ResetRobot(_entry.Level.Start);
                 _badge.Set(0);

@@ -259,5 +259,71 @@ namespace Roboya.Tests.CodingEngine
 
             Assert.AreEqual(s.Level.Start.Position, s.Robot.Position);
         }
+
+        private static LevelSession ClearingSession() =>
+            new LevelSession(Build(Corner, maxLength: 7), 5, clearsMemoryAfterRun: true);
+
+        [Test]
+        public void ClearMemoryAfterRun_FailedRun_EmptiesThePlan()
+        {
+            var s = ClearingSession();
+            s.Plan.Load(new[] { F, F });
+            PlayAll(s);
+
+            s.ClearMemoryAfterRun();
+
+            Assert.IsTrue(s.Plan.IsEmpty);
+            Assert.AreEqual(Roboya.CodingEngine.Play.SessionState.Planning, s.State);
+        }
+
+        [Test]
+        public void ClearMemoryAfterRun_MarksTheFailingCardUntilTheViewClears()
+        {
+            var s = ClearingSession();
+            s.Plan.Load(new[] { F, F, F, Rt, F });
+
+            var result = PlayAll(s);
+
+            Assert.AreEqual(5, s.Plan.Count, "the plan stays while the run is shown");
+            CollectionAssert.AreEqual(new[] { 2 }, result.ErrorCommandPath);
+        }
+
+        [Test]
+        public void ClearMemoryAfterRun_FinishedLevel_KeepsThePlan()
+        {
+            var s = ClearingSession();
+            s.Plan.Load(new[] { F, F, Rt, F, F });
+            PlayAll(s);
+
+            s.ClearMemoryAfterRun();
+
+            Assert.AreEqual(5, s.Plan.Count);
+        }
+
+        [Test]
+        public void ClearMemoryAfterRun_NotEnabled_KeepsThePlan()
+        {
+            var s = Session();
+            s.Plan.Load(new[] { F, F });
+            PlayAll(s);
+
+            s.ClearMemoryAfterRun();
+
+            Assert.AreEqual(2, s.Plan.Count);
+            Assert.IsFalse(s.ClearsMemoryAfterRun);
+        }
+
+        [Test]
+        public void Play_WorldResetsEachRun_StartsFromTheLevelStartAgain()
+        {
+            var s = Session();
+            s.Plan.Load(new[] { F, F });
+            PlayAll(s);
+
+            var second = PlayAll(s);
+
+            Assert.AreEqual(Build(Corner).Start.Position, s.Robot.Position, "without keepsState the bee is not carried over");
+            Assert.AreEqual(new Roboya.CodingEngine.World.GridPosition(0, 0), second.FinalState.Position);
+        }
     }
 }

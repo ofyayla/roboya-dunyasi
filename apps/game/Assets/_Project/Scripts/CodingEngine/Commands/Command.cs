@@ -139,6 +139,19 @@ namespace Roboya.CodingEngine.Commands
         public override int CardCount => 1;
     }
 
+    /// <summary>"Bırak": leaves one honey on the drop point under the bee (Paylaşım Köyü, ADR 0030).</summary>
+    public sealed class DropCommand : Command
+    {
+        public static readonly DropCommand Instance = new DropCommand();
+
+        private DropCommand()
+            : base(CardType.Drop)
+        {
+        }
+
+        public override int CardCount => 1;
+    }
+
     /// <summary>A non-moving action such as a dance move or a light; the view interprets <see cref="ActionId"/>.</summary>
     public sealed class ActionCommand : Command
     {
