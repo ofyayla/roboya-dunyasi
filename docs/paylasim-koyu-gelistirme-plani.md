@@ -19,11 +19,11 @@ Kabaca 3 sprint geliştirme + paralel sanat; çocuk testi ve düzeltme için 1 s
 
 ## A. Önce verilmesi gereken kararlar
 
-A2–A4 ürün sahibince kabul edildi (2026-10-11); A1 pedagoji onayı bekliyor. A1 olmadan B ve E başlamaz; C'nin çoğu karardan bağımsızdır ve hemen başlayabilir.
+A1–A4 ürün sahibince kabul edildi (2026-10-11). A1, pedagoji danışmanının önerileriyle karara bağlandı: PK-0001–PK-0005. B ve E başlayabilir. Uzman onayı (G2) yayından önce alınır; köşe 1'in Minik'e erken açılması P1/P6 ile birlikte açık.
 
 | # | Karar | Kimde | Etkisi | Önerim |
 | --- | --- | --- | --- | --- |
-| A1 | Pedagoji taslağının onayı (7 soru) | Pedagoji ekibi | E1, D3, D4 | Sabır Ormanı onayıyla aynı toplantıda |
+| A1 | Pedagoji taslağının onayı (7 soru) | Pedagoji ekibi | E1, D3, D4 | **Kabul (2026-10-11):** PK-0001–PK-0005; ADR 0030 güncellendi |
 | A2 | Bölge ne zaman açılır? Bugün içeriği olan her bölge açık (PRD: "bölgeler sırayla açılır") | Ürün | C1 | **Kabul (2026-10-11):** Sabır Ormanı'nın son bölümü (bölge finali) bitince |
 | A3 | Kaşif çocuk Sabır Ormanı'nı bitirmeden köye geçebilir mi? | Ürün + pedagoji | C1 | **Kabul (2026-10-11):** Hayır; ama Kaşif başlangıcı sayesinde ormanda Minik bölümleri zaten atlanıyor |
 | A4 | Gemi parçası sayısı: bugün 7 parça var; Sabır Ormanı 36 bölümle 7 + 1 bölge = 8 parça kazandırıyor, köyle 4 + 1 daha eklenir. PRD hem "her 5 bölümde bir" hem "beş parça tamamlandığında gemi onarılır" diyor | Ürün | C5, E4 | **Kabul (2026-10-11):** Bölüm başına parça yerine bölge başına 1 büyük + köşe başına 1 küçük parça; gemi 5 bölgede tamamlanır |
@@ -32,11 +32,11 @@ A2–A4 ürün sahibince kabul edildi (2026-10-11); A1 pedagoji onayı bekliyor.
 
 | ID | İş | Boyut | Bağımlılık | Not |
 | --- | --- | --- | --- | --- |
-| B1 | **Şema v3:** `drops`, `honey.amount`, `robot.carrying`, `goal.deliver/share/carryAtEnd`, `drop` kartı, `options.autoDrop/askRemaining`, yeni hikâye nesneleri; v2 → v3 dönüştürme betiği; `make gen` (C# + TS) | M | ADR 0030 kabulü | Sabır Ormanı dosyaları yalnız sürüm numarası değişir |
-| B2 | **Motor:** `RobotState`'e sepet ve teslim sayıları; `DropCommand`; otomatik bırakma; yeni olaylar (`Dropped`, `NothingToDrop`, `HiveOverflow`); hedef denetimi; `keepsState` ile uyum | L | B1 | Saf C#, .NET ile test; kapsam ≥ %90 korunur |
+| B1 | **Şema v3:** `drops`, `honey.amount`, `robot.carrying`, `goal.deliver/share/carryAtEnd`, `drop` kartı, `options.autoDrop/askRemaining`, tanıtım işareti ve çalıştırma durumu seçeneği (PK-0005), yeni hikâye nesneleri; `home` yok (PK-0001); v2 → v3 dönüştürme betiği; `make gen` (C# + TS) | M | ADR 0030 kabulü | Sabır Ormanı dosyaları yalnız sürüm numarası değişir |
+| B2 | **Motor:** `RobotState`'e sepet ve teslim sayıları; `DropCommand`; otomatik bırakma; yeni olaylar (`Dropped`, `NothingToDrop`, `HiveOverflow`); hedef denetimi (eşit paylaşmada artan < petek sayısı); taşmada ve boş sepette o kartta durma; köyde dünyanın her çalıştırmada başa dönmesi, Minik'te belleğin kendiliğinden temizlenmesi (PK-0001, PK-0005) | L | B1 | Saf C#, .NET ile test; kapsam ≥ %90 korunur |
 | B3 | **Çözücü ve ipucu:** yeni durum alanlarıyla BFS, en kısa çözüm, ipucu merdiveni (yanlış/eksik bırakma için kart ipucu), rehberli mod | M | B2 | Süre ölçümü: tüm köy bölümleri doğrulayıcıda < 10 sn |
 | B4 | **Doğrulayıcı kuralları:** `autoDrop` yalnız Minik; `drop` kartı varsa bırakma noktası; bal yeterli mi; sayılar 1–7; ses anahtarları; "Kaç kaldı?" cevap satırları | S | B1, B3 | `make validate-content` |
-| B5 | **Bölüm editörü:** petek/sofra/kovan yerleştirme, bal miktarı, hedef türleri, yeni kart; editör içi çözücü önizlemesi | L | B1–B3 | `apps/level-editor`; içerik yazımı (E1) bunu bekler |
+| B5 | **Bölüm editörü:** petek ve sofra yerleştirme, bal miktarı, hedef türleri, yeni kart; editör içi çözücü önizlemesi | L | B1–B3 | `apps/level-editor`; içerik yazımı (E1) bunu bekler |
 
 ## C. Çok bölgeli istemci
 
@@ -54,7 +54,7 @@ Bugün `PathView` Sabır Ormanı'na sabit, adaya dokununca hangi bölge seçilir
 
 | ID | İş | Boyut | Bağımlılık | Not |
 | --- | --- | --- | --- | --- |
-| D1 | **Tahta:** petek (boş/dolu/taşmış yuvalar, şekille), sofra, kovan; Ari'nin sepeti (nokta sayacı); bırakma animasyonu ve sesli sayma | L | B2 | Renk tek başına anlam taşımaz; 30 fps, `Update` içinde bellek ayırma yok |
+| D1 | **Tahta:** petek (boş/dolu/taşmış yuvalar, şekille), sofra; Ari'nin sepeti (nokta sayacı); bırakma animasyonu ve sesli sayma | L | B2 | Renk tek başına anlam taşımaz; 30 fps, `Update` içinde bellek ayırma yok |
 | D2 | **Bırak tuşu:** arının tuş paneline büyük "Bırak" tuşu (≥ 64 dp); kart tanıtım anı; Minik'te gizli (otomatik bırakma) | M | B1 | UI Toolkit |
 | D3 | **Eşit paylaşma ve geri bildirim:** bitişte peteklerin yan yana karşılaştırılması; unutulan petek üzgün, taşan petek uyarısı; hedef rozeti yeni hedef türlerini gösterir | M | B2, A1 | Ceza yok |
 | D4 | **"Kaç kaldı?" adımı:** başarı sonrası üç nokta kartından seçim; yanlışta birlikte sayma; yıldızı etkilemez | M | A1 (onaylanırsa) | `predict` adımının kalıbı |

@@ -8,15 +8,15 @@ Kaynaklar:
 - **[Değerlendirme]** [`../review/sabir-ormani-oyun-ve-pedagoji-degerlendirmesi.md`](../review/sabir-ormani-oyun-ve-pedagoji-degerlendirmesi.md) — #10, #13, #16, #17.
 - **[Taslak-PK]** `paylasim-koyu-taslagi.md` — "İncelemede sorulacaklar" (PR #78; birleşince bu klasörde).
 
-Kabul edilmiş pedagoji kararı henüz yok (`kararlar/` boş).
+Kabul edilmiş kararlar: PK-0001–PK-0005 (Paylaşım Köyü, 2026-10-11; ürün sahibi kabulü, uzman onayı yayından önce). Sabır Ormanı kararları (P1–P12) hâlâ açık.
 
 ## Neyi engelliyor
 
 | Bekleyen | Engellediği iş |
 | --- | --- |
 | P1–P6 (Sabır Ormanı) | Kapalı beta (F1-27: "36 bölümün pedagoji onayı"), pilot okul, profesyonel ses kaydı (F2-14) |
-| K1–K7 (Paylaşım Köyü) | Köy motor işi ve şema v3 (plan B1–B5), 24 bölüm (E1), köy sesleri (E2) |
-| P1 ve P2 | Paylaşım Köyü'nün Minik bölümleri ve bellek davranışı da bunlara göre kurulacak |
+| ~~K1–K7 (Paylaşım Köyü)~~ | Karar verildi (PK-0001–PK-0005); B ve E başlayabilir |
+| P1 ve P6 | Köşe 1'in Minik profile ormanın 9. bölümünden sonra erken açılması (PK-0005'te açık bırakıldı). Köyün bellek davranışı P2'den bağımsız olarak PK-0005'te karara bağlandı. |
 
 ## A. Sabır Ormanı (F1-21) — öncelikli
 
@@ -48,17 +48,17 @@ Kabul edilmiş pedagoji kararı henüz yok (`kararlar/` boş).
 
 ## B. Paylaşım Köyü (F2-13)
 
-Taslak: `paylasim-koyu-taslagi.md` (PR #78). Mekanik önerisi: ADR 0030. Ürün kararları verildi (bırakma Minik'te otomatik, Kaşif'te "Bırak" kartı; bölge Minik ve Kaşif'i kapsar).
+Taslak: `paylasim-koyu-taslagi.md` (PR #78). Mekanik: ADR 0030. **Hepsi karara bağlandı (2026-10-11):** ürün sahibi pedagoji danışmanının önerilerini kabul etti; kayıtlar PK-0001–PK-0005. Uzman onayı (G2) yayından önce alınır.
 
 | # | Karar | Not |
 | --- | --- | --- |
-| **K1** | **Minik payı:** köyde yalnız 6 Minik bölümü var (ormanda 9). Artsın mı, yoksa toplama-çıkarma 3,5–5 yaş için zaten erken mi? | P1'in cevabına bağlı |
-| **K2** | **Otomatik bırakma:** Minik'te petek "ihtiyacı kadar alır", fazla bal verilemez. Birebir eşlemeyi öğretmek için yeterli mi? | |
-| **K3** | **"Kaç kaldı?" adımı:** Çıkarma bir soru adımıyla mı ölçülsün, yoksa yalnız sepetin görünür azalmasıyla mı? Seçimlerde rakam olsun mu? | P3 (tahmin adımı) kararıyla tutarlı olmalı |
-| K4 | **Sayı aralığı:** Kaşif için en çok 7 yeterli mi? MEB kazanım eşleştirmesi (sayma, toplama-çıkarma, eşit paylaştırma). | |
-| K5 | **Eşit paylaşma:** Peteklerde sayı göstermeden "eşit olsun" kuralı 5–7 yaş için anlaşılır mı, yoksa önce sayıyla başlansın mı? | |
-| K6 | **Artan bal:** Ortak köy sofrası paylaşma değerini doğru anlatıyor mu? Alternatif: en küçük arıya vermek. | Değer gömülmesi |
-| K7 | **Kavram etiketi:** Veli raporuna "toplama-çıkarma / eşit paylaşma" kavramı eklensin mi, "sayma" altında mı kalsın? | Ürünle birlikte |
+| **K1** | **Minik payı:** köyde yalnız 6 Minik bölümü var (ormanda 9). Artsın mı, yoksa toplama-çıkarma 3,5–5 yaş için zaten erken mi? | Karar verildi: PK-0005 (erken açma P1/P6 ile açık) |
+| **K2** | **Otomatik bırakma:** Minik'te petek "ihtiyacı kadar alır", fazla bal verilemez. Birebir eşlemeyi öğretmek için yeterli mi? | Karar verildi: PK-0001 |
+| **K3** | **"Kaç kaldı?" adımı:** Çıkarma bir soru adımıyla mı ölçülsün, yoksa yalnız sepetin görünür azalmasıyla mı? Seçimlerde rakam olsun mu? | Karar verildi: PK-0002 |
+| K4 | **Sayı aralığı:** Kaşif için en çok 7 yeterli mi? MEB kazanım eşleştirmesi (sayma, toplama-çıkarma, eşit paylaştırma). | Karar verildi: PK-0003 (MEB eşleştirmesi G1'de, ekip) |
+| K5 | **Eşit paylaşma:** Peteklerde sayı göstermeden "eşit olsun" kuralı 5–7 yaş için anlaşılır mı, yoksa önce sayıyla başlansın mı? | Karar verildi: PK-0001 |
+| K6 | **Artan bal:** Ortak köy sofrası paylaşma değerini doğru anlatıyor mu? Alternatif: en küçük arıya vermek. | Karar verildi: PK-0001 |
+| K7 | **Kavram etiketi:** Veli raporuna "toplama-çıkarma / eşit paylaşma" kavramı eklensin mi, "sayma" altında mı kalsın? | Karar verildi: PK-0004 |
 
 ## C. Genel
 

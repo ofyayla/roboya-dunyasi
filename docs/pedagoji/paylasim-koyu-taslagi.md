@@ -1,6 +1,6 @@
 # Paylaşım Köyü — 24 bölüm taslağı (pedagoji incelemesi için)
 
-Durum: **taslak, tasarım aşaması**. Henüz bölüm dosyası ve kod yok. Bu belge önce ürün sahibi, sonra pedagoji ekibi tarafından onaylanır; ardından mekanik (ADR 0030) yapılır ve bölümler editörle yazılıp çözücüyle doğrulanır. Aşağıdaki kart sayıları **tahminidir**; kesin en kısa çözüm, mekanik yapıldıktan sonra çözücüyle hesaplanır.
+Durum: **onaylandı (2026-10-11), uygulama bekliyor**. Ürün sahibi pedagoji danışmanının önerilerini kabul etti: PK-0001–PK-0005. Aşağıdaki tablolar bu kararlara göre güncellendi. Uzman onayı (G2) yayından önce alınır. Henüz bölüm dosyası ve kod yok; mekanik (ADR 0030) yapılır, bölümler editörle yazılıp çözücüyle doğrulanır. Aşağıdaki kart sayıları **tahminidir**; kesin en kısa çözüm, mekanik yapıldıktan sonra çözücüyle hesaplanır.
 
 İlgili: F2-13, BAL-01, BAL-03; PRD "Ürün konsepti" (Paylaşım Köyü satırı); ADR 0026 (bellekli arı), ADR 0030 (taşıma ve dağıtma).
 
@@ -23,18 +23,18 @@ Bölge karakteri: **Köylü arılar** (her petekte bir arı ailesi). Sabır Orma
    - **Minik (otomatik):** Ari peteğe varınca petek, ihtiyacı kadar balı kendisi alır. Çocuk yalnız rotayı planlar. Fazla bal verilemez, eksik kalan yuva boş görünür.
    - **Kaşif ("Bırak" kartı/tuşu):** Her "Bırak" bir bal bırakır. Çocuk kaç bal bırakacağını kodla söyler, yani sayma ve dağıtma koda girer. Fazla bırakılırsa petek "taşar" (ceza yok, Roboya "Bu petek doldu, fazlası başka birine yarar mı?" der).
 4. **Eşit paylaşma bölümlerinde petekler sayı göstermez.** Kural "herkese aynı ve hepsi dağıtılsın"dır. Bittiğinde petekler yan yana dolu yuvalarıyla karşılaştırılır.
-5. **Artan bal köy sofrasına.** Bal eşit bölünemiyorsa artan, herkesin kullandığı ortak sofraya bırakılır. Bu, paylaşmanın "kimse fazla almasın" yanını gösterir.
+5. **Artan bal köy sofrasına.** Bal eşit bölünemiyorsa artan, herkesin kullandığı ortak sofraya bırakılır. Ses dili: "Artan bal sofraya, herkes birlikte yesin." (PK-0001)
 6. **"Kaç kaldı?" adımı (çıkarma, öneri).** Kaşif bölümlerinde bal verildikten sonra Roboya sorar: "Sepette kaç bal kaldı?" Çocuk üç nokta kartından birine dokunur (rakam yok ya da isteğe bağlı rakam). Yanlış seçimde Ari sepeti açar ve birlikte sayarlar; ceza yok. Bu adım Kodlama Kutusu'ndaki "tahmin et" adımına benzer ve **pedagoji kararı** gerektirir.
 
-Değişmeyenler: Ari'nin belleği (ADR 0026) aynen kalır. Temizle unutulursa eski komutlar da çalışır; Minik'te bellek görünmez, Kaşif'te görünür (Sabır Ormanı'ndaki karar neyse o). Hata cezalandırılmaz; can, süre baskısı veya yıldız kaybı yok.
+Bellek ve dünya (PK-0005): her çalıştırmada dünya başa döner (arı başlangıçta, sepet ve petekler ilk hâlinde). Kaşif'te bellek görünür ve Temizle'ye kadar korunur; Temizle unutulursa eski komutlar da baştan çalışır. Minik'te bellek gizlidir ve her çalıştırmadan sonra kendiliğinden temizlenir. Hata cezalandırılmaz; can, süre baskısı veya yıldız kaybı yok.
 
 ## Dizilim kuralı
 
 - Bölge Sabır Ormanı'ndan sonra açılır. Tamamı premium içeriktir (ücretsiz katman Sabır Ormanı'nın ilk 3 bölümü).
 - Patika 4 köşe × 6 bölüm. Her köşe bir matematik fikrini tanıtır ve kısa bir değer anıyla biter (Sabır Ormanı'ndaki köşe kaplumbağaları gibi).
 - **Minik:** 1–6. bölümler, 2–4 kart, otomatik bırakma, sayılar en çok 3.
-- **Kaşif:** 7. bölümden başlar, 5–12 kart, "Bırak" kartı, sayılar en çok 7.
-- Her köşenin ilk bölümü tanıtımdır (`guided`) ve Kaşif çocuk bölgeye geç başlasa bile önce oynanır (ADR 0018'deki tanıtım kuralı).
+- **Kaşif:** 1. bölümü tanıtım olarak oynar, sonra 7. bölümden başlar; 5–10 kart (finaller dahil), "Bırak" kartı, toplam bal en çok 7, peteğin ihtiyacı en çok 4 (köşe finalinde 5), bölüm başına en çok 6 "Bırak" (PK-0003, PK-0005).
+- Her köşenin ilk bölümü (1, 7, 13, 19) bölüm verisinde açıkça tanıtım olarak işaretlenir ve rehberlidir; Kaşif çocuğun başlangıcından önce kalan tek tanıtım 1. bölümdür (ADR 0018'deki tanıtım kuralı, PK-0005).
 - Bölümler yalnız Bal Peşinde'dir (PRD: "Bal Peşinde (genişletilmiş)").
 
 ## Bölüm listesi
@@ -48,7 +48,7 @@ Gösterim: ● = bir bal; "petek ●●" = 2 bal isteyen petek. Kart sayıları 
 | 1 | Taşı ve ver | 1 bal, 1 petek ●. Köy arısı "Peteğimiz boş" der. | 2–3 | Tanıtım, rehberli. Sepet ve petek yuvası ilk kez. |
 | 2 | Birebir eşleme | 2 bal, 2 petek ● ●. Hepsi aynı yol üstünde. | 3 | |
 | 3 | 3'e kadar sayma | 3 bal tek çiçekte, 3 petek ● ● ● yan yana. | 3–4 | Her peteğe varışta sesli sayma. |
-| 4 | Kimse unutulmasın | 2 petek; biri yolun kenarında, dönüş gerekir. | 4 | Unutulan petek üzgün görünür, Roboya "Bu arının hiç balı yok" der. |
+| 4 | Kimse unutulmasın | 2 petek; biri yolun kenarında, dönüş gerekir. Arı yukarı bakarak başlar, petek sağda; yalnız "sağa dön". | 4 | Unutulan petek üzgün görünür, Roboya "Bu arının hiç balı yok" der. Hayalet yol açık. |
 | 5 | Toplama: 1 + 1 | İki ayrı çiçekte birer bal, tek petek ●●. | 4 | Rozet: ● + ● = ●●. |
 | 6 | Köşe finali | 3 bal, 2 petek ● ve ●●. | 4 | Köşe sonu değer anı: ilk mutlu arı ailesi. |
 
@@ -61,17 +61,17 @@ Gösterim: ● = bir bal; "petek ●●" = 2 bal isteyen petek. Kart sayıları 
 | 9 | Toplama, farklı yollar | Üç çiçekte 1, 2, 3 bal; petek ●●●●. 1 + 3 de olur, 2 + 3 alıp 4'ünü bırakmak da. | 8 | Birden çok doğru yol var; en kısa yol 3. yıldız. |
 | 10 | Fazlası nereye? | Sepette 3 bal, petek ●●; artan 1 köy sofrasına. | 7 | Çıkarmaya hazırlık. Petek taşarsa nazik uyarı. |
 | 11 | İki farklı ihtiyaç | Petekler ● ve ●●●, 4 bal. | 8 | |
-| 12 | Köşe finali | Petekler ●, ●● ve ●●●; 6 bal (1 + 2 + 3). | 10 | Köşe sonu değer anı. |
+| 12 | Köşe finali | Petekler ●, ●● ve ●●● yan yana; 6 bal sepette başlar. Çözücü 10'u aşarsa petekler ●● ve ●●● (5 bal). | ≤ 10 | Köşe sonu değer anı. |
 
 ### Köşe 3 — Eşit paylaş (Kaşif)
 
 | Sıra | Ne öğrenir | Kurgu | Kart (tahmini) | Not |
 | --- | --- | --- | --- | --- |
-| 13 | "Eşit" ne demek | 2 bal, 2 petek; petekler sayı göstermez. | 5 | Tanıtım, rehberli. Bitişte petekler yan yana karşılaştırılır. |
-| 14 | 4'ü ikiye böl | 4 bal, 2 petek → 2'şer. | 7 | |
+| 13 | "Eşit" ne demek | 2 bal, 2 petek (birer); petekler sayı göstermez, yan yana durur. | 5 | Tanıtım, rehberli. Yuvalar çalışırken canlı dolar; bitişte petekler yan yana karşılaştırılır. |
+| 14 | 4'ü ikiye böl | 4 bal, 2 petek → 2'şer. | 7 | İpucu: "Bir ona, bir ona." |
 | 15 | 6'yı üçe böl | 6 bal, 3 petek → 2'şer. | 9 | |
-| 16 | 6'yı ikiye böl | 6 bal, 2 petek → 3'er. | 8 | 15 ile aynı bal, farklı pay: "Kaç kişi paylaşırsa o kadar az düşer." |
-| 17 | Engelli paylaşma | 6 bal, 3 petek, çalı ve kayalar arasında. | 10 | |
+| 16 | 6'yı ikiye böl | 6 bal, 2 petek → 3'er. | 8 | 15 ile aynı bal, farklı pay. "Kaç kişi paylaşırsa o kadar az düşer" yalnız Roboya'nın kısa gözlemi; çocuğa sorulmaz. |
+| 17 | Engelli paylaşma | 4 bal, 2 petek, çalı ve kayalar arasında. | ≤ 10 | Engel varken "Bırak" ≤ 4 (PK-0003). |
 | 18 | Köşe finali: artan | 5 bal, 2 petek → 2'şer, 1 sofraya. | 10 | "Bir tane arttı, ne yapalım?" Değer anı: ortak sofra. |
 
 ### Köşe 4 — Ver ve say (Kaşif, çıkarma ve karışık)
@@ -79,11 +79,11 @@ Gösterim: ● = bir bal; "petek ●●" = 2 bal isteyen petek. Kart sayıları 
 | Sıra | Ne öğrenir | Kurgu | Kart (tahmini) | Not |
 | --- | --- | --- | --- | --- |
 | 19 | Çıkarma: kaç kaldı? | Sepette 4 bal; petek ●. Sonra "Kaç kaldı?" adımı. | 5 + soru | Tanıtım, rehberli. |
-| 20 | 5 − 2 | Sepette 5 bal; petek ●●; kalan 3 Ari'nin kovanına. | 7 + soru | |
+| 20 | 5 − 2 | Sepette 5 bal; petek ●●; kalan 3 sepette kalır. | 7 + soru | "Kalan bal sepette; başka komşulara götüreceğiz." Kovan yok (PK-0001). |
 | 21 | İki komşuya ver | Sepette 5 bal; petekler ●● ve ●. Kaç kaldı? | 9 + soru | |
 | 22 | Topla, sonra ver | 3 + 2 bal topla, petek ●●●● ister. Kaç kaldı? | 10 + soru | Toplama ve çıkarma bir arada. |
-| 23 | Eşit ve artan | 7 bal, 3 petek → 2'şer, 1 sofraya. | 11 | |
-| 24 | Bölge finali: hasat şenliği | 3 petek eşit pay ve sofraya artan; şenlik alanına var. | 12 | Gemi parçası ve "paylaşma" değer kartı. |
+| 23 | Topla, eşit ver, artanı sofraya | Sepette 3 bal, yoldaki çiçekte 2; 2 petek → 2'şer, 1 sofraya. | ≤ 10 | Yerleşim editörde çözücüyle denenir. |
+| 24 | Bölge finali: hasat şenliği | Sepette 4 bal; 3 petek birer, 1 sofraya; sonra şenlik alanına var. | ≤ 10 | Final bir kutlama, zorluk zirvesi değil. Gemi parçası ve "paylaşma" değer kartı. |
 
 ## Ses ve görsel ihtiyacı (özet)
 
@@ -91,6 +91,8 @@ Gösterim: ● = bir bal; "petek ●●" = 2 bal isteyen petek. Kart sayıları 
 - **Görsel:** Köy arka planı, köylü arı ailesi (mutlu, üzgün, teşekkür), yuvalı petek (boş, dolu, taşmış), Ari'nin bal sepeti, köy sofrası, şenlik alanı; Ari'nin tuş paneline "Bırak" tuşu. Renk tek başına anlam taşımaz: dolu ve boş yuva şekille de ayrışır.
 
 ## İncelemede sorulacaklar
+
+Hepsi karara bağlandı (2026-10-11): 1 → PK-0005, 2, 5 ve 6 → PK-0001, 3 → PK-0002, 4 → PK-0003, 7 → PK-0004. Sorular kayıt için aşağıda duruyor.
 
 1. **Minik payı:** Bölgede yalnız 6 Minik bölümü var (Sabır Ormanı'nda 9). Minik'e 2–3 bölüm daha eklensin mi, yoksa toplama-çıkarma 3.5–5 yaş için zaten erken mi?
 2. **Otomatik bırakma kuralı:** Minik'te petek "ihtiyacı kadar alır" diye kurduk; fazla bal verilemez. Bu, birebir eşlemeyi öğretmek için yeterli mi, yoksa Minik de fazla verip görmeli mi?
