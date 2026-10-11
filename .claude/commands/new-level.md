@@ -4,3 +4,4 @@ Yeni bir bölüm JSON'u oluştur: $ARGUMENTS
 2. Bölümü `content/levels/<bölge>/<oyun>/<id>.json` olarak yaz. Meta veride kavram, değer, zorluk ve yaş seviyesi zorunlu.
 3. Yönerge ses anahtarlarını `content/voice/script.csv` dosyasına ekle (`key,text,context,level_ids`). Kodda sabit metin yok.
 4. `make validate-content` çalıştır; en kısa çözüm uzunluğunu ve çözülebilirliği raporla.
+5. `/pedagoji-inceleme <bölüm kimliği>` ile pedagoji ön incelemesi yap; `Engel` bulgularını düzelt, diğerlerini raporla. Bölüm yine pedagoji ekibi onayı olmadan yayınlanmaz.

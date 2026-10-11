@@ -259,7 +259,7 @@ Yedi oyun modülü, Roboya Kids'in yüz yüze atölyelerinin dijital karşılık
 | Ödül | Nasıl kazanılır | Ne işe yarar |
 | --- | --- | --- |
 | Yıldız | Bölüm tamamlama kalitesi | Bölüm ve bölge ilerlemesi |
-| Gemi parçası | Her 5 bölümde bir ve bölge sonlarında; sıra sabit | Roboya'nın düşen gemisi adım adım onarılır; ada haritasında görünür (ana hikâyede ilerleme). Roboya'nın görünüşü değişmez. |
+| Gemi parçası | Her bölgede 4 parça: ilk üç köşenin sonunda birer küçük parça, bölge finalinde bir büyük parça (karar 2026-10-11); sıra sabit; gemi 5 değer bölgesinde tamamlanır | Roboya'nın düşen gemisi adım adım onarılır; ada haritasında görünür (ana hikâyede ilerleme). Roboya'nın görünüşü değişmez. |
 | Değer kartı | Bölge tamamlama | 30–60 sn animasyonlu değer hikâyesi; albümde tekrar izlenebilir |
 | Mucit rozeti | Bir kodlama kavramında ustalık (ör. 5 döngü bölümünü 3 yıldızla bitirmek) | Veli raporunda beceri göstergesi |
 

@@ -19,7 +19,9 @@
 2. **Kurallar saf C#'ta, `Roboya.CodingEngine/Progress` altındadır (.NET'te de test edilir):**
    - `ProgressBook`: yıldızlar yalnız artar.
    - `PathRules`: patikadaki taşın durumu (bitti, sıradaki, kilitli, büyüklerine sor).
-   - `RewardRules`: her 5 bölümde ve her bölge sonunda bir gemi parçası, sabit sırayla.
+   - `RewardRules`: her bölgede köşe başına bir gemi parçası, sabit sırayla (2026-10-11, karar A4: ilk üç köşe sonunda küçük, bölge finalinde büyük parça; önceden her 5 bölümde bir ve bölge sonunda bir). Köşe, çocuk o köşenin son bölümüne ya da ötesine varınca sayılır; yaşa göre geç başlayan çocuk geçtiği köşelerin parçasını alır.
+   - `RegionRules` (2026-10-11, F2-13 kararları A2/A3): bölgeler `content/map/island.json` sırasıyla açılır; bir bölge, önceki bölgenin son bölümü (bölge finali) yıldız alınca açılır. Yaşa göre geç başlayan çocuk önceki bölümleri oynamak zorunda kalmaz. İçeriği olmayan bölge açılmaz ama sonrakini engellemez. Premium bölge içinde patika kurallarıyla denetlenir.
+   - `RegionRules` (2026-10-11, F2-13 kararları A2/A3): bölgeler `content/map/island.json` sırasıyla açılır; bir bölge, önceki bölgenin son bölümü (bölge finali) yıldız alınca açılır. Yaşa göre geç başlayan çocuk önceki bölümleri oynamak zorunda kalmaz. İçeriği olmayan bölge açılmaz ama sonrakini engellemez. Premium bölge içinde patika kurallarıyla denetlenir.
    - **Kazanılan parçalar saklanmaz;** her seferinde ilerlemeden hesaplanır.
 3. **Premium hakkı `IEntitlementSource`'tan okunur.**
    - Sunucu hak servisi (F1-17) gelene kadar tek uygulama `FreeTierEntitlements`: her zaman ücretsiz katman.

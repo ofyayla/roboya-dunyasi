@@ -95,7 +95,7 @@ namespace Roboya.Tests.PlayMode
             yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Map" && (map = FindRoot())?.Q("path") != null, 10f);
             yield return null;
             Assert.AreEqual(DisplayStyle.Flex, map.Q("path").resolvedStyle.display, "next returns to the path, not the next level");
-            Assert.AreEqual(DisplayStyle.Flex, map.Q("path-ahead").resolvedStyle.display, "an arrow shows there is more ahead");
+            Assert.AreEqual(DisplayStyle.Flex, map.Q("path-play").resolvedStyle.display, "the play button leads on to the next level");
         }
 
         [UnityTest]
@@ -115,7 +115,16 @@ namespace Roboya.Tests.PlayMode
             Assert.AreEqual(1, root.Q("plan").Query(className: "card").ToList().Count, "plan is kept so the child can fix it");
         }
 
-        // The whole 36-level region path is played through the UI, which takes minutes.
+        /// <summary>Environment switch for the full end-to-end run (make unity-e2e); otherwise a short development run.</summary>
+        internal const string EndToEndVariable = "ROBOYA_E2E";
+
+        /// <summary>Levels a play-through test walks: every level end to end, the first <see cref="DevLevelCount"/> during development.</summary>
+        internal const int DevLevelCount = 3;
+
+        internal static int LevelsToPlay(int total) =>
+            Environment.GetEnvironmentVariable(EndToEndVariable) == "1" ? total : Math.Min(DevLevelCount, total);
+
+        // End to end the whole 36-level region path is played through the UI, which takes minutes.
         [Timeout(900000)]
         [UnityTest]
         public IEnumerator AllPrototypeLevels_SolverSolutionTappedThroughUi_EachCompletes()
@@ -125,6 +134,10 @@ namespace Roboya.Tests.PlayMode
             var catalog = Roboya.Core.LevelCatalog.Parse(files.Select(File.ReadAllText));
             // The whole region path, all games mixed in order: next goes from one game straight into the next.
             var levels = catalog.All.Where(l => l.Dto.Region == Roboya.CodingEngine.Levels.Generated.RegionId.SabirOrmani).ToList();
+            // During development only the first levels are played; the whole path runs end to end with ROBOYA_E2E=1.
+            // Corners follow the whole region path, not the levels this run plays.
+            int pathCount = levels.Count;
+            levels = levels.Take(LevelsToPlay(levels.Count)).ToList();
 
             // Levels past the free tier need premium; the editor-only switch stands in for the server (ADR 0009).
             Environment.SetEnvironmentVariable(Roboya.Core.DevEntitlements.Variable, "1");
@@ -170,7 +183,15 @@ namespace Roboya.Tests.PlayMode
                 }
 
                 Tap(root.Q("play"));
-                if ((i + 1) % Roboya.Core.ProgressQueries.CornerLength == 0)
+                if (i == 8)
+                {
+                    // ILR-03, A4: the end of the first corner earns the first ship part, shown in the outro before the film.
+                    yield return WaitUntil(() => root.Q("story-reward") != null, 30f);
+                    yield return new WaitForSeconds(0.6f);
+                    yield return Capture(root, "05-level9-reward");
+                }
+
+                if (Roboya.CodingEngine.Progress.CornerRules.IsCornerEnd(i, pathCount))
                 {
                     // The end of a forest corner: the turtle's patience card comes before the result; a tap moves on.
                     yield return WaitUntil(() => !root.Q("value-card").ClassListContains("hidden"), 60f);
@@ -189,14 +210,6 @@ namespace Roboya.Tests.PlayMode
                 yield return null; // the overlay is laid out one frame after it becomes visible
                 int stars = root.Q("stars").Children().OfType<Icon>().Count(x => x.Kind == IconKind.Star);
                 Assert.AreEqual(3, stars, levels[i].Id + " should earn 3 stars with the shortest plan on the first try");
-                if (i == 4)
-                {
-                    // ILR-03: the fifth level earns the first robot part, shown after the success line.
-                    yield return WaitUntil(() => root.Q("story-reward") != null, 20f);
-                    yield return new WaitForSeconds(0.6f);
-                    yield return Capture(root, "05-level5-reward");
-                }
-
                 if (i == levels.Count - 1)
                 {
                     yield return new WaitForSeconds(0.4f);

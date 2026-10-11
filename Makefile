@@ -10,7 +10,7 @@ UNITY ?= $(firstword $(wildcard $(UNITY_HUB_EDITORS)/$(UNITY_VERSION)-arm64/Unit
 ENGINE_SLN := tools/engine-dotnet/Roboya.Engine.slnx
 
 .PHONY: help setup api-dev web-dev editor-dev test lint gen validate-content fix-content unity-test \
-        test-api test-web test-engine test-content lint-api lint-web check-gen unity-playmode tts test-tools android-apk
+        test-api test-web test-engine test-content lint-api lint-web check-gen unity-playmode tts test-tools android-apk unity-e2e
 
 help: ## List commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-18s\033[0m %s\n",$$1,$$2}'
@@ -80,9 +80,13 @@ fix-content: ## Write solver-computed shortest lengths into level files
 tts: ## Generate missing/stale narration with ElevenLabs (needs .env); only script text is sent
 	python3 tools/tts/generate.py
 
-unity-playmode: ## Run Unity PlayMode tests (critical flows) with a GPU; screenshots in apps/game/TestResults/screens
+unity-playmode: ## Run Unity PlayMode tests (critical flows, first 3 levels) with a GPU; screenshots in apps/game/TestResults/screens
 	"$(UNITY)" -batchmode -projectPath apps/game -runTests -testPlatform PlayMode \
 		-testResults "$(CURDIR)/apps/game/TestResults/playmode.xml" -logFile -
+
+unity-e2e: ## Run Unity PlayMode tests end to end: every level of the path is played (before a release)
+	ROBOYA_E2E=1 "$(UNITY)" -batchmode -projectPath apps/game -runTests -testPlatform PlayMode \
+		-testResults "$(CURDIR)/apps/game/TestResults/playmode-e2e.xml" -logFile -
 
 android-apk: ## Build an internal-test Android APK into apps/game/Builds/Android (add DEV=1 for a development build)
 	"$(UNITY)" -batchmode -nographics -quit -projectPath apps/game -executeMethod Roboya.EditorTools.BuildScript.BuildAndroidApk \

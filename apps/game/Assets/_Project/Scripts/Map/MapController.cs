@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 namespace Roboya.Map
 {
     /// <summary>
-    /// Switches between the island, the Patience Forest path and the ship workshop. No text on screen: every view speaks
+    /// Switches between the island, a region's path and the ship workshop. No text on screen: every view speaks
     /// through short narration lines from content/voice/script.csv.
     /// </summary>
     public sealed class MapController : IDisposable
@@ -33,6 +33,8 @@ namespace Roboya.Map
         private readonly ProfileEditorView _editor;
         private readonly RestView _rest;
         private readonly NoticeReader _reader;
+        // The region whose path the child is on: the one tapped on the island, or the one of the level just played.
+        private RegionId _region = RegionId.SabirOrmani;
 
         public MapController(VisualElement root, GameServices services, RegionArt art, PartArt partArt)
         {
@@ -98,9 +100,15 @@ namespace Roboya.Map
 
             // A repair part earned but not yet seen: open on the island so it drops onto the ship (ILR-03).
             bool newPart = ProgressQueries.EarnedParts(_services) > _services.Progress.Book.ShipPartsSeen;
+            var played = _services.Catalog.Find(nav.SelectedLevelId);
+            if (played != null)
+            {
+                _region = played.Dto.Region;
+            }
+
             if (!newPart && (nav.SelectedLevelId != null || nav.PendingMapLine != null))
             {
-                // Back from a level: the child continues on the path, not the island.
+                // Back from a level: the child continues on that region's path, not the island.
                 ShowPath();
                 if (nav.PendingMapLine != null)
                 {
@@ -124,26 +132,22 @@ namespace Roboya.Map
             _services.Voice.Stop();
         }
 
-        /// <summary>Wire id of a region, as used in content files.</summary>
-        public static string WireId(RegionId region)
-        {
-            switch (region)
-            {
-                case RegionId.SabirOrmani: return "sabir-ormani";
-                case RegionId.PaylasimKoyu: return "paylasim-koyu";
-                case RegionId.YardimlasmaLimani: return "yardimlasma-limani";
-                case RegionId.NezaketBahcesi: return "nezaket-bahcesi";
-                case RegionId.SorumlulukKulesi: return "sorumluluk-kulesi";
-                default: return "mucit-atolyesi";
-            }
-        }
-
         private void OnRegion(string regionId)
         {
-            // Only the Patience Forest has levels in the MVP; other regions open with their content (v1.0).
+            var region = ProgressQueries.RegionOf(regionId);
+            if (!region.HasValue)
+            {
+                return;
+            }
+
+            _region = region.Value;
             ShowPath();
-            _services.Voice.Play(WelcomeVoice);
+            _services.Voice.Play(WelcomeVoiceOf(_region));
         }
+
+        /// <summary>Each region greets the child with its own line; the forest keeps its original key.</summary>
+        private static string WelcomeVoiceOf(RegionId region) =>
+            region == RegionId.SabirOrmani ? WelcomeVoice : WelcomeVoice + "." + ProgressQueries.WireId(region);
 
         private bool NeedsOnboarding =>
             !_services.Profiles.Registry.HasConsentFor(_services.Notice.Version) || !_services.Profiles.HasActive;
@@ -242,7 +246,11 @@ namespace Roboya.Map
             _parent.NotifyOpened();
         }
 
-        private void ShowPath() => Show(_path);
+        private void ShowPath()
+        {
+            _path.SetRegion(_region);
+            Show(_path);
+        }
 
         private void ShowWorkshop()
         {

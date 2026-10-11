@@ -54,6 +54,14 @@ namespace Roboya.UI
         [SerializeField] private Sprite honeyDrop;
         [SerializeField] private Sprite honeycomb;
 
+        [Header("Path map (map_stone_*); empty slots are drawn in code")]
+        [SerializeField] private Sprite stoneDone;
+        [SerializeField] private Sprite stoneCurrent;
+        [SerializeField] private Sprite stoneAhead;
+        [SerializeField] private Sprite stoneCorner;
+        [SerializeField] private Sprite starFull;
+        [SerializeField] private Sprite starEmpty;
+
         [Header("Story scene props")]
         [SerializeField] private Sprite propTree;
         [SerializeField] private Sprite propRock;
@@ -97,6 +105,18 @@ namespace Roboya.UI
         public Sprite TilePath => tilePath;
 
         public Sprite Background => background;
+
+        public Sprite StoneDone => stoneDone;
+
+        public Sprite StoneCurrent => stoneCurrent;
+
+        public Sprite StoneAhead => stoneAhead;
+
+        public Sprite StoneCorner => stoneCorner;
+
+        public Sprite StarFull => starFull;
+
+        public Sprite StarEmpty => starEmpty;
 
         public Sprite DecorAt(int index) =>
             decor != null && index >= 0 && index < decor.Length ? decor[index] : null;

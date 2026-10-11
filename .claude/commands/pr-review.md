@@ -7,5 +7,6 @@ Kontrol listesi:
 - Loglarda kişisel veri yok.
 - Göçler geriye uyumlu; uygulanmış göç dosyası değişmemiş.
 - Üretilmiş kod (`make gen`) güncel.
+- `content/levels/` veya `content/voice/script.csv` değiştiyse `/pedagoji-inceleme` ile pedagoji ön incelemesi yapıldı mı; `Engel` bulgusu kaldı mı?
 
 Bulguları önem sırasıyla, dosya:satır referansıyla listele.
