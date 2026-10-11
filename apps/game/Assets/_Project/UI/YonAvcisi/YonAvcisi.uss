@@ -383,3 +383,90 @@
     -unity-background-scale-mode: scale-to-fit;
     background-color: rgb(244, 236, 214);
 }
+
+/* Paylaşım Köyü: hives and the table on the board, with slots that fill as honey arrives (ADR 0030). */
+.hive__slots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -6%;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.hive__slot {
+    margin: 0 1px;
+    border-radius: 999px;
+    border-width: 3px;
+    border-color: rgb(120, 72, 20);
+    background-color: rgba(255, 244, 226, 0.35);
+}
+
+/* Solid disc against a hollow ring: the count is told by shape, not colour alone. */
+.hive__slot--filled {
+    background-color: rgb(247, 178, 26);
+    border-color: rgb(120, 72, 20);
+}
+
+.piece--drop-fallback {
+    border-radius: 999px;
+    border-width: 5px;
+    border-color: rgb(120, 72, 20);
+    background-color: rgb(236, 190, 90);
+}
+
+.piece--hive-full.piece--drop-fallback {
+    background-color: rgb(247, 178, 26);
+}
+
+.piece--hive-spill.piece--drop-fallback {
+    border-color: rgb(190, 90, 40);
+}
+
+/* Ari's basket (top left of the board). */
+.basket-view {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    flex-direction: row;
+    align-items: center;
+    padding: 6px 12px 6px 6px;
+    border-radius: 40px;
+    background-color: rgba(255, 244, 226, 0.9);
+    border-width: 3px;
+    border-color: rgba(58, 42, 29, 0.35);
+}
+
+.basket-view__icon {
+    width: 56px;
+    height: 56px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.basket-view__icon--fallback {
+    border-radius: 28px;
+    border-width: 4px;
+    border-color: rgb(120, 72, 20);
+    background-color: rgb(210, 160, 90);
+}
+
+.basket-view__dots {
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 160px;
+    margin-left: 6px;
+}
+
+.basket-view__dot {
+    width: 18px;
+    height: 18px;
+    margin: 2px;
+    border-radius: 999px;
+    border-width: 3px;
+    border-color: rgb(120, 72, 20);
+    background-color: rgba(255, 244, 226, 0.2);
+}
+
+.basket-view__dot--filled {
+    background-color: rgb(247, 178, 26);
+}

@@ -54,7 +54,7 @@ Bugün `PathView` Sabır Ormanı'na sabit, adaya dokununca hangi bölge seçilir
 
 | ID | İş | Boyut | Bağımlılık | Not |
 | --- | --- | --- | --- | --- |
-| D1 | **Tahta:** petek (boş/dolu/taşmış yuvalar, şekille), sofra; Ari'nin sepeti (nokta sayacı); bırakma animasyonu ve sesli sayma | L | B2 | Renk tek başına anlam taşımaz; 30 fps, `Update` içinde bellek ayırma yok |
+| D1 | **Tahta:** petek (boş/dolu/taşmış yuvalar, şekille), sofra; Ari'nin sepeti (nokta sayacı); bırakma animasyonu ve sesli sayma | L | B2 | Renk tek başına anlam taşımaz; 30 fps, `Update` içinde bellek ayırma yok **Yapıldı (D-a):** petek/sofra yuvaları, sepet göstergesi, otomatik bırakma animasyonu ve sesli sayma (`HiveReport`, `BoardView.ApplyHoney`, `BasketView`) |
 | D2 | **Bırak tuşu:** arının tuş paneline büyük "Bırak" tuşu (≥ 64 dp); kart tanıtım anı; Minik'te gizli (otomatik bırakma) | M | B1 | UI Toolkit |
 | D3 | **Eşit paylaşma ve geri bildirim:** bitişte peteklerin yan yana karşılaştırılması; unutulan petek üzgün, taşan petek uyarısı; hedef rozeti yeni hedef türlerini gösterir | M | B2, A1 | Ceza yok |
 | D4 | **"Kaç kaldı?" adımı:** başarı sonrası üç nokta kartından seçim; yanlışta birlikte sayma; yıldızı etkilemez | M | A1 (onaylanırsa) | `predict` adımının kalıbı |

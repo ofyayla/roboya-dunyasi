@@ -70,6 +70,8 @@ namespace Roboya.Games.Common
             root.Q("board-host").Add(_board);
             _badge = new GoalBadge(art);
             root.Q("board-host").Add(_badge);
+            _basket = new BasketView(art);
+            root.Q("board-host").Add(_basket);
             if (art != null && art.Background != null)
             {
                 var screen = root.Q("screen");
@@ -167,6 +169,7 @@ namespace Roboya.Games.Common
             _board.Show(_entry.Level, ghost, _entry.Dto);
             RefreshTrace();
             _badge.Show(_entry.Level);
+            _basket.Show(_entry.Level);
             _tray.BoxCards = _entry.Dto.StarterProgram != null ? new List<Roboya.CodingEngine.Commands.CardType>(CardsOf(_entry)) : null;
             _tray.Bind(_session.Plan, _entry.Level.AvailableCards);
             // Hata avcısı: the child may edit only after the ready-made code has shown what goes wrong (DemoAsync unlocks).
@@ -189,6 +192,7 @@ namespace Roboya.Games.Common
         private readonly IconButton _clearBig;
         private readonly VisualElement _paletteElement;
         private readonly GoalBadge _badge;
+        private readonly BasketView _basket;
         private bool _bee;
         private bool _worldPersists;
         private bool _planTrace;
@@ -322,7 +326,19 @@ namespace Roboya.Games.Common
                         await bump;
                         await shake;
                         break;
+                    case ExecutionEventKind.Dropped:
+                        // One honey leaves the basket for a hive or the table (ADR 0030); a hive's count is said aloud as it grows.
+                        _basket.Set(e.After.Basket);
+                        if (_entry.Level.Drops[e.DropIndex].Kind == Roboya.CodingEngine.World.DropPointKind.Hive && e.After.DeliveredAt(e.DropIndex) <= CountVoices)
+                        {
+                            _services.Voice.Play("count." + e.After.DeliveredAt(e.DropIndex).ToString("D2"));
+                        }
+
+                        _services.Sfx.Play(SfxKind.Place);
+                        await _board.AnimateDrop(e.DropIndex, e.After, token);
+                        break;
                     case ExecutionEventKind.Collected:
+                        _basket.Set(e.After.Basket);
                         _badge.MarkCollected(e.ItemIndex);
                         // Counting aloud (BAL-01): "bir, iki, üç" when more than one thing is wanted.
                         if (_badge.Count >= 2 && _badge.CollectedCount >= 1 && _badge.CollectedCount <= CountVoices)
@@ -456,6 +472,7 @@ namespace Roboya.Games.Common
             if (!_worldPersists)
             {
                 _board.ResetRobot(_entry.Level.Start);
+                _basket.Set(_entry.Level.Start.Basket);
                 _badge.Set(0);
             }
 
@@ -520,6 +537,7 @@ namespace Roboya.Games.Common
             if (!_worldPersists)
             {
                 _board.ResetRobot(_entry.Level.Start);
+                _basket.Set(_entry.Level.Start.Basket);
                 _badge.Set(0);
             }
 

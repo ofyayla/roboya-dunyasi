@@ -45,9 +45,15 @@ namespace Roboya.Tests.PlayMode
             yield return null;
         }
 
+        /// <summary>Minik levels 1–6 give a hive its honey by themselves (auto-drop); Kaşif levels 7–8 only collect.</summary>
         private static string Level(int order)
         {
-            string age = order <= 6 ? "minik" : "kasif";
+            bool minik = order <= 6;
+            string age = minik ? "minik" : "kasif";
+            string honey = minik ? @"""amount"": 2, " : string.Empty;
+            string drops = minik ? @"""drops"": [ { ""id"": ""petek-1"", ""kind"": ""hive"", ""x"": 3, ""y"": 0, ""need"": 2 } ]," : string.Empty;
+            string goal = minik ? @"{ ""collect"": [""bal-1""], ""deliver"": [ { ""to"": ""petek-1"", ""count"": 2 } ] }" : @"{ ""collect"": [""bal-1""] }";
+            string options = minik ? @"""options"": { ""autoDrop"": true, ""resetEachRun"": true, ""clearMemoryEachRun"": true }," : string.Empty;
             return @"{
   ""schemaVersion"": 3,
   ""id"": ""paylasim-koyu.bal-pesinde." + order.ToString("00") + @""",
@@ -57,9 +63,11 @@ namespace Roboya.Tests.PlayMode
   ""meta"": { ""concepts"": [""counting""], ""value"": ""sharing"", ""difficulty"": 1, ""ageLevels"": [""" + age + @"""] },
   ""grid"": { ""rows"": [""....."", "".....""] },
   ""robot"": { ""x"": 0, ""y"": 0, ""facing"": ""east"" },
-  ""items"": [ { ""id"": ""bal-1"", ""kind"": ""honey"", ""x"": 2, ""y"": 0 } ],
-  ""goal"": { ""collect"": [""bal-1""] },
+  ""items"": [ { ""id"": ""bal-1"", " + honey + @"""kind"": ""honey"", ""x"": 2, ""y"": 0 } ],
+  " + drops + @"
+  ""goal"": " + goal + @",
   ""cards"": { ""palette"": [""forward"", ""turn_right""], ""maxProgramLength"": 4 },
+  " + options + @"
   ""voice"": { ""intro"": ""bal_pesinde.l01.intro"" }
 }";
         }
@@ -141,6 +149,44 @@ namespace Roboya.Tests.PlayMode
             var village = RegionArtLibrary.Load().For(RegionId.PaylasimKoyu, null);
             Assert.AreSame(village.Background, game.Q("screen").resolvedStyle.backgroundImage.sprite, "the level screen shows the village backdrop");
             Assert.IsTrue(game.Q("screen").ClassListContains("screen--art"));
+        }
+
+        [UnityTest]
+        public IEnumerator VillageLevel_AutoDrop_BringsTheHoneyToTheHiveAndEmptiesTheBasket()
+        {
+            FinishForest();
+            Environment.SetEnvironmentVariable(DevEntitlements.Variable, "1");
+            VisualElement map = null;
+            yield return OpenVillagePath(r => map = r);
+
+            Tap(map.Q("path-play"));
+            VisualElement game = null;
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("palette")?.childCount > 0, 10f);
+            yield return PassStory(game);
+
+            Assert.IsNotNull(game.Q("hive-petek-1"), "the hive stands on the board");
+            Assert.AreEqual(2, game.Q("hive-petek-1").Query(className: "hive__slot").ToList().Count, "one slot per honey it asks for");
+            Assert.AreEqual(0, game.Q("hive-petek-1").Query(className: "hive__slot--filled").ToList().Count);
+            Assert.AreEqual(DisplayStyle.Flex, game.Q("basket-view").resolvedStyle.display);
+            Assert.AreEqual(0, game.Q("basket-view").Query(className: "basket-view__dot--filled").ToList().Count, "an empty basket");
+            yield return Capture(game, "20a-village-hive-before");
+
+            var forward = game.Q("palette").Children().First();
+            Tap(forward);
+            Tap(forward);
+            Tap(forward);
+            yield return null;
+            Tap(game.Q("play"));
+
+            // The bee picks the two honey up on its second step, then the hive takes them as it arrives.
+            yield return WaitUntil(() => game.Q("basket-view").Query(className: "basket-view__dot--filled").ToList().Count == 2, 10f);
+            yield return Capture(game, "20b-village-basket");
+            yield return WaitUntil(() => game.Q("hive-petek-1").Query(className: "hive__slot--filled").ToList().Count == 2, 10f);
+            yield return new WaitForSeconds(0.5f);
+            yield return Capture(game, "20c-village-hive-full");
+
+            Assert.AreEqual(0, game.Q("basket-view").Query(className: "basket-view__dot--filled").ToList().Count, "the basket is empty again");
+            yield return WaitUntil(() => !game.Q("result").ClassListContains("hidden"), 15f);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Threading;
 using Roboya.CodingEngine.Commands;
 using LevelDto = Roboya.CodingEngine.Levels.Generated.LevelDto;
 using ObstacleLook = Roboya.CodingEngine.Levels.Generated.ObstacleLook;
+using Roboya.CodingEngine.Play;
 using Roboya.CodingEngine.Solving;
 using Roboya.CodingEngine.World;
 using Roboya.UI;
@@ -27,6 +28,8 @@ namespace Roboya.Games.Common
         private const float RobotHeight = 0.95f;
         private const float GoalHeight = 0.82f;
         private const float ItemHeight = 0.55f;
+        private const float HiveHeight = 0.9f;
+        private const int TableDots = 7;
         private const float ObstacleWidth = 0.98f;
         private const float DecorWidth = 0.9f;
 
@@ -50,6 +53,17 @@ namespace Roboya.Games.Common
             public float Aspect = 1f;
             public float Lift;
             public int Order;
+
+            /// <summary>Called with the piece's size after every placement, for children sized in pixels (hive slots).</summary>
+            public System.Action<float, float> Placed;
+        }
+
+        /// <summary>A hive or the table: its picture and the little slots that fill as honey arrives.</summary>
+        private sealed class DropView
+        {
+            public Piece Piece;
+            public readonly List<VisualElement> Slots = new List<VisualElement>();
+            public bool IsHive;
         }
 
         private readonly RegionArt _art;
@@ -58,6 +72,7 @@ namespace Roboya.Games.Common
         private readonly VisualElement _layer = new VisualElement { name = "pieces" };
         private readonly List<Piece> _pieces = new List<Piece>();
         private readonly List<Piece> _items = new List<Piece>();
+        private readonly List<DropView> _drops = new List<DropView>();
         private readonly List<VisualElement> _trail = new List<VisualElement>();
 
         private Level _level;
@@ -115,6 +130,7 @@ namespace Roboya.Games.Common
             _layer.Clear();
             _pieces.Clear();
             _items.Clear();
+            _drops.Clear();
             _trail.Clear();
             _traceMarks.Clear();
             _pickMarks.Clear();
@@ -187,6 +203,8 @@ namespace Roboya.Games.Common
                 _items.Add(piece);
             }
 
+            AddDropPoints(level);
+
             var start = CellAnchor(level.Start.Position.X, level.Start.Position.Y);
             _robot = UseSprites
                 ? AddSprite(_actor.Front, start, height: RobotHeight)
@@ -227,6 +245,68 @@ namespace Roboya.Games.Common
 
             ClearTrail();
             PlaceRobot();
+            ApplyHoney(state);
+        }
+
+        /// <summary>
+        /// Draws every hive and the table as <paramref name="state"/> has them (ADR 0030): a hive shows one slot per honey it asks for,
+        /// filled as honey arrives (a hollow ring against a solid disc, so it is not colour alone), and swaps its picture when it is
+        /// full or spilling. The world starts over on every village run, so a reset passes the start state.
+        /// </summary>
+        public void ApplyHoney(RobotState state)
+        {
+            if (_level == null || _drops.Count == 0)
+            {
+                return;
+            }
+
+            var report = HiveReport.Of(_level, state);
+            for (int i = 0; i < _drops.Count && i < report.Drops.Count; i++)
+            {
+                var view = _drops[i];
+                var status = report.Drops[i];
+                for (int s = 0; s < view.Slots.Count; s++)
+                {
+                    bool filled = s < status.Count;
+                    view.Slots[s].EnableInClassList("hive__slot--filled", filled);
+                    if (!view.IsHive)
+                    {
+                        view.Slots[s].style.display = filled ? DisplayStyle.Flex : DisplayStyle.None;
+                    }
+                }
+
+                if (view.IsHive)
+                {
+                    view.Piece.View.EnableInClassList("piece--hive-full", status.State == HiveState.Full);
+                    view.Piece.View.EnableInClassList("piece--hive-spill", status.State == HiveState.Overflow);
+                    var sprite = UseSprites ? _art.HiveFor(status.State) : null;
+                    if (sprite != null)
+                    {
+                        SetSprite(view.Piece, sprite);
+                    }
+                }
+            }
+        }
+
+        /// <summary>A honey lands in a hive or on the table: the state is drawn and the newest slot pops (about a third of a second).</summary>
+        public async Awaitable AnimateDrop(int dropIndex, RobotState after, CancellationToken token)
+        {
+            ApplyHoney(after);
+            if (dropIndex < 0 || dropIndex >= _drops.Count)
+            {
+                return;
+            }
+
+            var view = _drops[dropIndex];
+            int count = after.DeliveredAt(dropIndex);
+            if (count <= 0 || view.Slots.Count == 0)
+            {
+                return;
+            }
+
+            var slot = view.Slots[Mathf.Min(count, view.Slots.Count) - 1];
+            await Tween.Run(0.35f, t => slot.style.scale = new Scale(Vector3.one * (1f + (0.9f * Mathf.Sin(t * Mathf.PI)))), token);
+            slot.style.scale = new Scale(Vector3.one);
         }
 
         public async Awaitable AnimateMove(GridPosition from, GridPosition to, CancellationToken token)
@@ -619,6 +699,56 @@ namespace Roboya.Games.Common
             piece.Shadow.style.width = sw;
             piece.Shadow.style.height = sh;
             piece.Shadow.style.translate = new Translate(foot.x - (sw * 0.5f), foot.y - (sh * 0.5f));
+            piece.Placed?.Invoke(w, h);
+        }
+
+        /// <summary>Hives and the table (Paylaşım Köyü): a picture standing on its cell and, above it, the slots honey fills.</summary>
+        private void AddDropPoints(Level level)
+        {
+            for (int i = 0; i < level.Drops.Count; i++)
+            {
+                var drop = level.Drops[i];
+                bool hive = drop.Kind == DropPointKind.Hive;
+                var anchor = CellAnchor(drop.Position.X, drop.Position.Y);
+                var sprite = !UseSprites ? null : hive ? _art.HiveFor(HiveState.Empty) : _art.PropSprite(Roboya.CodingEngine.Levels.Generated.StoryProp.VillageTable);
+                var piece = sprite != null ? AddSprite(sprite, anchor, height: HiveHeight) : AddPiece(new VisualElement(), anchor, height: HiveHeight);
+                piece.View.name = (hive ? "hive-" : "table-") + drop.Id;
+                piece.View.AddToClassList(hive ? "piece--hive" : "piece--table");
+                if (sprite == null)
+                {
+                    piece.View.AddToClassList("piece--drop-fallback");
+                }
+
+                var view = new DropView { Piece = piece, IsHive = hive };
+                var row = new VisualElement { name = "slots", pickingMode = PickingMode.Ignore };
+                row.AddToClassList("hive__slots");
+                int slots = hive ? drop.Need : TableDots;
+                for (int s = 0; s < slots; s++)
+                {
+                    var slot = new VisualElement { pickingMode = PickingMode.Ignore };
+                    slot.AddToClassList("hive__slot");
+                    if (!hive)
+                    {
+                        slot.style.display = DisplayStyle.None;
+                    }
+
+                    row.Add(slot);
+                    view.Slots.Add(slot);
+                }
+
+                piece.View.Add(row);
+                int count = slots;
+                piece.Placed = (w, h) =>
+                {
+                    float size = Mathf.Max(10f, Mathf.Min(w * 0.9f / count, w * 0.22f));
+                    foreach (var slot in view.Slots)
+                    {
+                        slot.style.width = size;
+                        slot.style.height = size;
+                    }
+                };
+                _drops.Add(view);
+            }
         }
 
         /// <summary>

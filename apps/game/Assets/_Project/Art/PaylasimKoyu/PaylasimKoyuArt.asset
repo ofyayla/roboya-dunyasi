@@ -63,6 +63,15 @@ MonoBehaviour:
   propMagnifier: {fileID: 21300000, guid: cc217bd32d1114045bd46eba3dd7112e, type: 3}
   propBeehive: {fileID: 21300000, guid: 50599eae583b046e3b7a44c2ca481abe, type: 3}
   propHoneyJar: {fileID: 21300000, guid: a7444ea2a89124ead8f6fce91dc32ff9, type: 3}
+  hiveEmpty: {fileID: 21300000, guid: 2de1ae3863fb457c98e7bc6bd0f841b9, type: 3}
+  hiveFull: {fileID: 21300000, guid: f0dbb09ca96b46389cdcab1b559c4261, type: 3}
+  hiveOverflow: {fileID: 21300000, guid: 57c3f8255c7b4edda89c7b24e0bd173e, type: 3}
+  honeyBasket: {fileID: 21300000, guid: ac2591ba8e6d46e2ade880797cfc0cb3, type: 3}
+  villagerHappy: {fileID: 21300000, guid: 61a5d43acd784514a8509e61f6775e8b, type: 3}
+  villagerSad: {fileID: 21300000, guid: dfcd4b0687bd45a493ea438f9a6d1848, type: 3}
+  villagerThanks: {fileID: 21300000, guid: 1511da61ac0d469a8866fdd04e304a24, type: 3}
+  villagerChild: {fileID: 21300000, guid: cc53fc4f78aa4c59bfaac5b3f197dcdc, type: 3}
+  festivalFlags: {fileID: 21300000, guid: 707e43ff25f149be8e9aacf635d461c7, type: 3}
   propVillagerBee: {fileID: 21300000, guid: 61a5d43acd784514a8509e61f6775e8b, type: 3}
   propHoneycomb: {fileID: 21300000, guid: f0dbb09ca96b46389cdcab1b559c4261, type: 3}
   propVillageTable: {fileID: 21300000, guid: efb4960d2708408a93c31e6e298529be, type: 3}

@@ -71,6 +71,17 @@ namespace Roboya.UI
         [SerializeField] private Sprite propBeehive;
         [SerializeField] private Sprite propHoneyJar;
 
+        [Header("Paylaşım Köyü board (hives, basket, villagers)")]
+        [SerializeField] private Sprite hiveEmpty;
+        [SerializeField] private Sprite hiveFull;
+        [SerializeField] private Sprite hiveOverflow;
+        [SerializeField] private Sprite honeyBasket;
+        [SerializeField] private Sprite villagerHappy;
+        [SerializeField] private Sprite villagerSad;
+        [SerializeField] private Sprite villagerThanks;
+        [SerializeField] private Sprite villagerChild;
+        [SerializeField] private Sprite festivalFlags;
+
         [Header("Paylaşım Köyü story props")]
         [SerializeField] private Sprite propVillagerBee;
         [SerializeField] private Sprite propHoneycomb;
@@ -122,6 +133,29 @@ namespace Roboya.UI
         public Sprite StarFull => starFull;
 
         public Sprite StarEmpty => starEmpty;
+
+        public Sprite HoneyBasket => honeyBasket;
+
+        public Sprite VillagerHappy => villagerHappy;
+
+        public Sprite VillagerSad => villagerSad;
+
+        public Sprite VillagerThanks => villagerThanks;
+
+        public Sprite VillagerChild => villagerChild;
+
+        public Sprite FestivalFlags => festivalFlags;
+
+        /// <summary>The hive picture for how it stands: empty until it is full, spilling when it got too much; null when the region has none.</summary>
+        public Sprite HiveFor(Roboya.CodingEngine.Play.HiveState state)
+        {
+            switch (state)
+            {
+                case Roboya.CodingEngine.Play.HiveState.Full: return hiveFull != null ? hiveFull : hiveEmpty;
+                case Roboya.CodingEngine.Play.HiveState.Overflow: return hiveOverflow != null ? hiveOverflow : hiveEmpty;
+                default: return hiveEmpty;
+            }
+        }
 
         public Sprite DecorAt(int index) =>
             decor != null && index >= 0 && index < decor.Length ? decor[index] : null;
