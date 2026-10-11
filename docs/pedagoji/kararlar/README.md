@@ -9,5 +9,7 @@ Pedagoji ekibinin verdiği kararlar burada `PK-NNNN-kisa-baslik.md` olarak tutul
 
 Şablon: [`PK-0000-sablon.md`](PK-0000-sablon.md).
 
+Henüz karar verilmemiş sorular: [`../bekleyen-kararlar.md`](../bekleyen-kararlar.md).
+
 | Kimlik | Başlık | Durum | Tarih |
 | --- | --- | --- | --- |
