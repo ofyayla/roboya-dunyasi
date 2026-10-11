@@ -1,0 +1,132 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 3,
+  "id": "paylasim-koyu.bal-pesinde.02",
+  "region": "paylasim-koyu",
+  "game": "bal-pesinde",
+  "order": 2,
+  "meta": {
+    "concepts": [
+      "counting"
+    ],
+    "value": "sharing",
+    "difficulty": 1,
+    "ageLevels": [
+      "minik"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Köşe 1: birebir eşleme."
+  },
+  "grid": {
+    "rows": [
+      "......",
+      "......",
+      "......"
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 1,
+    "facing": "east"
+  },
+  "items": [
+    {
+      "id": "bal-1",
+      "kind": "honey",
+      "x": 1,
+      "y": 1
+    },
+    {
+      "id": "bal-2",
+      "kind": "honey",
+      "x": 3,
+      "y": 1
+    }
+  ],
+  "drops": [
+    {
+      "id": "petek-1",
+      "kind": "hive",
+      "x": 2,
+      "y": 1,
+      "need": 1
+    },
+    {
+      "id": "petek-2",
+      "kind": "hive",
+      "x": 4,
+      "y": 1,
+      "need": 1
+    }
+  ],
+  "goal": {
+    "collect": [
+      "bal-1",
+      "bal-2"
+    ],
+    "deliver": [
+      {
+        "to": "petek-1",
+        "count": 1
+      },
+      {
+        "to": "petek-2",
+        "count": 1
+      }
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward"
+    ],
+    "maxProgramLength": 5
+  },
+  "options": {
+    "resetEachRun": true,
+    "autoDrop": true,
+    "clearMemoryEachRun": true
+  },
+  "voice": {
+    "intro": "bal_pesinde.koy.l02.intro",
+    "success": "bal_pesinde.koy.l02.success",
+    "hints": [
+      "roboya.hint.koy.listen",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining",
+      "props": [
+        "honey",
+        "beehive"
+      ]
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "thanks",
+      "props": [
+        "honeycomb",
+        "villager-bee"
+      ]
+    }
+  },
+  "alternativeLevelId": "paylasim-koyu.bal-pesinde.01",
+  "solution": {
+    "shortestLength": 4
+  },
+  "scenery": [
+    {
+      "x": -1,
+      "y": 0,
+      "look": "tree"
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "look": "bush"
+    }
+  ]
+}

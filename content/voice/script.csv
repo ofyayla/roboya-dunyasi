@@ -113,3 +113,17 @@ value.patience.2,Ama koşarken kütüğü görmedi… tak! Elmalar saçıldı.,"
 value.patience.3,"Bilge Kaplumbağa yavaşça geldi. Sakin ol Roboya.","Sabır filmi, 3. sahne (F1-24)",
 value.patience.4,"İkisi kartları sırayla dizdi. Önce plan, sonra yürüyüş.","Sabır filmi, 4. sahne (F1-24)",
 value.patience.5,"Roboya planı yürüdü, elmaları topladı. Sabır, acele etmeden planlamaktır!","Sabır filmi, 5. sahne (F1-24)",
+roboya.hint.koy.listen,"Hmm, birlikte düşünelim. Bal nerede? Boş petek kaldı mı?","İpucu 1. kademe: sesli ipucu (Paylaşım Köyü; ormandakinden farkı: Kaplumbağa yok, çok petek)",
+bal_pesinde.koy.l01.intro,Köy arılarının peteği bomboş! Balı alıp peteğe götürelim.,Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.01
+bal_pesinde.koy.l01.success,Petek doldu! Köy arıları çok mutlu.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.01
+bal_pesinde.koy.l02.intro,İki petek de bal bekliyor. Her peteğe bir bal götürelim.,Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.02
+bal_pesinde.koy.l02.success,Her peteğe bal geldi!,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.02
+bal_pesinde.koy.l03.intro,Burada üç bal var! Üç peteğe birer bal verelim.,Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.03
+bal_pesinde.koy.l03.success,Üç petek de doldu!,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.03
+bal_pesinde.koy.l04.intro,"Bir petek köşede, sağda bekliyor! Kimseyi unutmayalım.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.04
+bal_pesinde.koy.l04.success,İki petek de doldu. Kimse unutulmadı!,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.04
+bal_pesinde.koy.l05.intro,"İki bal var, petek iki bal istiyor. İkisini de götürelim.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.05
+bal_pesinde.koy.l05.success,"Bir bal ve bir bal, iki bal! Petek tamam.",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.05
+bal_pesinde.koy.l06.intro,"Üç bal, iki petek! Bir petek bir bal, öbürü iki bal istiyor.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.06
+bal_pesinde.koy.l06.success,Herkesin payı tamam! Köy arıları teşekkür ediyor.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.06
+roboya.hint.koy.direction,"Hmm, birlikte düşünelim. Arı hangi yöne bakıyor? Hangi tarafa dönmeli?","İpucu 1. kademe, dönüşlü köy bölümleri (4, 6)",
