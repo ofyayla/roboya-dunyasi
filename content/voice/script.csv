@@ -140,3 +140,16 @@ bal_pesinde.koy.l11.intro,"İki petek var: biri bir, biri üç bal istiyor. Dör
 bal_pesinde.koy.l11.success,"Bir bal ve üç bal, dört bal! İki petek de doldu.",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.11
 bal_pesinde.koy.l12.intro,"Üç petek, üç ayrı istek! Balı toplayıp herkese yetecek kadar verelim.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.12
 bal_pesinde.koy.l12.success,Üç petek de doldu! Köy arıları şenlik hazırlıyor.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.12
+roboya.hint.koy.l14.listen,"Bir ona, bir ona! Balı tek tek dağıtalım.","İpucu 1. kademe, 14. bölüm: tek tek dağıtma (PK-0001)",paylasim-koyu.bal-pesinde.14
+bal_pesinde.koy.l13.intro,İki peteğe aynı kadar bal verelim! İkisi de eşit olsun.,Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.13
+bal_pesinde.koy.l13.success,İki petek eşit doldu!,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.13
+bal_pesinde.koy.l14.intro,"Dört balımız, iki peteğimiz var. Herkese aynı kadar düşsün.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.14
+bal_pesinde.koy.l14.success,İkişer bal! İki petek de eşit.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.14
+bal_pesinde.koy.l15.intro,"Altı bal, üç petek! Herkese aynı kadar verelim.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.15
+bal_pesinde.koy.l15.success,Üç petek de eşit doldu. Herkesin ikişer balı var!,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.15
+bal_pesinde.koy.l16.intro,Yine altı balımız var ama bu sefer iki petek bekliyor. Yine aynı kadar verelim.,Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.16
+bal_pesinde.koy.l16.success,Üçer bal! Az kişi paylaşınca herkese daha çok düşüyor.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.16
+bal_pesinde.koy.l17.intro,"Çalıların arasından geçelim! İki petek var, bal eşit olsun.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.17
+bal_pesinde.koy.l17.success,"Yolu buldun, iki petek eşit doldu!",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.17
+bal_pesinde.koy.l18.intro,"Beş balımız, iki peteğimiz var. Eşit verince bir bal artıyor. Ne yapalım?",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.18
+bal_pesinde.koy.l18.success,"Artan bal sofraya, herkes birlikte yesin!",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.18
