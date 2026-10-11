@@ -127,3 +127,16 @@ bal_pesinde.koy.l05.success,"Bir bal ve bir bal, iki bal! Petek tamam.",Bölüm 
 bal_pesinde.koy.l06.intro,"Üç bal, iki petek! Bir petek bir bal, öbürü iki bal istiyor.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.06
 bal_pesinde.koy.l06.success,Herkesin payı tamam! Köy arıları teşekkür ediyor.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.06
 roboya.hint.koy.direction,"Hmm, birlikte düşünelim. Arı hangi yöne bakıyor? Hangi tarafa dönmeli?","İpucu 1. kademe, dönüşlü köy bölümleri (4, 6)",
+card.drop.intro,Bu da bırak kartı. Onu koyunca sepetimden bir bal bırakırım.,Kart tanıtım anı (Paylaşım Köyü),paylasim-koyu.bal-pesinde.07
+bal_pesinde.koy.l07.intro,"Yeni bir kartım var: bırak! Sepetimde iki bal var, peteğe götürüp bırakalım.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.07
+bal_pesinde.koy.l07.success,Petek doldu! Bırak kartı balı peteğe koydu.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.07
+bal_pesinde.koy.l08.intro,"Bir yerde iki bal, bir yerde bir bal var. Peteğe üç bal lazım!",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.08
+bal_pesinde.koy.l08.success,"İki bal ve bir bal, üç bal! Petek doldu.",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.08
+bal_pesinde.koy.l09.intro,Peteğe dört bal lazım. Yoldaki balları toplayıp götürelim.,Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.09
+bal_pesinde.koy.l09.success,Dört bal tamam! Sepette de bal kaldı.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.09
+bal_pesinde.koy.l10.intro,"Sepetimde üç bal var, petek iki bal istiyor. Artan bal nereye gitsin?",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.10
+bal_pesinde.koy.l10.success,"Artan bal sofraya, herkes birlikte yesin!",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.10
+bal_pesinde.koy.l11.intro,"İki petek var: biri bir, biri üç bal istiyor. Dört balımız var.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.11
+bal_pesinde.koy.l11.success,"Bir bal ve üç bal, dört bal! İki petek de doldu.",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.11
+bal_pesinde.koy.l12.intro,"Üç petek, üç ayrı istek! Balı toplayıp herkese yetecek kadar verelim.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.12
+bal_pesinde.koy.l12.success,Üç petek de doldu! Köy arıları şenlik hazırlıyor.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.12

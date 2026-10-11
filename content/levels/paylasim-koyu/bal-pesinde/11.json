@@ -1,0 +1,118 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 3,
+  "id": "paylasim-koyu.bal-pesinde.11",
+  "region": "paylasim-koyu",
+  "game": "bal-pesinde",
+  "order": 11,
+  "meta": {
+    "concepts": [
+      "counting"
+    ],
+    "value": "sharing",
+    "difficulty": 3,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Köşe 2: bir bal ve üç bal, dört bal; tek dönüş."
+  },
+  "grid": {
+    "rows": [
+      "....",
+      "....",
+      "....",
+      "...."
+    ]
+  },
+  "robot": {
+    "x": 0,
+    "y": 0,
+    "facing": "east",
+    "carrying": 4
+  },
+  "drops": [
+    {
+      "id": "petek-1",
+      "kind": "hive",
+      "x": 2,
+      "y": 0,
+      "need": 1
+    },
+    {
+      "id": "petek-2",
+      "kind": "hive",
+      "x": 2,
+      "y": 2,
+      "need": 3
+    }
+  ],
+  "goal": {
+    "deliver": [
+      {
+        "to": "petek-1",
+        "count": 1
+      },
+      {
+        "to": "petek-2",
+        "count": 3
+      }
+    ]
+  },
+  "cards": {
+    "palette": [
+      "forward",
+      "turn_left",
+      "turn_right",
+      "drop"
+    ],
+    "maxProgramLength": 10
+  },
+  "options": {
+    "resetEachRun": true,
+    "beeMemoryVisible": true
+  },
+  "voice": {
+    "intro": "bal_pesinde.koy.l11.intro",
+    "success": "bal_pesinde.koy.l11.success",
+    "hints": [
+      "roboya.hint.koy.direction",
+      "roboya.hint.check_card",
+      "roboya.hint.show_card"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining",
+      "props": [
+        "honey",
+        "honeycomb"
+      ]
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "thanks",
+      "props": [
+        "honeycomb",
+        "villager-bee"
+      ]
+    }
+  },
+  "alternativeLevelId": "paylasim-koyu.bal-pesinde.10",
+  "solution": {
+    "shortestLength": 9
+  },
+  "scenery": [
+    {
+      "x": 4,
+      "y": 1,
+      "look": "tree"
+    },
+    {
+      "x": -1,
+      "y": 3,
+      "look": "bush"
+    }
+  ]
+}
