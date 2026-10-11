@@ -17,3 +17,7 @@
 - 4 yer tutucu bölüm (`bal-pesinde.01–04`, orders 15–18). Gerçek dizilim ve toplama/çıkarma görevleri F1-21'de pedagoji ekibiyle.
 - Arı, yanlış bir köşeye sıkışırsa çıkış için geri ve dön kartları vardır; başa alma düğmesi yok (gerekirse F1-21'de eklenir).
 - Çiçek/bal nesnelerinin son sanatı F1-23'te; şimdilik mevcut nesne çizimi.
+
+## Not (2026-10-11): Paylaşım Köyü
+
+Paylaşım Köyü bölümlerinde dünya (arı, sepet, petekler) her çalıştırmada başa döner; bellek Kaşif'te Temizle'ye kadar korunur, Minik'te kendiliğinden temizlenir. Bu yüzden köyde kart düzeyindeki ipucu açıktır. Sabır Ormanı'ndaki davranış değişmez. Kaynak: PK-0005, ADR 0030 madde 7.
