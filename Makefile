@@ -10,7 +10,7 @@ UNITY ?= $(firstword $(wildcard $(UNITY_HUB_EDITORS)/$(UNITY_VERSION)-arm64/Unit
 ENGINE_SLN := tools/engine-dotnet/Roboya.Engine.slnx
 
 .PHONY: help setup api-dev web-dev editor-dev test lint gen validate-content fix-content unity-test \
-        test-api test-web test-engine test-content lint-api lint-web check-gen unity-playmode tts test-tools android-apk unity-e2e refresh-art
+        test-api test-web test-engine test-content lint-api lint-web check-gen unity-playmode tts test-tools android-apk unity-e2e refresh-art ios-simulator ios-device ios-install
 
 help: ## List commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-18s\033[0m %s\n",$$1,$$2}'
@@ -91,6 +91,23 @@ unity-e2e: ## Run Unity PlayMode tests end to end: every level of the path is pl
 android-apk: ## Build an internal-test Android APK into apps/game/Builds/Android (add DEV=1 for a development build)
 	"$(UNITY)" -batchmode -nographics -quit -projectPath apps/game -executeMethod Roboya.EditorTools.BuildScript.BuildAndroidApk \
 		$(if $(DEV),-devBuild,) -logFile -
+
+ios-simulator: ## Build the game for the iOS Simulator into apps/game/Builds/iOS-simulator (Xcode project, then the .app)
+	"$(UNITY)" -batchmode -nographics -quit -projectPath apps/game -executeMethod Roboya.EditorTools.BuildScript.BuildIosSimulator -logFile -
+	xcodebuild -project apps/game/Builds/iOS-simulator/Unity-iPhone.xcodeproj -scheme Unity-iPhone -configuration Debug \
+		-sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath apps/game/Builds/iOS-simulator/DerivedData \
+		CODE_SIGNING_ALLOWED=NO build
+
+ios-device: ## Export the Xcode project for a physical iOS device into apps/game/Builds/iOS (add DEV=1 for a development build)
+	"$(UNITY)" -batchmode -nographics -quit -projectPath apps/game -executeMethod Roboya.EditorTools.BuildScript.BuildIosDevice \
+		$(if $(DEV),-devBuild,) -logFile -
+
+ios-install: ios-device ## Build and install to the connected iOS device (add DEV=1 for a development build)
+	xcodebuild -project apps/game/Builds/iOS/Unity-iPhone.xcodeproj -scheme Unity-iPhone \
+		-configuration $(if $(DEV),Debug,Release) CODE_SIGN_STYLE=Automatic DEVELOPMENT_TEAM=9M8PK9FC7X \
+		-derivedDataPath apps/game/Builds/iOS/build -allowProvisioningUpdates build
+	xcrun devicectl device install app --device $$(xcrun devicectl list devices | awk '/available \(paired\)/ {print $$3; exit}') \
+		apps/game/Builds/iOS/build/Build/Products/$(if $(DEV),Debug,Release)-iphoneos/RoboyaDnyas.app
 
 refresh-art: ## Rebuild the Unity sprite lookups (region art, ship parts) after adding or replacing art
 	"$(UNITY)" -batchmode -nographics -quit -projectPath apps/game -executeMethod Roboya.EditorTools.ProjectSetup.RefreshArtBatch -logFile -

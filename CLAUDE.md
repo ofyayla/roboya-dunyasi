@@ -59,10 +59,13 @@ Komutlar kök dizindeki `Makefile` üzerinden çalışır. Bir komut değişirse
 | `make gen` | Bölüm şemasından ve OpenAPI'den C# / TypeScript kodu üretir |
 | `make validate-content` | Tüm bölümleri şema ve çözücüyle doğrular, ses manifestini kontrol eder |
 | `make tts` | Eksik veya metni değişmiş seslendirme satırlarını ElevenLabs ile üretir (`.env` gerekir) |
+| `make ios-simulator` | Oyunu iOS Simülatörü için derler (`apps/game/Builds/iOS-simulator`, Unity dışa aktarma + xcodebuild); `.app` bir simülatöre yüklenip açılır |
 | `make unity-test` | Unity EditMode testlerini batch modda çalıştırır |
 | `make refresh-art` | Sanat eklenince ya da değişince Unity sprite arama varlıklarını (bölge sanatı, gemi parçaları) yeniler; sahnelere ve proje ayarlarına dokunmaz |
 | `make unity-playmode` | Unity PlayMode kritik akış testleri, bölüm oynatan testlerde yalnız ilk 3 bölüm; ekran görüntüleri `apps/game/TestResults/screens` |
 | `make unity-e2e` | Unity PlayMode testleri uçtan uca: patikadaki bütün bölümler oynanır (`ROBOYA_E2E=1`) |
+| `make ios-simulator` | iOS Simulator için Xcode projesini ve .app paketini derler |
+| `make ios-install` | Bağlı olan fiziksel iOS cihazına derler ve yükler (`DEV=1` ile developer mod) |
 
 Bir görevi bitirdiğini söylemeden önce ilgili testleri ve lint'i çalıştır ve neyi çalıştırdığını raporla.
 
