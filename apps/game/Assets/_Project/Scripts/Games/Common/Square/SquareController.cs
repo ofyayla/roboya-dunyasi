@@ -107,6 +107,7 @@ namespace Roboya.Games.Square
 
             _bar = new SquarePlanBar(root.Q("plan"), art);
             _bar.CardTapped += OnCardTapped;
+            _bar.CountTapped += OnCountTapped;
 
             _play = new IconButton(IconKind.Play, () => _ = PlayAsync()) { name = "play" };
             _play.AddToClassList("icon-button--play");
@@ -314,6 +315,29 @@ namespace Roboya.Games.Square
             }
         }
 
+        /// <summary>Tapping a count goes 1, 2, 3 and back to 1: the child sets how many honey the card gives.</summary>
+        private void OnCountTapped(bool inBox, int index)
+        {
+            if (!Interactive)
+            {
+                return;
+            }
+
+            var list = inBox ? _session.Plan.Box : _session.Plan.Tail;
+            if (index < 0 || index >= list.Count)
+            {
+                return;
+            }
+
+            ResetScene();
+            int next = (list[index].Count % SharingLevel.MaxGive) + 1;
+            if (_session.Plan.SetCount(inBox, index, next))
+            {
+                _services.Sfx.Play(SfxKind.Place);
+                RefreshPlan();
+            }
+        }
+
         private void ClearPlan()
         {
             if (!Interactive)
@@ -441,8 +465,9 @@ namespace Roboya.Games.Square
 
                     return hint.Card.Kind == SharingCardKind.Take ? (VisualElement)_square.Flowers[hint.Card.Flower] : _square.Hives[hint.Card.Target];
                 case SharingHintKind.Remove:
-                case SharingHintKind.SetCount:
                     return _bar.ElementOf(hint.Card);
+                case SharingHintKind.SetCount:
+                    return _bar.BadgeOf(hint.Card) ?? _bar.ElementOf(hint.Card);
                 default:
                     return null;
             }

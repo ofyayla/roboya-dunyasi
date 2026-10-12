@@ -259,17 +259,122 @@ namespace Roboya.Tests.PlayMode
             }
         }
 
-        // Corner 1 has six levels; the development run plays the first levels, ROBOYA_E2E=1 all of them.
-        [Timeout(900000)]
+        /// <summary>Taps a plan through the real screen: flowers, hives and the table by name, a card's count by tapping its badge.</summary>
+        private static IEnumerator TapPlan(VisualElement game, SharingProgram plan)
+        {
+            foreach (var card in plan.Tail)
+            {
+                string target = card.Kind == SharingCardKind.Take ? "flower-" + card.Flower : card.IsTable ? "table" : "hive-" + card.Target;
+                Tap(game.Q(target));
+                yield return null;
+                for (int k = 1; card.Kind == SharingCardKind.Give && k < card.Count; k++)
+                {
+                    Tap(game.Q("plan").Query(className: "sc__count").ToList().Last());
+                    yield return null;
+                }
+            }
+        }
+
         [UnityTest]
-        public IEnumerator SquareCorner1_SolverPlanTappedThroughUi_EachLevelCompletes()
+        public IEnumerator SquareCorner2_FirstLevel_TakeFromTheFlowerThenGiveTwiceWins()
+        {
+            VisualElement game = null;
+            yield return OpenFirstSquareLevel(r => game = r, villageDone: 6);
+            yield return new WaitForSeconds(0.5f);
+            Assert.AreEqual("paylasim-koyu.koy-meydani.07", CurrentLevelId());
+            Assert.IsNotNull(game.Q("flower-0"), "this level has a flower");
+            Assert.AreEqual(2, game.Q("flower-0").Query(className: "dot").ToList().Count, "two honey on the flower");
+            Assert.AreEqual(0, game.Q("basket-dots").Query(className: "dot").ToList().Count(d => !d.ClassListContains("dot--empty")), "the basket starts empty");
+            yield return Capture(game, "34-square-corner2-start");
+
+            Tap(game.Q("flower-0"));
+            Tap(game.Q("hive-0"));
+            Tap(game.Q("hive-0"));
+            yield return null;
+            Tap(game.Q("play"));
+            yield return WaitUntil(() => !game.Q("result").ClassListContains("hidden"), 40f);
+            yield return null;
+            Assert.AreEqual(3, StarCount(game));
+            Assert.AreEqual(2, Filled(game, 0), "the hive got both honey");
+        }
+
+        [UnityTest]
+        public IEnumerator SquareCorner2_CountBadge_GoesOneTwoThreeAndOneAgain()
+        {
+            VisualElement game = null;
+            yield return OpenFirstSquareLevel(r => game = r, villageDone: 7);
+            yield return new WaitForSeconds(0.5f);
+            Assert.AreEqual("paylasim-koyu.koy-meydani.08", CurrentLevelId());
+
+            Tap(game.Q("flower-0"));
+            Tap(game.Q("hive-0"));
+            yield return null;
+            Assert.AreEqual(1, game.Q("plan").Query(className: "sc__count").ToList().Count, "a give card carries a count");
+            Assert.AreEqual(1, Count(game.Q("plan").Query(className: "sc__count").ToList().Last(), "dot"));
+            Tap(game.Q("plan").Query(className: "sc__count").ToList().Last());
+            yield return null;
+            Assert.AreEqual(2, Count(game.Q("plan").Query(className: "sc__count").ToList().Last(), "dot"));
+            Tap(game.Q("plan").Query(className: "sc__count").ToList().Last());
+            yield return null;
+            Assert.AreEqual(3, Count(game.Q("plan").Query(className: "sc__count").ToList().Last(), "dot"));
+            yield return Capture(game, "35-square-corner2-count");
+            Tap(game.Q("plan").Query(className: "sc__count").ToList().Last());
+            yield return null;
+            Assert.AreEqual(1, Count(game.Q("plan").Query(className: "sc__count").ToList().Last(), "dot"), "and back to one");
+            Tap(game.Q("plan").Query(className: "sc__count").ToList().Last());
+            Tap(game.Q("plan").Query(className: "sc__count").ToList().Last());
+            yield return null;
+            Tap(game.Q("play"));
+            yield return WaitUntil(() => !game.Q("result").ClassListContains("hidden"), 40f);
+            yield return null;
+            Assert.AreEqual(3, StarCount(game), "three honey in one card is the shortest plan");
+        }
+
+        [UnityTest]
+        public IEnumerator SquareCorner2_BasketOfTwo_TakingBothFlowersStopsGentlyWithTheBasketFull()
+        {
+            VisualElement game = null;
+            yield return OpenFirstSquareLevel(r => game = r, villageDone: 9);
+            yield return new WaitForSeconds(0.5f);
+            Assert.AreEqual("paylasim-koyu.koy-meydani.10", CurrentLevelId());
+            Assert.AreEqual(2, game.Q("basket-dots").Query(className: "dot").ToList().Count, "the basket holds two: two places");
+
+            Tap(game.Q("flower-0"));
+            Tap(game.Q("flower-1"));
+            Tap(game.Q("hive-0"));
+            yield return null;
+            Tap(game.Q("play"));
+            yield return WaitUntil(() => game.Q("plan").Query(className: "sc--stop").ToList().Count == 1, 30f);
+            yield return new WaitForSeconds(0.6f);
+            yield return Capture(game, "36-square-corner2-basket-full");
+            Assert.IsTrue(game.Q("result").ClassListContains("hidden"), "a stopped plan is not a win");
+            Assert.AreEqual(2, game.Q("basket-dots").Query(className: "dot").ToList().Count(d => !d.ClassListContains("dot--empty")), "the first flower filled the basket");
+            Assert.AreEqual(1, game.Q("flower-1").Query(className: "dot").ToList().Count, "the second flower kept its honey");
+            yield return WaitUntil(() => game.Q("play").enabledSelf, 10f);
+        }
+
+        // The whole village path through the UI: the development run plays the first levels of each part, ROBOYA_E2E=1 all of them.
+        [Timeout(1800000)]
+        [UnityTest]
+        public IEnumerator SquareVillage_SolverPlanTappedThroughUi_EachLevelCompletes()
         {
             var catalog = FinishForest();
-            var levels = catalog.All.Where(l => l.Dto.Region == RegionId.PaylasimKoyu).ToList();
-            Assert.AreEqual(6, levels.Count, "corner 1 is the whole village for now: six levels");
-            int pathCount = levels.Count;
-            levels = levels.Take(LevelsToPlay(levels.Count)).ToList();
+            var all = catalog.All.Where(l => l.Dto.Region == RegionId.PaylasimKoyu).ToList();
+            Assert.AreEqual(12, all.Count, "corners 1 and 2: twelve levels");
+            yield return WalkAsync(all.Take(LevelsToPlay(6)).ToList(), 0, all.Count);
+        }
 
+        [Timeout(1800000)]
+        [UnityTest]
+        public IEnumerator SquareCorner2_SolverPlanTappedThroughUi_EachLevelCompletes()
+        {
+            var catalog = FinishForest(villageDone: 6);
+            var all = catalog.All.Where(l => l.Dto.Region == RegionId.PaylasimKoyu).ToList();
+            yield return WalkAsync(all.Skip(6).Take(LevelsToPlay(6)).ToList(), 6, all.Count);
+        }
+
+        private IEnumerator WalkAsync(System.Collections.Generic.List<LevelEntry> levels, int firstIndex, int pathCount)
+        {
             Environment.SetEnvironmentVariable(DevEntitlements.Variable, "1");
             VisualElement map = null;
             yield return OpenVillagePath(r => map = r);
@@ -280,19 +385,13 @@ namespace Roboya.Tests.PlayMode
             for (int i = 0; i < levels.Count; i++)
             {
                 var entry = levels[i];
-                var plan = SharingSolver.Solve(entry.Sharing).Programs[0].Tail;
+                var plan = SharingSolver.Solve(entry.Sharing).Programs[0];
                 Debug.Log("[test] playing " + entry.Id);
                 yield return PassStory(game);
                 yield return new WaitForSeconds(0.3f);
-
-                foreach (var card in plan)
-                {
-                    Tap(game.Q("hive-" + card.Target));
-                    yield return null;
-                }
-
+                yield return TapPlan(game, plan);
                 Tap(game.Q("play"));
-                if (CornerRules.IsCornerEnd(i, pathCount))
+                if (CornerRules.IsCornerEnd(firstIndex + i, pathCount))
                 {
                     yield return WaitUntil(() => game.Q("value-card") != null && !game.Q("value-card").ClassListContains("hidden"), 90f);
                     yield return new WaitForSeconds(1f);
@@ -319,10 +418,11 @@ namespace Roboya.Tests.PlayMode
                     yield return null;
                 }
 
-                map.Q("path").Q<ScrollView>().ScrollTo(map.Q("stone-" + (i + 2)));
+                int stone = firstIndex + i + 2;
+                map.Q("path").Q<ScrollView>().ScrollTo(map.Q("stone-" + stone));
                 yield return null;
                 yield return null;
-                Tap(map.Q("stone-" + (i + 2)));
+                Tap(map.Q("stone-" + stone));
                 yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Game" && (game = FindRoot())?.Q("square") != null, 10f);
             }
         }

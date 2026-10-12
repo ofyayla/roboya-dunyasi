@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 3,
+  "id": "paylasim-koyu.koy-meydani.07",
+  "region": "paylasim-koyu",
+  "game": "koy-meydani",
+  "order": 7,
+  "meta": {
+    "concepts": [
+      "counting"
+    ],
+    "value": "sharing",
+    "difficulty": 2,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Köşe 2: al ve ver: tek çiçek, tek petek (tanıtım, el rehberli)."
+  },
+  "sharing": {
+    "hives": [
+      {
+        "need": 2
+      }
+    ],
+    "flowers": [
+      2
+    ],
+    "goal": "deliver",
+    "limits": {
+      "maxCards": 4
+    }
+  },
+  "options": {
+    "intro": true,
+    "guided": true
+  },
+  "voice": {
+    "intro": "koy_meydani.l07.intro",
+    "success": "koy_meydani.l07.success",
+    "hints": [
+      "koy_meydani.hint.look",
+      "koy_meydani.hint.tap",
+      "koy_meydani.hint.play"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining",
+      "props": [
+        "honey",
+        "beehive"
+      ]
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "thanks",
+      "props": [
+        "honeycomb",
+        "villager-bee"
+      ]
+    }
+  },
+  "solution": {
+    "shortestLength": 3
+  }
+}

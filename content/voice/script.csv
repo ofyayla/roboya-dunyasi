@@ -93,7 +93,7 @@ yon_avcisi.l11.success,Armut bizde! Dolambaçlı yolu çözdük.,Bölüm sonu,sa
 yon_avcisi.l12.intro,Bilge Kaplumbağa son sınavı hazırladı! İki meyveyi toplayıp çıkışa gidelim.,Bölüm girişi,sabir-ormani.yon-avcisi.12
 yon_avcisi.l12.success,"Başardık! Orman yollarının sırrını çözdük, Bilge Kaplumbağa çok gurur duydu.",Bölüm sonu,sabir-ormani.yon-avcisi.12
 kodlama_kutusu.hunt,"Bak, kod yanlış çalıştı! Kutudan gelen kartlardan biri hatalı. Büyüteçli kartlara dokunup hatayı bulalım!",Hata avcısı: hazır kod bir kez çalışır ve yanlış gider; çocuktan hatayı bulması istenir,
-count.01,Bir!,Sayma: toplanan nesne sayısı sesli söylenir (BAL-01),
+count.01,Bir.,Sayma: toplanan nesne sayısı sesli söylenir (BAL-01),
 count.02,İki!,Sayma: toplanan nesne sayısı sesli söylenir (BAL-01),
 count.03,Üç!,Sayma: toplanan nesne sayısı sesli söylenir (BAL-01),
 count.04,Dört!,Sayma: toplanan nesne sayısı sesli söylenir (BAL-01),
@@ -136,3 +136,15 @@ koy_meydani.l05.intro,Bu arı tam üç bal istiyor. Sepette üç bal var.,"Böl�
 koy_meydani.l05.success,"Üç bal! Petek doldu, arı teşekkür ediyor.","Bölüm sonu (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.05
 koy_meydani.l06.intro,"Üç arı bal bekliyor. İkisi bir, biri iki bal istiyor. Sepette dört bal var.","Bölüm girişi (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.06
 koy_meydani.l06.success,Hepsi tamam! Köy arıları birlikte şenlik yapıyor.,"Bölüm sonu (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.06
+koy_meydani.l07.intro,"Bu sefer sepet boş! Önce çiçekten bal alalım, sonra peteğe verelim. Önce çiçeğe dokun, sonra peteğe.","Bölüm girişi (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.07
+koy_meydani.l07.success,"Aferin! Çiçekten aldık, peteğe verdik.","Bölüm sonu (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.07
+koy_meydani.l08.intro,"Bu çiçekte üç bal var, petek de üç bal istiyor. Verme kartındaki noktalara dokun: kaç bal verilsin?","Bölüm girişi (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.08
+koy_meydani.l08.success,Üç balı tek seferde verdik!,"Bölüm sonu (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.08
+koy_meydani.l09.intro,Petek üç bal istiyor ama tek çiçekte o kadar yok. İki çiçekten de al!,"Bölüm girişi (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.09
+koy_meydani.l09.success,"İki bal ve bir bal, üç bal! Petek doldu.","Bölüm sonu (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.09
+koy_meydani.l10.intro,"Dikkat, sepete yalnız iki bal sığıyor! Önce biraz ver, sonra gerisini al.","Bölüm girişi (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.10
+koy_meydani.l10.success,Sepet küçüktü ama yine de başardık!,"Bölüm sonu (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.10
+koy_meydani.l11.intro,"Bu peteğin zaten iki balı var, dört bal istiyor. Eksik olanı tamamlayalım.","Bölüm girişi (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.11
+koy_meydani.l11.success,Dört bal oldu! Eksiği tamamladık.,"Bölüm sonu (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.11
+koy_meydani.l12.intro,"İki petek de bal bekliyor. Sepet küçük, çiçekler farklı. Sırayla dolaşalım!","Bölüm girişi (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.12
+koy_meydani.l12.success,Hepsi tamam! Köy arıları birlikte şenlik yapıyor.,"Bölüm sonu (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.12

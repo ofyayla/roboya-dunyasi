@@ -19,6 +19,7 @@ namespace Roboya.Games.Square
         private readonly RegionArt _art;
         private readonly List<KeyValuePair<SharingCard, VisualElement>> _cards = new List<KeyValuePair<SharingCard, VisualElement>>();
         private readonly List<VisualElement> _slots = new List<VisualElement>();
+        private readonly List<KeyValuePair<SharingCard, VisualElement>> _badges = new List<KeyValuePair<SharingCard, VisualElement>>();
         private SharingLevel _level;
         private VisualElement _lastOn;
 
@@ -31,6 +32,9 @@ namespace Roboya.Games.Square
         /// <summary>The child tapped a card: (it is in the repeat box, its position there).</summary>
         public event Action<bool, int> CardTapped;
 
+        /// <summary>The child tapped the count of a give card (levels whose cards carry a count): (in the repeat box, its position).</summary>
+        public event Action<bool, int> CountTapped;
+
         public VisualElement Host => _host;
 
         public void Bind(SharingLevel level) => _level = level;
@@ -40,6 +44,7 @@ namespace Roboya.Games.Square
             _host.Clear();
             _cards.Clear();
             _slots.Clear();
+            _badges.Clear();
             _lastOn = null;
             for (int i = 0; i < plan.Box.Count; i++)
             {
@@ -64,6 +69,20 @@ namespace Roboya.Games.Square
         public VisualElement ElementOf(SharingCard card)
         {
             foreach (var pair in _cards)
+            {
+                if (ReferenceEquals(pair.Key, card))
+                {
+                    return pair.Value;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>The count badge of a give card of the plan (matched by identity); null on levels without counts.</summary>
+        public VisualElement BadgeOf(SharingCard card)
+        {
+            foreach (var pair in _badges)
             {
                 if (ReferenceEquals(pair.Key, card))
                 {
@@ -103,12 +122,32 @@ namespace Roboya.Games.Square
             {
                 pair.Value.pickingMode = locked ? PickingMode.Ignore : PickingMode.Position;
             }
+
+            foreach (var pair in _badges)
+            {
+                pair.Value.pickingMode = locked ? PickingMode.Ignore : PickingMode.Position;
+            }
         }
 
         private void Add(SharingCard card, bool inBox, int index)
         {
             var element = Face(card);
             element.RegisterCallback<PointerDownEvent>(_ => CardTapped?.Invoke(inBox, index));
+            if (_level.AllowsAmounts && card.Kind == SharingCardKind.Give)
+            {
+                // The count: as many honey dots as the card hands over. Tap it to change; the rest of the card takes the card out.
+                var badge = new VisualElement { name = "count-" + _cards.Count };
+                badge.AddToClassList("sc__count");
+                HoneyDots.Fill(badge, card.Count, 0, "dot--small");
+                badge.RegisterCallback<PointerDownEvent>(e =>
+                {
+                    e.StopPropagation();
+                    CountTapped?.Invoke(inBox, index);
+                });
+                element.Add(badge);
+                _badges.Add(new KeyValuePair<SharingCard, VisualElement>(card, badge));
+            }
+
             _host.Add(element);
             _cards.Add(new KeyValuePair<SharingCard, VisualElement>(card, element));
         }
@@ -159,7 +198,11 @@ namespace Roboya.Games.Square
             var mark = new HiveMark(card.Target);
             mark.AddToClassList("sc__mark");
             element.Add(mark);
-            element.Add(DropPicture.Create(_art, "sc__tag"));
+            if (!_level.AllowsAmounts)
+            {
+                element.Add(DropPicture.Create(_art, "sc__tag"));
+            }
+
             return element;
         }
 
