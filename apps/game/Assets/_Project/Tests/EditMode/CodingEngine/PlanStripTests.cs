@@ -119,18 +119,5 @@ namespace Roboya.Tests.CodingEngine
             Assert.Throws<ArgumentOutOfRangeException>(() => new PlanStrip(0, Moves));
             Assert.Throws<ArgumentNullException>(() => new PlanStrip(2, null));
         }
-
-        [Test]
-        public void ToProgram_DropCard_BecomesTheDropCommand()
-        {
-            var level = HoneyLevels.Build(new[] { "R1A" }, deliver: new[] { ('A', 1) });
-            var plan = new PlanStrip(5, level.AvailableCards);
-            plan.Load(new[] { F, F, Roboya.CodingEngine.Commands.CardType.Drop });
-
-            var result = Interpreter.Execute(level, plan.ToProgram());
-
-            Assert.AreEqual(ExecutionOutcome.Success, result.Outcome);
-            Assert.IsInstanceOf<DropCommand>(plan.ToProgram().Main[2]);
-        }
     }
 }

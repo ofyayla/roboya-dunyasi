@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 3,
+  "id": "paylasim-koyu.koy-meydani.04",
+  "region": "paylasim-koyu",
+  "game": "koy-meydani",
+  "order": 4,
+  "meta": {
+    "concepts": [
+      "counting"
+    ],
+    "value": "sharing",
+    "difficulty": 2,
+    "ageLevels": [
+      "minik"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Köşe 1: iki petek ikişer bal ister: dört bal."
+  },
+  "sharing": {
+    "hives": [
+      {
+        "need": 2
+      },
+      {
+        "need": 2
+      }
+    ],
+    "basket": {
+      "start": 4
+    },
+    "goal": "deliver",
+    "limits": {
+      "maxCards": 5
+    }
+  },
+  "voice": {
+    "intro": "koy_meydani.l04.intro",
+    "success": "koy_meydani.l04.success",
+    "hints": [
+      "koy_meydani.hint.look",
+      "koy_meydani.hint.tap",
+      "koy_meydani.hint.play"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining",
+      "props": [
+        "honey",
+        "beehive"
+      ]
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "thanks",
+      "props": [
+        "honeycomb",
+        "villager-bee"
+      ]
+    }
+  },
+  "alternativeLevelId": "paylasim-koyu.koy-meydani.03",
+  "solution": {
+    "shortestLength": 4
+  }
+}

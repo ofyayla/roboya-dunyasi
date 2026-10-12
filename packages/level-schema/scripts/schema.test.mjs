@@ -52,10 +52,6 @@ test("validateFile_wrongSchemaVersion_isRejected", () => {
   assert.ok(withLevel((l) => (l.schemaVersion = 4)).length > 0);
 });
 
-test("validateFile_schemaVersion2_isRejected", () => {
-  assert.ok(withLevel((l) => (l.schemaVersion = 2)).length > 0);
-});
-
 test("validateFile_invalidJson_reportsParseError", () => {
   const dir = mkdtempSync(join(tmpdir(), "lvl-"));
   const file = join(dir, "bad.json");
@@ -89,74 +85,81 @@ test("validateFile_storyUnknownField_isRejected", () => {
   assert.ok(withLevel((l) => (l.story = { intro: { childName: "Ali" } })).length > 0);
 });
 
+test("validateFile_schemaVersion2_isRejected", () => {
+  assert.ok(withLevel((l) => (l.schemaVersion = 2)).length > 0);
+});
+
 test("validateFile_schemaVersion1_isRejected", () => {
   assert.ok(withLevel((l) => (l.schemaVersion = 1)).length > 0);
 });
 
-// Schema v3: honey carrying, dropping and sharing (ADR 0030, PK-0001..0005).
-const village = (l) => {
-  l.drops = [
-    { id: "petek-1", kind: "hive", x: 1, y: 0, need: 2 },
-    { id: "petek-2", kind: "hive", x: 2, y: 0, need: 2 },
-    { id: "sofra", kind: "table", x: 3, y: 0 },
-  ];
-  l.items = [{ id: "bal-1", kind: "honey", x: 0, y: 1, amount: 3 }];
-  l.robot.carrying = 2;
-  l.cards.palette = ["forward", "turn_right", "drop"];
-  l.goal = { share: { among: ["petek-1", "petek-2"], leftoverTo: "sofra" }, carryAtEnd: 0 };
-  l.options = { autoDrop: false, askRemaining: true, resetEachRun: true, clearMemoryEachRun: false, intro: true };
-  l.starterProgram = [{ op: "drop" }];
+// Village square (koy-meydani, ADR 0031): no grid, a `sharing` block instead.
+const village = () => ({
+  schemaVersion: 3,
+  id: "paylasim-koyu.koy-meydani.01",
+  region: "paylasim-koyu",
+  game: "koy-meydani",
+  order: 1,
+  meta: { concepts: ["counting"], value: "sharing", difficulty: 1, ageLevels: ["minik"] },
+  sharing: {
+    hives: [{ need: 1 }, { need: 1 }],
+    basket: { start: 2 },
+    goal: "deliver",
+    limits: { maxCards: 3 },
+  },
+  voice: { intro: "koy_meydani.l01.intro" },
+});
+
+const withVillage = (mutate) => {
+  const level = village();
+  mutate(level);
+  const dir = mkdtempSync(join(tmpdir(), "village-"));
+  const file = join(dir, "01.json");
+  writeFileSync(file, JSON.stringify(level));
+  return validateFile(file);
 };
 
 test("validateFile_villageLevel_isAccepted", () => {
-  assert.deepEqual(withLevel(village), []);
+  assert.deepEqual(withVillage(() => {}), []);
 });
 
-test("validateFile_deliverGoal_isAccepted", () => {
+test("validateFile_villageRepeatBoxLevel_isAccepted", () => {
   assert.deepEqual(
-    withLevel((l) => {
-      village(l);
-      l.goal = { deliver: [{ to: "petek-1", count: 2 }] };
+    withVillage((l) => {
+      l.sharing = { hives: [{}, {}, {}], basket: { start: 6 }, goal: "share", limits: { maxCards: 3 }, repeatBox: { slots: 3, maxTurns: 3 } };
     }),
     [],
   );
 });
 
-test("validateFile_homeDropKind_isRejected", () => {
-  assert.ok(withLevel((l) => { village(l); l.drops[0].kind = "home"; }).length > 0);
+test("validateFile_villageWithoutSharing_isRejected", () => {
+  assert.ok(withVillage((l) => delete l.sharing).length > 0);
 });
 
-test("validateFile_hiveNeedZero_isRejected", () => {
-  assert.ok(withLevel((l) => { village(l); l.drops[0].need = 0; }).length > 0);
+test("validateFile_villageWithAGrid_isRejected", () => {
+  assert.ok(withVillage((l) => (l.grid = { rows: ["..."] })).length > 0);
 });
 
-test("validateFile_shareAmongOne_isRejected", () => {
-  assert.ok(withLevel((l) => { village(l); l.goal.share.among = ["petek-1"]; }).length > 0);
+test("validateFile_gridGameWithSharing_isRejected", () => {
+  assert.ok(withLevel((l) => (l.sharing = village().sharing)).length > 0);
 });
 
-test("validateFile_carryAtEndAlone_isRejected", () => {
-  assert.ok(withLevel((l) => (l.goal = { carryAtEnd: 1 })).length > 0);
+test("validateFile_gridGameWithoutAGrid_isRejected", () => {
+  assert.ok(withLevel((l) => delete l.grid).length > 0);
 });
 
-test("validateFile_deliverCountZero_isRejected", () => {
-  assert.ok(withLevel((l) => { village(l); l.goal = { deliver: [{ to: "petek-1", count: 0 }] }; }).length > 0);
+test("validateFile_villageFiveHives_isRejected", () => {
+  assert.ok(withVillage((l) => (l.sharing.hives = Array.from({ length: 5 }, () => ({ need: 1 })))).length > 0);
 });
 
-test("validateFile_honeyAmountEight_isRejected", () => {
-  assert.ok(withLevel((l) => { village(l); l.items[0].amount = 8; }).length > 0);
+test("validateFile_villageUnknownGoal_isRejected", () => {
+  assert.ok(withVillage((l) => (l.sharing.goal = "swap")).length > 0);
 });
 
-test("validateFile_dropsOverFour_isRejected", () => {
-  assert.ok(
-    withLevel((l) => {
-      l.drops = Array.from({ length: 5 }, (_, i) => ({ id: `p-${i}`, kind: "hive", x: i, y: 0, need: 1 }));
-    }).length > 0,
-  );
+test("validateFile_villageWithoutLimits_isRejected", () => {
+  assert.ok(withVillage((l) => delete l.sharing.limits).length > 0);
 });
 
-test("validateFile_villageStoryProps_areAccepted", () => {
-  assert.deepEqual(
-    withLevel((l) => (l.story = { intro: { props: ["villager-bee", "honeycomb", "village-table"] } })),
-    [],
-  );
+test("validateFile_villageRepeatBoxTurnsOverThree_isRejected", () => {
+  assert.ok(withVillage((l) => (l.sharing.repeatBox = { slots: 2, maxTurns: 4 })).length > 0);
 });

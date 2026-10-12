@@ -1,8 +1,8 @@
 import type { ItemDto } from "@roboya/level-schema";
 import { useTranslation } from "react-i18next";
-import { DEFAULT_NEED, MAX_AMOUNT, MAX_NEED, type ItemBrush, type Tool } from "../model/levelOps";
+import type { ItemBrush, Tool } from "../model/levelOps";
 
-const TOOLS: Tool[] = ["wall", "floor", "robot", "goal", "item", "hive", "table", "erase"];
+const TOOLS: Tool[] = ["wall", "floor", "robot", "goal", "item", "erase"];
 const KINDS: Array<ItemDto["kind"]> = ["fruit", "flower", "honey", "gear", "star", "ship-part"];
 const COLORS: Array<NonNullable<ItemDto["color"]>> = ["red", "yellow", "blue", "green", "purple", "orange"];
 
@@ -26,20 +26,6 @@ export function ToolBar({ tool, brush, onTool, onBrush }: Props) {
           </label>
         ))}
       </div>
-      {tool === "hive" && (
-        <div className="row">
-          <label>
-            {t("tools.need")}
-            <input
-              type="number"
-              min={1}
-              max={MAX_NEED}
-              value={brush.need ?? DEFAULT_NEED}
-              onChange={(e) => onBrush({ ...brush, need: Math.max(1, Math.min(MAX_NEED, Number(e.target.value))) })}
-            />
-          </label>
-        </div>
-      )}
       {tool === "item" && (
         <div className="row">
           <label>
@@ -56,11 +42,7 @@ export function ToolBar({ tool, brush, onTool, onBrush }: Props) {
             {t("tools.color")}
             <select
               value={brush.color ?? ""}
-              onChange={(e) => {
-                const { color: _previous, ...rest } = brush;
-                void _previous;
-                onBrush({ ...rest, ...(e.target.value ? { color: e.target.value as ItemDto["color"] } : {}) });
-              }}
+              onChange={(e) => onBrush({ kind: brush.kind, ...(e.target.value ? { color: e.target.value as ItemDto["color"] } : {}) })}
             >
               <option value="">{t("tools.noColor")}</option>
               {COLORS.map((c) => (
@@ -70,18 +52,6 @@ export function ToolBar({ tool, brush, onTool, onBrush }: Props) {
               ))}
             </select>
           </label>
-          {brush.kind === "honey" && (
-            <label>
-              {t("tools.amount")}
-              <input
-                type="number"
-                min={1}
-                max={MAX_AMOUNT}
-                value={brush.amount ?? 1}
-                onChange={(e) => onBrush({ ...brush, amount: Math.max(1, Math.min(MAX_AMOUNT, Number(e.target.value))) })}
-              />
-            </label>
-          )}
         </div>
       )}
     </fieldset>

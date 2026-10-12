@@ -15,8 +15,9 @@ namespace Roboya.Games.Common
         [SerializeField] private PartArt partArt;
 
         private GameController _controller;
+        private Roboya.Games.Square.SquareController _square;
 
-        public string CurrentLevelId => _controller?.CurrentLevelId;
+        public string CurrentLevelId => _controller?.CurrentLevelId ?? _square?.CurrentLevelId;
         private GameServices _services;
         private bool _limitReported;
 
@@ -35,8 +36,17 @@ namespace Roboya.Games.Common
 
             int start = levels.FindIndex(l => l.Id == services.Navigator.SelectedLevelId);
             // The region's own pictures when the library has them, the scene's (forest) art otherwise.
-            _controller = new GameController(document.rootVisualElement, services, levels, RegionArtLibrary.Pick(RegionArtLibrary.Load(), region, art), partArt);
+            var regionArt = RegionArtLibrary.Pick(RegionArtLibrary.Load(), region, art);
             services.Music.SetRegion(region);
+            if (selected != null && selected.Dto.Game == GameId.KoyMeydani)
+            {
+                // The village square has no grid (ADR 0031): its own controller draws the same screen with the village's things.
+                _square = new Roboya.Games.Square.SquareController(document.rootVisualElement, services, levels, regionArt, partArt);
+                _square.Start(start < 0 ? 0 : start);
+                return;
+            }
+
+            _controller = new GameController(document.rootVisualElement, services, levels, regionArt, partArt);
             _controller.Start(start < 0 ? 0 : start);
         }
 
@@ -56,6 +66,7 @@ namespace Roboya.Games.Common
         {
             _services?.ScreenTime.Flush();
             _controller?.Dispose();
+            _square?.Dispose();
         }
     }
 }

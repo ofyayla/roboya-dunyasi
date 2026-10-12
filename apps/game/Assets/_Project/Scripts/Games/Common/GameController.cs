@@ -23,17 +23,8 @@ namespace Roboya.Games.Common
     {
         private const string BumpVoice = "roboya.bump.01";
         private const string NotThereVoice = "roboya.not_there.01";
-        // Paylaşım Köyü: spoken the moment "Bırak" cannot do its job; the lines come with the village voice work (E2) and are silent until then.
-        private const string NothingToDropVoice = "bal_pesinde.nothing_to_drop";
-        private const string HiveOverflowVoice = "bal_pesinde.hive_overflow";
-        // The end-of-run answer of the hives (plan D3); like the lines above they are written with the village voice work (E2).
-        private const string HiveForgottenVoice = "bal_pesinde.hive_forgotten";
-        private const string NotEqualVoice = "bal_pesinde.not_equal";
-        private const string TableLeftoverVoice = "bal_pesinde.table_leftover";
         private const string MissingItemsVoice = "roboya.missing_items.01";
         private const string PlayPromptVoice = "roboya.play_prompt";
-        private const string AskGrownUpVoice = "roboya.ask_grownup";
-        private const string MoreAheadVoice = "map.welcome";
         private const string AlternativeVoice = "roboya.alternative_offer";
         private const string PartUnlockedVoice = "reward.part_unlocked";
         private const string ForgotClearVoice = "bal_pesinde.forgot_clear";
@@ -79,12 +70,6 @@ namespace Roboya.Games.Common
             root.Q("board-host").Add(_board);
             _badge = new GoalBadge(art);
             root.Q("board-host").Add(_badge);
-            _basket = new BasketView(art);
-            root.Q("board-host").Add(_basket);
-            _compare = new HiveCompareView(art);
-            root.Q("board-host").Add(_compare);
-            _remaining = new RemainingView(art, services.Voice);
-            root.Q("board-host").Add(_remaining);
             if (art != null && art.Background != null)
             {
                 var screen = root.Q("screen");
@@ -153,13 +138,11 @@ namespace Roboya.Games.Common
             _entry = _levels[_index];
             // Bal Peşinde: the bee keeps its place and its memory between runs (BAL-02).
             _bee = _entry.Dto.Game == GameId.BalPesinde;
-            // Paylaşım Köyü (PK-0005): the world starts over on every run while the memory stays, as in the other games.
-            _worldPersists = _bee && _entry.Dto.Options?.ResetEachRun != true;
             _clearedSinceRun = true;
             _predicting = false;
             _prediction = null;
             _lastPlanCount = 0;
-            _session = new LevelSession(_entry.Level, _entry.ShortestLength, _services.Rules, keepsState: _worldPersists, clearsMemoryAfterRun: _entry.Dto.Options?.ClearMemoryEachRun == true);
+            _session = new LevelSession(_entry.Level, _entry.ShortestLength, _services.Rules, keepsState: _bee);
             // The memory is invisible for the youngest (BAL, Minik): the strip shows blank cards, so only the count is seen.
             _paletteElement.EnableInClassList("palette--bee", _bee);
             _clearBig.EnableInClassList("hidden", !_bee);
@@ -181,8 +164,6 @@ namespace Roboya.Games.Common
             _board.Show(_entry.Level, ghost, _entry.Dto);
             RefreshTrace();
             _badge.Show(_entry.Level);
-            _basket.Show(_entry.Level);
-            _badge.SetHoney(_entry.Level.Start);
             _tray.BoxCards = _entry.Dto.StarterProgram != null ? new List<Roboya.CodingEngine.Commands.CardType>(CardsOf(_entry)) : null;
             _tray.Bind(_session.Plan, _entry.Level.AvailableCards);
             // Hata avcısı: the child may edit only after the ready-made code has shown what goes wrong (DemoAsync unlocks).
@@ -203,11 +184,7 @@ namespace Roboya.Games.Common
         private readonly IconButton _clearBig;
         private readonly VisualElement _paletteElement;
         private readonly GoalBadge _badge;
-        private readonly BasketView _basket;
-        private readonly HiveCompareView _compare;
-        private readonly RemainingView _remaining;
         private bool _bee;
-        private bool _worldPersists;
         private bool _planTrace;
         private int _lastPlanCount;
         private bool _clearedSinceRun = true;
@@ -216,22 +193,7 @@ namespace Roboya.Games.Common
         private int _hintsUsed;
         private bool _open;
 
-        private IReadOnlyDictionary<string, object> LevelProps(params (string key, object value)[] extra)
-        {
-            var map = new Dictionary<string, object>();
-            string band = _services.Analytics.ActiveBand;
-            if (band != null)
-            {
-                map["level_band"] = band;
-            }
-
-            foreach (var (key, value) in extra)
-            {
-                map[key] = value;
-            }
-
-            return map;
-        }
+        private IReadOnlyDictionary<string, object> LevelProps(params (string key, object value)[] extra) => LevelFlow.Props(_services, extra);
 
         private int Seconds => Mathf.Clamp(Mathf.RoundToInt(Time.realtimeSinceStartup - _startedAt), 0, 86_400);
 
@@ -243,8 +205,7 @@ namespace Roboya.Games.Common
             }
 
             _open = false;
-            _services.Analytics.Track(
-                "level_abandon", _entry.Id, LevelProps(("attempts", _session.Attempts), ("duration_s", Seconds), ("hints", _hintsUsed)));
+            LevelFlow.ReportAbandon(_services, _entry, _session.Attempts, Seconds, _hintsUsed);
         }
 
         /// <summary>Loads this level's lines first so the story scene and feedback play without a gap.</summary>
@@ -339,36 +300,7 @@ namespace Roboya.Games.Common
                         await bump;
                         await shake;
                         break;
-                    case ExecutionEventKind.Dropped:
-                        // One honey leaves the basket for a hive or the table (ADR 0030); a hive's count is said aloud as it grows.
-                        _basket.Set(e.After.Basket);
-                        if (_entry.Level.Drops[e.DropIndex].Kind == Roboya.CodingEngine.World.DropPointKind.Hive && e.After.DeliveredAt(e.DropIndex) <= CountVoices)
-                        {
-                            _services.Voice.Play("count." + e.After.DeliveredAt(e.DropIndex).ToString("D2"));
-                        }
-
-                        _services.Sfx.Play(SfxKind.Place);
-                        _badge.SetHoney(e.After);
-                        await _board.AnimateDrop(e.DropIndex, e.After, token);
-                        break;
-                    case ExecutionEventKind.NothingToDrop:
-                        // Nothing is lost: Ari shows the basket and the card shakes, so the child sees what to change.
-                        _services.Voice.Play(NothingToDropVoice);
-                        var nudge = _basket.Nudge(token);
-                        var shakeEmpty = _tray.ShakeSlot(e.CommandPath[0], token);
-                        await nudge;
-                        await shakeEmpty;
-                        break;
-                    case ExecutionEventKind.HiveOverflow:
-                        _basket.Set(e.After.Basket);
-                        _services.Voice.Play(HiveOverflowVoice);
-                        var spill = _board.AnimateOverflow(e.DropIndex, e.After, token);
-                        var shakeSpill = _tray.ShakeSlot(e.CommandPath[0], token);
-                        await spill;
-                        await shakeSpill;
-                        break;
                     case ExecutionEventKind.Collected:
-                        _basket.Set(e.After.Basket);
                         _badge.MarkCollected(e.ItemIndex);
                         // Counting aloud (BAL-01): "bir, iki, üç" when more than one thing is wanted.
                         if (_badge.Count >= 2 && _badge.CollectedCount >= 1 && _badge.CollectedCount <= CountVoices)
@@ -499,10 +431,9 @@ namespace Roboya.Games.Common
             _tray.Guide(null);
             _keptOldCommands = _bee && _session.Attempts > 0 && !_clearedSinceRun;
             _clearedSinceRun = false;
-            if (!_worldPersists)
+            if (!_bee)
             {
                 _board.ResetRobot(_entry.Level.Start);
-                _basket.Set(_entry.Level.Start.Basket);
                 _badge.Set(0);
             }
 
@@ -536,26 +467,13 @@ namespace Roboya.Games.Common
                 return;
             }
 
-            // Paylaşım Köyü: the hive families answer (plan D3): who was left out, who got too much. Never a penalty.
-            var hives = result != null ? HiveFeedback.Of(_entry.Level, result.FinalState, false) : null;
-            string hiveVoice = hives == null ? null
-                : hives.Verdict == HiveVerdict.Forgotten ? HiveForgottenVoice
-                : hives.Verdict == HiveVerdict.NotEqual ? NotEqualVoice
-                : null;
-            bool showHives = hives != null && (hives.Verdict == HiveVerdict.Forgotten || hives.Verdict == HiveVerdict.NotEqual || hives.Verdict == HiveVerdict.TooMuch);
-
             // A bump already had its own line; otherwise explain gently what is missing.
             if (_keptOldCommands)
             {
                 // BAL-02: the bee also ran what it still remembered; a gentle, teaching line rather than a scolding.
                 _services.Voice.Play(ForgotClearVoice);
             }
-            else if (hiveVoice != null)
-            {
-                _services.Voice.Play(hiveVoice);
-            }
-            else if (result != null && result.Outcome != ExecutionOutcome.Bumped && result.Outcome != ExecutionOutcome.NothingToDrop
-                && result.Outcome != ExecutionOutcome.HiveOverflow && !_prediction.HasValue)
+            else if (result != null && result.Outcome != ExecutionOutcome.Bumped && !_prediction.HasValue)
             {
                 _services.Voice.Play(result.Outcome == ExecutionOutcome.MissingItems ? MissingItemsVoice : NotThereVoice);
             }
@@ -575,19 +493,11 @@ namespace Roboya.Games.Common
             _prediction = null;
 
             var pulse = _board.PulseMissing(result != null ? result.FinalState.CollectedMask : 0UL, token);
-            var compare = showHives ? _compare.ShowAsync(_entry.Level, result.FinalState, hives, false, token) : default;
             await Tween.Delay(_entry.Dto.Game == GameId.KodlamaKutusu ? 2.5f : 1.5f, token);
             await pulse;
-            if (showHives)
-            {
-                await compare;
-            }
-
-            if (!_worldPersists)
+            if (!_bee)
             {
                 _board.ResetRobot(_entry.Level.Start);
-                _basket.Set(_entry.Level.Start.Basket);
-                _badge.SetHoney(_entry.Level.Start);
                 _badge.Set(0);
             }
 
@@ -601,20 +511,8 @@ namespace Roboya.Games.Common
         private async Awaitable ShowSuccess(CancellationToken token)
         {
             // ILR-01/02: keep the best result on the device; parts are derived from it (ILR-03).
-            int partsBefore = ProgressQueries.EarnedParts(_services);
-            _services.Progress.Book.Record(_entry.Id, _session.Stars);
-            SaveProgress();
+            var newParts = LevelFlow.RecordWin(_services, _entry, _session.Stars, _session.Attempts, Seconds, _hintsUsed, _session.Plan.Cards.Count);
             _open = false;
-            _services.Analytics.Track(
-                "level_complete",
-                _entry.Id,
-                LevelProps(
-                    ("attempts", _session.Attempts),
-                    ("duration_s", Seconds),
-                    ("stars", _session.Stars),
-                    ("hints", _hintsUsed),
-                    ("code_length", Mathf.Clamp(_session.Plan.Cards.Count, 0, 64))));
-            var newParts = RewardRules.NewlyEarned(_services.Parts.Parts, partsBefore, ProgressQueries.EarnedParts(_services));
             Sprite reward = null;
             if (newParts.Count > 0 && _partArt != null)
             {
@@ -625,8 +523,6 @@ namespace Roboya.Games.Common
 
             _services.Sfx.Play(SfxKind.Success);
             await _board.Celebrate(token);
-            await ShowHivesGladAsync(token);
-            await AskRemainingAsync(token);
             await _story.PlayOutroAsync(
                 LevelStory.Outro(_entry.Dto),
                 token,
@@ -650,51 +546,6 @@ namespace Roboya.Games.Common
             }
 
             _result.RemoveFromClassList("hidden");
-        }
-
-        /// <summary>
-        /// "Kaç kaldı?" (PK-0002): after the win, when the level asks, the switch is on and the child is Kaşif or older. The stars are already
-        /// kept, a wrong card only starts a count together, and the arrow always lets the child go on.
-        /// </summary>
-        private async Awaitable AskRemainingAsync(CancellationToken token)
-        {
-            var final = _session.LastResult?.FinalState;
-            if (!final.HasValue)
-            {
-                return;
-            }
-
-            bool minik = _services.Profiles.HasActive && _services.Profiles.Active.AgeBand == Roboya.CodingEngine.Profiles.AgeBand.Minik;
-            var question = RemainingQuestion.From(_entry.Level, final.Value);
-            if (!RemainingChoices.ShouldAsk(_entry.Dto.Options?.AskRemaining == true, _services.ProgressRules.AskRemaining, minik, question))
-            {
-                return;
-            }
-
-            await _remaining.ShowAsync(RemainingChoices.For(_entry.Id, question), token);
-        }
-
-        /// <summary>A won honey level: every hive family is glad, and the left-over on the table is told as shared by all (PK-0001).</summary>
-        private async Awaitable ShowHivesGladAsync(CancellationToken token)
-        {
-            var final = _session.LastResult?.FinalState;
-            if (!final.HasValue || !_entry.Level.Goal.HasHoneyGoal)
-            {
-                return;
-            }
-
-            var glad = HiveFeedback.Of(_entry.Level, final.Value, true);
-            if (glad.Hives.Count == 0)
-            {
-                return;
-            }
-
-            if (glad.Verdict == HiveVerdict.SharedWithTable)
-            {
-                _services.Voice.Play(TableLeftoverVoice);
-            }
-
-            await _compare.ShowAsync(_entry.Level, final.Value, glad, true, token);
         }
 
         /// <summary>The region's friend for the calm value card: a picture for regions after the forest, whose turtle is code-drawn.</summary>
@@ -759,9 +610,7 @@ namespace Roboya.Games.Common
             _services.Analytics.Track("hint_used", _entry.Id, LevelProps(("hint_tier", Mathf.Clamp((int)hint.Tier, 0, 3))));
             var keys = _entry.Dto.Voice.Hints;
             int tier = (int)hint.Tier - 1;
-            // The bee's kept world makes old commands part of the puzzle, so it only talks. In the village the world starts over
-            // on every run (PK-0005), so the plan can be checked card by card and the hint ladder stays whole.
-            if (_worldPersists && _session.Attempts > 0 && !_clearedSinceRun && !_session.Plan.IsEmpty)
+            if (_bee && _session.Attempts > 0 && !_clearedSinceRun && !_session.Plan.IsEmpty)
             {
                 _services.Voice.Play(ForgotClearVoice);
             }
@@ -807,43 +656,7 @@ namespace Roboya.Games.Common
         /// After the result the child goes back to the map, where the trail shows the next stone; levels are not chained
         /// so the child sees there is more ahead. Past the free tier Roboya asks a grown-up instead (GLR-01).
         /// </summary>
-        private void Next()
-        {
-            // Today's play time is used up: Roboya rests; the map shows the rest screen (VEL-02).
-            if (_services.ScreenTime.IsExhausted)
-            {
-                _services.Navigator.GoToMap();
-                return;
-            }
-
-            var states = ProgressQueries.PathStates(_services, _path);
-            int start = ProgressQueries.StartIndex(_services, _path);
-            for (int next = _index + 1; next < _levels.Count; next++)
-            {
-                int pathIndex = _path.IndexOf(_levels[next].Id);
-                var state = pathIndex >= 0 ? states[pathIndex] : NodeState.Locked;
-                if (PathRules.CanPlay(state))
-                {
-                    _services.Navigator.GoToMap(MoreAheadVoice);
-                    return;
-                }
-
-                // Levels before the child's age start are skipped quietly (they are paid and not theirs);
-                // anything from the start on that is paid asks a grown-up (GLR-01).
-                if (state == NodeState.NeedsGrownUp && pathIndex >= start)
-                {
-                    _services.Navigator.GoToMap(AskGrownUpVoice);
-                    return;
-                }
-
-                if (state != NodeState.NeedsGrownUp)
-                {
-                    break;
-                }
-            }
-
-            _services.Navigator.GoToMap();
-        }
+        private void Next() => LevelFlow.GoNext(_services, _path, _levels, _index);
 
         /// <summary>Guided levels: Roboya points at the next card, then at the play button; the child places every card.</summary>
         private void UpdateGuide()
@@ -899,19 +712,6 @@ namespace Roboya.Games.Common
             if (_alternative != null)
             {
                 _services.Navigator.PlayLevel(_alternative.Id);
-            }
-        }
-
-        private void SaveProgress()
-        {
-            try
-            {
-                _services.Progress.Save();
-            }
-            catch (System.IO.IOException e)
-            {
-                // A full disk must not interrupt the child's success moment; the book stays in memory.
-                Debug.LogException(e);
             }
         }
 

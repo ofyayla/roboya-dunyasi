@@ -63,15 +63,13 @@ MonoBehaviour:
   propMagnifier: {fileID: 21300000, guid: cc217bd32d1114045bd46eba3dd7112e, type: 3}
   propBeehive: {fileID: 21300000, guid: 50599eae583b046e3b7a44c2ca481abe, type: 3}
   propHoneyJar: {fileID: 21300000, guid: a7444ea2a89124ead8f6fce91dc32ff9, type: 3}
-  hiveEmpty: {fileID: 0}
-  hiveFull: {fileID: 0}
-  hiveOverflow: {fileID: 0}
-  honeyBasket: {fileID: 0}
   villagerHappy: {fileID: 0}
   villagerSad: {fileID: 0}
   villagerThanks: {fileID: 0}
   villagerChild: {fileID: 0}
   festivalFlags: {fileID: 0}
+  hiveSkep: {fileID: 0}
+  basketEmpty: {fileID: 0}
   propVillagerBee: {fileID: 0}
   propHoneycomb: {fileID: 0}
   propVillageTable: {fileID: 0}

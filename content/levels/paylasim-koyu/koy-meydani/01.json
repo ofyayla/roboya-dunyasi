@@ -1,0 +1,71 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 3,
+  "id": "paylasim-koyu.koy-meydani.01",
+  "region": "paylasim-koyu",
+  "game": "koy-meydani",
+  "order": 1,
+  "meta": {
+    "concepts": [
+      "counting"
+    ],
+    "value": "sharing",
+    "difficulty": 1,
+    "ageLevels": [
+      "minik"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Köşe 1: iki petek, iki bal: her peteğe bir bal (tanıtım, el rehberli)."
+  },
+  "sharing": {
+    "hives": [
+      {
+        "need": 1
+      },
+      {
+        "need": 1
+      }
+    ],
+    "basket": {
+      "start": 2
+    },
+    "goal": "deliver",
+    "limits": {
+      "maxCards": 3
+    }
+  },
+  "options": {
+    "intro": true,
+    "guided": true
+  },
+  "voice": {
+    "intro": "koy_meydani.l01.intro",
+    "success": "koy_meydani.l01.success",
+    "hints": [
+      "koy_meydani.hint.look",
+      "koy_meydani.hint.tap",
+      "koy_meydani.hint.play"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining",
+      "props": [
+        "honey",
+        "beehive"
+      ]
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "thanks",
+      "props": [
+        "honeycomb",
+        "villager-bee"
+      ]
+    }
+  },
+  "solution": {
+    "shortestLength": 2
+  }
+}

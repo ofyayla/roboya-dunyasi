@@ -12,10 +12,6 @@
     "game",
     "order",
     "meta",
-    "grid",
-    "robot",
-    "goal",
-    "cards",
     "voice"
   ],
   "properties": {
@@ -23,7 +19,7 @@
       "type": "string"
     },
     "schemaVersion": {
-      "description": "2 adds the optional `story` block (scripts/migrate-v2.mjs). 3 adds honey carrying, dropping and sharing for Paylaşım Köyü, ADR 0030 (scripts/migrate-v3.mjs).",
+      "description": "2 adds the optional `story` block (scripts/migrate-v2.mjs). 3 adds `options.intro` (scripts/migrate-v3.mjs).",
       "const": 3
     },
     "id": {
@@ -56,14 +52,6 @@
       "maxItems": 64,
       "items": {
         "$ref": "#/$defs/item"
-      }
-    },
-    "drops": {
-      "description": "Places the bee can leave honey (v3, ADR 0030): a `hive` wants `need` honey, the `table` is the village's shared table for what is left over. Walkable cells; the bee may stand on them.",
-      "type": "array",
-      "maxItems": 4,
-      "items": {
-        "$ref": "#/$defs/drop"
       }
     },
     "goal": {
@@ -135,6 +123,10 @@
           "minimum": 0
         }
       }
+    },
+    "sharing": {
+      "description": "Köy Meydanı (koy-meydani, ADR 0031): the hives, flowers and Ari's basket of a village level. Replaces grid, robot, goal and cards.",
+      "$ref": "#/$defs/sharing"
     }
   },
   "$defs": {
@@ -160,7 +152,8 @@
         "dongu-dansi",
         "birlikte-basaralim",
         "robot-atolyesi",
-        "serbest-mucit"
+        "serbest-mucit",
+        "koy-meydani"
       ]
     },
     "concept": {
@@ -347,12 +340,6 @@
         },
         "facing": {
           "$ref": "#/$defs/direction"
-        },
-        "carrying": {
-          "description": "Honey in the basket at the start (v3); 0 when omitted.",
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 7
         }
       }
     },
@@ -403,12 +390,6 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 11
-        },
-        "amount": {
-          "description": "Honey the item gives when collected (v3, honey only); 1 when omitted.",
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 7
         }
       }
     },
@@ -426,16 +407,6 @@
           "required": [
             "collect"
           ]
-        },
-        {
-          "required": [
-            "deliver"
-          ]
-        },
-        {
-          "required": [
-            "share"
-          ]
         }
       ],
       "properties": {
@@ -450,62 +421,6 @@
           "items": {
             "type": "string"
           }
-        },
-        "deliver": {
-          "description": "Exactly `count` honey must end up at each listed drop point (v3).",
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "title": "DeliverDto",
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "to",
-              "count"
-            ],
-            "properties": {
-              "to": {
-                "type": "string",
-                "pattern": "^[a-z0-9-]+$"
-              },
-              "count": {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 5
-              }
-            }
-          }
-        },
-        "share": {
-          "title": "ShareDto",
-          "description": "The listed hives hold the same honey and all honey is handed out; what is left, fewer than the hives, is on `leftoverTo` (a table) (v3, PK-0001).",
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "among"
-          ],
-          "properties": {
-            "among": {
-              "type": "array",
-              "minItems": 2,
-              "maxItems": 3,
-              "uniqueItems": true,
-              "items": {
-                "type": "string",
-                "pattern": "^[a-z0-9-]+$"
-              }
-            },
-            "leftoverTo": {
-              "type": "string",
-              "pattern": "^[a-z0-9-]+$"
-            }
-          }
-        },
-        "carryAtEnd": {
-          "description": "Honey that must still be in the basket when the goal is met (subtraction, v3). Only together with another goal.",
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 7
         }
       }
     },
@@ -520,7 +435,6 @@
         "repeat",
         "if",
         "call",
-        "drop",
         "action"
       ]
     },
@@ -617,8 +531,7 @@
                 "forward",
                 "backward",
                 "turn_left",
-                "turn_right",
-                "drop"
+                "turn_right"
               ]
             }
           }
@@ -734,24 +647,8 @@
           "description": "Roboya builds the code together with the child (first level of a new concept).",
           "type": "boolean"
         },
-        "autoDrop": {
-          "description": "Minik: a hive takes the honey it needs as soon as the bee enters its cell (v3, PK-0001).",
-          "type": "boolean"
-        },
-        "askRemaining": {
-          "description": "After success ask how much honey is left (v3, PK-0002). Behind a feature flag until the child test.",
-          "type": "boolean"
-        },
-        "resetEachRun": {
-          "description": "The world (bee, basket, hives) starts over on every run while the memory strip stays (v3, PK-0005).",
-          "type": "boolean"
-        },
-        "clearMemoryEachRun": {
-          "description": "The memory strip clears itself after every run (Minik, v3, PK-0005).",
-          "type": "boolean"
-        },
         "intro": {
-          "description": "Introduction level: a child who starts later on the path still plays it (v3, ADR 0018, PK-0005).",
+          "description": "Introduction level: a child who starts later on the path still plays it (v3, ADR 0018).",
           "type": "boolean"
         }
       }
@@ -868,46 +765,173 @@
         "log"
       ]
     },
-    "drop": {
-      "title": "DropPointDto",
+    "sharing": {
+      "title": "SharingDto",
+      "description": "The village square: no grid and no direction. The child gives Ari a plan of take and give cards (ADR 0031).",
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "id",
-        "kind",
-        "x",
-        "y"
+        "hives",
+        "goal",
+        "limits"
       ],
       "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^[a-z0-9-]+$"
+        "hives": {
+          "description": "The hives that wait for honey, left to right.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "title": "HiveDto",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "need": {
+                "description": "Honey the hive asks for (delivery levels); left out when sharing.",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              },
+              "has": {
+                "description": "Honey the hive already holds at the start.",
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 5
+              }
+            }
+          }
         },
-        "kind": {
-          "title": "DropKind",
+        "flowers": {
+          "description": "The honey each flower holds.",
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 7
+          }
+        },
+        "basket": {
+          "title": "BasketDto",
+          "description": "Ari's basket: honey at the start and the most it holds.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "start": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 7
+            },
+            "cap": {
+              "description": "The most honey the basket holds; no limit when left out.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 7
+            }
+          }
+        },
+        "table": {
+          "description": "A shared village table: left-over honey goes there.",
+          "type": "boolean"
+        },
+        "goal": {
+          "title": "SharingGoalId",
+          "description": "deliver: every hive holds what it asks for. share: the hives hold the same and what is left on the table is fewer than the hives.",
           "type": "string",
           "enum": [
-            "hive",
-            "table"
+            "deliver",
+            "share"
           ]
         },
-        "x": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 11
+        "amounts": {
+          "description": "Give cards carry a count of 1 to 3; otherwise a give card hands over one honey.",
+          "type": "boolean"
         },
-        "y": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 11
+        "limits": {
+          "title": "SharingLimitsDto",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "maxCards"
+          ],
+          "properties": {
+            "maxCards": {
+              "description": "Cards the plan strip holds in all; the cards inside the repeat box count once.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9
+            }
+          }
         },
-        "need": {
-          "description": "Honey a hive asks for (hives only).",
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 5
+        "repeatBox": {
+          "title": "RepeatBoxDto",
+          "description": "A fixed repeat box at the head of the strip (corner 4).",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "slots",
+            "maxTurns"
+          ],
+          "properties": {
+            "slots": {
+              "description": "Cards that fit inside the box.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            },
+            "maxTurns": {
+              "description": "The most turns the box may run.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 3
+            }
+          }
+        },
+        "predict": {
+          "description": "Before the run the child guesses how much honey is left in the basket (corner 3).",
+          "type": "boolean"
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "description": "Grid games (every game but koy-meydani) need grid, robot, goal and cards; the village square (ADR 0031) has no grid and needs `sharing` instead.",
+      "if": {
+        "required": [
+          "game"
+        ],
+        "properties": {
+          "game": {
+            "const": "koy-meydani"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "sharing"
+        ],
+        "properties": {
+          "grid": false,
+          "robot": false,
+          "items": false,
+          "goal": false,
+          "scenery": false,
+          "cards": false,
+          "starterProgram": false
+        }
+      },
+      "else": {
+        "required": [
+          "grid",
+          "robot",
+          "goal",
+          "cards"
+        ],
+        "properties": {
+          "sharing": false
+        }
+      }
+    }
+  ]
 }

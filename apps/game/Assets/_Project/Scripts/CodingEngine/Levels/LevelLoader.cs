@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Roboya.CodingEngine.Commands;
 using Roboya.CodingEngine.Levels.Generated;
+using Roboya.CodingEngine.Sharing;
 using Roboya.CodingEngine.World;
 
 namespace Roboya.CodingEngine.Levels
@@ -10,7 +11,7 @@ namespace Roboya.CodingEngine.Levels
     /// <summary>Turns level JSON (schema v1–v3) into engine objects. Structural JSON-schema checks run separately in CI.</summary>
     public static class LevelLoader
     {
-        /// <summary>Oldest version still read; v2 only added the optional story block, v3 the honey fields (ADR 0030).</summary>
+        /// <summary>Oldest version still read; v2 only added the optional story block, v3 the intro option (ADR 0031).</summary>
         public const int MinSchemaVersion = 1;
 
         public const int SupportedSchemaVersion = 3;
@@ -71,7 +72,7 @@ namespace Roboya.CodingEngine.Levels
                 foreach (var i in dto.Items)
                 {
                     indexById[i.Id] = items.Count;
-                    items.Add(new Item(i.Id, ToSchemaString(i.Kind), i.Color.HasValue ? ToSchemaString(i.Color.Value) : null, new GridPosition((int)i.X, (int)i.Y), (int)(i.Amount ?? 1)));
+                    items.Add(new Item(i.Id, ToSchemaString(i.Kind), i.Color.HasValue ? ToSchemaString(i.Color.Value) : null, new GridPosition((int)i.X, (int)i.Y)));
                 }
             }
 
@@ -95,68 +96,60 @@ namespace Roboya.CodingEngine.Levels
                 reach = new GridPosition((int)dto.Goal.Reach.X, (int)dto.Goal.Reach.Y);
             }
 
-            var drops = new List<DropPoint>();
-            var dropIndexById = new Dictionary<string, int>();
-            if (dto.Drops != null)
-            {
-                foreach (var d in dto.Drops)
-                {
-                    dropIndexById[d.Id] = drops.Count;
-                    drops.Add(new DropPoint(d.Id, d.Kind == Generated.DropKind.Table ? DropPointKind.Table : DropPointKind.Hive, new GridPosition((int)d.X, (int)d.Y), (int)(d.Need ?? 0)));
-                }
-            }
-
-            var goal = new Goal(reach, mustCollect, ToDeliveries(dto.Goal.Deliver, dropIndexById), ToShare(dto.Goal.Share, dropIndexById), dto.Goal.CarryAtEnd.HasValue ? (int)dto.Goal.CarryAtEnd.Value : (int?)null);
-
             var cards = new List<CardType>();
             foreach (var c in dto.Cards.Palette)
             {
                 cards.Add(ToCard(c));
             }
 
-            var start = new RobotState(new GridPosition((int)dto.Robot.X, (int)dto.Robot.Y), ToDirection(dto.Robot.Facing), 0)
-                .WithBasket((int)(dto.Robot.Carrying ?? 0));
-            return new Level(dto.Id, grid, start, items, goal, cards, (int)dto.Cards.MaxProgramLength, drops, dto.Options?.AutoDrop == true);
+            var start = new RobotState(new GridPosition((int)dto.Robot.X, (int)dto.Robot.Y), ToDirection(dto.Robot.Facing), 0);
+            return new Level(dto.Id, grid, start, items, new Goal(reach, mustCollect), cards, (int)dto.Cards.MaxProgramLength);
         }
 
-        private static IReadOnlyList<Delivery> ToDeliveries(List<DeliverDto> deliver, Dictionary<string, int> dropIndexById)
+        public static SharingLevel LoadSharing(string json) => ToSharing(Parse(json));
+
+        /// <summary>The village square (ADR 0031): builds the level a <c>koy-meydani</c> file describes, which has no grid.</summary>
+        public static SharingLevel ToSharing(LevelDto dto)
         {
-            var result = new List<Delivery>();
-            if (deliver != null)
+            if (dto == null)
             {
-                foreach (var d in deliver)
+                throw new ArgumentNullException(nameof(dto));
+            }
+
+            var sharing = dto.Sharing;
+            if (sharing?.Hives == null || sharing.Limits == null)
+            {
+                throw new LevelValidationException("Level '" + dto.Id + "' is missing sharing, its hives or its limits.");
+            }
+
+            var hives = new List<HiveSpec>();
+            foreach (var h in sharing.Hives)
+            {
+                hives.Add(new HiveSpec((int)(h.Need ?? 0), (int)(h.Has ?? 0)));
+            }
+
+            var flowers = new List<int>();
+            if (sharing.Flowers != null)
+            {
+                foreach (long amount in sharing.Flowers)
                 {
-                    result.Add(new Delivery(DropIndex(d.To, dropIndexById), (int)d.Count));
+                    flowers.Add((int)amount);
                 }
             }
 
-            return result;
-        }
-
-        private static ShareGoal ToShare(ShareDto share, Dictionary<string, int> dropIndexById)
-        {
-            if (share == null)
-            {
-                return null;
-            }
-
-            var among = new List<int>();
-            foreach (var id in share.Among)
-            {
-                among.Add(DropIndex(id, dropIndexById));
-            }
-
-            return new ShareGoal(among, share.LeftoverTo != null ? DropIndex(share.LeftoverTo, dropIndexById) : -1);
-        }
-
-        private static int DropIndex(string id, Dictionary<string, int> dropIndexById)
-        {
-            if (!dropIndexById.TryGetValue(id, out int index))
-            {
-                throw new LevelValidationException("Goal refers to unknown drop point '" + id + "'.");
-            }
-
-            return index;
+            var box = sharing.RepeatBox != null ? new RepeatBoxSpec((int)sharing.RepeatBox.Slots, (int)sharing.RepeatBox.MaxTurns) : null;
+            return new SharingLevel(
+                dto.Id,
+                hives,
+                flowers,
+                (int)(sharing.Basket?.Start ?? 0),
+                (int)(sharing.Basket?.Cap ?? 0),
+                sharing.Table == true,
+                sharing.Goal == SharingGoalId.Share ? SharingGoalKind.Share : SharingGoalKind.Deliver,
+                sharing.Amounts == true,
+                (int)sharing.Limits.MaxCards,
+                box,
+                sharing.Predict == true);
         }
 
         public static Program ToProgram(IReadOnlyList<CommandDto> commands)
@@ -168,7 +161,6 @@ namespace Roboya.CodingEngine.Levels
         {
             switch (card)
             {
-                case CardId.Drop: return CardType.Drop;
                 case CardId.Forward: return CardType.Forward;
                 case CardId.Backward: return CardType.Backward;
                 case CardId.TurnLeft: return CardType.TurnLeft;
@@ -222,8 +214,6 @@ namespace Roboya.CodingEngine.Levels
                     return new IfCommand(ToCondition(c.Condition), ToBlock(c.Then), ToBlock(c.Else));
                 case CardId.Call:
                     return new CallCommand(c.Name);
-                case CardId.Drop:
-                    return DropCommand.Instance;
                 default:
                     return new ActionCommand(c.Id);
             }

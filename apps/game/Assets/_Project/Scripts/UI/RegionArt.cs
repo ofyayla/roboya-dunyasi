@@ -71,16 +71,14 @@ namespace Roboya.UI
         [SerializeField] private Sprite propBeehive;
         [SerializeField] private Sprite propHoneyJar;
 
-        [Header("Paylaşım Köyü board (hives, basket, villagers)")]
-        [SerializeField] private Sprite hiveEmpty;
-        [SerializeField] private Sprite hiveFull;
-        [SerializeField] private Sprite hiveOverflow;
-        [SerializeField] private Sprite honeyBasket;
+        [Header("Paylaşım Köyü square (skep, basket, villagers)")]
         [SerializeField] private Sprite villagerHappy;
         [SerializeField] private Sprite villagerSad;
         [SerializeField] private Sprite villagerThanks;
         [SerializeField] private Sprite villagerChild;
         [SerializeField] private Sprite festivalFlags;
+        [SerializeField] private Sprite hiveSkep;
+        [SerializeField] private Sprite basketEmpty;
 
         [Header("Paylaşım Köyü story props")]
         [SerializeField] private Sprite propVillagerBee;
@@ -134,8 +132,6 @@ namespace Roboya.UI
 
         public Sprite StarEmpty => starEmpty;
 
-        public Sprite HoneyBasket => honeyBasket;
-
         public Sprite VillagerHappy => villagerHappy;
 
         public Sprite VillagerSad => villagerSad;
@@ -146,16 +142,11 @@ namespace Roboya.UI
 
         public Sprite FestivalFlags => festivalFlags;
 
-        /// <summary>The hive picture for how it stands: empty until it is full, spilling when it got too much; null when the region has none.</summary>
-        public Sprite HiveFor(Roboya.CodingEngine.Play.HiveState state)
-        {
-            switch (state)
-            {
-                case Roboya.CodingEngine.Play.HiveState.Full: return hiveFull != null ? hiveFull : hiveEmpty;
-                case Roboya.CodingEngine.Play.HiveState.Overflow: return hiveOverflow != null ? hiveOverflow : hiveEmpty;
-                default: return hiveEmpty;
-            }
-        }
+        /// <summary>The straw skep of the village square (ADR 0031); null draws <see cref="SkepShape"/> in code. No cells in it: the comb is drawn on top.</summary>
+        public Sprite HiveSkep => hiveSkep;
+
+        /// <summary>An empty basket with an open mouth (ADR 0031); null draws <see cref="BasketShape"/> in code. The honey in it is drawn by the view.</summary>
+        public Sprite BasketEmpty => basketEmpty;
 
         public Sprite DecorAt(int index) =>
             decor != null && index >= 0 && index < decor.Length ? decor[index] : null;

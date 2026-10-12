@@ -19,6 +19,14 @@ describe("ContentStore", () => {
     expect(await store.list()).toEqual([{ path: "sabir-ormani/yon-avcisi/01.json", id: "a.b.01", game: "yon-avcisi", order: 1 }]);
   });
 
+  it("list_skipsTheGridlessVillageSquare", async () => {
+    const root = await repo();
+    await mkdir(join(root, "content/levels/paylasim-koyu/koy-meydani"), { recursive: true });
+    await writeFile(join(root, "content/levels/paylasim-koyu/koy-meydani/01.json"), JSON.stringify({ id: "v.k.01", game: "koy-meydani", order: 1 }));
+    const store = new ContentStore(root);
+    expect((await store.list()).map((e) => e.game)).toEqual(["yon-avcisi"]);
+  });
+
   it("write_thenRead_roundTripsWithTrailingNewline", async () => {
     const root = await repo();
     const store = new ContentStore(root);

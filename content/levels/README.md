@@ -117,52 +117,25 @@ Doğrulayıcı şunları kontrol eder: şemaya uygunluk, bölümün tanımlı ka
 - Sayma: `goal.collect` içinde üç çiçek; çiçekler yol üzerinde olabilir.
 - Ses anahtarları `bal_pesinde.lNN.intro` / `.success`.
 
-## Bal taşıma ve paylaşma (şema v3, Paylaşım Köyü)
+## Paylaşım Köyü (Köy Meydanı, `koy-meydani`)
 
-Şema v3 yalnız yeni isteğe bağlı alanlar ekler; v2 bölümler `node packages/level-schema/scripts/migrate-v3.mjs content/levels` ile yalnız sürüm numarasını artırır. Mekanik ADR 0030'da, pedagoji kuralları `docs/pedagoji/kararlar/PK-0001`–`PK-0005` kayıtlarındadır. Motor bu alanları çalıştırır (plan B2); tahtadaki görünüm (petek, sepet, "Bırak" tuşu) plan D akışındadır. `goal.share` kullanan bölümde bütün bal öğeleri `goal.collect` içinde olmalıdır, yoksa yükleyici bölümü reddeder.
+Köy ızgarasız ayrı bir oyundur (ADR 0031). Dosya `content/levels/paylasim-koyu/koy-meydani/NN.json`, kimlik `paylasim-koyu.koy-meydani.NN`. `grid`, `robot`, `goal`, `cards` yerine bir `sharing` nesnesi taşır (şema bunu `game` alanına göre zorlar):
 
 | Alan | Anlam |
 | --- | --- |
-| `drops` | En çok 4 bırakma noktası: `hive` (petek, `need` 1–5 bal ister) ve `table` (ortak köy sofrası). Ari'nin kovanı (`home`) yoktur. |
-| `items[].amount` | Bal öğesinin verdiği bal (1–7, varsayılan 1) |
-| `robot.carrying` | Başlangıçta sepetteki bal (0–7) |
-| `goal.deliver` | `[{ to, count }]`: noktaya tam bu kadar bal |
-| `goal.share` | `{ among, leftoverTo? }`: petekler eşit, bal tamamen dağıtılmış, artan petek sayısından az ve sofrada |
-| `goal.carryAtEnd` | Hedef bittiğinde sepette kalması gereken bal; tek başına hedef olamaz |
-| `cards.palette` ve komut `drop` | "Bırak" kartı (Kaşif) |
-| `options.autoDrop` | Minik: peteğe girince ihtiyacı kadar bal otomatik bırakılır |
-| `options.resetEachRun` | Dünya her çalıştırmada başa döner, bellek kalır |
-| `options.clearMemoryEachRun` | Minik: bellek her çalıştırmadan sonra temizlenir |
-| `options.askRemaining` | Başarıdan sonra "Kaç kaldı?"; çocuk testine kadar kapalı tutulur |
-| `options.intro` | Tanıtım bölümü: geç başlayan çocuk da oynar |
+| `sharing.hives[]` | Petekler, soldan sağa. `need` (1–5): deliver hedefinde peteğin istediği bal; share hedefinde yazılmaz. `has`: başlangıçta peteğin balı |
+| `sharing.flowers[]` | Çiçekler ve her birinin balı (en çok 3 çiçek) |
+| `sharing.basket` | `start` sepette başlangıçtaki bal, `cap` sepetin alabileceği en çok bal (yoksa sınırsız) |
+| `sharing.table` | Ortak köy sofrası: artan bal oraya gider |
+| `sharing.goal` | `deliver`: her petek tam istediği kadar bal alır; `share`: petekler eşit, sepet boş, sofradaki bal petek sayısından az |
+| `sharing.amounts` | `ver` kartı 1–3 bal verir (rozet); yoksa kart bir bal verir |
+| `sharing.limits.maxCards` | Plan şeridinin kart sayısı (tekrar kutusundaki kartlar bir kez sayılır) |
+| `sharing.repeatBox` | Şeridin başında sabit tekrar kutusu: `slots` kart yeri, `maxTurns` en çok tur |
+| `sharing.predict` | Çalıştırmadan önce "sepette kaç kalacak?" tahmini (yalnız deliver) |
+| `options.intro`, `options.guided` | Köşenin ilk bölümü: tanıtım ve el rehberli |
 
-### Köy bölümü kuralları (`make validate-content`)
+Toplam bal (sepet + çiçekler) en çok 7. Ses anahtarları `koy_meydani.lNN.intro` / `.success`; ipucu olarak ortak `koy_meydani.hint.look/tap/play`. `solution.shortestLength` en kısa plandaki kart sayısıdır (tekrar kutusundaki kart bir kez).
 
-Kural kodu `tools/engine-dotnet/Roboya.LevelValidator/VillageChecks.cs`; her hata iletisi kaynak kararı anar. Üç katman:
+Doğrulayıcı (`tools/engine-dotnet/Roboya.LevelValidator/SharingChecks.cs`) şunları denetler: çözülebilir ve kayıtlı en kısa uzunluk doğru; **tekrar kutusu gerçekten gerekli** (kutusuz plan şeride sığmıyor, K11); **sepet sınırı planı uzatıyor** (K9); tahmin sorusunun cevabı "verilen" ya da "başta olan"dan farklı (K10); Minik bölümleri yalnız düz `ver` kartı kullanır (K8). Her ileti kararı anar; kararlar `docs/pedagoji/bekleyen-kararlar.md` K8–K12'de bekliyor.
 
-| Katman | Kural | Kaynak |
-| --- | --- | --- |
-| Bal yapısı (bal alanı kullanan her bölüm) | `autoDrop` yalnız `ageLevels: [minik]`, paletteye `drop` yok, toplam bal = petek `need` toplamı | PK-0001 |
-| | `drop` kartı varsa bırakma noktası var; bırakma noktası varsa `drop` kartı ya da `autoDrop` var | ADR 0030 |
-| | `deliver` toplamı ≤ toplam bal; `share` için bal sayısı ≥ petek sayısı | PK-0001 |
-| | `askRemaining` yalnız Kaşif, `deliver`/`carryAtEnd` hedefiyle ve en kısa çözümün sonunda "başta vardı / verdiğim / kalan" birbirinden farklı | PK-0002 |
-| | `meta.concepts` içinde `counting` | PK-0004 |
-| Sayı ve uzunluk (`paylasim-koyu`) | toplam bal ≤ 7; `need` ≤ 5; en kısa çözümde "Bırak" ≤ 6 | PK-0003 |
-| | engel (`#`) ya da dönüş varsa "Bırak" ≤ 4 | PK-0003 |
-| | Kaşif'te en kısa çözüm ≤ 10 kart ve `maxProgramLength` = en kısa + 1 ya da + 2 | PK-0003 |
-| | Minik'te yalnız `forward` ve `turn_right` | PK-0005 |
-| Bölge bileşimi (`paylasim-koyu`) | hepsinde `resetEachRun`; 1–6 yalnız Minik ve `clearMemoryEachRun`; 7+ yalnız Kaşif ve `beeMemoryVisible` | PK-0005 |
-| | 1. ve 4. bölümde `guided` ya da `ghostPath` | PK-0005 |
-| | 24 bölümlük köyde köşe başları (1, 7, 13, 19) `intro` + `guided`, başka bölümde `intro` yok; `need` 5 yalnız köşe finallerinde (6, 12, 18, 24) | PK-0005, PK-0003 |
-
-Bölge bileşimi kuralları köy 24 bölüme ulaşana kadar yalnız sabit olanları (Minik/Kaşif sırası, `resetEachRun`, bellek, 1 ve 4. bölüm) denetler; köşe başı ve köşe finali kuralları tam köyde açılır.
-
-### Köy bölümlerinin yazımı (plan E1)
-
-Bölümler `content/levels/paylasim-koyu/bal-pesinde/NN.json`, kimlik `paylasim-koyu.bal-pesinde.NN`, `order` 1–24. Ses anahtarları ormanınkilerle çakışmasın diye `bal_pesinde.koy.lNN.intro` / `.success`; ipucu olarak `roboya.hint.koy.listen` (ya da dönüşlü bölümlerde `roboya.hint.koy.direction`) ve ortak `check_card` / `show_card` kullanılır.
-
-- 4. bölüm `cards.introduces` almaz: sağa dön ormanda tanıtıldı ve kart tanıtan her bölüm "atlanamaz tanıtım" sayılır (`IntroLevels`); 4. bölümün desteği hayalet yoldur.
-- Kaşif'in önünde oynanabilir daha kolay bölüm olmayan köşe başlarında (7, 13, 19) `alternativeLevelId` yazılmaz.
-- Teslim hedefli bölümde son petekten sonra ızgarada bir boş kare bırakın: fazla bir "ileri" arıyı duvara çarptırıp çalıştırmayı başarısız saymasın (köşe 1 incelemesi, bulgu 7).
-- Ses metninde yalnız tahtada görünen nesne adı geçer: bal öğesi tahtada bal damlasıdır, "çiçek" denmez.
-- `meta.mebOutcomes` boş kalır; eşleştirmeyi pedagoji ekibi yapar (G1).
+Köşe 1 (1–6, Minik) yazıldı: `[Taslak, pedagoji incelemesi bekliyor]`. Köşe 2–4 ekranı ve bölümleri sonraki işlerdir.

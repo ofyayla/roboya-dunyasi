@@ -122,7 +122,7 @@ namespace Roboya.CodingEngine.Play
             var commands = new Command[_cards.Count];
             for (int i = 0; i < commands.Length; i++)
             {
-                commands[i] = _cards[i] == CardType.Drop ? (Command)DropCommand.Instance : MoveCommand.For(_cards[i]);
+                commands[i] = MoveCommand.For(_cards[i]);
             }
 
             return new Program(commands);

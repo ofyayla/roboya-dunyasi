@@ -48,7 +48,7 @@ Kabul edilmiş kararlar: PK-0001–PK-0005 (Paylaşım Köyü, 2026-10-11; ürü
 
 ## B. Paylaşım Köyü (F2-13)
 
-Taslak: `paylasim-koyu-taslagi.md` (PR #78). Mekanik: ADR 0030. **Hepsi karara bağlandı (2026-10-11):** ürün sahibi pedagoji danışmanının önerilerini kabul etti; kayıtlar PK-0001–PK-0005. Uzman onayı (G2) yayından önce alınır.
+Taslak: `paylasim-koyu-taslagi.md` (PR #78). Mekanik: ADR 0031 (0030'un yerini aldı). K1–K7 **2026-10-11'de karara bağlandı**, ancak ızgara maddeleri K8 ile geçersiz oldu (kayıtlar PK-0001–PK-0005 tarihçe için duruyor). Uzman onayı (G2) yayından önce alınır.
 
 | # | Karar | Not |
 | --- | --- | --- |
@@ -59,6 +59,11 @@ Taslak: `paylasim-koyu-taslagi.md` (PR #78). Mekanik: ADR 0030. **Hepsi karara b
 | K5 | **Eşit paylaşma:** Peteklerde sayı göstermeden "eşit olsun" kuralı 5–7 yaş için anlaşılır mı, yoksa önce sayıyla başlansın mı? | Karar verildi: PK-0001 |
 | K6 | **Artan bal:** Ortak köy sofrası paylaşma değerini doğru anlatıyor mu? Alternatif: en küçük arıya vermek. | Karar verildi: PK-0001 |
 | K7 | **Kavram etiketi:** Veli raporuna "toplama-çıkarma / eşit paylaşma" kavramı eklensin mi, "sayma" altında mı kalsın? | Karar verildi: PK-0004 |
+| **K8** | **Köy yönsüz oyuna geçti (ADR 0031, 2026-10-12).** PK-0001, PK-0003 ve PK-0005'in ızgara maddeleri (otomatik bırakma, `Bırak` kartı, yön ve dönüş, bellek ve dünya sıfırlama) geçersiz. Yeni yapı pedagojik olarak uygun mu: dört köşe, dört kavram, her köşede bir kodlama fikri? | Açık; prototip ve tablet gözlemi `docs/review` ve ADR 0031'de |
+| **K9** | **Sepet sınırı (Köşe 2):** sepet en çok 2 bal alır, böylece "al, ver, al, ver" sırası önemli olur. Toplama için doğru zorluk mu, yoksa Kaşif için fazla soyut mu? | Açık |
+| **K10** | **Çalıştırmadan önce tahmin (Köşe 3):** "sepette kaç bal kalacak?" üç nokta kartından seçilir, çalıştırınca gerçekle karşılaştırılır. Yıldızı etkilemez. Yanlış tahmin deneme sayılmasın, tek yargı bu mu? | Açık (PK-0002'nin "Kaç kaldı?" fikrinin yerine) |
+| **K11** | **Tekrar kutusu (Köşe 4):** sabit mor kutu, kapasitesi petek sayısı kadar, tur sayısı − ve +. Eşit paylaşma ile döngü eşleşmesi 5–7 yaş için anlaşılır mı? | Açık |
+| **K12** | **Taşan bal yere akar, bekleyen petekte arı "bekliyor" pozunda** (üzgün değil), Ari de sofrada oturur. Suçluluk yaratmadan paylaşmanın herkes için olduğunu anlatıyor mu? | Açık |
 
 ## C. Genel
 

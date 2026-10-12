@@ -1,6 +1,6 @@
 # 0030 — Paylaşım Köyü: bal taşıma, bırakma ve dağıtma
 
-- Durum: Kabul edildi (2026-10-11; pedagoji kararları PK-0001–PK-0005)
+- Durum: Yerini aldı (0031, 2026-10-12). Izgara tabanlı köy motoru kaldırıldı; tarihçe için duruyor. Pedagoji kararları PK-0001–PK-0005'in ızgara maddeleri de geçersiz.
 - Tarih: 2026-10-11
 - İlgili: F2-13; BAL-01, BAL-03; ADR 0018, 0025, 0026; `docs/pedagoji/paylasim-koyu-taslagi.md`
 

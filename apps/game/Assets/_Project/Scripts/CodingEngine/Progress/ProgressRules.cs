@@ -8,9 +8,8 @@ namespace Roboya.CodingEngine.Progress
     {
         public static readonly ProgressRules Default = new ProgressRules(3, 1, 4);
 
-        public ProgressRules(int freeLevelCount, int freeProfiles = 1, int premiumProfiles = 4, bool unlockAll = false, bool askRemaining = false)
+        public ProgressRules(int freeLevelCount, int freeProfiles = 1, int premiumProfiles = 4, bool unlockAll = false)
         {
-            AskRemaining = askRemaining;
             UnlockAll = unlockAll;
             FreeProfiles = freeProfiles;
             PremiumProfiles = premiumProfiles;
@@ -22,12 +21,6 @@ namespace Roboya.CodingEngine.Progress
         /// builds (never in release builds or the editor), so it can never grant access to a real user.
         /// </summary>
         public bool UnlockAll { get; }
-
-        /// <summary>
-        /// Paylaşım Köyü "Kaç kaldı?" step (PK-0002): off until the child test says it helps; the level option alone never turns it on.
-        /// Production values come from server configuration like the others.
-        /// </summary>
-        public bool AskRemaining { get; }
 
         /// <summary>Product decision: the first 3 levels are free.</summary>
         public int FreeLevelCount { get; }

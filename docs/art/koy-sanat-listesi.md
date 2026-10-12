@@ -1,14 +1,14 @@
 # Paylaşım Köyü — sanat teslim listesi (plan E3-a)
 
-Bu liste, dış sanatçıya ya da yeni bir Higgsfield turuna verilecek işi tek yerde toplar. Stil: [`style-guide.md`](style-guide.md) (düz vektör, kalın sıcak kontur `#3A2A1D`, yuvarlak köşe, **renk tek başına anlam taşımaz**, çocuk ekranında yazı yok). Şu an oyunda **geçici set** (Higgsfield, ücretsiz plan; lisans notu `style-guide.md` "Paylaşım Köyü — geçici set") çalışıyor. Kalıcı sanat **aynı dosya adlarıyla** gelir; kod değişmez, yalnız `make refresh-art` çalıştırılır.
+Bu liste, dış sanatçıya ya da yeni bir Higgsfield turuna verilecek işi tek yerde toplar. Stil: [`style-guide.md`](style-guide.md) (düz vektör, kalın sıcak kontur `#3A2A1D`, yuvarlak köşe, **renk tek başına anlam taşımaz**, çocuk ekranında yazı yok). Şu an oyunda **geçici set** (Higgsfield, ücretsiz plan; sepet ve kovan 2026-10-12'de yenilendi, kaynak sayfalar `sources/basket-empty.png` ve `sources/hive-skep.png`; lisans notu `style-guide.md` "Paylaşım Köyü — geçici set") çalışıyor. Kalıcı sanat **aynı dosya adlarıyla** gelir; kod değişmez, yalnız `make refresh-art` çalıştırılır.
 
 ## Bugün var ve oyunda kullanılıyor (kalıcı sürümü istenen)
 
 | Dosya (`apps/game/Assets/_Project/Art/…`) | `RegionArt` alanı | Gerekli durumlar / not |
 | --- | --- | --- |
 | `PaylasimKoyu/bg_paylasim_koyu` | `background` | orta-alt bölge boş çayır (tahta oturur) |
-| `PaylasimKoyu/item_hive_empty`, `item_hive_full`, `item_hive_overflow` | `hiveEmpty`, `hiveFull`, `hiveOverflow` | üç durum **şekille** ayrışır (boş altıgen / dolu bal / taşan damla); yuvalar kodla çizilir, resimde yuva olmamalı ya da silik olmalı |
-| `PaylasimKoyu/item_honey_basket` | `honeyBasket` | Ari'nin sepeti (HUD'da ve tahtada) |
+| `PaylasimKoyu/item_hive_skep` | `hiveSkep` | saman kovan (ADR 0031); **içinde hücre yok**, petek hücreleri kodla çizilir (`CombCells`). Eski ahşap petek tabelası (`item_hive_*`) tanınmadığı için kaldırıldı |
+| `PaylasimKoyu/item_basket_empty` | `basketEmpty` | Ari'nin sepeti: hasır, kulplu, koyu açık ağız, kareli bez; **boş** (bal kodla noktalarla ağzın üstüne çizilir). Eski küçük sepet kaldırıldı |
 | `PaylasimKoyu/prop_village_table` | `propVillageTable` | ortak köy sofrası; artan bal burada durur ("atılmış bal" gibi değil) |
 | `PaylasimKoyu/prop_festival_flags` | `festivalFlags` | şenlik bayrakları; 24. bölümde hedefin yanında çizilecek (bkz. aşağıda "Eksik") |
 | `PaylasimKoyu/prop_ari_home` | — | şimdilik kullanılmıyor (Ari'nin kovanı kararla kaldırıldı, PK-0001 madde 4) |
