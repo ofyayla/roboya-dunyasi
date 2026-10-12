@@ -18,7 +18,7 @@
 
 .sq__flowers {
     position: absolute;
-    left: 18px;
+    left: 10%;
     bottom: 12px;
 }
 
@@ -306,7 +306,7 @@
     position: absolute;
     right: -10px;
     bottom: -8px;
-    width: 78px;
+    width: 84px;
     height: 48px;
     flex-direction: row;
     flex-wrap: nowrap;

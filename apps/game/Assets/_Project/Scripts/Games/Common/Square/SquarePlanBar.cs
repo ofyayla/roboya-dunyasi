@@ -135,10 +135,10 @@ namespace Roboya.Games.Square
             element.RegisterCallback<PointerDownEvent>(_ => CardTapped?.Invoke(inBox, index));
             if (_level.AllowsAmounts && card.Kind == SharingCardKind.Give)
             {
-                // The count: as many honey dots as the card hands over. Tap it to change; the rest of the card takes the card out.
+                // The count: solid dots for what the card hands over and hollow rings for the room up to three, so the range can be seen. Tap it to change; the rest of the card takes the card out.
                 var badge = new VisualElement { name = "count-" + _cards.Count };
                 badge.AddToClassList("sc__count");
-                HoneyDots.Fill(badge, card.Count, 0, "dot--small");
+                HoneyDots.Fill(badge, card.Count, SharingLevel.MaxGive - card.Count, "dot--small");
                 badge.RegisterCallback<PointerDownEvent>(e =>
                 {
                     e.StopPropagation();
