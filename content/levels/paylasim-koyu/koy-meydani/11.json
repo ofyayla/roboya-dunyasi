@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 3,
+  "id": "paylasim-koyu.koy-meydani.11",
+  "region": "paylasim-koyu",
+  "game": "koy-meydani",
+  "order": 11,
+  "meta": {
+    "concepts": [
+      "counting"
+    ],
+    "value": "sharing",
+    "difficulty": 2,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Köşe 2: eksiği tamamla: petekte iki bal var, dört ister."
+  },
+  "sharing": {
+    "hives": [
+      {
+        "need": 4,
+        "has": 2
+      }
+    ],
+    "flowers": [
+      1,
+      1
+    ],
+    "goal": "deliver",
+    "amounts": true,
+    "limits": {
+      "maxCards": 4
+    }
+  },
+  "voice": {
+    "intro": "koy_meydani.l11.intro",
+    "success": "koy_meydani.l11.success",
+    "hints": [
+      "koy_meydani.hint.look",
+      "koy_meydani.hint.tap",
+      "koy_meydani.hint.play"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "curious",
+      "friend": "explaining",
+      "props": [
+        "honey",
+        "beehive"
+      ]
+    },
+    "outro": {
+      "roboya": "happy",
+      "friend": "thanks",
+      "props": [
+        "honeycomb",
+        "villager-bee"
+      ]
+    }
+  },
+  "alternativeLevelId": "paylasim-koyu.koy-meydani.09",
+  "solution": {
+    "shortestLength": 3
+  }
+}

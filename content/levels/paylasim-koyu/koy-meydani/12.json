@@ -1,0 +1,75 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 3,
+  "id": "paylasim-koyu.koy-meydani.12",
+  "region": "paylasim-koyu",
+  "game": "koy-meydani",
+  "order": 12,
+  "meta": {
+    "concepts": [
+      "counting"
+    ],
+    "value": "sharing",
+    "difficulty": 3,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Köşe 2: köşe finali: iki petek, küçük sepet, iki çiçek."
+  },
+  "sharing": {
+    "hives": [
+      {
+        "need": 3,
+        "has": 1
+      },
+      {
+        "need": 4,
+        "has": 2
+      }
+    ],
+    "flowers": [
+      1,
+      3
+    ],
+    "basket": {
+      "cap": 2
+    },
+    "goal": "deliver",
+    "amounts": true,
+    "limits": {
+      "maxCards": 6
+    }
+  },
+  "voice": {
+    "intro": "koy_meydani.l12.intro",
+    "success": "koy_meydani.l12.success",
+    "hints": [
+      "koy_meydani.hint.look",
+      "koy_meydani.hint.tap",
+      "koy_meydani.hint.play"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "proud",
+      "friend": "explaining",
+      "props": [
+        "honey",
+        "beehive"
+      ]
+    },
+    "outro": {
+      "roboya": "proud",
+      "friend": "thanks",
+      "props": [
+        "honeycomb",
+        "villager-bee"
+      ]
+    }
+  },
+  "alternativeLevelId": "paylasim-koyu.koy-meydani.10",
+  "solution": {
+    "shortestLength": 5
+  }
+}
