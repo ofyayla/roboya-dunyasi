@@ -28,6 +28,9 @@ namespace Roboya.Games.Square
         private const string WaitingVoice = "koy_meydani.waiting";
         private const string NotEqualVoice = "koy_meydani.not_equal";
         private const string LeftoverVoice = "koy_meydani.leftover";
+        private const string PredictAskVoice = "koy_meydani.predict.ask";
+        private const string PredictRightVoice = "koy_meydani.predict.right";
+        private const string PredictCountVoice = "koy_meydani.predict.count";
         private const string PlayPromptVoice = "roboya.play_prompt";
         private const string AlternativeVoice = "roboya.alternative_offer";
         private const string PartUnlockedVoice = "reward.part_unlocked";
@@ -108,6 +111,7 @@ namespace Roboya.Games.Square
             _bar = new SquarePlanBar(root.Q("plan"), art);
             _bar.CardTapped += OnCardTapped;
             _bar.CountTapped += OnCountTapped;
+            _bar.TurnsTapped += OnTurnsTapped;
 
             _play = new IconButton(IconKind.Play, () => _ = PlayAsync()) { name = "play" };
             _play.AddToClassList("icon-button--play");
@@ -227,6 +231,13 @@ namespace Roboya.Games.Square
                 }
 
                 var rest = new List<string> { BasketFullVoice, FlowerEmptyVoice, BasketEmptyVoice, WaitingVoice, NotEqualVoice, LeftoverVoice, PlayPromptVoice };
+                if (entry.Sharing.AsksPrediction)
+                {
+                    rest.Add(PredictAskVoice);
+                    rest.Add(PredictRightVoice);
+                    rest.Add(PredictCountVoice);
+                }
+
                 if (entry.Dto.Voice.Success != null)
                 {
                     rest.Add(entry.Dto.Voice.Success);
@@ -336,6 +347,23 @@ namespace Roboya.Games.Square
                 _services.Sfx.Play(SfxKind.Place);
                 RefreshPlan();
             }
+        }
+
+        /// <summary>The − and + of the repeat box change how many times it runs, within the level's limit.</summary>
+        private void OnTurnsTapped(int delta)
+        {
+            if (!Interactive)
+            {
+                return;
+            }
+
+            ResetScene();
+            if (_session.Plan.SetTurns(_session.Plan.Turns + delta))
+            {
+                _services.Sfx.Play(SfxKind.Place);
+            }
+
+            RefreshPlan();
         }
 
         private void ClearPlan()
@@ -468,6 +496,8 @@ namespace Roboya.Games.Square
                     return _bar.ElementOf(hint.Card);
                 case SharingHintKind.SetCount:
                     return _bar.BadgeOf(hint.Card) ?? _bar.ElementOf(hint.Card);
+                case SharingHintKind.SetTurns:
+                    return _bar.TurnsButton(hint.Count > _session.Plan.Turns);
                 default:
                     return null;
             }
@@ -489,6 +519,20 @@ namespace Roboya.Games.Square
             _bar.SetLocked(true);
             _bar.ClearMarks();
             var token = _lifetime.Token;
+            int guess = -1;
+            if (_level.AsksPrediction && _session.Attempts == 0)
+            {
+                // K10: before the first run the child guesses how much honey will be left; the guess is not scored.
+                try
+                {
+                    guess = await AskPredictionAsync(token);
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
+            }
+
             _square.ShowState(_level.Start());
             _square.ResetPoses();
             _square.SnapAriHome();
@@ -511,6 +555,12 @@ namespace Roboya.Games.Square
                 return;
             }
 
+            if (guess >= 0)
+            {
+                _services.Voice.Play(guess == result.Final.Basket ? PredictRightVoice : PredictCountVoice);
+                await WaitForQuietVoiceAsync(token);
+            }
+
             if (result.IsSuccess)
             {
                 await ShowSuccess(token);
@@ -518,6 +568,49 @@ namespace Roboya.Games.Square
             }
 
             await ExplainAsync(result, token);
+        }
+
+        /// <summary>Three honey-dot cards; the child taps the one that shows what will be left in the basket. Returns the number chosen.</summary>
+        private async Awaitable<int> AskPredictionAsync(CancellationToken token)
+        {
+            var program = _session.Plan.ToProgram();
+            int left = SharingPrediction.LeftAfter(_level, program);
+            var choices = SharingPrediction.Choices(_level.Id, _level.TotalHoney, left);
+            var chosen = new AwaitableCompletionSource<int>();
+            var overlay = new VisualElement { name = "predict" };
+            overlay.AddToClassList("pr");
+            var row = new VisualElement { pickingMode = PickingMode.Ignore };
+            row.AddToClassList("pr__row");
+            foreach (int n in choices)
+            {
+                int value = n;
+                var card = new VisualElement { name = "predict-" + value };
+                card.AddToClassList("pr__card");
+                var dots = new VisualElement { pickingMode = PickingMode.Ignore };
+                HoneyDots.Fill(dots, value, 0);
+                card.Add(dots);
+                card.RegisterCallback<PointerDownEvent>(e =>
+                {
+                    e.StopPropagation();
+                    chosen.TrySetResult(value);
+                });
+                row.Add(card);
+            }
+
+            overlay.Add(row);
+            _screen.Add(overlay);
+            _services.Voice.Play(PredictAskVoice);
+            try
+            {
+                using (token.Register(() => chosen.TrySetCanceled()))
+                {
+                    return await chosen.Awaitable;
+                }
+            }
+            finally
+            {
+                overlay.RemoveFromHierarchy();
+            }
         }
 
         private void Unlock()

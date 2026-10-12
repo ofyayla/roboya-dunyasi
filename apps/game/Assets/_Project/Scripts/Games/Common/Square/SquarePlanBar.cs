@@ -35,6 +35,15 @@ namespace Roboya.Games.Square
         /// <summary>The child tapped the count of a give card (levels whose cards carry a count): (in the repeat box, its position).</summary>
         public event Action<bool, int> CountTapped;
 
+        /// <summary>The child tapped the − or + of the repeat box: -1 or +1 turn.</summary>
+        public event Action<int> TurnsTapped;
+
+        private VisualElement _plus;
+        private VisualElement _minus;
+
+        /// <summary>The + or − button of the repeat box, for the guiding hand; null on levels without a box.</summary>
+        public VisualElement TurnsButton(bool plus) => plus ? _plus : _minus;
+
         public VisualElement Host => _host;
 
         public void Bind(SharingLevel level) => _level = level;
@@ -46,23 +55,96 @@ namespace Roboya.Games.Square
             _slots.Clear();
             _badges.Clear();
             _lastOn = null;
-            for (int i = 0; i < plan.Box.Count; i++)
+            _plus = null;
+            _minus = null;
+            var box = _level.RepeatBox;
+            if (box != null)
             {
-                Add(plan.Box[i], true, i);
+                // Corner 4: the fixed repeat box at the head of the strip, its cards inside, then what follows it (the table).
+                var loop = BuildLoop(plan);
+                _host.Add(loop);
+                for (int i = 0; i < plan.Box.Count; i++)
+                {
+                    Add(plan.Box[i], true, i, loop);
+                }
+
+                for (int i = plan.Box.Count; i < box.Slots; i++)
+                {
+                    loop.Add(Slot());
+                }
+
+                for (int i = 0; i < plan.Tail.Count; i++)
+                {
+                    Add(plan.Tail[i], false, i, _host);
+                }
+
+                if (_level.HasTable && plan.Tail.Count == 0)
+                {
+                    _host.Add(Slot());
+                }
+
+                return;
             }
 
             for (int i = 0; i < plan.Tail.Count; i++)
             {
-                Add(plan.Tail[i], false, i);
+                Add(plan.Tail[i], false, i, _host);
             }
 
             for (int i = plan.Count; i < _level.MaxCards; i++)
             {
-                var slot = new VisualElement { pickingMode = PickingMode.Ignore };
-                slot.AddToClassList("ss");
-                _host.Add(slot);
-                _slots.Add(slot);
+                _host.Add(Slot());
             }
+        }
+
+        private VisualElement Slot()
+        {
+            var slot = new VisualElement { pickingMode = PickingMode.Ignore };
+            slot.AddToClassList("ss");
+            _slots.Add(slot);
+            return slot;
+        }
+
+        /// <summary>The repeat box: a purple frame with a turn arrow, − and +, the turns as dots (solid for the turns, hollow for the room) and the cards inside.</summary>
+        private VisualElement BuildLoop(SharingPlan plan)
+        {
+            var loop = new VisualElement { name = "repeat-box" };
+            loop.AddToClassList("lp");
+            var head = new VisualElement { pickingMode = PickingMode.Ignore };
+            head.AddToClassList("lp__head");
+            head.Add(new Icon(IconKind.Retry) { Color = Color.white, name = "repeat-icon" });
+            _minus = LoopButton(false);
+            var turns = new VisualElement { name = "repeat-turns", pickingMode = PickingMode.Ignore };
+            HoneyDots.Fill(turns, plan.Turns, _level.RepeatBox.MaxTurns - plan.Turns, "dot--small");
+            _plus = LoopButton(true);
+            head.Add(_minus);
+            head.Add(turns);
+            head.Add(_plus);
+            loop.Add(head);
+            return loop;
+        }
+
+        private VisualElement LoopButton(bool plus)
+        {
+            var button = new VisualElement { name = plus ? "repeat-plus" : "repeat-minus" };
+            button.AddToClassList("lp__btn");
+            var bar = new VisualElement { pickingMode = PickingMode.Ignore };
+            bar.AddToClassList("lp__bar");
+            button.Add(bar);
+            if (plus)
+            {
+                var up = new VisualElement { pickingMode = PickingMode.Ignore };
+                up.AddToClassList("lp__bar");
+                up.AddToClassList("lp__bar--up");
+                button.Add(up);
+            }
+
+            button.RegisterCallback<PointerDownEvent>(e =>
+            {
+                e.StopPropagation();
+                TurnsTapped?.Invoke(plus ? 1 : -1);
+            });
+            return button;
         }
 
         /// <summary>The element of a card of the plan, matched by identity (two equal cards are two cards); null if it is not on the strip.</summary>
@@ -129,7 +211,7 @@ namespace Roboya.Games.Square
             }
         }
 
-        private void Add(SharingCard card, bool inBox, int index)
+        private void Add(SharingCard card, bool inBox, int index, VisualElement container)
         {
             var element = Face(card);
             element.RegisterCallback<PointerDownEvent>(_ => CardTapped?.Invoke(inBox, index));
@@ -148,7 +230,7 @@ namespace Roboya.Games.Square
                 _badges.Add(new KeyValuePair<SharingCard, VisualElement>(card, badge));
             }
 
-            _host.Add(element);
+            container.Add(element);
             _cards.Add(new KeyValuePair<SharingCard, VisualElement>(card, element));
         }
 

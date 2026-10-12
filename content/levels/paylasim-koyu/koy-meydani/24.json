@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 3,
+  "id": "paylasim-koyu.koy-meydani.24",
+  "region": "paylasim-koyu",
+  "game": "koy-meydani",
+  "order": 24,
+  "meta": {
+    "concepts": [
+      "counting"
+    ],
+    "value": "sharing",
+    "difficulty": 4,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Köşe 4: eşit paylaşma, tekrar kutusu ve sofra (7 bal, 2 petek)."
+  },
+  "sharing": {
+    "hives": [
+      {},
+      {}
+    ],
+    "basket": {
+      "start": 7
+    },
+    "goal": "share",
+    "limits": {
+      "maxCards": 3
+    },
+    "repeatBox": {
+      "slots": 2,
+      "maxTurns": 3
+    },
+    "table": true
+  },
+  "voice": {
+    "intro": "koy_meydani.l24.intro",
+    "success": "koy_meydani.l24.success",
+    "hints": [
+      "koy_meydani.hint.look",
+      "koy_meydani.hint.tap",
+      "koy_meydani.hint.play"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "proud",
+      "friend": "explaining",
+      "props": [
+        "honey",
+        "beehive"
+      ]
+    },
+    "outro": {
+      "roboya": "proud",
+      "friend": "thanks",
+      "props": [
+        "honeycomb",
+        "villager-bee"
+      ]
+    }
+  },
+  "alternativeLevelId": "paylasim-koyu.koy-meydani.23",
+  "solution": {
+    "shortestLength": 3
+  }
+}
