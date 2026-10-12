@@ -1,0 +1,67 @@
+{
+  "$schema": "../../../../packages/level-schema/level.schema.json",
+  "schemaVersion": 3,
+  "id": "paylasim-koyu.koy-meydani.16",
+  "region": "paylasim-koyu",
+  "game": "koy-meydani",
+  "order": 16,
+  "meta": {
+    "concepts": [
+      "counting"
+    ],
+    "value": "sharing",
+    "difficulty": 3,
+    "ageLevels": [
+      "kasif"
+    ],
+    "mebOutcomes": [],
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Köşe 3: çıkarma ve tahmin (6 bal, [4])."
+  },
+  "sharing": {
+    "hives": [
+      {
+        "need": 4
+      }
+    ],
+    "basket": {
+      "start": 6
+    },
+    "goal": "deliver",
+    "amounts": true,
+    "predict": true,
+    "limits": {
+      "maxCards": 2
+    }
+  },
+  "voice": {
+    "intro": "koy_meydani.l16.intro",
+    "success": "koy_meydani.l16.success",
+    "hints": [
+      "koy_meydani.hint.look",
+      "koy_meydani.hint.tap",
+      "koy_meydani.hint.play"
+    ]
+  },
+  "story": {
+    "intro": {
+      "roboya": "proud",
+      "friend": "explaining",
+      "props": [
+        "honey",
+        "beehive"
+      ]
+    },
+    "outro": {
+      "roboya": "proud",
+      "friend": "thanks",
+      "props": [
+        "honeycomb",
+        "villager-bee"
+      ]
+    }
+  },
+  "alternativeLevelId": "paylasim-koyu.koy-meydani.15",
+  "solution": {
+    "shortestLength": 2
+  }
+}

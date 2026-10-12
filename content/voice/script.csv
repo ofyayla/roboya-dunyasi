@@ -148,3 +148,30 @@ koy_meydani.l11.intro,"Bu peteğin zaten iki balı var, dört bal istiyor. Eksik
 koy_meydani.l11.success,Dört bal oldu! Eksiği tamamladık.,"Bölüm sonu (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.11
 koy_meydani.l12.intro,"İki petek de bal bekliyor. Sepet küçük, çiçekler farklı. Sırayla dolaşalım!","Bölüm girişi (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.12
 koy_meydani.l12.success,Hepsi tamam! Köy arıları birlikte şenlik yapıyor.,"Bölüm sonu (Köy Meydanı, Köşe 2)",paylasim-koyu.koy-meydani.12
+koy_meydani.l13.intro,Dört bal var. Arı bir bal istiyor. Ben verince sepette kaç bal kalacak? Önce tahmin et!,"Bölüm girişi (Köy Meydanı, Köşe 3)",paylasim-koyu.koy-meydani.13
+koy_meydani.l13.success,"Doğru! Dört baldan bir verdik, üç kaldı.","Bölüm sonu (Köy Meydanı, Köşe 3)",paylasim-koyu.koy-meydani.13
+koy_meydani.l14.intro,Sepette beş bal var. Bu arı iki bal istiyor. Sepette kaç bal kalır?,"Bölüm girişi (Köy Meydanı, Köşe 3)",paylasim-koyu.koy-meydani.14
+koy_meydani.l14.success,"Güzel! Beşten iki gitti, üç kaldı.","Bölüm sonu (Köy Meydanı, Köşe 3)",paylasim-koyu.koy-meydani.14
+koy_meydani.l15.intro,İki arı birer bal istiyor. Sepette kaç bal kalacak?,"Bölüm girişi (Köy Meydanı, Köşe 3)",paylasim-koyu.koy-meydani.15
+koy_meydani.l15.success,Tamam! İki arıya birer bal verdik.,"Bölüm sonu (Köy Meydanı, Köşe 3)",paylasim-koyu.koy-meydani.15
+koy_meydani.l16.intro,Bu arı dört bal istiyor. Altıdan dört verirsek sepette kaç kalır?,"Bölüm girişi (Köy Meydanı, Köşe 3)",paylasim-koyu.koy-meydani.16
+koy_meydani.l16.success,"Aferin! Altıdan dördü gitti, ikisi kaldı.","Bölüm sonu (Köy Meydanı, Köşe 3)",paylasim-koyu.koy-meydani.16
+koy_meydani.l17.intro,"Sepette yedi bal var. Bir arı iki, öteki bir bal istiyor. Kaç bal kalır?","Bölüm girişi (Köy Meydanı, Köşe 3)",paylasim-koyu.koy-meydani.17
+koy_meydani.l17.success,Çok güzel! Yedi baldan üçü gitti.,"Bölüm sonu (Köy Meydanı, Köşe 3)",paylasim-koyu.koy-meydani.17
+koy_meydani.l18.intro,Üç arı bal istiyor. Hepsine verince sepette kaç bal kalacak?,"Bölüm girişi (Köy Meydanı, Köşe 3)",paylasim-koyu.koy-meydani.18
+koy_meydani.l18.success,"Harika! Üç arıya da bal verdik, sepette bal kaldı.","Bölüm sonu (Köy Meydanı, Köşe 3)",paylasim-koyu.koy-meydani.18
+koy_meydani.l19.intro,"Şimdi balı herkese eşit paylaştıracağız! Mor tekrar kutusuna her peteği koy, kutu iki kez çalışsın.","Bölüm girişi (Köy Meydanı, Köşe 4)",paylasim-koyu.koy-meydani.19
+koy_meydani.l19.success,Eşit paylaştık! Herkesin payı aynı.,"Bölüm sonu (Köy Meydanı, Köşe 4)",paylasim-koyu.koy-meydani.19
+koy_meydani.l20.intro,"Üç arı var, altı bal var. Kutuya her peteği koy, kutu kaç kez çalışsın?","Bölüm girişi (Köy Meydanı, Köşe 4)",paylasim-koyu.koy-meydani.20
+koy_meydani.l20.success,Herkese ikişer bal düştü!,"Bölüm sonu (Köy Meydanı, Köşe 4)",paylasim-koyu.koy-meydani.20
+koy_meydani.l21.intro,Altı balı iki arıya eşit paylaştır. Kutuyu kaç kez çalıştıracaksın?,"Bölüm girişi (Köy Meydanı, Köşe 4)",paylasim-koyu.koy-meydani.21
+koy_meydani.l21.success,Üçer bal! Tam eşit.,"Bölüm sonu (Köy Meydanı, Köşe 4)",paylasim-koyu.koy-meydani.21
+koy_meydani.l22.intro,"Beş bal var, iki arı var. Artan bal sofraya, herkes birlikte yesin.","Bölüm girişi (Köy Meydanı, Köşe 4)",paylasim-koyu.koy-meydani.22
+koy_meydani.l22.success,"Artan bal sofrada, herkes mutlu!","Bölüm sonu (Köy Meydanı, Köşe 4)",paylasim-koyu.koy-meydani.22
+koy_meydani.l23.intro,Yedi balı üç arıya paylaştır. Artan balı sofraya götür.,"Bölüm girişi (Köy Meydanı, Köşe 4)",paylasim-koyu.koy-meydani.23
+koy_meydani.l23.success,"Eşit paylaştık, artan bal sofraya gitti!","Bölüm sonu (Köy Meydanı, Köşe 4)",paylasim-koyu.koy-meydani.23
+koy_meydani.l24.intro,"Son paylaşım! Yedi balı iki arıya eşit ver, artanı sofraya bırak.","Bölüm girişi (Köy Meydanı, Köşe 4)",paylasim-koyu.koy-meydani.24
+koy_meydani.l24.success,Köy arıları sana teşekkür ediyor! Hepsini eşit paylaştın.,"Bölüm sonu (Köy Meydanı, Köşe 4)",paylasim-koyu.koy-meydani.24
+koy_meydani.predict.ask,Sence sepette kaç bal kalacak?,Tahmin sorusu (Köşe 3),
+koy_meydani.predict.right,Doğru tahmin!,Tahmin tuttu (Köşe 3),
+koy_meydani.predict.count,Birlikte sayalım.,"Tahmin tutmadı, ceza yok (Köşe 3)",

@@ -264,7 +264,15 @@ namespace Roboya.Tests.PlayMode
         /// <summary>Taps a plan through the real screen: flowers, hives and the table by name, a card's count by tapping its badge.</summary>
         private static IEnumerator TapPlan(VisualElement game, SharingProgram plan)
         {
-            foreach (var card in plan.Tail)
+            var cards = new System.Collections.Generic.List<SharingCard>(plan.Box);
+            cards.AddRange(plan.Tail);
+            for (int t = 1; t < plan.Turns; t++)
+            {
+                Tap(game.Q("repeat-plus"));
+                yield return null;
+            }
+
+            foreach (var card in cards)
             {
                 string target = card.Kind == SharingCardKind.Take ? "flower-" + card.Flower : card.IsTable ? "table" : "hive-" + card.Target;
                 Tap(game.Q(target));
@@ -363,7 +371,7 @@ namespace Roboya.Tests.PlayMode
         {
             var catalog = FinishForest();
             var all = catalog.All.Where(l => l.Dto.Region == RegionId.PaylasimKoyu).ToList();
-            Assert.AreEqual(12, all.Count, "corners 1 and 2: twelve levels");
+            Assert.AreEqual(24, all.Count, "all four corners: twenty-four levels");
             yield return WalkAsync(all.Take(LevelsToPlay(6)).ToList(), 0, all.Count);
         }
 
@@ -374,6 +382,24 @@ namespace Roboya.Tests.PlayMode
             var catalog = FinishForest(villageDone: 6);
             var all = catalog.All.Where(l => l.Dto.Region == RegionId.PaylasimKoyu).ToList();
             yield return WalkAsync(all.Skip(6).Take(LevelsToPlay(6)).ToList(), 6, all.Count);
+        }
+
+        [Timeout(1800000)]
+        [UnityTest]
+        public IEnumerator SquareCorner3_PredictionThenSolverPlanTappedThroughUi_EachLevelCompletes()
+        {
+            var catalog = FinishForest(villageDone: 12);
+            var all = catalog.All.Where(l => l.Dto.Region == RegionId.PaylasimKoyu).ToList();
+            yield return WalkAsync(all.Skip(12).Take(LevelsToPlay(6)).ToList(), 12, all.Count);
+        }
+
+        [Timeout(1800000)]
+        [UnityTest]
+        public IEnumerator SquareCorner4_RepeatBoxAndTurnsTappedThroughUi_EachLevelCompletes()
+        {
+            var catalog = FinishForest(villageDone: 18);
+            var all = catalog.All.Where(l => l.Dto.Region == RegionId.PaylasimKoyu).ToList();
+            yield return WalkAsync(all.Skip(18).Take(LevelsToPlay(6)).ToList(), 18, all.Count);
         }
 
         private IEnumerator WalkAsync(System.Collections.Generic.List<LevelEntry> levels, int firstIndex, int pathCount)
@@ -394,6 +420,14 @@ namespace Roboya.Tests.PlayMode
                 yield return new WaitForSeconds(0.3f);
                 yield return TapPlan(game, plan);
                 Tap(game.Q("play"));
+                if (entry.Sharing.AsksPrediction)
+                {
+                    // K10: the guess comes first; the right card is the one that shows what is really left.
+                    yield return WaitUntil(() => game.Q("predict") != null, 5f);
+                    yield return null;
+                    Tap(game.Q("predict-" + SharingPrediction.LeftAfter(entry.Sharing, plan)));
+                }
+
                 if (CornerRules.IsCornerEnd(firstIndex + i, pathCount))
                 {
                     yield return WaitUntil(() => game.Q("value-card") != null && !game.Q("value-card").ClassListContains("hidden"), 90f);
