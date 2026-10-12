@@ -8,5 +8,5 @@
 - Dosya erişimi yalnız Vite geliştirme sunucusu eklentisinde (`src/server/contentApi.ts`) ve `content/levels` ile sınırlı; derlenmiş sürüme girmez.
 - Bu araç ürün API'sini kullanmadığı için CLAUDE.md §9'daki "yalnız üretilmiş istemci" kuralı burada `fetch` ile yazılan yerel uçlara uygulanmaz.
 - Ham ızgara düzenleme işlemleri `src/model/levelOps.ts` içinde saf fonksiyonlardır ve testlidir.
-- Paylaşım Köyü (ADR 0030): petek/sofra araçları, bal miktarı, sepet, bal hedefi paneli, köy şablonu ve "Yeni köy bölümü". PK-0001–PK-0005 kuralları editörde yeniden yazılmaz; `/solve` yanıtı B4 doğrulayıcısının hatalarını taşır ve kaydı engeller.
+- Paylaşım Köyü (ADR 0031) ızgarasız ayrı bir oyundur (`koy-meydani`); bu editör yalnız ızgaralı oyunları yazar. Köy bölümleri JSON olarak elle yazılır ve `make validate-content` ile doğrulanır; köy editörü ayrı iştir.
 - `setOption` yalnız istenen seçeneği değiştirir ve diğerlerini korur; seçenekleri baştan yazan kod, editörde kutusu olmayan seçenekleri (ör. `predict`) kaydederken silerdi.

@@ -1,6 +1,6 @@
 # Paylaşım Köyü — 24 bölüm taslağı (pedagoji incelemesi için)
 
-Durum: **onaylandı (2026-10-11); 24 bölüm yazıldı** (plan E1, `content/levels/paylasim-koyu/`). Ürün sahibi pedagoji danışmanının önerilerini kabul etti: PK-0001–PK-0005. Aşağıdaki tablolar bu kararlara göre güncellendi. Uzman onayı (G2) yayından önce alınır. Mekanik (ADR 0030) yapıldı; bölüm tabloları artık dosyalardan üretilmiş **gerçek en kısa çözüm** sayılarıyla yazılı.
+Durum: **2026-10-12: ızgara tasarımı geçersiz (ADR 0031, yönsüz Köy Meydanı); aşağıdaki mekanik ve bölüm tabloları tarihçedir, yeni tasarım pedagoji ekibinin önünde (bekleyen K8–K12).** Eski durum: onaylandı (2026-10-11); 24 bölüm yazıldı (plan E1, `content/levels/paylasim-koyu/`). Ürün sahibi pedagoji danışmanının önerilerini kabul etti: PK-0001–PK-0005. Aşağıdaki tablolar bu kararlara göre güncellendi. Uzman onayı (G2) yayından önce alınır. Mekanik (ADR 0030) yapıldı; bölüm tabloları artık dosyalardan üretilmiş **gerçek en kısa çözüm** sayılarıyla yazılı.
 
 İlgili: F2-13, BAL-01, BAL-03; PRD "Ürün konsepti" (Paylaşım Köyü satırı); ADR 0026 (bellekli arı), ADR 0030 (taşıma ve dağıtma).
 

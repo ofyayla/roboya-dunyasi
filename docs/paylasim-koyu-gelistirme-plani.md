@@ -1,5 +1,7 @@
 # Paylaşım Köyü — geliştirme planı (F2-13)
 
+**2026-10-12 güncellemesi:** köy yönsüz "Köy Meydanı" oyununa geçti (ADR 0031, ADR 0030'un yerini aldı). Aşağıdaki B ve D akışlarının ızgara motoru ve görünümleri silindi, yerine saf C# `Sharing` motoru ve `Roboya.Games.Sharing` ekranı geliyor; E1 24 bölümü silindi, Köşe 1'den yeniden yazılıyor. Güncel sıra ADR 0031 "Sonuçlar" bölümünde; bu belgenin eski satırları tarihçedir.
+
 Durum: **taslak plan**. Tasarım: `docs/pedagoji/paylasim-koyu-taslagi.md`; mekanik: ADR 0030. Boyutlar `docs/plan.md` ile aynı ölçektedir (S ≈ 1–2 gün, M ≈ 3–5 gün, L ≈ 1–2 hafta).
 
 ## Kısa özet
