@@ -15,7 +15,7 @@
       "kasif"
     ],
     "mebOutcomes": [],
-    "notes": "[Taslak, pedagoji incelemesi bekliyor] Köşe 2: sayılı ver kartı: üç bal tek seferde."
+    "notes": "[Taslak, pedagoji incelemesi bekliyor] Köşe 2: sayılı ver kartı (tanıtım, el rehberli): üç bal tek seferde."
   },
   "sharing": {
     "hives": [
@@ -62,5 +62,9 @@
   "alternativeLevelId": "paylasim-koyu.koy-meydani.07",
   "solution": {
     "shortestLength": 2
+  },
+  "options": {
+    "intro": true,
+    "guided": true
   }
 }

@@ -128,6 +128,8 @@ namespace Roboya.Tests.PlayMode
             Assert.AreEqual(DisplayStyle.None, game.Q("palette").resolvedStyle.display, "no card palette in the village");
         }
 
+        private static int Solid(VisualElement root) => root.Query(className: "dot").ToList().Count(d => !d.ClassListContains("dot--empty"));
+
         private static int Count(VisualElement root, string cls) => root.Query(className: cls).ToList().Count;
 
         [UnityTest]
@@ -310,17 +312,18 @@ namespace Roboya.Tests.PlayMode
             Tap(game.Q("hive-0"));
             yield return null;
             Assert.AreEqual(1, game.Q("plan").Query(className: "sc__count").ToList().Count, "a give card carries a count");
-            Assert.AreEqual(1, Count(game.Q("plan").Query(className: "sc__count").ToList().Last(), "dot"));
+            Assert.AreEqual(3, Count(game.Q("plan").Query(className: "sc__count").ToList().Last(), "dot"), "three places: the range one to three is seen");
+            Assert.AreEqual(1, Solid(game.Q("plan").Query(className: "sc__count").ToList().Last()));
             Tap(game.Q("plan").Query(className: "sc__count").ToList().Last());
             yield return null;
-            Assert.AreEqual(2, Count(game.Q("plan").Query(className: "sc__count").ToList().Last(), "dot"));
+            Assert.AreEqual(2, Solid(game.Q("plan").Query(className: "sc__count").ToList().Last()));
             Tap(game.Q("plan").Query(className: "sc__count").ToList().Last());
             yield return null;
-            Assert.AreEqual(3, Count(game.Q("plan").Query(className: "sc__count").ToList().Last(), "dot"));
+            Assert.AreEqual(3, Solid(game.Q("plan").Query(className: "sc__count").ToList().Last()));
             yield return Capture(game, "35-square-corner2-count");
             Tap(game.Q("plan").Query(className: "sc__count").ToList().Last());
             yield return null;
-            Assert.AreEqual(1, Count(game.Q("plan").Query(className: "sc__count").ToList().Last(), "dot"), "and back to one");
+            Assert.AreEqual(1, Solid(game.Q("plan").Query(className: "sc__count").ToList().Last()), "and back to one");
             Tap(game.Q("plan").Query(className: "sc__count").ToList().Last());
             Tap(game.Q("plan").Query(className: "sc__count").ToList().Last());
             yield return null;
