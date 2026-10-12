@@ -48,6 +48,27 @@ namespace Roboya.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Island_RegionNames_RibbonCentredWhenOpenAndOverTheCloudWhenLocked()
+        {
+            Seed(3);
+            VisualElement map = null;
+            yield return OpenMap(r => map = r);
+            yield return null;
+            var labels = map.Query<Label>(className: "island__label").ToList();
+            Assert.AreEqual(6, labels.Count, "every region, locked or open, carries its name");
+            Assert.AreEqual("Paylaşım Köyü", map.Q<Label>("region-label-paylasim-koyu").text);
+            var open = map.Q<Label>("region-label-sabir-ormani");
+            var spot = map.Q("region-sabir-ormani");
+            Assert.AreEqual(spot.worldBound.center.x, open.worldBound.center.x, 2f, "open: centred across the region");
+            Assert.AreEqual(spot.worldBound.center.y, open.worldBound.center.y, 2f);
+            var locked = map.Q<Label>("region-label-paylasim-koyu");
+            var cloud = map.Q("region-paylasim-koyu");
+            Assert.AreEqual(cloud.worldBound.center.x, locked.worldBound.center.x, 2f, "locked: centred over the cloud");
+            Assert.Less(locked.worldBound.center.y, cloud.worldBound.center.y, "locked: above the middle of the cloud");
+            yield return Capture(map, "40-island-labels");
+        }
+
+        [UnityTest]
         public IEnumerator Path_FreeTierFinished_FourthStoneAsksForGrownUp()
         {
             Seed(3);

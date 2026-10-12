@@ -62,6 +62,12 @@ namespace Roboya.Map
                     spot.Add(padlock);
                 }
 
+                // The region's name is a yellow ribbon: across the middle of an open region, over the top of a locked cloud (grown-ups and readers; children follow the pictures).
+                var label = new Label(_services.Strings.Get(StringKeys.RegionName(region.Id))) { pickingMode = PickingMode.Ignore, name = "region-label-" + region.Id };
+                label.AddToClassList("island__label");
+                label.EnableInClassList("island__label--locked", !open);
+                spot.Add(label);
+
                 string id = region.Id;
                 spot.RegisterCallback<ClickEvent>(_ =>
                 {
