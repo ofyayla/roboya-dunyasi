@@ -11,7 +11,6 @@
     --c-card-left: rgb(61, 125, 216);
     --c-card-right: rgb(142, 91, 208);
     --c-card-back: rgb(214, 80, 92);
-    --c-card-drop: rgb(232, 168, 24);
 }
 
 .hidden {
@@ -75,7 +74,6 @@
 .card--turn-left { background-color: var(--c-card-left); }
 .card--turn-right { background-color: var(--c-card-right); }
 .card--backward { background-color: var(--c-card-back); }
-.card--drop { background-color: var(--c-card-drop); }
 
 .card--lifted {
     opacity: 0.35;

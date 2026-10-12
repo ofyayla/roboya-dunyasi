@@ -16,7 +16,6 @@ namespace Roboya.CodingEngine.Execution
             RobotState before,
             RobotState after,
             int itemIndex = -1,
-            int dropIndex = -1,
             string actionId = null,
             int iteration = 0,
             ExecutionResult result = null)
@@ -26,7 +25,6 @@ namespace Roboya.CodingEngine.Execution
             Before = before;
             After = after;
             ItemIndex = itemIndex;
-            DropIndex = dropIndex;
             ActionId = actionId;
             Iteration = iteration;
             Result = result;
@@ -41,9 +39,6 @@ namespace Roboya.CodingEngine.Execution
         public RobotState After { get; }
 
         public int ItemIndex { get; }
-
-        /// <summary>The drop point a <see cref="ExecutionEventKind.Dropped"/>, <see cref="ExecutionEventKind.NothingToDrop"/> or <see cref="ExecutionEventKind.HiveOverflow"/> concerns, or -1.</summary>
-        public int DropIndex { get; }
 
         public string ActionId { get; }
 

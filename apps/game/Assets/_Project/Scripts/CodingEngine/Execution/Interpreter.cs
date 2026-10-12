@@ -78,12 +78,7 @@ namespace Roboya.CodingEngine.Execution
             }
 
             var mask = _level.Goal.MustCollectMask;
-            if ((_state.CollectedMask & mask) != mask)
-            {
-                return ExecutionOutcome.MissingItems;
-            }
-
-            return _level.Goal.IsHoneySatisfiedBy(_state) ? ExecutionOutcome.EndedAwayFromGoal : ExecutionOutcome.HoneyGoalNotMet;
+            return (_state.CollectedMask & mask) != mask ? ExecutionOutcome.MissingItems : ExecutionOutcome.EndedAwayFromGoal;
         }
 
         private IEnumerable<ExecutionEvent> RunBlock(IReadOnlyList<Command> block, int[] prefix)
@@ -150,14 +145,6 @@ namespace Roboya.CodingEngine.Execution
                     _callDepth--;
                     break;
 
-                case DropCommand _:
-                    foreach (var e in RunDrop(path))
-                    {
-                        yield return e;
-                    }
-
-                    break;
-
                 case ActionCommand action:
                     if (CountStep(path))
                     {
@@ -209,52 +196,8 @@ namespace Roboya.CodingEngine.Execution
             if (item >= 0 && !_state.HasCollected(item))
             {
                 var beforeCollect = _state;
-                _state = HoneyRules.Collect(_level, _state.WithCollected(item), item);
+                _state = _state.WithCollected(item);
                 yield return new ExecutionEvent(ExecutionEventKind.Collected, path, beforeCollect, _state, itemIndex: item);
-            }
-
-            // Minik: the hive takes what it needs as the bee arrives. One event per honey so the view can count aloud;
-            // it is not a card, so it does not use up a step.
-            int hive = _level.DropIndexAt(target);
-            if (hive >= 0)
-            {
-                int amount = HoneyRules.AutoDropAmount(_level, _state, hive);
-                for (int n = 0; n < amount; n++)
-                {
-                    var beforeDrop = _state;
-                    _state = HoneyRules.GiveOne(_state, hive);
-                    yield return new ExecutionEvent(ExecutionEventKind.Dropped, path, beforeDrop, _state, dropIndex: hive);
-                }
-            }
-        }
-
-        private IEnumerable<ExecutionEvent> RunDrop(int[] path)
-        {
-            if (!CountStep(path))
-            {
-                yield break;
-            }
-
-            var before = _state;
-            int drop = _level.DropIndexAt(_state.Position);
-            switch (HoneyRules.TryDrop(_level, _state, out var next))
-            {
-                case DropOutcome.Dropped:
-                    _state = next;
-                    yield return new ExecutionEvent(ExecutionEventKind.Dropped, path, before, _state, dropIndex: drop);
-                    break;
-
-                case DropOutcome.Overflow:
-                    // The honey is left on the hive anyway, so the view can show it spilling over.
-                    _state = next;
-                    Fail(ExecutionOutcome.HiveOverflow, path);
-                    yield return new ExecutionEvent(ExecutionEventKind.HiveOverflow, path, before, _state, dropIndex: drop);
-                    break;
-
-                default:
-                    Fail(ExecutionOutcome.NothingToDrop, path);
-                    yield return new ExecutionEvent(ExecutionEventKind.NothingToDrop, path, before, _state, dropIndex: drop);
-                    break;
             }
         }
 

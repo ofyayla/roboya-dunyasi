@@ -1,0 +1,342 @@
+/* Village square (ADR 0031): no grid. The scene is laid out in panel units (1280×800 reference) inside the board host; honey is told by
+   dots in groups of five (solid disc = honey, hollow ring = room), never by colour or digits alone. */
+
+.sq {
+    flex-grow: 1;
+}
+
+.sq__hives {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 58%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.sq__flowers {
+    position: absolute;
+    left: 18px;
+    bottom: 12px;
+}
+
+.sq__fx {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+/* The equal sign between hives that must hold the same (corner 3). */
+.sq__equal {
+    align-self: center;
+    margin-top: 90px;
+    width: 40px;
+}
+
+.sq__equal > * {
+    height: 9px;
+    margin: 4px 0;
+    border-radius: 5px;
+    background-color: rgb(74, 52, 36);
+}
+
+/* A hive family: the villager bee, the skep and the honeycomb that fills. */
+.hv {
+    width: 212px;
+    margin: 0 18px;
+    align-items: center;
+}
+
+.hv__bee {
+    width: 104px;
+    height: 104px;
+    margin-bottom: -16px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.hv__bee--fallback {
+    border-radius: 52px;
+    border-width: 4px;
+    border-color: rgb(120, 72, 20);
+    background-color: rgb(247, 205, 90);
+}
+
+.hv__skep {
+    width: 132px;
+    height: 132px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.hv__comb {
+    width: 168px;
+    height: 94px;
+    margin-top: -6px;
+}
+
+.hv__mark {
+    position: absolute;
+    left: 24px;
+    top: 238px;
+    width: 44px;
+    height: 44px;
+}
+
+.hv__bubble {
+    position: absolute;
+    right: 4px;
+    top: -26px;
+    flex-direction: row;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 24px;
+    border-width: 4px;
+    border-color: rgb(58, 42, 29);
+    background-color: rgb(255, 255, 255);
+}
+
+.hv__bubble-drop {
+    width: 30px;
+    height: 36px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.hv--wait {
+    border-radius: 28px;
+    border-width: 6px;
+    border-color: rgba(255, 255, 255, 0.85);
+}
+
+.hv__spill {
+    position: absolute;
+    bottom: -34px;
+    right: -14px;
+    flex-direction: row;
+}
+
+.hv__spill-drop {
+    width: 28px;
+    height: 32px;
+    rotate: 25deg;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+/* A flower with the honey it holds. */
+.fl {
+    flex-direction: row;
+    align-items: center;
+    margin: 4px 0;
+}
+
+.fl__img {
+    width: 104px;
+    height: 104px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+/* The village table (corner 4). */
+.tb {
+    align-items: center;
+    margin: 0 18px;
+}
+
+.tb__img {
+    width: 230px;
+    height: 150px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.tb__img--fallback {
+    border-radius: 24px;
+    border-width: 5px;
+    border-color: rgb(58, 42, 29);
+    background-color: rgb(201, 141, 82);
+}
+
+.tb__dots {
+    position: absolute;
+    top: 14px;
+}
+
+/* Honey dots. */
+.dots {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.dots__group {
+    flex-direction: row;
+    margin-right: 10px;
+}
+
+.dot {
+    width: 24px;
+    height: 24px;
+    margin: 2px;
+    border-radius: 12px;
+    border-width: 3px;
+    border-color: rgb(138, 90, 18);
+    background-color: rgb(247, 178, 26);
+}
+
+.dot--empty {
+    background-color: rgba(255, 244, 226, 0.7);
+}
+
+.dot--small {
+    width: 18px;
+    height: 18px;
+    margin: 1px;
+    border-radius: 9px;
+    border-width: 2px;
+}
+
+/* Ari with her basket. */
+.ari {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 190px;
+    height: 190px;
+}
+
+.ari__body {
+    width: 190px;
+    height: 190px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.basket {
+    position: absolute;
+    left: -58px;
+    bottom: -22px;
+    width: 156px;
+    height: 156px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+/* The honey in the basket is a pill beside it, so it reads whatever the basket picture looks like. */
+.basket__dots {
+    position: absolute;
+    right: 100%;
+    top: 40px;
+    margin-right: -34px;
+    width: 124px;
+    padding: 4px 8px;
+    justify-content: center;
+    border-radius: 22px;
+    border-width: 3px;
+    border-color: rgb(58, 42, 29);
+    background-color: rgba(255, 244, 226, 0.96);
+}
+
+.basket__dots .dots__group {
+    margin-right: 4px;
+}
+
+.fx__drop {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 42px;
+    height: 48px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+/* The plan strip of the village. */
+.ss {
+    width: 92px;
+    height: 92px;
+    margin: 4px;
+    border-radius: 20px;
+    border-width: 4px;
+    border-color: rgba(58, 42, 29, 0.28);
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.sc {
+    width: 92px;
+    height: 92px;
+    margin: 4px;
+    border-radius: 20px;
+    border-width: 4px;
+    border-color: rgb(58, 42, 29);
+    align-items: center;
+    justify-content: center;
+}
+
+.sc--give {
+    background-color: rgb(244, 214, 160);
+}
+
+.sc--take {
+    background-color: rgb(231, 242, 217);
+}
+
+.sc--table {
+    background-color: rgb(244, 214, 160);
+}
+
+.sc__mark {
+    width: 54px;
+    height: 54px;
+}
+
+.sc__img {
+    width: 68px;
+    height: 68px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.sc__tag {
+    position: absolute;
+    right: -6px;
+    bottom: -6px;
+    width: 34px;
+    height: 38px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.sc--on {
+    scale: 1.1 1.1;
+    border-color: rgb(255, 255, 255);
+    border-width: 6px;
+}
+
+.sc--stop {
+    border-color: rgb(247, 178, 26);
+    border-width: 7px;
+}
+
+/* The guiding hand: a ring pulsing on what to tap and a finger that taps it. */
+.hand {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+}
+
+.hand__ring {
+    position: absolute;
+    left: -46px;
+    top: -46px;
+    width: 92px;
+    height: 92px;
+    border-radius: 46px;
+    border-width: 7px;
+    border-color: rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255, 0.18);
+}
+
+.hand__finger {
+    position: absolute;
+    left: -40px;
+    top: -4px;
+    width: 86px;
+    height: 86px;
+}

@@ -195,11 +195,10 @@ namespace Roboya.EditorTools
             so.FindProperty("goalExplaining").objectReferenceValue = S("Characters/KoyArilari/elder_bee_explaining");
             so.FindProperty("goalThanks").objectReferenceValue = S("Characters/KoyArilari/elder_bee_thanks");
             so.FindProperty("propVillagerBee").objectReferenceValue = S("Characters/KoyArilari/villager_bee_happy");
-            so.FindProperty("propHoneycomb").objectReferenceValue = S("PaylasimKoyu/item_hive_full");
-            so.FindProperty("hiveEmpty").objectReferenceValue = S("PaylasimKoyu/item_hive_empty");
-            so.FindProperty("hiveFull").objectReferenceValue = S("PaylasimKoyu/item_hive_full");
-            so.FindProperty("hiveOverflow").objectReferenceValue = S("PaylasimKoyu/item_hive_overflow");
-            so.FindProperty("honeyBasket").objectReferenceValue = S("PaylasimKoyu/item_honey_basket");
+            so.FindProperty("hiveSkep").objectReferenceValue = S("PaylasimKoyu/item_hive_skep");
+            so.FindProperty("propHoneycomb").objectReferenceValue = S("SabirOrmani/item_honeycomb");
+            so.FindProperty("propBeehive").objectReferenceValue = S("PaylasimKoyu/item_hive_skep");
+            so.FindProperty("basketEmpty").objectReferenceValue = S("PaylasimKoyu/item_basket_empty");
             so.FindProperty("villagerHappy").objectReferenceValue = S("Characters/KoyArilari/villager_bee_happy");
             so.FindProperty("villagerSad").objectReferenceValue = S("Characters/KoyArilari/villager_bee_sad");
             so.FindProperty("villagerThanks").objectReferenceValue = S("Characters/KoyArilari/villager_bee_thanks");

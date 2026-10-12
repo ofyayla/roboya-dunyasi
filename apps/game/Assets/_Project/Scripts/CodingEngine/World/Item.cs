@@ -3,13 +3,12 @@ namespace Roboya.CodingEngine.World
     /// <summary>A collectible object (flower, honey, gear...). Collected automatically when the robot enters its cell.</summary>
     public sealed class Item
     {
-        public Item(string id, string kind, string color, GridPosition position, int amount = 1)
+        public Item(string id, string kind, string color, GridPosition position)
         {
             Id = id;
             Kind = kind;
             Color = color;
             Position = position;
-            Amount = amount;
         }
 
         public string Id { get; }
@@ -20,8 +19,5 @@ namespace Roboya.CodingEngine.World
         public string Color { get; }
 
         public GridPosition Position { get; }
-
-        /// <summary>Honey this item puts in the basket when collected (honey items only; 1 unless the level says more).</summary>
-        public int Amount { get; }
     }
 }

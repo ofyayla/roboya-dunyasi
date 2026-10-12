@@ -195,20 +195,17 @@ namespace Roboya.Core
                 : new Roboya.Services.ApiClient(url, TransportOverride ?? new Roboya.Services.UnityHttpTransport());
         }
 
-        /// <summary>Tests: turns the "Kaç kaldı?" step on, as the server configuration will once the child test allows it.</summary>
-        public static bool AskRemainingOverride { get; set; }
-
         private static ProgressRules Rules()
         {
-            var d = ProgressRules.Default;
 #if !UNITY_EDITOR
             if (Debug.isDebugBuild)
             {
                 // Development player builds open every level for testing on a device; release builds never do (ADR 0009).
-                return new ProgressRules(d.FreeLevelCount, d.FreeProfiles, d.PremiumProfiles, unlockAll: true, askRemaining: AskRemainingOverride);
+                var d = ProgressRules.Default;
+                return new ProgressRules(d.FreeLevelCount, d.FreeProfiles, d.PremiumProfiles, unlockAll: true);
             }
 #endif
-            return AskRemainingOverride ? new ProgressRules(d.FreeLevelCount, d.FreeProfiles, d.PremiumProfiles, askRemaining: true) : d;
+            return ProgressRules.Default;
         }
 
         private ISfxPlayer ComposeSfx()

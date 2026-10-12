@@ -81,7 +81,6 @@ namespace Roboya.CodingEngine.Levels
                 case CardId.Repeat: return "repeat";
                 case CardId.If: return "if";
                 case CardId.Call: return "call";
-                case CardId.Drop: return "drop";
                 default: return "action";
             }
         }
