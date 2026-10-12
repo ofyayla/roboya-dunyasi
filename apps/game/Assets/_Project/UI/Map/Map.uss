@@ -54,6 +54,29 @@
     -unity-background-scale-mode: scale-to-fit;
 }
 
+/* The region's name: a yellow ribbon, centred in an open region and above a locked cloud. */
+.island__label {
+    white-space: nowrap;
+    font-size: 26px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(74, 44, 16);
+    background-color: rgb(255, 212, 92);
+    border-left-width: 6px;
+    border-right-width: 6px;
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+    border-color: rgb(74, 44, 16);
+    border-radius: 6px;
+    padding: 4px 22px;
+}
+
+.island__label--locked {
+    position: absolute;
+    top: -34px;
+    align-self: center;
+}
+
 /* Path */
 .path__scroll {
     position: absolute;

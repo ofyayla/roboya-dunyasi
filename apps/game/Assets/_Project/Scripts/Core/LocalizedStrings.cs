@@ -87,6 +87,12 @@ namespace Roboya.Core
         public const string TraceOn = "trace.on";
         public const string TraceOff = "trace.off";
         public const string TraceNote = "trace.note";
+        public const string RegionSabirOrmani = "map.region.sabir-ormani";
+        public const string RegionPaylasimKoyu = "map.region.paylasim-koyu";
+        public const string RegionYardimlasmaLimani = "map.region.yardimlasma-limani";
+        public const string RegionNezaketBahcesi = "map.region.nezaket-bahcesi";
+        public const string RegionSorumlulukKulesi = "map.region.sorumluluk-kulesi";
+        public const string RegionMucitAtolyesi = "map.region.mucit-atolyesi";
         public const string MusicTitle = "music.title";
         public const string MusicNote = "music.note";
         public const string RestParent = "rest.parent";
@@ -159,13 +165,16 @@ namespace Roboya.Core
         public const string ReportConfident = "report.level.confident";
         public const string ReportConceptLine = "report.line";
 
+        /// <summary>The key of a region's name on the island map ("map.region.&lt;id&gt;").</summary>
+        public static string RegionName(string regionId) => "map.region." + regionId;
+
         public static readonly string[] All =
         {
             GateQuestion, GateWrong, GateLocked, GateConfirm, GateCancel, ParentTitle, ParentEmpty, ParentBack,
             OnboardingNoticeTitle, OnboardingAccept, OnboardingDecline, ProfileTitle, ProfileNickname, ProfileAvatar,
             ProfileAge, ProfileAgeMinik, ProfileAgeKasif, ProfileAgeMucit, ProfileSave, ProfileCancel,
             ProfileDefaultNickname, ProfileListTitle, ProfileAdd, ProfileRemove, ProfileRemoveConfirm, ProfileLimit,
-            ProfileActive, TimeTitle, TimeMinutes, TimeUnlimited, TimeToday, TimeNote, TraceTitle, TraceOn, TraceOff, TraceNote, MusicTitle, MusicNote, RestParent,
+            ProfileActive, TimeTitle, TimeMinutes, TimeUnlimited, TimeToday, TimeNote, TraceTitle, TraceOn, TraceOff, TraceNote, MusicTitle, MusicNote, RestParent, RegionSabirOrmani, RegionPaylasimKoyu, RegionYardimlasmaLimani, RegionNezaketBahcesi, RegionSorumlulukKulesi, RegionMucitAtolyesi,
             ReportTitle, ReportSummary, ReportNote, ReportEmpty, ReportConcept, ReportNotStarted, ReportExploring, ReportGrowing, ReportConfident, ReportConceptLine,
             AccountTitle, AccountHint, AccountEmail, AccountSendCode, AccountCode, AccountSignIn, AccountSignOut, AccountSignedIn, AccountCodeSent, AccountErrorCode, AccountErrorMany, AccountErrorDevice, AccountErrorNetwork, AccountErrorGeneric,
             AccountSync, SyncDone, SyncOffline, SyncConsent, SyncOutdated, SyncPartly, SyncFailed,
