@@ -220,21 +220,3 @@ button.link--active {
 .ok { color: var(--ok); }
 .error { color: var(--error); }
 .warn { color: var(--warn); }
-
-.piece--drop {
-  color: #7a4a00;
-  font-size: 1.1rem;
-  font-weight: 700;
-  top: 2px;
-  left: 4px;
-}
-
-.drops-mark {
-  position: absolute;
-  right: 4px;
-  bottom: 2px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #fff;
-  text-shadow: 0 0 2px #000;
-}

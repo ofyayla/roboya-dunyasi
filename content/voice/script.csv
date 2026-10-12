@@ -113,67 +113,26 @@ value.patience.2,Ama koşarken kütüğü görmedi… tak! Elmalar saçıldı.,"
 value.patience.3,"Bilge Kaplumbağa yavaşça geldi. Sakin ol Roboya.","Sabır filmi, 3. sahne (F1-24)",
 value.patience.4,"İkisi kartları sırayla dizdi. Önce plan, sonra yürüyüş.","Sabır filmi, 4. sahne (F1-24)",
 value.patience.5,"Roboya planı yürüdü, elmaları topladı. Sabır, acele etmeden planlamaktır!","Sabır filmi, 5. sahne (F1-24)",
-roboya.hint.koy.listen,"Hmm, birlikte düşünelim. Bal nerede? Boş petek kaldı mı?","İpucu 1. kademe: sesli ipucu (Paylaşım Köyü; ormandakinden farkı: Kaplumbağa yok, çok petek)",
-bal_pesinde.koy.l01.intro,Köy arılarının peteği bomboş! Balı alıp peteğe götürelim.,Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.01
-bal_pesinde.koy.l01.success,Petek doldu! Köy arıları çok mutlu.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.01
-bal_pesinde.koy.l02.intro,İki petek de bal bekliyor. Her peteğe bir bal götürelim.,Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.02
-bal_pesinde.koy.l02.success,Her peteğe bal geldi!,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.02
-bal_pesinde.koy.l03.intro,Burada üç bal var! Üç peteğe birer bal verelim.,Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.03
-bal_pesinde.koy.l03.success,Üç petek de doldu!,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.03
-bal_pesinde.koy.l04.intro,"Bir petek köşede, sağda bekliyor! Kimseyi unutmayalım.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.04
-bal_pesinde.koy.l04.success,İki petek de doldu. Kimse unutulmadı!,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.04
-bal_pesinde.koy.l05.intro,"İki bal var, petek iki bal istiyor. İkisini de götürelim.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.05
-bal_pesinde.koy.l05.success,"Bir bal ve bir bal, iki bal! Petek tamam.",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.05
-bal_pesinde.koy.l06.intro,"Üç bal, iki petek! Bir petek bir bal, öbürü iki bal istiyor.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.06
-bal_pesinde.koy.l06.success,Herkesin payı tamam! Köy arıları teşekkür ediyor.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.06
-roboya.hint.koy.direction,"Hmm, birlikte düşünelim. Arı hangi yöne bakıyor? Hangi tarafa dönmeli?","İpucu 1. kademe, dönüşlü köy bölümleri (4, 6)",
-card.drop.intro,Bu da bırak kartı. Onu koyunca sepetimden bir bal bırakırım.,Kart tanıtım anı (Paylaşım Köyü),paylasim-koyu.bal-pesinde.07
-bal_pesinde.koy.l07.intro,"Yeni bir kartım var: bırak! Sepetimde iki bal var, peteğe götürüp bırakalım.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.07
-bal_pesinde.koy.l07.success,Petek doldu! Bırak kartı balı peteğe koydu.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.07
-bal_pesinde.koy.l08.intro,"Bir yerde iki bal, bir yerde bir bal var. Peteğe üç bal lazım!",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.08
-bal_pesinde.koy.l08.success,"İki bal ve bir bal, üç bal! Petek doldu.",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.08
-bal_pesinde.koy.l09.intro,Peteğe dört bal lazım. Yoldaki balları toplayıp götürelim.,Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.09
-bal_pesinde.koy.l09.success,Dört bal tamam! Sepette de bal kaldı.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.09
-bal_pesinde.koy.l10.intro,"Sepetimde üç bal var, petek iki bal istiyor. Artan bal nereye gitsin?",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.10
-bal_pesinde.koy.l10.success,"Petek iki bal aldı, sofrada da bir bal var. Hepimize yetti!",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.10
-bal_pesinde.koy.l11.intro,"İki petek var: bir petek bir bal, öbürü üç bal istiyor. Dört balımız var.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.11
-bal_pesinde.koy.l11.success,"Bir bal ve üç bal, dört bal! İki petek de doldu.",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.11
-bal_pesinde.koy.l12.intro,"Üç petek, üç ayrı istek! Balı toplayıp herkese yetecek kadar verelim.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.12
-bal_pesinde.koy.l12.success,Üç petek de doldu! Köy arıları şenlik hazırlıyor.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.12
-roboya.hint.koy.l14.listen,"Önce parmağınla dağıt: bir ona, bir ona... Her peteğe kaç düştü?","İpucu 1. kademe, 14. bölüm: tek tek dağıtma (PK-0001)",paylasim-koyu.bal-pesinde.14
-bal_pesinde.koy.l13.intro,İki peteğe aynı kadar bal verelim! İkisi de eşit olsun.,Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.13
-bal_pesinde.koy.l13.success,İki peteğe aynı kadar bal düştü!,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.13
-bal_pesinde.koy.l14.intro,"Dört balımız, iki peteğimiz var. Herkese aynı kadar düşsün.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.14
-bal_pesinde.koy.l14.success,İkişer bal! İki petek de eşit.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.14
-bal_pesinde.koy.l15.intro,"Altı bal, üç petek! Herkese aynı kadar verelim.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.15
-bal_pesinde.koy.l15.success,Üç petek eşit oldu. Herkesin ikişer balı var!,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.15
-bal_pesinde.koy.l16.intro,Yine altı balımız var ama bu sefer iki petek bekliyor. Yine aynı kadar verelim.,Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.16
-bal_pesinde.koy.l16.success,Üçer bal! Az kişi paylaşınca herkese daha çok düşüyor.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.16
-bal_pesinde.koy.l17.intro,"Çalıların arasından geçelim! İki petek var, bal eşit olsun.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.17
-bal_pesinde.koy.l17.success,"Yolu buldun, iki petek eşit oldu!",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.17
-bal_pesinde.koy.l18.intro,"Beş balımız, iki peteğimiz var. Eşit verince bir bal artıyor. Ne yapalım?",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.18
-bal_pesinde.koy.l18.success,"İki petek eşit oldu, sofrada da bal var!",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.18
-bal_pesinde.koy.l19.intro,Sepetimde dört bal var. Bu peteğe bir bal bırakalım.,Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.19
-bal_pesinde.koy.l19.success,Petek doldu! Sepetteki balı başka komşulara götüreceğiz.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.19
-bal_pesinde.koy.l20.intro,"Sepetimde beş bal var, petek iki bal istiyor. Kalan bal sepette kalsın.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.20
-bal_pesinde.koy.l20.success,Petek doldu! Kalan bal sepette bizi bekliyor.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.20
-bal_pesinde.koy.l21.intro,"İki petek var: bir petek iki bal, öbürü bir bal istiyor. Sepetteki baldan ikisine de verelim.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.21
-bal_pesinde.koy.l21.success,İki komşunun peteği de doldu! Sepette biraz bal kaldı.,Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.21
-bal_pesinde.koy.l22.intro,"Önce iki yerden bal toplayalım, sonra peteğe dört bal verelim.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.22
-bal_pesinde.koy.l22.success,"Topladık, verdik! Peteğin dört yuvası doldu.",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.22
-bal_pesinde.koy.l23.intro,"Sepetimde üç bal var, yolda iki bal daha. İki peteğe aynı kadar verelim.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.23
-bal_pesinde.koy.l23.success,"Eşit verdik, sofrada da herkese bal var. Afiyet olsun!",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.23
-bal_pesinde.koy.l24.intro,"Hasat şenliği zamanı! Üç peteğe birer bal verelim, artanı sofraya koyup şenliğe gidelim.",Bölüm girişi (Paylaşım Köyü),paylasim-koyu.bal-pesinde.24
-bal_pesinde.koy.l24.success,"Şenlik başlasın! Herkesin balı var, herkes birlikte.",Bölüm sonu (Paylaşım Köyü),paylasim-koyu.bal-pesinde.24
-bal_pesinde.nothing_to_drop,"Hmm, burada bırakamadım. Sepet boş ya da petek yok. Bir daha bakalım!",Bırak kartı boş sepette ya da petek olmayan yerde; ceza yok (D-b),
-bal_pesinde.hive_overflow,Bu petek doldu! Fazlası sepette kalabilir.,Petek ihtiyacından fazla bal alınca (taşma); ceza yok (D-b),
-bal_pesinde.hive_forgotten,Bu arının hiç balı yok. Ona da bal götürelim mi?,"Bir petek boş kaldı, ötekiler bal aldı (D-c); suçlama yok",
-bal_pesinde.not_equal,Petekler henüz tamam değil. Birlikte bakalım mı?,Petekler aynı değil ya da biri ihtiyacından az aldı (D-c); 'eşit' sözcüğü ve 'bal ekle' yönü yok,
-bal_pesinde.table_leftover,"Artan bal sofraya, herkes birlikte yesin!",Paylaşma başarıyla bitti ve sofrada bal var (PK-0001),
-bal_pesinde.kac_kaldi.ask,Sepette kaç bal kaldı?,"'Kaç kaldı?' sorusu, üç nokta kartından seçim (PK-0002, D-d)",
-bal_pesinde.kac_kaldi.right,"Evet, doğru saydın!",'Kaç kaldı?' doğru kart (PK-0002),
-bal_pesinde.kac_kaldi.wrong,"Olsun, birlikte sayalım!",'Kaç kaldı?' başka kart: Ari sepeti açıp birlikte sayar; ceza yok (PK-0002),
 map.welcome.paylasim-koyu,Paylaşım Köyü'ne hoş geldin! Hangi taşa gidelim?,Köy patikası açılışı (C-b),
 value.sharing,"Köyün yaşlı arısı der ki: paylaşmak, herkesin payını düşünmektir. Bugün herkese yetti!",Paylaşma değer kartı: her köy köşesinin sonunda (C-c); film sahneleri E4'te,
-roboya.hint.koy.share,Önce balı sayalım. Peteklere aynı kadar düşsün.,"İpucu 1. kademe, eşit paylaşma bölümleri (köy)",
-roboya.hint.koy.l23.listen,"Önce bütün balı sayalım: sepette üç, yolda iki.","İpucu 1. kademe, 23. bölüm",paylasim-koyu.bal-pesinde.23
+koy_meydani.hint.look,"Hmm, birlikte düşünelim. Hangi arının peteğinde bal yok?","İpucu 1. kademe: sesli ipucu (Köy Meydanı, ADR 0031)",
+koy_meydani.hint.tap,Bal vermek istediğin peteğe dokun.,İpucu 2. kademe: nereye dokunulacak,
+koy_meydani.hint.play,"Hazırsan yeşil düğmeye bas, Ari balı götürsün!",İpucu 3. kademe: oynat düğmesi,
+koy_meydani.waiting,Bu petek hâlâ bal bekliyor.,"Çalıştırma bitti, bir petek eksik; suçlama yok (K12)",
+koy_meydani.basket_empty,Sepette bal kalmadı. Başka bir şey deneyelim.,"Boş sepetten verme; plan o kartta durur, ceza yok",
+koy_meydani.basket_full,Sepet dolu! Önce balı peteğe verelim.,"Dolu sepete bal alma (K9, Köşe 2)",
+koy_meydani.flower_empty,Bu çiçekte bal kalmadı.,Boş çiçekten alma (Köşe 2),
+koy_meydani.not_equal,Petekler aynı değil. Birlikte tekrar deneyelim.,Eşit paylaşma tutmadı (Köşe 4),
+koy_meydani.leftover,Sepette bal kaldı. Onu da paylaşalım.,Eşit ama sepette bal kaldı (Köşe 4),
+koy_meydani.l01.intro,"Köy arılarının peteği bomboş! Ari'nin sepetinde iki bal var. Her peteğe bir bal verelim. Peteğe dokun, sonra yeşil düğmeye bas!","Bölüm girişi (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.01
+koy_meydani.l01.success,Harika! İki petek de doldu. Köy arıları çok mutlu!,"Bölüm sonu (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.01
+koy_meydani.l02.intro,Bu sefer üç petek var ve sepette üç bal. Herkes bir bal alsın!,"Bölüm girişi (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.02
+koy_meydani.l02.success,"Bir, iki, üç! Üç petek de doldu.","Bölüm sonu (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.02
+koy_meydani.l03.intro,"Bir arı bir bal istiyor, öteki iki bal! Sepette üç bal var.","Bölüm girişi (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.03
+koy_meydani.l03.success,"Üç bal, iki petek. Hepsi tam oldu!","Bölüm sonu (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.03
+koy_meydani.l04.intro,İki petek de ikişer bal istiyor. Sepette dört bal var. Hepsini paylaştıralım!,"Bölüm girişi (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.04
+koy_meydani.l04.success,"Her peteğe iki bal! Çok güzel paylaştık.","Bölüm sonu (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.04
+koy_meydani.l05.intro,Bu arı tam üç bal istiyor. Sepette üç bal var.,"Bölüm girişi (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.05
+koy_meydani.l05.success,"Üç bal! Petek doldu, arı teşekkür ediyor.","Bölüm sonu (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.05
+koy_meydani.l06.intro,"Üç arı bal bekliyor. İkisi bir, biri iki bal istiyor. Sepette dört bal var.","Bölüm girişi (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.06
+koy_meydani.l06.success,Hepsi tamam! Köy arıları birlikte şenlik yapıyor.,"Bölüm sonu (Köy Meydanı, Köşe 1)",paylasim-koyu.koy-meydani.06

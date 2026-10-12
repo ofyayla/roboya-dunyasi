@@ -6,19 +6,15 @@ interface Props {
   selected: string | null;
   onOpen: (path: string) => void;
   onNew: () => void;
-  onNewVillage: () => void;
 }
 
-export function LevelList({ levels, selected, onOpen, onNew, onNewVillage }: Props) {
+export function LevelList({ levels, selected, onOpen, onNew }: Props) {
   const { t } = useTranslation();
   return (
     <nav className="level-list" aria-labelledby="levels-heading">
       <h2 id="levels-heading">{t("levels.heading")}</h2>
       <button type="button" onClick={onNew}>
         {t("levels.new")}
-      </button>
-      <button type="button" onClick={onNewVillage}>
-        {t("levels.newVillage")}
       </button>
       {levels.length === 0 ? (
         <p className="muted">{t("levels.empty")}</p>

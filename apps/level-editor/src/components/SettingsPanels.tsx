@@ -1,27 +1,11 @@
 import type { AgeLevel, CardId, Concept, LevelDto, ValueId } from "@roboya/level-schema";
 import { useTranslation } from "react-i18next";
-import {
-  MAX_CARRYING,
-  MAX_NEED,
-  applyVillagePreset,
-  honeyGoal,
-  resize,
-  setCarryAtEnd,
-  setCarrying,
-  setDeliver,
-  setOption,
-  setShare,
-  size,
-  togglePaletteCard,
-  type HoneyGoalKind,
-  type OptionKey,
-} from "../model/levelOps";
+import { resize, size, togglePaletteCard } from "../model/levelOps";
 
-const CARDS: CardId[] = ["forward", "backward", "turn_left", "turn_right", "repeat", "if", "call", "action", "drop"];
+const CARDS: CardId[] = ["forward", "backward", "turn_left", "turn_right", "repeat", "if", "call", "action"];
 const CONCEPTS: Concept[] = ["direction", "sequencing", "debugging", "loops", "conditionals", "functions", "events", "counting"];
 const VALUES: ValueId[] = ["patience", "sharing", "helping", "kindness", "responsibility", "creativity"];
 const AGES: AgeLevel[] = ["minik", "kasif", "mucit"];
-const OPTIONS: OptionKey[] = ["ghostPath", "guided", "beeMemoryVisible", "intro", "autoDrop", "resetEachRun", "clearMemoryEachRun", "askRemaining"];
 
 interface Props {
   level: LevelDto;
@@ -102,6 +86,16 @@ export function MetaPanel({ level, onChange }: Props) {
   const { t } = useTranslation();
   const meta = level.meta;
   const set = (patch: Partial<LevelDto["meta"]>) => onChange({ ...level, meta: { ...meta, ...patch } });
+  const setOption = (key: "ghostPath" | "guided", on: boolean) => {
+    // Only `true` flags are stored, so saved files stay minimal.
+    const flags = { ghostPath: level.options?.ghostPath ?? false, guided: level.options?.guided ?? false, [key]: on };
+    const options: NonNullable<LevelDto["options"]> = {};
+    if (flags.ghostPath) options.ghostPath = true;
+    if (flags.guided) options.guided = true;
+    const { options: _previous, ...rest } = level;
+    void _previous;
+    onChange(Object.keys(options).length > 0 ? { ...rest, options } : rest);
+  };
   return (
     <fieldset className="panel">
       <legend>{t("meta.heading")}</legend>
@@ -156,14 +150,15 @@ export function MetaPanel({ level, onChange }: Props) {
           </label>
         ))}
       </div>
-      <p className="label">{t("meta.options")}</p>
       <div className="checks">
-        {OPTIONS.map((key) => (
-          <label key={key}>
-            <input type="checkbox" checked={level.options?.[key] ?? false} onChange={(e) => onChange(setOption(level, key, e.target.checked))} />
-            {t(`option.${key}`)}
-          </label>
-        ))}
+        <label>
+          <input type="checkbox" checked={level.options?.ghostPath ?? false} onChange={(e) => setOption("ghostPath", e.target.checked)} />
+          {t("meta.ghostPath")}
+        </label>
+        <label>
+          <input type="checkbox" checked={level.options?.guided ?? false} onChange={(e) => setOption("guided", e.target.checked)} />
+          {t("meta.guided")}
+        </label>
       </div>
       <label className="block">
         {t("meta.notes")}
@@ -190,83 +185,6 @@ export function VoicePanel({ level, voiceKeys }: { level: LevelDto; voiceKeys: R
           </li>
         ))}
       </ul>
-    </fieldset>
-  );
-}
-
-/** Honey: the basket at the start and the honey goal (deliver to hives, share equally, keep some). ADR 0030. */
-export function HoneyPanel({ level, onChange }: Props) {
-  const { t } = useTranslation();
-  const hives = (level.drops ?? []).filter((d) => d.kind === "hive");
-  const kind = honeyGoal(level);
-  const choose = (next: HoneyGoalKind) => {
-    let updated = setShare(level, false);
-    for (const h of hives) updated = setDeliver(updated, h.id, null);
-    if (next === "share") updated = setShare(updated, true);
-    if (next === "deliver" && hives[0]) updated = setDeliver(updated, hives[0].id, hives[0].need ?? 1);
-    onChange(updated);
-  };
-  return (
-    <fieldset className="panel">
-      <legend>{t("honey.heading")}</legend>
-      <label className="block">
-        {t("honey.carrying")}
-        <input type="number" min={0} max={MAX_CARRYING} value={level.robot.carrying ?? 0} onChange={(e) => onChange(setCarrying(level, Number(e.target.value)))} />
-      </label>
-      <p className="label">{t("honey.goal")}</p>
-      <div className="tool-list">
-        {(["none", "deliver", "share"] as const).map((k) => (
-          <label key={k} className={`tool ${kind === k ? "tool--active" : ""}`}>
-            <input type="radio" name="honey-goal" value={k} checked={kind === k} onChange={() => choose(k)} />
-            {t(`honey.kind.${k}`)}
-          </label>
-        ))}
-      </div>
-      {kind === "share" && !level.goal.share && <p className="warn">{t("honey.shareNeedsHives")}</p>}
-      {kind === "deliver" &&
-        hives.map((h) => (
-          <label key={h.id} className="block">
-            {t("honey.deliverTo", { id: h.id })}
-            <input
-              type="number"
-              min={0}
-              max={MAX_NEED}
-              value={level.goal.deliver?.find((d) => d.to === h.id)?.count ?? 0}
-              onChange={(e) => onChange(setDeliver(level, h.id, Number(e.target.value) || null))}
-            />
-          </label>
-        ))}
-      {kind === "none" && hives.length > 0 && <p className="muted">{t("honey.noGoalHint")}</p>}
-      <label className="block">
-        {t("honey.carryAtEnd")}
-        <input
-          type="number"
-          min={0}
-          max={MAX_CARRYING}
-          value={level.goal.carryAtEnd ?? ""}
-          placeholder={t("honey.carryAtEndNone")}
-          onChange={(e) => onChange(setCarryAtEnd(level, e.target.value === "" ? null : Number(e.target.value)))}
-        />
-      </label>
-    </fieldset>
-  );
-}
-
-/** Starting values for a Paylaşım Köyü level (PK-0004, PK-0005). */
-export function VillagePresetPanel({ level, onChange }: Props) {
-  const { t } = useTranslation();
-  return (
-    <fieldset className="panel">
-      <legend>{t("village.heading")}</legend>
-      <p className="muted">{t("village.hint")}</p>
-      <div className="row">
-        <button type="button" onClick={() => onChange(applyVillagePreset(level, "minik"))}>
-          {t("village.minik")}
-        </button>
-        <button type="button" onClick={() => onChange(applyVillagePreset(level, "kasif"))}>
-          {t("village.kasif")}
-        </button>
-      </div>
     </fieldset>
   );
 }

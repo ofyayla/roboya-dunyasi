@@ -17,7 +17,8 @@ export type GameId =
   | "dongu-dansi"
   | "birlikte-basaralim"
   | "robot-atolyesi"
-  | "serbest-mucit";
+  | "serbest-mucit"
+  | "koy-meydani";
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
  * via the `definition` "concept".
@@ -46,19 +47,18 @@ export type ObstacleLook = "tree" | "rock" | "bush" | "log";
  * via the `definition` "direction".
  */
 export type Facing = "north" | "east" | "south" | "west";
-export type DropKind = "hive" | "table";
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
  * via the `definition` "card".
  */
-export type CardId = "forward" | "backward" | "turn_left" | "turn_right" | "repeat" | "if" | "call" | "drop" | "action";
+export type CardId = "forward" | "backward" | "turn_left" | "turn_right" | "repeat" | "if" | "call" | "action";
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
  * via the `definition` "command".
  */
 export type CommandDto =
   | {
-      op: "forward" | "backward" | "turn_left" | "turn_right" | "drop";
+      op: "forward" | "backward" | "turn_left" | "turn_right";
     }
   | {
       op: "repeat";
@@ -125,6 +125,10 @@ export type StoryProp =
   | "villager-bee"
   | "honeycomb"
   | "village-table";
+/**
+ * deliver: every hive holds what it asks for. share: the hives hold the same and what is left on the table is fewer than the hives.
+ */
+export type SharingGoalId = "deliver" | "share";
 
 /**
  * Roboya Dünyası level, schema version 3. Single source of truth for the game, validator and editor.
@@ -132,7 +136,7 @@ export type StoryProp =
 export interface LevelDto {
   $schema?: string;
   /**
-   * 2 adds the optional `story` block (scripts/migrate-v2.mjs). 3 adds honey carrying, dropping and sharing for Paylaşım Köyü, ADR 0030 (scripts/migrate-v3.mjs).
+   * 2 adds the optional `story` block (scripts/migrate-v2.mjs). 3 adds `options.intro` (scripts/migrate-v3.mjs).
    */
   schemaVersion: 3;
   /**
@@ -152,12 +156,6 @@ export interface LevelDto {
    * @maxItems 64
    */
   items?: ItemDto[];
-  /**
-   * Places the bee can leave honey (v3, ADR 0030): a `hive` wants `need` honey, the `table` is the village's shared table for what is left over. Walkable cells; the bee may stand on them.
-   *
-   * @maxItems 4
-   */
-  drops?: DropPointDto[];
   goal: GoalDto;
   /**
    * Decoration just outside the playable cells (v2), e.g. the tree the narration mentions. x or y is -1 or the grid width/height; never on a walkable cell.
@@ -178,6 +176,7 @@ export interface LevelDto {
    */
   alternativeLevelId?: string;
   solution?: SolutionDto;
+  sharing?: SharingDto;
 }
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
@@ -235,10 +234,6 @@ export interface RobotDto {
   x: number;
   y: number;
   facing: Facing;
-  /**
-   * Honey in the basket at the start (v3); 0 when omitted.
-   */
-  carrying?: number;
 }
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
@@ -253,24 +248,6 @@ export interface ItemDto {
   color?: "red" | "yellow" | "blue" | "green" | "purple" | "orange";
   x: number;
   y: number;
-  /**
-   * Honey the item gives when collected (v3, honey only); 1 when omitted.
-   */
-  amount?: number;
-}
-/**
- * This interface was referenced by `LevelDto`'s JSON-Schema
- * via the `definition` "drop".
- */
-export interface DropPointDto {
-  id: string;
-  kind: DropKind;
-  x: number;
-  y: number;
-  /**
-   * Honey a hive asks for (hives only).
-   */
-  need?: number;
 }
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
@@ -284,17 +261,6 @@ export interface GoalDto {
    * @minItems 1
    */
   collect?: string[];
-  /**
-   * Exactly `count` honey must end up at each listed drop point (v3).
-   *
-   * @minItems 1
-   */
-  deliver?: DeliverDto[];
-  share?: ShareDto;
-  /**
-   * Honey that must still be in the basket when the goal is met (subtraction, v3). Only together with another goal.
-   */
-  carryAtEnd?: number;
 }
 /**
  * This interface was referenced by `LevelDto`'s JSON-Schema
@@ -303,21 +269,6 @@ export interface GoalDto {
 export interface PositionDto {
   x: number;
   y: number;
-}
-export interface DeliverDto {
-  to: string;
-  count: number;
-}
-/**
- * The listed hives hold the same honey and all honey is handed out; what is left, fewer than the hives, is on `leftoverTo` (a table) (v3, PK-0001).
- */
-export interface ShareDto {
-  /**
-   * @minItems 2
-   * @maxItems 3
-   */
-  among: string[];
-  leftoverTo?: string;
 }
 export interface SceneryDto {
   x: number;
@@ -363,23 +314,7 @@ export interface LevelOptions {
    */
   guided?: boolean;
   /**
-   * Minik: a hive takes the honey it needs as soon as the bee enters its cell (v3, PK-0001).
-   */
-  autoDrop?: boolean;
-  /**
-   * After success ask how much honey is left (v3, PK-0002). Behind a feature flag until the child test.
-   */
-  askRemaining?: boolean;
-  /**
-   * The world (bee, basket, hives) starts over on every run while the memory strip stays (v3, PK-0005).
-   */
-  resetEachRun?: boolean;
-  /**
-   * The memory strip clears itself after every run (Minik, v3, PK-0005).
-   */
-  clearMemoryEachRun?: boolean;
-  /**
-   * Introduction level: a child who starts later on the path still plays it (v3, ADR 0018, PK-0005).
+   * Introduction level: a child who starts later on the path still plays it (v3, ADR 0018).
    */
   intro?: boolean;
 }
@@ -426,4 +361,114 @@ export interface StorySceneDto {
  */
 export interface SolutionDto {
   shortestLength: number;
+}
+/**
+ * Köy Meydanı (koy-meydani, ADR 0031): the hives, flowers and Ari's basket of a village level. Replaces grid, robot, goal and cards.
+ */
+export interface SharingDto {
+  /**
+   * The hives that wait for honey, left to right.
+   *
+   * @minItems 1
+   * @maxItems 4
+   */
+  hives: HiveDto[];
+  /**
+   * The honey each flower holds.
+   *
+   * @maxItems 3
+   */
+  flowers?: number[];
+  basket?: BasketDto;
+  /**
+   * A shared village table: left-over honey goes there.
+   */
+  table?: boolean;
+  goal: SharingGoalId;
+  /**
+   * Give cards carry a count of 1 to 3; otherwise a give card hands over one honey.
+   */
+  amounts?: boolean;
+  limits: SharingLimitsDto;
+  repeatBox?: RepeatBoxDto;
+  /**
+   * Before the run the child guesses how much honey is left in the basket (corner 3).
+   */
+  predict?: boolean;
+}
+export interface HiveDto {
+  /**
+   * Honey the hive asks for (delivery levels); left out when sharing.
+   */
+  need?: number;
+  /**
+   * Honey the hive already holds at the start.
+   */
+  has?: number;
+}
+/**
+ * Ari's basket: honey at the start and the most it holds.
+ */
+export interface BasketDto {
+  start?: number;
+  /**
+   * The most honey the basket holds; no limit when left out.
+   */
+  cap?: number;
+}
+export interface SharingLimitsDto {
+  /**
+   * Cards the plan strip holds in all; the cards inside the repeat box count once.
+   */
+  maxCards: number;
+}
+/**
+ * A fixed repeat box at the head of the strip (corner 4).
+ */
+export interface RepeatBoxDto {
+  /**
+   * Cards that fit inside the box.
+   */
+  slots: number;
+  /**
+   * The most turns the box may run.
+   */
+  maxTurns: number;
+}
+/**
+ * The village square: no grid and no direction. The child gives Ari a plan of take and give cards (ADR 0031).
+ *
+ * This interface was referenced by `LevelDto`'s JSON-Schema
+ * via the `definition` "sharing".
+ */
+export interface SharingDto1 {
+  /**
+   * The hives that wait for honey, left to right.
+   *
+   * @minItems 1
+   * @maxItems 4
+   */
+  hives: HiveDto[];
+  /**
+   * The honey each flower holds.
+   *
+   * @maxItems 3
+   */
+  flowers?: number[];
+  basket?: BasketDto;
+  /**
+   * A shared village table: left-over honey goes there.
+   */
+  table?: boolean;
+  goal: SharingGoalId;
+  /**
+   * Give cards carry a count of 1 to 3; otherwise a give card hands over one honey.
+   */
+  amounts?: boolean;
+  limits: SharingLimitsDto;
+  repeatBox?: RepeatBoxDto;
+  /**
+   * Before the run the child guesses how much honey is left in the basket (corner 3).
+   */
+  predict?: boolean;
 }

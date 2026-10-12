@@ -62,42 +62,4 @@ describe("App", () => {
     expect(saved.solution).toEqual({ shortestLength: 3 });
     expect(await screen.findByText(/Kaydedildi/)).toBeInTheDocument();
   });
-
-  it("hiveTool_placesAHive_andLabelsTheCell", async () => {
-    mockFetch();
-    render(<App />);
-    await userEvent.click(screen.getByRole("radio", { name: "Petek" }));
-    const grid = screen.getByRole("grid");
-    await userEvent.click(within(grid).getByRole("gridcell", { name: /^Hücre 2,1$/ }));
-    expect(within(grid).getByRole("gridcell", { name: /Hücre 2,1, petek petek-1, ihtiyaç 2/ })).toBeInTheDocument();
-  });
-
-  it("newVillageLevel_opensWithVillageOptions_andSavesToTheVillagePath", async () => {
-    const calls = mockFetch();
-    render(<App />);
-    await screen.findByRole("button", { name: "sabir-ormani.yon-avcisi.01" });
-    await userEvent.click(screen.getByRole("button", { name: "Yeni köy bölümü" }));
-    expect(screen.getByRole("checkbox", { name: /Otomatik bırakma/ })).toBeChecked();
-    expect(screen.getByRole("checkbox", { name: /Dünya her çalıştırmada başa döner/ })).toBeChecked();
-    const save = screen.getByRole("button", { name: "Kaydet" });
-    await waitFor(() => expect(save).toBeEnabled());
-    await userEvent.click(save);
-    const put = await waitFor(() => {
-      const c = calls.find((x) => x.init?.method === "PUT");
-      if (!c) throw new Error("no PUT yet");
-      return c;
-    });
-    expect(put.url).toBe("/api/levels/paylasim-koyu%2Fbal-pesinde%2F01.json");
-    expect(JSON.parse(String(put.init?.body)).options).toMatchObject({ autoDrop: true, resetEachRun: true, intro: true });
-  });
-
-  it("togglingAnOption_keepsTheOtherVillageOptions", async () => {
-    mockFetch();
-    render(<App />);
-    await userEvent.click(screen.getByRole("button", { name: "Yeni köy bölümü" }));
-    await userEvent.click(screen.getByRole("checkbox", { name: /Hayalet yol/ }));
-    expect(screen.getByRole("checkbox", { name: /Hayalet yol/ })).toBeChecked();
-    expect(screen.getByRole("checkbox", { name: /Otomatik bırakma/ })).toBeChecked();
-    expect(screen.getByRole("checkbox", { name: /Bellek her çalıştırmadan sonra temizlenir/ })).toBeChecked();
-  });
 });

@@ -23,6 +23,11 @@ internal static class LevelChecker
         {
             dto = LevelLoader.Parse(json);
             report.Id = dto.Id;
+            if (dto.Game == GameId.KoyMeydani)
+            {
+                return SharingChecks.Check(dto, path, voice, report);
+            }
+
             level = LevelLoader.ToLevel(dto);
         }
         catch (Exception e) when (e is LevelValidationException or ArgumentException or InvalidOperationException)
@@ -53,8 +58,6 @@ internal static class LevelChecker
 
                 break;
         }
-
-        VillageChecks.CheckLevel(dto, level, solve, report);
 
         bool hasPrimitive = level.AvailableCards.Any(c => c.IsPrimitiveMove());
         if (!hasPrimitive)
@@ -138,14 +141,6 @@ internal static class LevelChecker
         return obj.ToString(Newtonsoft.Json.Formatting.Indented) + "\n";
     }
 
-    /// <summary>The spoken lines of the "how many are left?" step (PK-0002); mirrors <c>RemainingView</c>'s keys in the game.</summary>
-    public static readonly string[] RemainingVoiceKeys =
-    [
-        "bal_pesinde.kac_kaldi.ask",
-        "bal_pesinde.kac_kaldi.right",
-        "bal_pesinde.kac_kaldi.wrong",
-    ];
-
     public static IEnumerable<string> VoiceKeys(LevelDto dto)
     {
         yield return dto.Voice.Intro;
@@ -162,14 +157,6 @@ internal static class LevelChecker
         foreach (var hint in dto.Voice.Hints ?? [])
         {
             yield return hint;
-        }
-
-        if (dto.Options?.AskRemaining == true)
-        {
-            foreach (var key in RemainingVoiceKeys)
-            {
-                yield return key;
-            }
         }
     }
 
@@ -219,7 +206,7 @@ internal static class LevelChecker
         }
     }
 
-    private static void CheckLocation(LevelDto dto, string path, LevelReport report)
+    internal static void CheckLocation(LevelDto dto, string path, LevelReport report)
     {
         var parts = dto.Id.Split('.');
         var region = Kebab(dto.Region.ToString());

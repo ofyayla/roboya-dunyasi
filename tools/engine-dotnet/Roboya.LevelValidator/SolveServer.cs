@@ -26,8 +26,17 @@ internal static class SolveServer
 
         if (report.ShortestLength.HasValue)
         {
-            var solution = Solver.Solve(LevelLoader.Load(body));
-            result["solution"] = new JArray(solution.Solution.Select(c => LevelChecker.Kebab(c.ToString()).Replace('-', '_')));
+            var dto = LevelLoader.Parse(body);
+            if (dto.Game == Roboya.CodingEngine.Levels.Generated.GameId.KoyMeydani)
+            {
+                var program = Roboya.CodingEngine.Sharing.SharingSolver.Solve(LevelLoader.ToSharing(dto)).Programs[0];
+                result["solution"] = new JArray(program.Expand().Select(c => c.ToString()));
+            }
+            else
+            {
+                var solution = Solver.Solve(LevelLoader.Load(body));
+                result["solution"] = new JArray(solution.Solution.Select(c => LevelChecker.Kebab(c.ToString()).Replace('-', '_')));
+            }
         }
 
         return result.ToString(Formatting.None);

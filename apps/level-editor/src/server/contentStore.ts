@@ -34,7 +34,8 @@ export class ContentStore {
         };
       }),
     );
-    return entries.sort((a, b) => a.path.localeCompare(b.path));
+    // The village square (koy-meydani, ADR 0031) has no grid: this editor would crash on it, so it is not listed.
+    return entries.filter((e) => e.game !== "koy-meydani").sort((a, b) => a.path.localeCompare(b.path));
   }
 
   async read(relPath: string): Promise<string> {
