@@ -61,6 +61,21 @@ namespace Roboya.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator PhoneScreen_Board_GetsTheHeightOfTheTopBar()
+        {
+            VisualElement root = null;
+            yield return StartGame(r => root = r);
+            yield return null;
+            yield return PassStory(root, "01-level1-story");
+            yield return new WaitForSeconds(0.3f);
+            var host = root.Q("board-host");
+            var top = root.Q("top-bar");
+            Assert.AreEqual(UnityEngine.UIElements.Position.Absolute, top.resolvedStyle.position, "the top bar floats over the scenery");
+            Assert.LessOrEqual(host.worldBound.yMin, root.Q("screen").worldBound.yMin + 24f, "the board starts at the top of the screen");
+            yield return Capture(root, "41-phone-board", 2000, 924);
+        }
+
+        [UnityTest]
         public IEnumerator FirstLevel_TwoForwardCardsAndPlay_ShowsThreeStars()
         {
             VisualElement root = null;
@@ -364,7 +379,7 @@ namespace Roboya.Tests.PlayMode
         /// Renders the UI panel into a texture and saves a PNG for visual review. WaitForEndOfFrame never fires in
         /// batch mode, so the panel is redirected to a RenderTexture for two frames instead. Skipped without a GPU.
         /// </summary>
-        internal static IEnumerator Capture(VisualElement root, string name)
+        internal static IEnumerator Capture(VisualElement root, string name, int width = 1280, int height = 800)
         {
             if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null)
             {
@@ -372,7 +387,7 @@ namespace Roboya.Tests.PlayMode
             }
 
             var settings = UnityEngine.Object.FindAnyObjectByType<UIDocument>().panelSettings;
-            var rt = new RenderTexture(1280, 800, 24, RenderTextureFormat.ARGB32);
+            var rt = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32);
             settings.targetTexture = rt;
             yield return null;
             yield return null;
