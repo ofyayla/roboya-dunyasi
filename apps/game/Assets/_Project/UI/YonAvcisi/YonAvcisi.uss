@@ -25,6 +25,18 @@
     background-color: rgb(250, 200, 50);
 }
 
+/* Grid games: the buttons sit in the corners over the scenery; the board uses the full height between the top and the plan bar. */
+.screen--board-first .top-bar {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: 12px;
+}
+
+.screen--board-first .board-host {
+    margin: 0 0 8px 0;
+}
+
 .board-host {
     flex-grow: 1;
     margin: 8px 0;

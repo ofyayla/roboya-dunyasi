@@ -70,6 +70,9 @@ namespace Roboya.Games.Common
             root.Q("board-host").Add(_board);
             _badge = new GoalBadge(art);
             root.Q("board-host").Add(_badge);
+            // The top bar floats over the scenery so a wide, short phone screen gives its height to the board.
+            root.Q("screen").AddToClassList("screen--board-first");
+            root.Q("top-bar").BringToFront(); // absolute children paint in order: the buttons must stay above the board
             if (art != null && art.Background != null)
             {
                 var screen = root.Q("screen");
